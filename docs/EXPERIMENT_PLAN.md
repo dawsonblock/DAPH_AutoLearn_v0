@@ -1,4 +1,4 @@
-# Corrected experimental plan
+# Corrected experimental plan — DAPH AutoLearn v0.3.10-alpha
 
 ## Gate 0: integrity
 
@@ -47,7 +47,7 @@ Primary tool-policy metrics:
 - final exact accuracy
 - latency and generated-token cost
 
-Required v0.3.8 controls:
+Required controls (v0.3.8+):
 
 - complete-label teacher-forced route scoring;
 - identical ordered tasks for the real vector and every random direction;
@@ -75,3 +75,31 @@ access turns a split into training data regardless of its filename.
 ## v0.3.1 connection rule
 
 `steered_auto` is the only arm in which a tool-policy vector is allowed to influence the call/no-call decision. Reasoning-policy vectors are applied only after an LLM backend has been selected. This prevents the experimental confound where one generic vector simultaneously changes routing and answer generation. Malformed route outputs fall back to deterministic auto routing and must be counted separately.
+
+## v0.3.10 four-way policy experiment
+
+The v0.3.10 release adds a four-way experiment crossing two steering modes
+(hard / soft) with two policy classes (centroid / logistic), yielding the
+cells: Hard Centroid, Soft Centroid, Hard Logistic, Soft Logistic. Each cell
+is evaluated against the baseline matrix (A–I) defined in
+[`EXPERIMENT_PROTOCOL_V0_3_10.md`](../EXPERIMENT_PROTOCOL_V0_3_10.md).
+
+Key additions over the original ablation matrix:
+
+- **Regret** (`max_a U(a) − U(π(x))`) is the primary metric, not routing
+  accuracy.
+- **Calibration** (Brier, ECE, reliability bins, selective-risk curve)
+  quantifies confidence quality.
+- **Abstention** (`max(p, 1−p) < τ_conf → ABSTAIN`) is a first-class action.
+- **OOD detection** (Mahalanobis distance) flags unfamiliar inputs for
+  conservative routing.
+- **Causal interventions** (dose-response `+v/0/−v`, direction reversal,
+  matched-random controls) are required before any steering direction enters
+  the policy.
+- **KL/capability gates** (neutral-KL ceiling + per-capability drop tolerance)
+  must hold before any candidate policy is promoted to FINAL TEST.
+
+Split discipline (TRAIN / DEV / CALIBRATION / FINAL TEST) and the one-shot
+final-test access ledger remain in force. See
+[`ARCHITECTURE_V0_3_10.md`](../ARCHITECTURE_V0_3_10.md) for the full component
+map and data flow.

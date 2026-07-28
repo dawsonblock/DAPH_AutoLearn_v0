@@ -18,10 +18,18 @@ Status tags:
 
 **Status: ESTABLISHED as engineering.**
 
-v0.3.8 is a protocol-repair release. It provides route scoring, residual
-steering hooks, a bounded symbolic executor, typed verification, leakage
-audits, test-access guards, empirical control inference, provenance manifests,
-and wheel-safe commands.
+v0.3.10 is a counterfactual compute-selection learner release. It builds on the
+v0.3.8 protocol-repair foundation (route scoring, residual steering hooks, a
+bounded symbolic executor, typed verification, leakage audits, test-access
+guards, empirical control inference, provenance manifests, wheel-safe commands)
+and the v0.3.9 causal-chain repair (candidate steering vector drives candidate
+routing during held-out evaluation). v0.3.10 adds a weighted soft-target
+logistic router, regret as the primary metric, calibration, calibrated
+abstention, OOD detection, causal intervention experiments, KL/capability
+promotion gates, prioritized replay, contextual bandit logging, a
+doubly-robust utility interface, an experimental low-rank multi-vector
+controller, an immutable hashed `ExperimentConfig`, and the
+`daph-autolearn-policy` CLI.
 
 It does not license a claim that steering improves routing on any real model.
 
@@ -61,8 +69,7 @@ mean is the protocol default. The scorer fails closed if appending a label
 retokenizes the prompt boundary.
 
 The legacy single-token and first-subtoken modes remain available for backward
-comparison, but a run using them is not protocol-eligible for a v0.3.8
-headline.
+comparison, but a run using them is not protocol-eligible for a headline.
 
 ## 5. Steering safety and decay
 
@@ -82,40 +89,55 @@ implemented as a per-forward hook constraint in this release.
 
 **Status: ESTABLISHED as engineering.**
 
-The main repository contains 655 collected tests in the release build. Tests
+The main repository contains 652 collected tests in the release build (652
+passed, 1 skipped on macOS Darwin 25.2.0, Python 3.12.0, pytest 8.4.2). Tests
 that require explicitly enabled model downloads or unavailable hardware may
 skip. The bundled GDN2/ExFusion extension has a separate test suite.
 
 The suite covers symbolic-executor safety, routing, full-sequence scoring,
 typed verification, steering hooks and clamps, leakage checks, protocol
 guards, manifests, command packaging, empirical null calculations,
-regression behavior, and the v0.3.9 counterfactual outcome-semantics,
+regression behavior, the v0.3.9 counterfactual outcome-semantics,
 frozen-utility, immutable-experience-record, promotion-gate, and
-task-appropriate output-schema tests.
+task-appropriate output-schema tests, and the 67 v0.3.10 release-gate tests
+(G2–G16) for routing, calibration, abstention, OOD handling, intervention
+effects, promotion constraints, and replay.
 
 The test count is engineering evidence only. It is not a sample size and does
 not qualify scientific claims.
 
 ## 7. AutoLearn
 
-**Status: BOOTSTRAP.**
+**Status: ESTABLISHED as engineering (mechanics) — NOT YET scientifically qualified.**
 
-The v0.3.x loop can route tasks, execute the symbolic backend, classify typed
-outcomes, extract a contrastive mean direction, and repeat validation. It now
-uses full-sequence route scoring on model-mediated paths.
+The v0.3.10 loop can route tasks, execute the symbolic backend, classify typed
+outcomes, execute both backends counterfactually, compute per-task utility
+gaps, train a weighted soft-target logistic router against continuous `ΔU`,
+evaluate regret on held-out data, calibrate abstention thresholds, run causal
+intervention experiments, and gate promotion via KL/capability constraints.
+It uses full-sequence route scoring on model-mediated paths.
 
-The loop is not the proposed counterfactual AutoLearn v2 system. It does not
-execute and independently verify both backends for every experience, optimize
-an actual counterfactual reward-gap objective, maintain immutable replay and
-promotion lineage, or demonstrate convergence on held-out real-model tasks.
+The v0.3.9 causal-chain repair ensures the candidate steering vector drives
+candidate routing during held-out evaluation; the oracle Delta-U is used only
+for the training target. The v0.3.10 release adds regret as the primary
+metric, calibration, abstention, OOD detection, causal interventions, and
+KL/capability promotion gates.
+
+The loop does not yet demonstrate convergence on held-out **real-model** tasks,
+and no qualifying real-model run is bundled. The low-rank multi-vector
+controller is experimental.
 
 Licensed wording:
 
-> “DAPH includes a bootstrap iterative steering loop.”
+> “DAPH includes a counterfactual compute-selection learner with calibrated
+> abstention, OOD detection, causal intervention experiments, and
+> KL/capability promotion gates. Regret is the primary metric. The mechanics
+> are established by repository tests; no real-model scientific claim is
+> licensed.”
 
 Unlicensed wording:
 
-> “DAPH autonomously learns a superior routing policy.”
+> “DAPH autonomously learns a superior routing policy on real models.”
 
 ## 8. Historical Qwen2.5 experiment
 
@@ -135,13 +157,13 @@ causal benefit:
 The materials are retained under
 `experiments/legacy_contaminated_v0_3_7/` for auditability and must not be used
 as headline evidence. No Qwen F1 lift, z-score, p-value, OOD benefit, or
-directional-causality result from that run is licensed by v0.3.8.
+directional-causality result from that run is licensed by this release.
 
 ## 9. Matched random-direction controls
 
 **Status: ESTABLISHED as engineering — NOT YET scientifically qualified.**
 
-The v0.3.8 control runner enforces the same ordered task fingerprint digest and
+The control runner enforces the same ordered task fingerprint digest and
 scorer configuration for the real and random directions. It reports the
 finite-sample empirical p-value
 
@@ -200,7 +222,7 @@ vendored or represented as an external query-bound memory bank.
 
 **Status: NOT YET.**
 
-v0.3.8 does not license claims of:
+v0.3.10 does not license claims of:
 
 - real-model causal steering benefit;
 - generalization across model families or tokenizers;

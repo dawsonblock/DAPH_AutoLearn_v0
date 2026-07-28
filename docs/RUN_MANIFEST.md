@@ -13,7 +13,7 @@ output. The implementation in
   "created_at": "2026-07-28T12:00:00Z",
   "git_commit": "40-character commit SHA or null",
   "git_dirty": false,
-  "daph_version": "0.3.8",
+  "daph_version": "0.3.10",
   "model": {
     "repo": "Qwen/Qwen2.5-1.5B-Instruct",
     "revision": "immutable model revision",
@@ -157,7 +157,7 @@ The manifest validator also rejects a test/final-test run when a vector's
 - `single_token` is the historical next-token contrast;
 - `sequence` scores the complete label with teacher forcing.
 
-Only `sequence` is headline-eligible in v0.3.8. `sequence_normalization`
+Only `sequence` is headline-eligible. `sequence_normalization`
 records whether complete-label log probabilities were summed or averaged.
 
 ## Vector provenance
@@ -181,5 +181,5 @@ should verify that hash before using the result.
 
 ## Versioning
 
-The schema remains `daph.run.v1`; v0.3.8 adds fields compatibly. A future
+The schema remains `daph.run.v1`; v0.3.10 adds fields compatibly. A future
 incompatible change must bump the manifest version.

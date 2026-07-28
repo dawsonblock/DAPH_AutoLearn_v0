@@ -1,34 +1,74 @@
-# DAPH AutoLearn Roadmap — v0.3.8 → v0.4.0
+# DAPH AutoLearn Roadmap — v0.3.11 → v0.4.0
 
-## v0.3.8 shipped scope
+## Completed releases (v0.3.7–v0.3.10)
 
-v0.3.8 is the protocol-repair release. It ships full-sequence route scoring,
-typed exact verification, family-aware split/leakage tooling, purpose-aware
-test guards, empirical random-control inference, residual intervention safety
-clamps, wheel-safe commands, and the repaired compressed-basis extension.
+| Release  | Focus                                      | Status | Shipped in commit                                      |
+|----------|--------------------------------------------|--------|--------------------------------------------------------|
+| v0.3.7   | Correctness + architecture repair          | `[x]`  | `9d721c6` and prior                                    |
+| v0.3.8   | Benchmark + scientific protocol rebuild    | `[x]`  | `9d721c6` and prior                                    |
+| v0.3.9   | Counterfactual AutoLearn loop repair       | `[x]`  | `d2de6e2`                                              |
+| v0.3.10  | Counterfactual compute-selection learner   | `[x]`  | `76cd253`                                              |
 
-It intentionally does not upgrade the historical Qwen experiment into a
-scientific claim. Counterfactual AutoLearn remains v0.3.9 work; conditional
-low-rank steering and multi-model qualification remain v0.3.10/v0.4.0 work.
+### What v0.3.7–v0.3.8 shipped
 
-This file is the canonical, ticket-tracked plan for taking DAPH AutoLearn from a
-steering-vector research harness to a counterfactual, utility-driven,
-validation-gated learning system. It is the source of truth for release
-sequencing. Individual tickets should be picked up in ID order within a release;
-releases must be executed in order. No ticket in a later release should be
-started before the prior release's exit gate is satisfied.
+Protocol-repair releases. Full-sequence route scoring, typed exact
+verification, family-aware split/leakage tooling, purpose-aware test guards,
+empirical random-control inference, residual intervention safety clamps,
+wheel-safe commands, and the repaired compressed-basis extension. The
+contaminated v0.3.7 Qwen experiment was quarantined under
+`experiments/legacy_contaminated_v0_3_7/` and is not licensed as headline
+evidence.
 
-Ticket ID convention: `<RELEASE>-<NNN>` (e.g. `V037-004`).
-Status legend: `[ ]` pending · `[~]` in progress · `[x]` done · `[!]` blocked.
+### What v0.3.9 shipped
+
+Critical causal-chain repair. Held-out promotion evaluation now uses the
+candidate steering vector for candidate routing and the incumbent vector for
+incumbent routing, via an injected `RoutePolicyFn`. The oracle Delta-U is used
+only for the training target, never for the held-out routing decision. Added
+`SteeringPolicyConfig`, `PolicyRouteDecision`, `CapturedActivation`,
+`CaptureResult`, trust-region bootstrap, norm bounds, fail-closed NaN/Inf
+handling, dataset hash lineage, and capability regression gates.
+
+### What v0.3.10 shipped
+
+Architecture shift from "weighted steering-vector extractor" to
+**counterfactual compute-selection learner**. The weighted centroid is now a
+transparent baseline; the primary learner is a weighted soft-target logistic
+router `P(S|h) = σ(wᵀh + b)` trained on continuous `ΔU`. **Regret** is the
+primary metric, not routing accuracy. Added: calibration (Brier, ECE,
+reliability bins, selective-risk curve), calibrated abstention, OOD detection
+(Mahalanobis), PCA feature reduction (TRAIN only), causal intervention
+experiments (dose-response `+v/0/−v`, direction reversal), KL/capability
+promotion gates, prioritized replay, contextual bandit logging, doubly-robust
+utility interface, experimental low-rank multi-vector controller
+(`h' = h + Vα(h)`), immutable `ExperimentConfig`, and the
+`daph-autolearn-policy` CLI with `train`/`evaluate`/`intervene`/`calibrate`
+modes. 67 new release-gate tests (G2–G16).
+
+> **Scope note.** The original v0.3.10 roadmap tickets (V0310-001 through
+> V0310-007) described low-rank conditional steering controller work. The
+> actual v0.3.10 release took a different direction: it focused on the
+> **policy learner** side (logistic router, regret, calibration, abstention)
+> rather than the **steering controller** side (multi-layer, conditional
+> coefficients). The low-rank controller was added experimentally. The
+> remaining steering-controller tickets are reframed below as **v0.3.11**.
 
 ---
 
-## Objective
+## Objective (remaining work)
 
-Convert DAPH AutoLearn from repeated steering-vector extraction into a
-counterfactual, utility-driven, validation-gated learning system.
+Take DAPH AutoLearn from a validated counterfactual policy learner to a
+fully qualified, production-candidate system. The remaining work is:
 
-Target pipeline:
+1. **v0.3.11** — Low-rank conditional steering controller (the original
+   V0310 tickets, reframed). Move from rank-1 fixed steering to a
+   task-conditioned low-rank controller, with causal intervention
+   optimization.
+2. **v0.4.0** — Full qualification release. Pass qualification gates V0–V6,
+   publish reproducible benchmark bundles, synchronize documentation with
+   evidence.
+
+Target pipeline (unchanged):
 
 ```
 Task → Representation capture → Current routing policy
@@ -44,30 +84,33 @@ Task → Representation capture → Current routing policy
      → Updated policy
 ```
 
-## Release stages
+## Release stages (remaining)
 
 | Release  | Focus                                      | Exit gate                                                |
 |----------|--------------------------------------------|----------------------------------------------------------|
-| v0.3.7   | Correctness + architecture repair          | Tests pass; package installs cleanly; no src→scripts deps |
-| v0.3.8   | Benchmark + scientific protocol rebuild    | Fixed steering validated under clean protocol           |
-| v0.3.9   | Counterfactual AutoLearn                   | Several accepted iterations with held-out utility gain  |
-| v0.3.10  | Low-rank conditional steering              | Conditional steering significantly beats best fixed vec |
+| v0.3.11  | Low-rank conditional steering controller   | Conditional steering significantly beats best fixed vec |
 | v0.4.0   | Full qualification release                 | Qualification gates V0–V6 pass                           |
 
-## Current implementation status (to be frozen in Phase 0)
+## Current implementation status (as of v0.3.10)
 
-- symbolic executor       = implemented
-- fixed steering          = implemented
-- balanced optimizer      = implemented
-- empirical oracle        = implemented
-- AutoLearn loop          = experimental
-- AutoLearn qualification = **not established**
+- symbolic executor         = implemented
+- fixed steering            = implemented
+- balanced optimizer        = implemented
+- empirical oracle          = implemented
+- AutoLearn loop            = implemented (counterfactual engine, v0.3.9)
+- policy learner            = implemented (weighted logistic router, v0.3.10)
+- calibration + abstention  = implemented (v0.3.10)
+- OOD detection             = implemented (Mahalanobis, v0.3.10)
+- causal interventions      = implemented (dose-response, reversal, v0.3.10)
+- KL/capability gates       = implemented (v0.3.10)
+- low-rank controller       = experimental (v0.3.10)
+- AutoLearn qualification   = **not established** (v0.4.0 work)
 
 ---
 
-## Phase 0 — Freeze Current Baseline (prerequisite to all repair work)
+## Phase 0 — Freeze Current Baseline (prerequisite to all repair work) — `[x]` DONE
 
-### `P0-001` Freeze v0.3.6 baseline
+### `P0-001` Freeze v0.3.6 baseline — `[x]` DONE
 - **Priority:** P0 (blocker for v0.3.7 work)
 - **Depends on:** —
 - **Action:** Create `artifacts/baselines/v0.3.6/` and record:
@@ -91,7 +134,7 @@ Task → Representation capture → Current routing policy
 
 ---
 
-## v0.3.7 — Correctness Repair
+## v0.3.7 — Correctness Repair — `[x]` DONE (shipped)
 
 ### `V037-001` Fix `route_fn` dead path
 - **Priority:** P1
@@ -245,7 +288,7 @@ Task → Representation capture → Current routing policy
 
 ---
 
-## v0.3.8 — Benchmark + Scientific Protocol Rebuild
+## v0.3.8 — Benchmark + Scientific Protocol Rebuild — `[x]` DONE (shipped)
 
 ### `V038-001` Eliminate duplicate examples via task fingerprints
 - **Priority:** P2
@@ -352,7 +395,7 @@ Task → Representation capture → Current routing policy
 
 ---
 
-## v0.3.9 — Counterfactual AutoLearn
+## v0.3.9 — Counterfactual AutoLearn — `[x]` DONE (shipped in `d2de6e2`)
 
 ### `V039-001` Counterfactual backend execution
 - **Priority:** P3
@@ -498,7 +541,13 @@ Task → Representation capture → Current routing policy
 
 ---
 
-## v0.3.10 — Low-Rank Conditional Steering
+## v0.3.11 — Low-Rank Conditional Steering Controller
+
+> The original v0.3.10 roadmap tickets (V0310-001 through V0310-007) are
+> reframed here as v0.3.11. The actual v0.3.10 release shipped the
+> counterfactual compute-selection learner (policy side) instead of this
+> steering-controller work. Ticket IDs are preserved as `V0310-*` for
+> traceability; they are now scoped to the v0.3.11 release.
 
 ### `V0310-001` Full sequence route scoring (replaces first-token routing)
 - **Priority:** P4
@@ -577,12 +626,12 @@ Task → Representation capture → Current routing policy
 - **Acceptance:** perturbation safety metrics (`||Δh||₂`, `cos(h, h')`,
   non-route KL) recorded and within budget.
 
-### v0.3.10 exit gate
+### v0.3.11 exit gate
 - Conditional steering significantly outperforms the best fixed-vector
   configuration on held-out data.
 - All `V0310-*` tests pass.
 
-### v0.3.10 regression suite to add
+### v0.3.11 regression suite to add
 - `tests/test_sequence_route_scoring.py`
 - `tests/test_multilayer_coefficients.py`
 - `tests/test_low_rank_basis.py`
@@ -595,7 +644,7 @@ Task → Representation capture → Current routing policy
 
 ### `V040-001` Required metrics dashboard
 - **Priority:** P5
-- **Depends:** v0.3.10 exit gate
+- **Depends:** v0.3.11 exit gate
 - **Action:** Track (do not optimize F1 alone):
   - routing accuracy, macro F1
   - symbolic precision / recall
@@ -610,7 +659,7 @@ Task → Representation capture → Current routing policy
 
 ### `V040-002` Perturbation safety metrics
 - **Priority:** P5
-- **Depends:** v0.3.10 exit gate
+- **Depends:** v0.3.11 exit gate
 - **Action:** Every steering experiment records `||Δh||₂`, `cos(h, h')`, and
   `D_KL(P_base ‖ P_steered)` outside the route token distribution. Flag
   interventions that achieve route gains by globally destabilizing the model.
@@ -739,9 +788,9 @@ Task → Representation capture → Current routing policy
                     new policy
 ```
 
-## Strict priority order
+## Strict priority order (remaining work)
 
-Do these first, in order:
+The following are complete and shipped (`[x]` DONE):
 
 1. `P0-001` — Freeze v0.3.6 baseline.
 2. `V037-001` — Fix `route_fn`.
@@ -755,31 +804,38 @@ Do these first, in order:
    into AutoLearn with utility.
 9. `V039-006` … `V039-008` — Add utility-weighted trust-region updates with
    validation-gated promotion and rollback.
+10. v0.3.10 policy learner — Weighted soft-target logistic router, regret,
+    calibration, abstention, OOD, interventions, KL/capability gates, replay.
 
-Only after those are complete:
+Remaining, in order:
 
-10. `V0310-001` — Full sequence route scoring.
-11. `V0310-002` — Dedicated route-head baseline.
-12. `V0310-003` — Layer × token-position optimization.
-13. `V0310-004` — Multi-layer steering.
-14. `V0310-005` — Low-rank steering basis.
-15. `V0310-006` — Task-conditioned coefficients.
-16. `V0310-007` — Minimal causal intervention optimization.
-17. `V040-005` — Continual AutoLearn (V7).
+11. `V0310-001` — Full sequence route scoring (steering-controller side).
+12. `V0310-002` — Dedicated route-head baseline.
+13. `V0310-003` — Layer × token-position optimization.
+14. `V0310-004` — Multi-layer steering.
+15. `V0310-005` — Low-rank steering basis.
+16. `V0310-006` — Task-conditioned coefficients.
+17. `V0310-007` — Minimal causal intervention optimization.
+18. `V040-001` … `V040-004` — Qualification gates V0–V6.
+19. `V040-005` — Continual AutoLearn (V7).
 
 ## Strategic conclusion
 
+The v0.3.9 and v0.3.10 breakpoints are behind us. Each routing decision is now
+grounded in independently measured counterfactual utility, candidate steering
+updates must beat the incumbent on held-out data, and the primary learner is a
+calibrated contextual policy optimizing regret rather than accuracy. The term
+"AutoLearn" is technically defensible at the engineering level.
+
+The highest-value remaining progression is:
+
+```
+validated policy learner (done)
+  → conditional low-rank causal steering (v0.3.11)
+  → full qualification gates V0–V6 (v0.4.0)
+```
+
 The wrong move now is adding more unrelated capabilities. The project already
-has enough machinery. The highest-value progression is:
-
-```
-clean experiment
-  → counterfactual utility
-  → validated iterative learning
-  → conditional low-rank causal steering
-```
-
-The critical breakpoint is **v0.3.9**: once each routing decision is grounded
-in independently measured counterfactual utility and candidate steering
-updates must beat the incumbent on held-out data, the term "AutoLearn"
-becomes technically defensible.
+has enough machinery. The critical remaining breakpoint is **v0.4.0**: once
+qualification gates V0–V6 pass with reproducible benchmark bundles, the system
+moves from "engineering mechanics established" to "scientifically qualified."
