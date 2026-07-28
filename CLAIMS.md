@@ -82,14 +82,16 @@ implemented as a per-forward hook constraint in this release.
 
 **Status: ESTABLISHED as engineering.**
 
-The main repository contains 417 collected tests in the release build. Tests
+The main repository contains 560 collected tests in the release build. Tests
 that require explicitly enabled model downloads or unavailable hardware may
 skip. The bundled GDN2/ExFusion extension has a separate test suite.
 
 The suite covers symbolic-executor safety, routing, full-sequence scoring,
 typed verification, steering hooks and clamps, leakage checks, protocol
-guards, manifests, command packaging, empirical null calculations, and
-regression behavior.
+guards, manifests, command packaging, empirical null calculations,
+regression behavior, and the v0.3.9 counterfactual outcome-semantics,
+frozen-utility, immutable-experience-record, promotion-gate, and
+task-appropriate output-schema tests.
 
 The test count is engineering evidence only. It is not a sample size and does
 not qualify scientific claims.

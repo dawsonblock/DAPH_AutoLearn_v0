@@ -22,6 +22,13 @@ class VerificationStatus(str, Enum):
     UNVERIFIABLE = "unverifiable"
     EXECUTION_FAILED = "execution_failed"
     INVALID_OUTPUT = "invalid_output"
+    # v0.3.9 (V039-001): a backend that was never executed is distinct from
+    # one that executed but produced no checkable answer. The protocol
+    # invariant is: an unexecuted backend can never be correct. This status
+    # is never ``VERIFIED_CORRECT``, so any code that branches on
+    # ``status is VerificationStatus.VERIFIED_CORRECT`` automatically
+    # honours the invariant.
+    NOT_EXECUTED = "not_executed"
 
 
 @dataclass(frozen=True)
