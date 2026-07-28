@@ -1,3 +1,94 @@
+# 0.3.10 (counterfactual utility learning, weighted latent routing, causal intervention validation, uncertainty and regret optimization)
+
+- **Architecture shift**: upgraded AutoLearn from a "weighted steering-vector
+  extractor" into a counterfactual compute-selection learner. The weighted
+  centroid remains as a transparent baseline; the primary policy learner is
+  now a calibrated contextual policy model (weighted soft-target logistic
+  router) operating over LLM hidden-state features.
+- **Mathematical objective (Section 1)**: `U_i(a) = w_q·Q_i(a) - λ_t·T_i(a)/T_ref
+  - λ_c·C_i(a)/C_ref - λ_r·R_i(a)`. The continuous utility difference `ΔU =
+  U(S) - U(L)` is retained as supervision rather than discarded into a hard
+  class label.
+- **Primary metric: regret (Section 2)**: `Regret_i = max_a U_i(a) -
+  U_i(π(x_i))`. Routing accuracy is secondary; a policy can have high
+  accuracy but make mistakes on high-utility-penalty tasks.
+- **Weighted centroid baseline (Section 3)**: `w_i = clip(|ΔU_i|·c_i, w_min,
+  w_max)` with gap-threshold tie truncation (near-ties get zero weight, not a
+  positive floor). Added `WeightConfig`, `utility_weight`,
+  `weighted_contrastive_mean`, `unweighted_contrastive_mean`.
+- **Theoretical correction (Section 4)**: utility importance is separated
+  from latent decision geometry. The weighted centroid is compared against an
+  actual learned decision boundary.
+- **Weighted soft-target logistic router (Section 5)**: `p = P(S|h) = σ(w^T h
+  + b)`, soft target `q = σ(ΔU/τ)`, weighted BCE loss. Added
+  `WeightedLogisticRouter`, `soft_preference_target`, `weighted_policy_loss`,
+  `train_weighted_logistic_router`, `LogisticTrainConfig`.
+- **Hard-label mode (Section 6)**: preserved for ablation. Four-way
+  experiment: hard/soft × centroid/logistic.
+- **Gap-threshold tie truncation (Section 7)**: `|ΔU| <= gap_threshold` →
+  weight = 0. Numerical stability floor applied only after filtering.
+- **Confidence model (Section 8)**: `OutcomeConfidence` with explicit
+  provenance components (verifier, measurement, stability, ood). Combined =
+  product of all components.
+- **SNR weighting (Section 9)**: `w = |ΔU| / (σ_ΔU + ε)` interface for
+  uncertainty-aware weighting.
+- **Calibrated abstention (Section 10)**: `conf = max(p, 1-p) < τ_conf →
+  ABSTAIN`. Added `Route` enum, `choose_route`. `τ_conf` tuned on calibration
+  split.
+- **Calibration metrics (Section 11)**: Brier score, ECE, reliability bins,
+  selective-risk curve.
+- **OOD detection (Section 12)**: `MahalanobisOOD` with regularized
+  covariance. Routes to ABSTAIN when `d_M(h) > τ_OOD`.
+- **Feature reduction (Section 13)**: `PCAFeatureReducer` fitted on TRAIN
+  only. No dev/calibration/final data may influence the PCA basis.
+- **Causal intervention experiments (Sections 14-16)**: dose-response
+  `h'(δ) = h + δv` across `{-α, -α/2, 0, α/2, α}`. Added
+  `run_intervention_experiment`, `dose_response_summary`.
+- **Direction reversal test (Section 15)**: `+v`, `0`, `-v` must show
+  statistically measurable aggregate sensitivity. Added
+  `direction_reversal_test`.
+- **KL/capability promotion gates (Section 17)**: `PromotionConstraints`
+  requiring `utility_gain >= min_gain AND neutral_KL <= KL_budget AND
+  capability_drop <= allowed_drop`. Added `evaluate_kl_capability_gate`,
+  `mean_kl_neutral`.
+- **Candidate vs incumbent evaluation (Section 18)**: uses actual policy
+  decisions, never oracle. Oracle counterfactual utilities used only for
+  regret scoring after the policy acts.
+- **Paired promotion statistics (Section 19)**: mean/median utility delta,
+  win/tie/loss rates, paired bootstrap CI. Added
+  `paired_promotion_statistics`, `paired_bootstrap_mean_ci`.
+- **Contextual bandit logging (Section 20)**: `PolicyDecision` logs chosen
+  action, propensity, full probabilities, policy version, available actions.
+  Added `log_policy_decision`, `inverse_propensity_weight`.
+- **Doubly-robust interface (Section 21)**: `doubly_robust_utility` for
+  future off-policy learning.
+- **Prioritized experience replay (Section 22)**: `priority = |pred -
+  realized| × |ΔU|`. Added `PrioritizedReplayBuffer`, `ReplayExperience`,
+  `replay_priority`.
+- **Multi-seed support (Section 23)**: all stochastic components accept a
+  `seed` parameter.
+- **Family-disjoint evaluation (Section 24)**: leverages existing
+  `split_family` infrastructure.
+- **Immutable experiment config (Section 33)**: `ExperimentConfig` (frozen,
+  hashed) containing all utility weights, thresholds, layer, alpha, KL/OOD
+  limits, seed, model/tokenizer revision, dataset hashes.
+- **Synthetic closed-loop environment (Section 35)**: deterministic test
+  environment with family S/L/tie tasks. Added `make_synthetic_tasks`,
+  `synthetic_execute_fn`, `synthetic_utility`.
+- **Latent verifier experiment (Section 30)**: `LatentVerifier` using
+  trajectory centroids `μ_correct`, `μ_incorrect`. Auxiliary signal only.
+- **Low-rank multi-vector controller (Sections 26-28, experimental)**:
+  `LowRankSteeringController` with `V ∈ R^{D×K}`, `α(h) = g_φ(h)`,
+  `h' = h + Vα(h)`. Added `orthogonality_loss`, `interference_matrix`.
+- **Integrated policy learner**: `train_policy_learner` ties counterfactual
+  experience collection, utility weighting, PCA, OOD, logistic router
+  training, and dev evaluation with regret/calibration/abstention metrics.
+- **67 new release-gate tests (G2-G16)**: weighted centroid, soft-target,
+  regret, abstention, OOD, causal steering, oracle-leakage, KL promotion
+  gate, rollback atomicity, task-ID alignment, version consistency, synthetic
+  closed-loop regret reduction, calibration, PCA, replay, bandit logging,
+  low-rank, latent verifier, SNR weighting.
+
 # 0.3.9 (causal learning loop repair — counterfactual engine correction)
 
 - **Critical fix**: held-out promotion evaluation now uses the candidate

@@ -1,4 +1,4 @@
-# DAPH AutoLearn v0.3.9
+# DAPH AutoLearn v0.3.10-alpha
 
 **Causal learning loop repair for auditable LLM tool-routing research.**
 
@@ -227,6 +227,28 @@ effects.
 - [ROADMAP.md](ROADMAP.md) — deferred v0.3.9–v0.4.0 work
 
 ## Changelog
+
+### v0.3.10
+
+- **Architecture shift**: counterfactual compute-selection learner. Weighted
+  centroid is now a baseline; the primary learner is a weighted soft-target
+  logistic router (`P(S|h) = σ(w^T h + b)`) trained on continuous `ΔU`.
+- **Primary metric: regret** (`max_a U(a) - U(π(x))`), not routing accuracy.
+- **Weighted centroid**: `w_i = clip(|ΔU_i|·c_i)` with gap-threshold tie
+  truncation.
+- **Soft targets**: `q = σ(ΔU/τ)` retains continuous preference information.
+- **Calibrated abstention**: `max(p, 1-p) < τ_conf → ABSTAIN`.
+- **Calibration metrics**: Brier, ECE, reliability bins, selective-risk curve.
+- **OOD detection**: Mahalanobis distance with regularized covariance.
+- **Feature reduction**: PCA fitted on TRAIN only.
+- **Causal intervention experiments**: dose-response `+v/0/-v` with
+  direction reversal test.
+- **KL/capability promotion gates**: utility gain + neutral KL + capability
+  drop constraints.
+- **Prioritized replay**, contextual bandit logging, DR interface.
+- **Low-rank multi-vector controller** (experimental): `h' = h + Vα(h)`.
+- **Immutable `ExperimentConfig`** (frozen, hashed).
+- **67 new release-gate tests** (G2-G16).
 
 ### v0.3.9
 

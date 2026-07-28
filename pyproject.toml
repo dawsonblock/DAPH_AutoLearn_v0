@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "daph-autolearn"
-version = "0.3.9"
-description = "DAPH AutoLearn protocol-repaired symbolic-routing and activation-steering research scaffold"
+version = "0.3.10"
+description = "DAPH AutoLearn v0.3.10-alpha: counterfactual utility learning, weighted latent routing, causal intervention validation, uncertainty and regret optimization"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "packaging>=23"]
@@ -28,6 +28,7 @@ full = [
 
 [project.scripts]
 daph-autolearn = "daph_learning.cli.autolearn:main"
+daph-autolearn-policy = "daph_learning.cli.policy:main"
 daph-evaluate-routes = "daph_learning.cli.evaluate_routes:main"
 daph-build-oracles = "daph_learning.cli.build_oracles:main"
 daph-tune-steering = "daph_learning.cli.tune_steering:main"

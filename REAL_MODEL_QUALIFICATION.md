@@ -1,11 +1,12 @@
-# REAL MODEL QUALIFICATION — V0.3.9
+# REAL MODEL QUALIFICATION — V0.3.10-alpha
 
 ## Overview
 
 This document describes how to run the small real-model qualification
-experiment for DAPH AutoLearn v0.3.9. The qualification compares six
-conditions on a small local model to determine whether the learned
-AutoLearn controller improves computation selection.
+experiment for DAPH AutoLearn v0.3.10-alpha. The qualification compares the
+weighted centroid baseline against the weighted soft-target logistic router
+on a small local model to determine whether the learned policy improves
+computation selection (reduces regret) over the incumbent.
 
 ## Prerequisites
 
