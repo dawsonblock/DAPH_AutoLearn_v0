@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "daph-autolearn"
+version = "0.3.8"
+description = "DAPH AutoLearn protocol-repaired symbolic-routing and activation-steering research scaffold"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "packaging>=23"]
+
+[project.optional-dependencies]
+llm = [
+  "torch>=2.1",
+  "transformers>=4.45",
+  "accelerate>=0.21",
+  "safetensors>=0.4",
+]
+test = ["pytest>=8.0"]
+full = [
+  "torch>=2.1",
+  "transformers>=4.45",
+  "accelerate>=0.21",
+  "safetensors>=0.4",
+  "pytest>=8.0",
+]
+
+[project.scripts]
+daph-autolearn = "daph_learning.cli.autolearn:main"
+daph-evaluate-routes = "daph_learning.cli.evaluate_routes:main"
+daph-build-oracles = "daph_learning.cli.build_oracles:main"
+daph-tune-steering = "daph_learning.cli.tune_steering:main"
+daph-random-control = "daph_learning.cli.random_control:main"
+daph-build-protocol-dataset = "daph_learning.cli.protocol_dataset:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

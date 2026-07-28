@@ -1,0 +1,19 @@
+model:
+  hidden_size: 1024
+  num_layers: 28
+  intermediate_size: 3072
+  num_attention_heads: 16
+repobrain:
+  repo_embedding_dim: 2048
+  hidden_dim: 512
+  rank: 8
+  alpha: 16.0
+  layer_groups: 4
+  target_modules: [q_proj, v_proj, o_proj, down_proj]
+  output_scale_init: 0.01
+controller:
+  max_kl_drift: null
+  max_validation_loss_regression: 0.02
+  max_execution_regression: 0.01
+  max_generic_regression: 0.01
+  scale_grid: [1.0, 0.9, 0.75, 0.5, 0.25]

@@ -1,0 +1,25 @@
+DAPH ExFusion-Basis + RepoBrain + Residual GDN2 v0.2.0
+Generated: 2026-07-27
+
+Implemented architecture:
+  ExFusion/direct-LoRA teacher geometry -> joint adapter basis U
+  repository embedding -> signed coefficients c(repo)
+  runtime delta -> sum_k c_k U_k using low-rank concatenation
+  identity-preserving ResidualGDN2Mixer for token-time memory
+
+New modules:
+  src/daph_ext/geometry/adapter_basis.py
+  src/daph_ext/repobrain/basis_repo2lora.py
+  src/daph_ext/training/basis_repobrain_trainer.py
+  src/daph_ext/mixers/residual_gdn2.py
+
+New scripts:
+  scripts/build_exfusion_adapter_basis.py
+  scripts/calculate_aae.py
+
+Validation performed in build environment:
+  PYTHONPATH=src pytest -q : 104 passed
+  compileall: PASS
+  scripts/validate_install.py: PASS
+
+Important: these results establish internal software correctness only. They do not establish that basis RepoBrain improves a real language model or that GDN2 improves Qwen. Those remain empirical qualification gates.

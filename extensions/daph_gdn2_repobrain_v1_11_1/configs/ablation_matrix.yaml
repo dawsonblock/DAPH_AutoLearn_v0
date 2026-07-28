@@ -1,0 +1,24 @@
+experiments:
+  mixer:
+    - attention_only
+    - mamba_attention_existing
+    - gdn2_attention_alternating
+    - gdn2_every_3_layers
+  repobrain_grouping:
+    - global_1_group
+    - grouped_4
+    - per_layer
+  repobrain_rank: [4, 8, 16]
+  repobrain_targets:
+    - [q_proj, v_proj]
+    - [q_proj, v_proj, o_proj, down_proj]
+    - [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+  controller:
+    - no_controller
+    - geometry_only_warning
+    - functional_scale_only
+    - functional_plus_projection
+  vision:
+    - semantic_only
+    - structural_only
+    - semantic_plus_structural

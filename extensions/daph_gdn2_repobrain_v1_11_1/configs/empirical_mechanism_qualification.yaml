@@ -1,0 +1,31 @@
+experiment:
+  data_origin: empirical
+  architecture_frozen: true
+  seeds: [11, 23, 37]
+  pilot_split: {train_min: 20, validation_min: 5, test_min: 5}
+  qualification_split: {train_min: 100, validation_min: 20, test_min: 20}
+  test_policy_frozen_before_evaluation: true
+
+arms:
+  - base
+  - rag
+  - shared_lora
+  - per_repo_lora
+  - repo2lora
+  - repo2lora_plus_rag
+
+metrics:
+  - repository_cross_entropy
+  - generic_cross_entropy
+  - exact_match
+  - edit_similarity
+  - unit_test_pass_rate
+  - kl_drift
+  - adapter_generation_latency_ms
+  - peak_vram_bytes
+
+controller:
+  max_kl_drift: null
+  fixed_fisher_fraction: null
+  require_post_correction_revalidation: true
+  fisher_must_beat_scalar_scaling: true

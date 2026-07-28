@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "daph-gdn2-repobrain"
+version = "0.2.1"
+description = "Empirical mechanism and production qualification scaffold for ExFusion adapter basis, coefficient RepoBrain, residual GDN2, and DAPH"
+requires-python = ">=3.10"
+dependencies = [
+  "torch>=2.2",
+  "numpy>=1.26",
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5"]
+vision = ["torchvision>=0.17"]
+real = ["transformers>=4.51", "safetensors>=0.4"]
+distributed = ["accelerate>=1.0"]
+zero3 = ["deepspeed>=0.15"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 110

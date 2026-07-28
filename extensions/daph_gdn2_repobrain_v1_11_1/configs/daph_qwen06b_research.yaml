@@ -1,0 +1,43 @@
+# Example research profile. Confirm dimensions against the exact DAPH/Qwen checkpoint before use.
+model:
+  hidden_size: 1024
+  num_layers: 28
+  intermediate_size: 3072
+  num_attention_heads: 16
+
+gdn2:
+  enabled: true
+  every_n_layers: 2
+  head_dim: 64
+  num_heads: 16
+  expand_v: 1.0
+  mode: chunk
+  use_short_conv: true
+  allow_neg_eigval: false
+  external_module: lit_gpt.gdn2
+  external_class: GatedDeltaNet2
+
+repobrain:
+  repo_embedding_dim: 2048
+  hidden_dim: 512
+  rank: 8
+  alpha: 16.0
+  layer_groups: 4
+  target_modules: [q_proj, v_proj, o_proj, down_proj]
+  output_scale_init: 0.01
+
+controller:
+  max_kl_drift: null
+  max_validation_loss_regression: 0.02
+  max_execution_regression: 0.01
+  max_generic_regression: 0.01
+  geometry_warning_cosine: 0.90
+  geometry_warning_sign_conflict: 0.55
+  scale_grid: [1.0, 0.75, 0.5, 0.25]
+
+vision:
+  enabled: false
+  structural_dim: 768
+  semantic_dim: 1024
+  daph_hidden_size: 1024
+  fusion_tokens: 64
