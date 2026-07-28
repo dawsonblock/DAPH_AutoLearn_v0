@@ -30,6 +30,8 @@ import json
 from dataclasses import asdict, dataclass, field
 from typing import Any, Mapping, Sequence
 
+import numpy as np
+
 from daph_learning.autolearn.counterfactual import UtilityConfig
 from daph_learning.autolearn.outcome import OutcomeSemantics
 
@@ -107,6 +109,101 @@ class CaptureProvenance:
     @property
     def coverage(self) -> float:
         return self.n_successes / self.n_attempts if self.n_attempts else 0.0
+
+
+# --- v0.3.9: structured per-task capture results (Section 6) ---
+
+
+def _activation_hash(activation: Any) -> str | None:
+    """SHA-256 of an activation array (canonical bytes)."""
+    if activation is None:
+        return None
+    try:
+        arr = np.asarray(activation)
+        return _sha256_hex(arr.tobytes())
+    except (TypeError, ValueError, AttributeError):
+        return None
+
+
+@dataclass(frozen=True)
+class CapturedActivation:
+    """One per-task activation-capture result (Section 6 of the repair spec).
+
+    Activation capture may fail for individual tasks. This struct records the
+    outcome per task so that weighted class means can join activations and
+    utility weights by ``task_id`` — never by positional index.
+
+    Attributes
+    ----------
+    task_id : str
+        The task this activation was captured for.
+    activation : np.ndarray | None
+        The captured activation vector, or ``None`` if capture failed.
+    layer : int | None
+        Layer at which the activation was captured.
+    token_location : str | None
+        Token position / pooling scope of the capture.
+    success : bool
+        Whether capture succeeded.
+    failure_reason : str | None
+        Short reason if capture failed (``None`` on success).
+    activation_hash : str | None
+        SHA-256 of the activation bytes (``None`` if capture failed).
+    """
+
+    task_id: str
+    activation: Any = None
+    layer: int | None = None
+    token_location: str | None = None
+    success: bool = False
+    failure_reason: str | None = None
+    activation_hash: str | None = None
+
+    def __post_init__(self) -> None:
+        if self.success and self.activation is None:
+            raise ValueError(
+                f"CapturedActivation for task {self.task_id!r} marked success "
+                f"but activation is None"
+            )
+        if not self.success and self.activation is not None:
+            raise ValueError(
+                f"CapturedActivation for task {self.task_id!r} marked failure "
+                f"but activation is not None"
+            )
+        # Compute hash if not provided and activation exists.
+        if self.activation_hash is None and self.activation is not None:
+            object.__setattr__(self, "activation_hash", _activation_hash(self.activation))
+
+
+@dataclass(frozen=True)
+class CaptureResult:
+    """Structured result of a capture call over a set of tasks.
+
+    Replaces the old ``(activations[N,D], n_attempts, n_successes)`` tuple.
+    The per-task :class:`CapturedActivation` list lets the loop join
+    activations and utility weights by ``task_id``.
+    """
+
+    activations: list[CapturedActivation] = field(default_factory=list)
+    n_attempts: int = 0
+    n_successes: int = 0
+
+    @property
+    def coverage(self) -> float:
+        return self.n_successes / self.n_attempts if self.n_attempts else 0.0
+
+    def successful_by_task_id(self) -> dict[str, CapturedActivation]:
+        """Map task_id -> CapturedActivation for successful captures only."""
+        return {a.task_id: a for a in self.activations if a.success}
+
+    def to_provenance(self, layer: int | None = None, token_scope: str | None = None) -> CaptureProvenance:
+        return CaptureProvenance(
+            n_attempts=self.n_attempts,
+            n_successes=self.n_successes,
+            layer=layer,
+            token_scope=token_scope,
+            capture_hash=None,
+        )
 
 
 @dataclass(frozen=True)
@@ -365,6 +462,8 @@ def verify_capture_counts(
 
 __all__ = [
     "CaptureProvenance",
+    "CaptureResult",
+    "CapturedActivation",
     "ExperienceLedger",
     "ExperienceRecord",
     "ProvenanceBundle",

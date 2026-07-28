@@ -65,7 +65,7 @@ from daph_learning.execution.symbolic_executor import (
 from daph_learning.tools.symbolic_math import SymbolicMathError
 
 
-SCRIPT_VERSION = "v0.3.6"
+SCRIPT_VERSION = "v0.3.9"
 
 
 def _load_tasks(path: Path) -> list[dict[str, Any]]:

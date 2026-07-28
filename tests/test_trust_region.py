@@ -19,7 +19,12 @@ from daph_learning.autolearn.trust_region import (
     weighted_class_mean,
 )
 from daph_learning.autolearn.counterfactual import UtilityConfig
+from daph_learning.autolearn.experience import CaptureResult, CapturedActivation
 from daph_learning.autolearn.promotion import PromotionGateConfig
+from daph_learning.autolearn.route_policy import (
+    SteeringPolicyConfig,
+    make_feature_route_policy,
+)
 
 
 # --- trust-region update ---
@@ -144,17 +149,43 @@ def _make_execute(sym_correct_ids, llm_correct_ids, expected=42):
 
 
 def _make_capture(dim=8):
-    """capture_fn returns stacked activations of shape [N, dim]."""
+    """capture_fn returns CaptureResult with per-task activations."""
     def _capture(tasks, class_label):
         n = len(tasks)
         if n == 0:
-            return np.zeros((0, dim), dtype=np.float32), 0, 0
+            return CaptureResult(activations=[], n_attempts=0, n_successes=0)
         # deterministic activations: symbolic class -> +1 axis 0; llm -> -1 axis 0
         sign = 1.0 if class_label == "symbolic" else -1.0
-        acts = np.zeros((n, dim), dtype=np.float32)
-        acts[:, 0] = sign
-        return acts, n, n
+        captured = []
+        for task in tasks:
+            tid = str(task.get("task_id", ""))
+            act = np.zeros(dim, dtype=np.float32)
+            act[0] = sign
+            captured.append(CapturedActivation(
+                task_id=tid, activation=act, success=True,
+            ))
+        return CaptureResult(activations=captured, n_attempts=n, n_successes=n)
     return _capture
+
+
+def _make_route_fn(dim=8, threshold=0.0):
+    """Build a route_fn that uses a feature based on task_id parity.
+
+    The feature vector has +1 on axis 0 for even tasks, -1 for odd tasks.
+    This means a steering vector with +axis0 routes even->symbolic, odd->llm
+    (and vice versa for -axis0).
+    """
+    def _features(task):
+        f = np.zeros(dim, dtype=np.float32)
+        tid = str(task.get("task_id", ""))
+        # Use the last character of task_id to determine sign.
+        try:
+            num = int(tid[-1])
+        except ValueError:
+            num = 0
+        f[0] = 1.0 if num % 2 == 0 else -1.0
+        return f
+    return make_feature_route_policy(_features, abstain_threshold=threshold)
 
 
 def _tasks(prefix, n, expected=42):
@@ -174,6 +205,7 @@ def test_loop_runs_and_records_lineage_and_ledger():
         seed_vector=np.zeros(8, dtype=np.float32),
         training_tasks=train, held_out_tasks=held,
         capture_fn=_make_capture(), execute_fn=execute,
+        route_fn=_make_route_fn(),
         config=LoopConfig(
             utility_config=UtilityConfig(lambda_risk=1.0, abstention_band=0.1),
             gate_config=PromotionGateConfig(min_discordant_n=5, max_p_value=0.5,
@@ -202,6 +234,7 @@ def test_loop_candidate_direction_points_toward_symbolic_class():
         seed_vector=np.zeros(8, dtype=np.float32),
         training_tasks=train, held_out_tasks=held,
         capture_fn=_make_capture(), execute_fn=execute,
+        route_fn=_make_route_fn(),
         config=LoopConfig(
             utility_config=UtilityConfig(lambda_risk=1.0, abstention_band=0.1),
             gate_config=PromotionGateConfig(min_discordant_n=3, max_p_value=0.5,
@@ -221,12 +254,18 @@ def test_loop_candidate_direction_points_toward_symbolic_class():
 def test_loop_rolls_back_when_no_held_out_improvement():
     """Acceptance: when the candidate cannot show paired improvement on
     held-out (both backends correct on every held-out task -> 0 discordant
-    pairs), the loop rolls back and the incumbent is unchanged."""
+    pairs), the loop rolls back and the incumbent is unchanged.
+
+    v0.3.9: with the corrected evaluation, routes are determined by the
+    route_fn (not the oracle ΔU). When both backends are correct on held-out,
+    both candidate and incumbent produce correct results regardless of route,
+    so there are 0 discordant pairs -> rollback for insufficient discordant_n.
+    """
     train = _tasks("train", 20)
     held = _tasks("held", 20)
     # symbolic correct on training, LLM wrong on training -> candidate learns
-    # symbolic preference. On held-out BOTH backends correct -> tie -> 0
-    # discordant pairs -> gate rolls back for insufficient discordant_n.
+    # symbolic preference. On held-out BOTH backends correct -> 0 discordant
+    # pairs -> gate rolls back for insufficient discordant_n.
     sym_correct = {t["task_id"] for t in train + held}
     llm_correct = {t["task_id"] for t in held}  # llm also correct on held-out
     execute = _make_execute(sym_correct, llm_correct)
@@ -234,6 +273,7 @@ def test_loop_rolls_back_when_no_held_out_improvement():
         seed_vector=np.ones(8, dtype=np.float32),
         training_tasks=train, held_out_tasks=held,
         capture_fn=_make_capture(), execute_fn=execute,
+        route_fn=_make_route_fn(),
         config=LoopConfig(
             utility_config=UtilityConfig(lambda_risk=1.0, abstention_band=0.1),
             gate_config=PromotionGateConfig(min_discordant_n=5, max_p_value=0.9,
@@ -243,10 +283,12 @@ def test_loop_rolls_back_when_no_held_out_improvement():
         ),
     )
     result = loop.step()
-    # On held-out both backends correct -> ΔU tie -> ABSTAIN -> decided=False
-    # on every held-out task -> coverage 0 -> rollback for coverage.
+    # Both backends correct on held-out -> 0 discordant pairs -> rollback.
     assert result.promoted is False
     assert result.decision.action == "rollback"
-    assert "coverage" in result.decision.reason
+    # The rollback reason is either coverage or discordant_n depending on
+    # whether the route_fn produced abstentions. With a nonzero seed vector
+    # the route_fn produces real decisions, so the reason is discordant_n.
+    assert result.decision.improved + result.decision.regressed < 5
     # incumbent unchanged after rollback
     np.testing.assert_allclose(loop.incumbent, np.ones(8, dtype=np.float32))

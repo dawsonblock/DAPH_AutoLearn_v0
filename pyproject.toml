@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "daph-autolearn"
-version = "0.3.8"
+version = "0.3.9"
 description = "DAPH AutoLearn protocol-repaired symbolic-routing and activation-steering research scaffold"
 readme = "README.md"
 requires-python = ">=3.10"

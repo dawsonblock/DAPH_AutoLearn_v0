@@ -1,16 +1,32 @@
-# DAPH AutoLearn v0.3.8
+# DAPH AutoLearn v0.3.9
 
-**Protocol-repair release for auditable LLM tool-routing research.**
+**Causal learning loop repair for auditable LLM tool-routing research.**
 
 DAPH connects capability assessment, bounded symbolic execution, residual
-activation steering, and outcome evaluation. Version 0.3.8 repairs the
-experimental protocol and packaging surfaces identified in the v0.3.7 audit.
-It is an engineering release, not a claim of scientific qualification.
+activation steering, and outcome evaluation. Version 0.3.9 repairs the
+counterfactual AutoLearn learning loop so that the candidate steering vector
+actually determines candidate routing decisions during held-out evaluation —
+fixing the critical defect where the oracle Delta-U was used to choose the
+candidate route.
 
-> The strongest licensed statement is: DAPH contains tested infrastructure
-> for route steering experiments. Whether a learned direction produces a
-> reproducible causal benefit over matched controls on held-out real-model
-> tasks remains unestablished. See [CLAIMS.md](CLAIMS.md).
+> The v0.3.9 causal chain is now genuine: experience -> counterfactual
+> utility -> target -> candidate update -> changed policy -> changed
+> decisions -> changed held-out utility -> promotion/rollback. See
+> [CLAIMS.md](CLAIMS.md) and [AUDIT_REPORT_V0_3_9.md](AUDIT_REPORT_V0_3_9.md).
+
+## What changed in v0.3.9
+
+| Area | v0.3.9 behavior |
+|---|---|
+| **Candidate evaluation** | Held-out promotion evaluation now uses the candidate steering vector for candidate routing and the incumbent vector for incumbent routing, via an injected `RoutePolicyFn`. The oracle Delta-U is used only for the training target. |
+| **Routing policy contract** | New `SteeringPolicyConfig`, `PolicyRouteDecision`, and `RoutePolicyFn` interface decouple the loop from any specific model implementation. |
+| **Trust-region bootstrap** | Zero-vector incumbents now initialize from the candidate direction. Added `min_vector_norm`, `max_vector_norm`, `max_update_norm` bounds. Fail-closed on NaN/Inf. |
+| **Capture alignment** | `CapturedActivation` and `CaptureResult` structs join activations and weights by `task_id`, never by positional index. |
+| **Lineage** | Steering lineage generated from `SteeringPolicyConfig` (no more hard-coded `layer=24`, `alpha=1.0`). |
+| **Dataset hashes** | Training and development dataset hashes tracked independently. |
+| **Promotion gate** | Added `min_sample_count` and per-capability regression gates. |
+| **CLI** | `daph-autolearn --engine counterfactual` (default) or `--engine legacy` (deprecated). |
+| **Versioning** | All surfaces agree on `0.3.9`. |
 
 ## What changed in v0.3.8
 
@@ -211,6 +227,19 @@ effects.
 - [ROADMAP.md](ROADMAP.md) — deferred v0.3.9–v0.4.0 work
 
 ## Changelog
+
+### v0.3.9
+
+- **Critical fix**: held-out promotion evaluation now uses the candidate
+  steering vector for candidate routing and the incumbent vector for
+  incumbent routing, via an injected `RoutePolicyFn`. The oracle Delta-U is
+  used only for the training target, never for the held-out routing decision.
+- Added `SteeringPolicyConfig`, `PolicyRouteDecision`, `CapturedActivation`,
+  `CaptureResult` for proper provenance and task-ID-aligned capture.
+- Fixed trust-region bootstrap, norm bounds, and fail-closed NaN/Inf handling.
+- Fixed dataset hash lineage (separate training/dev hashes).
+- Added capability regression gates to the promotion gate.
+- CLI `daph-autolearn run` now supports `--engine counterfactual` (default).
 
 ### v0.3.8
 

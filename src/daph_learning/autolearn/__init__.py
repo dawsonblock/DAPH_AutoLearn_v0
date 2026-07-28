@@ -45,3 +45,28 @@ __all__ = [
     "classify_outcome",
     "run_autolearn_loop",
 ]
+
+# v0.3.9: the corrected counterfactual engine. Imported lazily to avoid
+# circular imports and to keep the legacy engine importable on its own.
+def __getattr__(name: str):  # noqa: D401
+    if name in {
+        "CounterfactualLearningLoop",
+        "LoopConfig",
+        "LoopIterationResult",
+        "SteeringPolicyConfig",
+        "PolicyRouteDecision",
+        "RoutePolicyFn",
+        "make_feature_route_policy",
+    }:
+        from . import trust_region, route_policy
+        _exports = {
+            "CounterfactualLearningLoop": trust_region.CounterfactualLearningLoop,
+            "LoopConfig": trust_region.LoopConfig,
+            "LoopIterationResult": trust_region.LoopIterationResult,
+            "SteeringPolicyConfig": route_policy.SteeringPolicyConfig,
+            "PolicyRouteDecision": route_policy.PolicyRouteDecision,
+            "RoutePolicyFn": route_policy.RoutePolicyFn,
+            "make_feature_route_policy": route_policy.make_feature_route_policy,
+        }
+        return _exports[name]
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

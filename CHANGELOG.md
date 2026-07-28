@@ -1,3 +1,38 @@
+# 0.3.9 (causal learning loop repair — counterfactual engine correction)
+
+- **Critical fix**: held-out promotion evaluation now uses the candidate
+  steering vector to produce candidate routing decisions and the incumbent
+  vector to produce incumbent routing decisions, via an injected
+  `RoutePolicyFn`. Previously the candidate route was derived from the oracle
+  Delta-U target and the incumbent route was hard-coded to `"symbolic"`,
+  making promotion invalid.
+- Added `SteeringPolicyConfig` as the canonical frozen runtime configuration
+  for steering lineage (layer, alpha, token_location, model/tokenizer
+  revision, vector version). Lineage is now generated from this config instead
+  of hard-coded values (`layer=24`, `alpha=1.0`, `token_location="anchor"`).
+- Added `PolicyRouteDecision` with full provenance (task_id, route,
+  confidence, vector_id, model_revision, layer, token_location, alpha,
+  safety_clamp_telemetry).
+- Added `CapturedActivation` and `CaptureResult` structs for per-task capture
+  alignment by `task_id`. Weighted class means now join activations and
+  utility weights by task_id, never by positional index.
+- Fixed trust-region bootstrap: zero-vector incumbents now initialize from
+  the candidate direction with a configurable `initial_steering_norm`.
+  Added `min_vector_norm`, `max_vector_norm`, `max_update_norm` bounds.
+  Fail-closed on NaN/Inf vectors.
+- Fixed dataset hash lineage: training and development dataset hashes are
+  now tracked independently (`training_dataset_sha256`,
+  `development_dataset_sha256`).
+- Added capability regression gates to the promotion gate
+  (`capability_regression_thresholds`, `protected_capabilities`).
+- Added `min_sample_count` to the promotion gate config.
+- `HeldOutTaskResult` now carries `candidate_route`, `incumbent_route`,
+  `capability_id`, `task_family`, and `utility_delta`.
+- Consolidated versioning to 0.3.9 across all surfaces (pyproject.toml,
+  `__init__.py`, README, CLAIMS, CLI scripts).
+- CLI `daph-autolearn run` now supports `--engine counterfactual` (default)
+  and `--engine legacy` (deprecated).
+
 # 0.3.8 (protocol repair and truthful qualification boundary)
 
 - Added teacher-forced full-sequence route scoring with explicit mean/sum

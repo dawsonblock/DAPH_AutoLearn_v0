@@ -26,7 +26,7 @@ stay consistent with the rest of the protocol.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from typing import Any, Literal, Sequence
+from typing import Any, Literal, Mapping, Sequence
 
 from daph_learning.evaluation.paired import (
     clopper_pearson_interval,
@@ -40,7 +40,15 @@ PromoteAction = Literal["promote", "rollback"]
 
 @dataclass(frozen=True)
 class PromotionGateConfig:
-    """Configuration for the promotion gate. Frozen for reproducibility."""
+    """Configuration for the promotion gate. Frozen for reproducibility.
+
+    v0.3.9 additions (Section 18/19):
+    - ``min_sample_count``: minimum number of decided held-out tasks.
+    - ``capability_regression_thresholds``: per-capability max regression rate.
+      A candidate fails if any protected capability exceeds its threshold.
+    - ``protected_capabilities``: capabilities that cannot regress beyond their
+      threshold even if global utility improves.
+    """
 
     min_coverage: float = 0.8
     min_discordant_n: int = 5
@@ -49,6 +57,9 @@ class PromotionGateConfig:
     min_improved_probability_lower: float = 0.55
     confidence: float = 0.95
     min_utility_delta: float = 0.0
+    min_sample_count: int = 0
+    capability_regression_thresholds: Mapping[str, float] = field(default_factory=dict)
+    protected_capabilities: frozenset[str] = frozenset()
 
     def __post_init__(self) -> None:
         if not 0.0 < self.min_coverage <= 1.0:
@@ -59,6 +70,8 @@ class PromotionGateConfig:
             raise ValueError("max_regression_rate must be in [0, 1]")
         if not 0.0 < self.confidence < 1.0:
             raise ValueError("confidence must be in (0, 1)")
+        if self.min_sample_count < 0:
+            raise ValueError("min_sample_count must be >= 0")
 
 
 @dataclass(frozen=True)
@@ -69,6 +82,12 @@ class HeldOutTaskResult:
     of the backend each policy *routed to* on this task. ``decided`` is True
     when both policies produced a real (non-abstain, non-failed) decision;
     only decided tasks count toward coverage and the paired comparison.
+
+    v0.3.9 additions (Section 3/18/19):
+    - ``candidate_route`` / ``incumbent_route``: the actual route each policy
+      selected (not the oracle's preferred route).
+    - ``capability_id`` / ``task_family``: for capability regression gates.
+    - ``utility_delta``: ``U_candidate - U_incumbent``.
     """
 
     task_id: str
@@ -77,6 +96,14 @@ class HeldOutTaskResult:
     candidate_utility: float = 0.0
     incumbent_utility: float = 0.0
     decided: bool = True
+    candidate_route: str = ""
+    incumbent_route: str = ""
+    capability_id: str | None = None
+    task_family: str | None = None
+
+    @property
+    def utility_delta(self) -> float:
+        return self.candidate_utility - self.incumbent_utility
 
 
 @dataclass(frozen=True)
@@ -184,6 +211,19 @@ def evaluate_promotion_gate(
             f"mean_utility_delta {mean_utility_delta:.4f} < "
             f"min_utility_delta {cfg.min_utility_delta}"
         )
+    # 7. minimum sample count (Section 18)
+    if n_decided < cfg.min_sample_count:
+        return _reject(
+            f"n_decided {n_decided} < min_sample_count {cfg.min_sample_count}"
+        )
+    # 8. capability regression gates (Section 19)
+    cap_regressions = _check_capability_regressions(decided, cfg)
+    if cap_regressions:
+        cap_str = "; ".join(
+            f"{cap}: {rate:.3f} > {thresh:.3f}"
+            for cap, rate, thresh in cap_regressions
+        )
+        return _reject(f"capability regression: {cap_str}")
 
     return PromotionDecision(
         action="promote", reason="all gate criteria satisfied", improved=improved,
@@ -192,6 +232,41 @@ def evaluate_promotion_gate(
         improved_probability=improved_probability, improved_probability_ci=ci,
         mean_utility_delta=mean_utility_delta, config=cfg,
     )
+
+
+def _check_capability_regressions(
+    decided: Sequence[HeldOutTaskResult],
+    cfg: PromotionGateConfig,
+) -> list[tuple[str, float, float]]:
+    """Check per-capability regression rates against configured thresholds.
+
+    Returns a list of ``(capability_id, actual_rate, threshold)`` tuples for
+    capabilities that exceeded their regression threshold. A capability is
+    checked if it is in ``protected_capabilities`` or has an entry in
+    ``capability_regression_thresholds``.
+    """
+    if not cfg.capability_regression_thresholds and not cfg.protected_capabilities:
+        return []
+    # Group decided results by capability_id.
+    by_cap: dict[str, list[HeldOutTaskResult]] = {}
+    for r in decided:
+        cap = r.capability_id
+        if cap is None:
+            continue
+        by_cap.setdefault(cap, []).append(r)
+    violations: list[tuple[str, float, float]] = []
+    for cap, group in by_cap.items():
+        threshold = cfg.capability_regression_thresholds.get(cap)
+        if threshold is None and cap in cfg.protected_capabilities:
+            threshold = cfg.max_regression_rate
+        if threshold is None:
+            continue
+        n = len(group)
+        cap_reg = sum(1 for r in group if r.incumbent_correct and not r.candidate_correct)
+        rate = cap_reg / n if n > 0 else 0.0
+        if rate > threshold:
+            violations.append((cap, rate, threshold))
+    return violations
 
 
 # --- Vector lineage (V039-009) ---
