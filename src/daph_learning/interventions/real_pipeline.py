@@ -121,7 +121,14 @@ class ResidualStreamHook:
         self.clamp_triggered = False
 
     def _hook_fn(self, module, inputs, outputs):
-        """Forward hook: capture and optionally intervene on the hidden state."""
+        """Forward hook: capture and optionally intervene on the hidden state.
+
+        v0.3.10.1 — the hook captures the POST-intervention hidden state
+        (after applying h' = h + alpha * v), so callers can read
+        ``captured_hidden`` to get the intervened residual stream. The
+        returned (modified) output propagates through the rest of the
+        model so downstream layers see the intervention.
+        """
         import torch
         # outputs is typically a tuple; the first element is the hidden state.
         if isinstance(outputs, tuple):
@@ -130,9 +137,8 @@ class ResidualStreamHook:
         else:
             hidden = outputs
             rest = None
-        # Capture baseline.
-        self.captured_hidden = hidden.detach().cpu().numpy().copy()
-        # Intervene if armed.
+        # Intervene if armed (BEFORE capturing, so captured_hidden
+        # reflects the intervention).
         if self.vector is not None and self.alpha != 0.0:
             v = torch.as_tensor(self.vector, dtype=hidden.dtype,
                                 device=hidden.device)
@@ -149,6 +155,8 @@ class ResidualStreamHook:
                     delta = delta * (self.clamp_norm / delta_norm)
                     self.clamp_triggered = True
             hidden = hidden + delta
+        # Capture the (possibly intervened) hidden state.
+        self.captured_hidden = hidden.detach().cpu().numpy().copy()
         if rest is not None:
             return (hidden,) + rest
         return hidden
@@ -240,7 +248,12 @@ def run_real_intervention(
         tid = str(task.get("task_id", ""))
         prompt = task.get("prompt", task.get("specification", ""))
         inputs = tokenizer(prompt, return_tensors="pt").to(device)
-        # Baseline (alpha=0).
+        # Baseline (alpha=0): capture the hidden state from the hook.
+        # Note: we use hook.captured_hidden, NOT output_hidden_states,
+        # because output_hidden_states captures pre-hook values and does
+        # not reflect the intervention. The hook fires on the layer
+        # module's forward output, so captured_hidden is the post-hook
+        # residual stream at the target layer.
         hook.arm(v, alpha=0.0, clamp_norm=cfg.clamp_norm)
         with hook.install():
             with torch.no_grad():
@@ -258,7 +271,9 @@ def run_real_intervention(
         if neutral_prompts:
             kl_baseline = _measure_neutral_kl(
                 model, tokenizer, neutral_prompts, v, 0.0, cfg, device)
-        # Dose-response.
+        # Dose-response: for each alpha, re-run with the hook armed.
+        # The hook modifies the layer output; captured_hidden reflects
+        # the intervention.
         for alpha in cfg.alpha_grid:
             hook.arm(v, alpha=float(alpha), clamp_norm=cfg.clamp_norm)
             with hook.install():
