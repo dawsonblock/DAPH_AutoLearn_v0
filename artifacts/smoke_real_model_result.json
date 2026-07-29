@@ -1,5 +1,7 @@
 {
+  "release": "0.3.10.3-alpha",
   "evidence_level": "REAL_MODEL_DEV",
+  "source_tree_sha256": "3589383a173be01f",
   "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
   "device": "mps",
   "n_layers": 24,
@@ -30,7 +32,7 @@
       "route_score_after": 0.2667087586450849,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_0",
@@ -46,7 +48,7 @@
       "route_score_after": 0.3181092147216347,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_0",
@@ -62,7 +64,7 @@
       "route_score_after": 0.3743584654170054,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_0",
@@ -78,7 +80,7 @@
       "route_score_after": 0.4342202880765004,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_0",
@@ -94,7 +96,7 @@
       "route_score_after": 0.4960646134894119,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_1",
@@ -110,7 +112,7 @@
       "route_score_after": 0.5120323631727414,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_1",
@@ -126,7 +128,7 @@
       "route_score_after": 0.5737211381412743,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_1",
@@ -142,7 +144,7 @@
       "route_score_after": 0.6331979274781956,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_1",
@@ -158,7 +160,7 @@
       "route_score_after": 0.6888764022330839,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_1",
@@ -174,7 +176,7 @@
       "route_score_after": 0.739579197769638,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_2",
@@ -190,7 +192,7 @@
       "route_score_after": 0.5732731846220663,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_2",
@@ -206,7 +208,7 @@
       "route_score_after": 0.6327724745532198,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_2",
@@ -222,7 +224,7 @@
       "route_score_after": 0.6884837575055183,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_2",
@@ -238,7 +240,7 @@
       "route_score_after": 0.739226315292561,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_2",
@@ -254,7 +256,7 @@
       "route_score_after": 0.7842930836911157,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_3",
@@ -270,7 +272,7 @@
       "route_score_after": 0.7651660018524511,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_3",
@@ -286,7 +288,7 @@
       "route_score_after": 0.8069207767340449,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_3",
@@ -302,7 +304,7 @@
       "route_score_after": 0.842776819268625,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_3",
@@ -318,7 +320,7 @@
       "route_score_after": 0.8730219866744962,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_3",
@@ -334,7 +336,7 @@
       "route_score_after": 0.8981519959879576,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_4",
@@ -350,7 +352,7 @@
       "route_score_after": 0.5577723633267888,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_4",
@@ -366,7 +368,7 @@
       "route_score_after": 0.6179927491960174,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_4",
@@ -382,7 +384,7 @@
       "route_score_after": 0.6747938807995543,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_4",
@@ -398,7 +400,7 @@
       "route_score_after": 0.7268817670512533,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     },
     {
       "task_id": "smoke_4",
@@ -414,7 +416,7 @@
       "route_score_after": 0.7734280353067918,
       "neutral_kl": null,
       "clamp_triggered": false,
-      "evidence_level": "real_model_causal"
+      "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
     }
   ]
 }

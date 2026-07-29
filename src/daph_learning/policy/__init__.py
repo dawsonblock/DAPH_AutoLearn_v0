@@ -115,6 +115,7 @@ from .atomic_promotion import (
     atomic_write_json,
     rollback_incumbent,
 )
+from .utility import backend_utility
 
 __all__ = [
     "AlignmentResult",
@@ -169,4 +170,5 @@ __all__ = [
     "weighted_contrastive_mean",
     "weighted_mean",
     "weighted_policy_loss",
+    "backend_utility",
 ]

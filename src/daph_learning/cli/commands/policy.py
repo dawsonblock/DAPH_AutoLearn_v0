@@ -317,8 +317,8 @@ def _cmd_train_real_model(args, cfg) -> int:
             h = capture_task_representation(
                 task, model, tokenizer, config=cap_cfg, device=device)
             # Execute symbolic backend (Section 10).
-            sym_outcome = execute_symbolic_backend(task)
-            if sym_outcome.correct:
+            sym_outcome, sym_text = execute_symbolic_backend(task)
+            if sym_outcome.execution_success:
                 n_sym_correct += 1
             # Execute LLM backend (Section 11).
             llm_outcome, llm_text = execute_llm_backend(
@@ -326,7 +326,8 @@ def _cmd_train_real_model(args, cfg) -> int:
                 generation_config=gen_cfg, device=device)
             # Build experience with real verification (Section 12).
             exp, sym_v, llm_v = build_real_counterfactual_experience(
-                task, h, sym_outcome, llm_outcome, llm_text, config=cfg)
+                task, h, sym_outcome, llm_outcome, llm_text,
+                config=cfg, symbolic_output_text=sym_text)
             if llm_v.verified_correct is True:
                 n_llm_correct += 1
             experiences.append(exp)

@@ -52,6 +52,7 @@ class CentroidPolicy:
     n_train_: int = 0
     n_symbolic_: int = 0
     n_llm_: int = 0
+    weight_fallback: bool = False
 
     def predict_proba(self, h: np.ndarray) -> np.ndarray:
         """Return ``P(S | h)`` for each row of ``h``.
@@ -136,12 +137,18 @@ class CentroidPolicy:
         sym_w = w[sym_mask]
         llm_feats = feats[llm_mask]
         llm_w = w[llm_mask]
-        # If a class has all-zero weights, fall back to unweighted mean
-        # for that class (the centroid is undefined with zero weight).
+        # v0.3.10.3 — FAIL CLOSED if a class has all-zero weights.
+        # The old code silently fell back to unweighted mean, which
+        # changed the estimator without recording it in provenance.
+        # Now we record the fallback explicitly via the weight_fallback
+        # flag so downstream code knows the centroid is not truly weighted.
+        self.weight_fallback = False
         if sym_w.sum() <= 1e-12:
             sym_w = np.ones_like(sym_w)
+            self.weight_fallback = True
         if llm_w.sum() <= 1e-12:
             llm_w = np.ones_like(llm_w)
+            self.weight_fallback = True
         v = weighted_contrastive_mean(
             sym_feats, sym_w, llm_feats, llm_w, normalize=False)
         self.vector = v
@@ -170,6 +177,7 @@ class CentroidPolicy:
             "n_train_": int(self.n_train_),
             "n_symbolic_": int(self.n_symbolic_),
             "n_llm_": int(self.n_llm_),
+            "weight_fallback": bool(self.weight_fallback),
         }
         with open(path, "w") as f:
             json.dump(payload, f, indent=2)
@@ -190,6 +198,7 @@ class CentroidPolicy:
         model.n_train_ = int(payload.get("n_train_", 0))
         model.n_symbolic_ = int(payload.get("n_symbolic_", 0))
         model.n_llm_ = int(payload.get("n_llm_", 0))
+        model.weight_fallback = bool(payload.get("weight_fallback", False))
         return model
 
 

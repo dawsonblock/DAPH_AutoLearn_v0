@@ -1,4 +1,4 @@
-"""v0.3.10.2-alpha tests for real backends, gate semantics, and
+"""v0.3.10.3-alpha tests for real backends, gate semantics, and
 scientific integrity (Sections 5-8, 9-12, 21-23, 47).
 
 G18. Real symbolic backend executes.
@@ -41,11 +41,15 @@ class TestRealSymbolicBackend:
             "inputs": {"a": 7, "b": 5, "op": "+"},
             "expected": 12,
         }
-        outcome = execute_symbolic_backend(task)
+        outcome, output_text = execute_symbolic_backend(task)
         assert outcome.backend == "symbolic"
-        assert outcome.correct is True
-        assert outcome.quality == 1.0
-        assert outcome.verifier_confidence == 1.0
+        assert outcome.available is True
+        assert outcome.executed is True
+        assert outcome.execution_success is True
+        # v0.3.10.3 — correctness is NOT set here; it's set by the verifier.
+        assert outcome.correct is False  # placeholder until verified
+        assert outcome.output_text is not None  # actual output
+        assert output_text is not None
 
     def test_symbolic_fails_closed_on_unsupported(self):
         from daph_learning.execution.real_backends import execute_symbolic_backend
@@ -54,9 +58,12 @@ class TestRealSymbolicBackend:
             "capability_ids": ["unsupported_capability"],
             "inputs": {},
         }
-        outcome = execute_symbolic_backend(task)
+        outcome, output_text = execute_symbolic_backend(task)
+        assert outcome.available is False
+        assert outcome.executed is False
         assert outcome.correct is False
         assert outcome.quality == 0.0
+        assert output_text is None
 
     def test_symbolic_no_placeholder_labels(self):
         """Section 44: no symbolic_correct placeholder labels."""
@@ -69,8 +76,9 @@ class TestRealSymbolicBackend:
             # Deliberately do NOT set symbolic_correct — the outcome
             # must come from actual execution, not from this field.
         }
-        outcome = execute_symbolic_backend(task)
-        assert outcome.correct is True  # from actual execution
+        outcome, output_text = execute_symbolic_backend(task)
+        assert outcome.execution_success is True  # from actual execution
+        assert output_text == "12"  # actual computed value
 
 
 # ============================================================
@@ -141,22 +149,35 @@ class TestRealCounterfactualExperience:
         from daph_learning.policy import ExperimentConfig
         task = {"task_id": "t1", "expected": 42, "capability_ids": ["integer_arithmetic"]}
         h = np.ones(4, dtype=np.float32)
+        # v0.3.10.3 — BackendOutcome now has execution semantics.
+        # Symbolic executed successfully and produced "42".
         sym = BackendOutcome(
-            task_id="t1", backend="symbolic", correct=True, quality=1.0,
+            task_id="t1", backend="symbolic",
+            available=True, executed=True, execution_success=True,
+            output_text="42", output_hash="abc",
+            verifier_status="not_verified",
+            correct=False, quality=0.0,
             latency_sec=0.01, normalized_cost=0.01, risk=0.0,
-            verifier_confidence=1.0)
+            verifier_confidence=0.0)
         llm = BackendOutcome(
-            task_id="t1", backend="llm", correct=False, quality=0.0,
+            task_id="t1", backend="llm",
+            available=True, executed=True, execution_success=True,
+            output_text="41", output_hash="def",
+            verifier_status="not_verified",
+            correct=False, quality=0.0,
             latency_sec=0.5, normalized_cost=0.1, risk=0.0,
             verifier_confidence=0.0)
         cfg = ExperimentConfig(gap_threshold=0.01, abstention_band=0.01)
         exp, sym_v, llm_v = build_real_counterfactual_experience(
-            task, h, sym, llm, "41", config=cfg)
-        # Symbolic is correct, LLM is wrong → ΔU > 0 → prefer symbolic.
+            task, h, sym, llm, "41", config=cfg,
+            symbolic_output_text="42")
+        # Symbolic output "42" == expected 42 → verified correct.
+        # LLM output "41" != expected 42 → verified incorrect.
+        # → ΔU > 0 → prefer symbolic.
+        assert sym_v.verified_correct is True
+        assert llm_v.verified_correct is False
         assert exp.delta_utility > 0
         assert exp.preferred_action.value == "symbolic"
-        # LLM verification: 41 != 42 → incorrect.
-        assert llm_v.verified_correct is False
 
 
 # ============================================================
@@ -447,7 +468,8 @@ class TestMixedTasks:
         )
         tasks = make_letter_counting_tasks(n=5, seed=0)
         for task in tasks:
-            outcome = execute_symbolic_backend(task)
+            outcome, _ = execute_symbolic_backend(task)
+            assert outcome.available is False
             assert outcome.correct is False
             assert outcome.quality == 0.0
 
@@ -457,12 +479,12 @@ class TestMixedTasks:
             execute_symbolic_backend, make_arithmetic_tasks,
         )
         tasks = make_arithmetic_tasks(n=5, seed=0, max_value=50)
-        n_correct = 0
+        n_success = 0
         for task in tasks:
-            outcome = execute_symbolic_backend(task)
-            if outcome.correct:
-                n_correct += 1
-        assert n_correct == 5  # all arithmetic should succeed
+            outcome, _ = execute_symbolic_backend(task)
+            if outcome.execution_success:
+                n_success += 1
+        assert n_success == 5  # all arithmetic should execute successfully
 
     def test_mixed_tasks_create_routing_signal(self):
         """Mixed tasks must produce both positive and negative ΔU when
@@ -479,18 +501,19 @@ class TestMixedTasks:
         # Arithmetic: symbolic succeeds, LLM (simulated wrong) fails → ΔU > 0
         arith = make_arithmetic_tasks(n=5, seed=0)[0]
         h = np.ones(8, dtype=np.float32)
-        sym = execute_symbolic_backend(arith)
+        sym, sym_text = execute_symbolic_backend(arith)
         llm = BackendOutcome(
             task_id=arith["task_id"], backend="llm", correct=False,
             quality=0.0, latency_sec=0.5, normalized_cost=0.1,
             risk=0.0, verifier_confidence=0.0)
         exp_a, _, _ = build_real_counterfactual_experience(
-            arith, h, sym, llm, "wrong", config=cfg)
+            arith, h, sym, llm, "wrong", config=cfg,
+            symbolic_output_text=sym_text)
         assert exp_a.delta_utility > 0  # symbolic better
         # Counting: symbolic fails, LLM (simulated correct) succeeds → ΔU < 0
         counting = make_letter_counting_tasks(n=5, seed=0)[0]
-        sym_c = execute_symbolic_backend(counting)  # fails closed
-        assert sym_c.correct is False
+        sym_c, _ = execute_symbolic_backend(counting)  # fails closed
+        assert sym_c.available is False
         llm_c = BackendOutcome(
             task_id=counting["task_id"], backend="llm", correct=True,
             quality=1.0, latency_sec=0.5, normalized_cost=0.1,

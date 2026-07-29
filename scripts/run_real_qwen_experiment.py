@@ -1,22 +1,19 @@
-"""v0.3.10.2-alpha — real Qwen experiment (Section 51, Phase A-F).
+"""v0.3.10.3-alpha — real Qwen experiment (Section 51, Phase A-F).
 
-This is the first scientifically meaningful real-model experiment.
-It runs the complete real loop:
+v0.3.10.3 — CRITICAL FIXES from external review:
 
-    Phase A: train data collection (capture h, execute both backends,
-             verify, compute utility, build experiences)
-    Phase B: fit policies (centroid, weighted centroid, logistic, MLP)
-    Phase C: dev selection (select best policy by dev regret)
-    Phase D: calibration (tune confidence/OOD thresholds)
-    Phase E: steering dev study (dose-response +v/0/-v)
-    Phase F: final evaluation (frozen pipeline, one pass)
-
-v0.3.10.2 — uses MIXED tasks (arithmetic + letter counting) so there is
-a genuine routing decision:
-    - Arithmetic: symbolic wins (perfect execution), LLM may fail.
-    - Counting: symbolic fails closed (unsupported), LLM can count.
-This creates tasks where ΔU > 0 (route symbolic) AND ΔU < 0 (route LLM),
-so the policy has a real decision to learn.
+1. Symbolic output is now verified against expected answer (not just
+   "execution succeeded = correct").
+2. Weighted-vs-unweighted ablation actually uses w=1 for unweighted.
+3. Calibration targets use ΔU, not the model's own predictions.
+4. Final set is NOT executed until after all configuration is frozen
+   (Phase F runs AFTER Phase E, not before).
+5. Word pools are partitioned across splits — no prompt leakage.
+6. Steering utility uses verified backend utility, not synthetic
+   route=SYMBOLIC → 1.0.
+7. Routing accuracy is tie-aware (ties are correct for either route).
+8. Confidence semantics fixed: unsupported backend has confidence=1.0.
+9. max_vector_norm only shrinks, never expands.
 
 Usage:
     python scripts/run_real_qwen_experiment.py
@@ -53,15 +50,19 @@ def main() -> int:
     from transformers import AutoModelForCausalLM, AutoTokenizer
     from daph_learning.execution.real_backends import (
         CaptureConfig, LLMGenerationConfig,
+        assert_splits_disjoint,
         build_real_counterfactual_experience,
         capture_task_representation,
         execute_llm_backend,
         execute_symbolic_backend,
-        make_mixed_tasks,
+        make_arithmetic_tasks,
+        make_letter_counting_tasks,
+        partition_word_pool,
     )
     from daph_learning.policy import (
         ExperimentConfig, fit_policy, predict_proba,
         action_confidence_ece, preference_brier_soft,
+        source_tree_sha256,
     )
     from daph_learning.policy.abstention import choose_route, choose_route_with_reason
     from daph_learning.policy.regret import mean_regret, paired_promotion_statistics
@@ -72,7 +73,7 @@ def main() -> int:
     )
 
     print("=" * 70)
-    print("v0.3.10.2-alpha REAL QWEN EXPERIMENT (Section 51, Phase A-F)")
+    print("v0.3.10.3-alpha REAL QWEN EXPERIMENT (Section 51, Phase A-F)")
     print("=" * 70)
 
     device = "cuda" if torch.cuda.is_available() else (
@@ -111,60 +112,96 @@ def main() -> int:
     cap_cfg = CaptureConfig(layer=layer, location="last_token")
     gen_cfg = LLMGenerationConfig(max_new_tokens=16, do_sample=False)
 
-    # --- Generate splits (smoke size for MPS speed) ---
-    # v0.3.10.2 — MIXED tasks: arithmetic (symbolic wins) + counting (LLM wins).
-    print("\n--- Split sizes (smoke, mixed tasks) ---")
-    train_tasks = make_mixed_tasks(n_arithmetic=30, n_counting=30, seed=0)
-    dev_tasks = make_mixed_tasks(n_arithmetic=15, n_counting=15, seed=100)
-    cal_tasks = make_mixed_tasks(n_arithmetic=15, n_counting=15, seed=200)
-    final_tasks = make_mixed_tasks(n_arithmetic=30, n_counting=30, seed=300)
+    # --- Generate splits with DISJOINT word pools (P0-7) ---
+    print("\n--- Split sizes (smoke, mixed tasks, DISJOINT word pools) ---")
+    word_splits = partition_word_pool(n_splits=4, seed=42)
+    train_words, dev_words, cal_words, final_words = word_splits
+    print(f"  Word pool sizes: train={len(train_words)} dev={len(dev_words)} "
+          f"cal={len(cal_words)} final={len(final_words)}")
+
+    # Arithmetic uses different operands per seed (no overlap concern).
+    # Counting uses disjoint word pools.
+    train_tasks = (
+        make_arithmetic_tasks(n=30, seed=0, max_value=100)
+        + make_letter_counting_tasks(n=30, seed=1000, word_pool=train_words)
+    )
+    dev_tasks = (
+        make_arithmetic_tasks(n=15, seed=100, max_value=100)
+        + make_letter_counting_tasks(n=15, seed=1100, word_pool=dev_words)
+    )
+    cal_tasks = (
+        make_arithmetic_tasks(n=15, seed=200, max_value=100)
+        + make_letter_counting_tasks(n=15, seed=1200, word_pool=cal_words)
+    )
+    final_tasks = (
+        make_arithmetic_tasks(n=30, seed=300, max_value=100)
+        + make_letter_counting_tasks(n=30, seed=1300, word_pool=final_words)
+    )
+
+    # Shuffle each split.
+    for tasks, s in [(train_tasks, 0), (dev_tasks, 1), (cal_tasks, 2), (final_tasks, 3)]:
+        rng = np.random.default_rng(s + 9999)
+        rng.shuffle(tasks)
+
+    # VERIFY split disjointness for counting tasks.
     print(f"  train={len(train_tasks)} dev={len(dev_tasks)} cal={len(cal_tasks)} final={len(final_tasks)}")
+    try:
+        assert_splits_disjoint([train_tasks, dev_tasks, cal_tasks, final_tasks])
+        print("  Split disjointness: VERIFIED (no prompt leakage)")
+    except AssertionError as e:
+        print(f"  Split disjointness: FAILED — {e}")
+        return 1
+
     n_arith = sum(1 for t in train_tasks if "integer_arithmetic" in t.get("capability_ids", []))
     n_count = sum(1 for t in train_tasks if "letter_counting" in t.get("capability_ids", []))
     print(f"  train composition: {n_arith} arithmetic, {n_count} counting")
 
     # ================================================================
-    # Phase A: train data collection
+    # Phase A: train + dev + cal data collection
+    # (NOT final — final is deferred until after freeze)
     # ================================================================
-    print("\n--- Phase A: train data collection ---")
+    print("\n--- Phase A: train/dev/cal data collection ---")
+
     def collect_data(tasks, label):
         """Execute both backends on each task and build experiences."""
         experiences = []
         records = []
         captures = []
-        n_sym = 0
-        n_llm = 0
+        n_sym_correct = 0
+        n_llm_correct = 0
         t0 = time.time()
         for i, task in enumerate(tasks):
             if (i + 1) % 10 == 0:
                 print(f"  [{label}] {i+1}/{len(tasks)}...")
             h = capture_task_representation(
                 task, model, tok, config=cap_cfg, device=device)
-            sym = execute_symbolic_backend(task)
+            sym_outcome, sym_text = execute_symbolic_backend(task)
             llm_out, llm_text = execute_llm_backend(
                 task, model, tok, generation_config=gen_cfg, device=device)
-            exp, _, llm_v = build_real_counterfactual_experience(
-                task, h, sym, llm_out, llm_text, config=cfg)
-            if sym.correct:
-                n_sym += 1
-            if llm_v.verified_correct is True:
-                n_llm += 1
+            exp, sym_v, llm_v = build_real_counterfactual_experience(
+                task, h, sym_outcome, llm_out, llm_text,
+                config=cfg, symbolic_output_text=sym_text)
+            if exp.symbolic.correct:
+                n_sym_correct += 1
+            if exp.llm.correct:
+                n_llm_correct += 1
             experiences.append(exp)
             records.append(FeatureRecord(exp.task_id, h))
             captures.append(h)
         elapsed = time.time() - t0
         acts = np.array(captures, dtype=np.float32)
-        print(f"  [{label}] done in {elapsed:.1f}s: sym={n_sym}/{len(tasks)} llm={n_llm}/{len(tasks)}")
+        print(f"  [{label}] done in {elapsed:.1f}s: "
+              f"sym_correct={n_sym_correct}/{len(tasks)} "
+              f"llm_correct={n_llm_correct}/{len(tasks)}")
         return experiences, records, acts
 
     train_exp, train_recs, train_acts = collect_data(train_tasks, "train")
     dev_exp, dev_recs, dev_acts = collect_data(dev_tasks, "dev")
     cal_exp, cal_recs, cal_acts = collect_data(cal_tasks, "cal")
-    final_exp, final_recs, final_acts = collect_data(final_tasks, "final")
 
-    # Utility helper: look up utility from pre-computed experiences.
+    # Utility helpers.
     exp_by_id = {}
-    for exp in train_exp + dev_exp + cal_exp + final_exp:
+    for exp in train_exp + dev_exp + cal_exp:
         exp_by_id[exp.task_id] = exp
 
     def utility_fn(task, route):
@@ -197,16 +234,16 @@ def main() -> int:
     print(f"  ΔU range: [{train_du.min():.3f}, {train_du.max():.3f}] mean={train_du.mean():.3f}")
 
     # ================================================================
-    # Phase B: fit policies (all baselines from Section 36)
+    # Phase B: fit policies
     # ================================================================
     print("\n--- Phase B: fit policies ---")
+    train_du = np.array([e.delta_utility for e in train_exp], dtype=np.float32)
     train_w = np.array([e.sample_weight for e in train_exp], dtype=np.float32)
     dev_du = np.array([e.delta_utility for e in dev_exp], dtype=np.float32)
     dev_ora_u = np.array([oracle_utility(t) for t in dev_tasks], dtype=np.float64)
 
-    def eval_policy(model, tasks, acts, threshold=0.5, ood=None, tau_ood=float("inf")):
-        """Evaluate a policy on tasks, return (routes, utilities, regret)."""
-        probs = predict_proba(model, acts)
+    def eval_policy(model_p, tasks, acts, threshold=0.5, ood=None, tau_ood=float("inf")):
+        probs = predict_proba(model_p, acts)
         routes = []
         for i, task in enumerate(tasks):
             p = float(probs[i])
@@ -223,16 +260,10 @@ def main() -> int:
     policies = {}
     for ptype in ("centroid", "logistic", "mlp_experimental"):
         pcfg = ExperimentConfig(
-            policy_type=ptype,
-            target_mode="soft",
-            target_temperature=0.5,
-            weight_mode="clipped_gap",
-            gap_threshold=0.01,
-            confidence_threshold=0.5,
-            selected_layer=layer,
-            random_seed=42,
-            max_weight=2.0,
-        )
+            policy_type=ptype, target_mode="soft", target_temperature=0.5,
+            weight_mode="clipped_gap", gap_threshold=0.01,
+            confidence_threshold=0.5, selected_layer=layer,
+            random_seed=42, max_weight=2.0)
         t0 = time.time()
         model_p = fit_policy(
             pcfg, train_acts, train_du, train_w,
@@ -241,29 +272,35 @@ def main() -> int:
             dev_tasks=dev_tasks, utility_fn=utility_fn, seed=42)
         elapsed = time.time() - t0
         _, _, dev_reg = eval_policy(model_p, dev_tasks, dev_acts)
-        dev_util = float(np.mean([utility_fn(t, r) for t, r in
-                     zip(dev_tasks, [choose_route(float(p), 0.5).value
-                                     for p in predict_proba(model_p, dev_acts)])]))
-        print(f"  {ptype:20s}: dev_regret={dev_reg:.4f} dev_utility={dev_util:.4f} ({elapsed:.1f}s)")
-        policies[ptype] = {
-            "model": model_p,
-            "cfg": pcfg,
-            "dev_regret": dev_reg,
-            "dev_utility": dev_util,
-        }
+        print(f"  {ptype:20s}: dev_regret={dev_reg:.4f} ({elapsed:.1f}s)")
+        policies[ptype] = {"model": model_p, "cfg": pcfg, "dev_regret": dev_reg}
 
-    # Unweighted logistic (weighting test).
+    # P0-5 — TRUE unweighted ablation: use w=1, not the weighted train_w.
+    train_w_uniform = np.ones(len(train_exp), dtype=np.float32)
     pcfg_uw = ExperimentConfig(
         policy_type="logistic", target_mode="soft", target_temperature=0.5,
         weight_mode="uniform", gap_threshold=0.01, confidence_threshold=0.5,
         selected_layer=layer, random_seed=42, max_weight=2.0)
     model_uw = fit_policy(
-        pcfg_uw, train_acts, train_du, train_w,
+        pcfg_uw, train_acts, train_du, train_w_uniform,
         dev_features=dev_acts, dev_delta_u=dev_du,
         dev_weights=np.ones(len(dev_exp), dtype=np.float32),
         dev_tasks=dev_tasks, utility_fn=utility_fn, seed=42)
     _, _, dev_reg_uw = eval_policy(model_uw, dev_tasks, dev_acts)
-    print(f"  {'logistic_unweighted':20s}: dev_regret={dev_reg_uw:.4f}")
+    print(f"  {'logistic_unweighted':20s}: dev_regret={dev_reg_uw:.4f} (TRUE w=1)")
+
+    # Also unweighted centroid.
+    pcfg_uwc = ExperimentConfig(
+        policy_type="centroid", target_mode="soft", target_temperature=0.5,
+        weight_mode="uniform", gap_threshold=0.01, confidence_threshold=0.5,
+        selected_layer=layer, random_seed=42, max_weight=2.0)
+    model_uwc = fit_policy(
+        pcfg_uwc, train_acts, train_du, train_w_uniform,
+        dev_features=dev_acts, dev_delta_u=dev_du,
+        dev_weights=np.ones(len(dev_exp), dtype=np.float32),
+        dev_tasks=dev_tasks, utility_fn=utility_fn, seed=42)
+    _, _, dev_reg_uwc = eval_policy(model_uwc, dev_tasks, dev_acts)
+    print(f"  {'centroid_unweighted':20s}: dev_regret={dev_reg_uwc:.4f} (TRUE w=1)")
 
     # Hard-target logistic.
     pcfg_hard = ExperimentConfig(
@@ -289,11 +326,10 @@ def main() -> int:
     # Baselines on dev.
     dev_u_llm = np.array([utility_fn(t, "llm") for t in dev_tasks], dtype=np.float64)
     dev_reg_llm = float(mean_regret(dev_u_llm, dev_ora_u))
-
     dev_u_sym = np.array([utility_fn(t, "symbolic") for t in dev_tasks], dtype=np.float64)
     dev_reg_sym = float(mean_regret(dev_u_sym, dev_ora_u))
 
-    # Hand-coded router: route by family (arithmetic→symbolic, counting→llm).
+    # Hand-coded router: route by family.
     dev_routes_hand = []
     for t in dev_tasks:
         caps = t.get("capability_ids", [])
@@ -310,6 +346,7 @@ def main() -> int:
     print(f"  Always-symbolic:      dev_regret={dev_reg_sym:.4f}")
     print(f"  Hand router (family): dev_regret={dev_reg_hand:.4f}")
     print(f"  Unweighted logistic:  dev_regret={dev_reg_uw:.4f}")
+    print(f"  Unweighted centroid:  dev_regret={dev_reg_uwc:.4f}")
     print(f"  Hard-target logistic: dev_regret={dev_reg_hard:.4f}")
 
     # ================================================================
@@ -341,17 +378,96 @@ def main() -> int:
             best_threshold = float(threshold)
     print(f"  tau_conf = {best_threshold:.4f} (cal_utility={best_cal_util:.4f})")
 
-    # Calibration metrics.
-    soft_targets = 1.0 / (1.0 + np.exp(-cal_probs / 0.5))
+    # P0-6 — Calibration metrics use ΔU for soft targets, NOT cal_probs.
+    cal_du = np.array([e.delta_utility for e in cal_exp], dtype=np.float64)
+    soft_targets = 1.0 / (1.0 + np.exp(-cal_du / cfg.target_temperature))
     brier = float(preference_brier_soft(cal_probs, soft_targets))
     ece = float(action_confidence_ece(cal_probs, soft_targets))
-    print(f"  preference_brier_soft = {brier:.4f}")
-    print(f"  action_confidence_ece = {ece:.4f}")
+    print(f"  preference_brier_soft = {brier:.4f} (targets from ΔU)")
+    print(f"  action_confidence_ece = {ece:.4f} (targets from ΔU)")
 
     # ================================================================
-    # Phase F: final evaluation (one pass, frozen pipeline)
+    # Phase E: steering dev study (BEFORE final — P0-8)
     # ================================================================
-    print("\n--- Phase F: final evaluation ---")
+    print("\n--- Phase E: steering dev study ---")
+    centroid_cfg = ExperimentConfig(
+        policy_type="centroid", gap_threshold=0.01,
+        confidence_threshold=0.5, random_seed=42, max_weight=2.0)
+    centroid_model = fit_policy(
+        centroid_cfg, train_acts, train_du, train_w)
+    v = centroid_model.vector
+    v_norm = float(np.linalg.norm(v))
+    print(f"  Centroid vector norm: {v_norm:.4f}")
+    if hasattr(centroid_model, "weight_fallback"):
+        print(f"  Weight fallback: {centroid_model.weight_fallback}")
+
+    # P0-11 — Steering utility uses VERIFIED utility, not synthetic.
+    # For each dev task, the utility of a route is the verified quality
+    # of the backend that would be selected.
+    def steering_utility_fn(task, route):
+        return utility_fn(task, route)
+
+    def policy_prob_fn(h):
+        h = np.asarray(h, dtype=np.float64).flatten()
+        if centroid_model.vector.shape[0] != h.shape[0]:
+            return 0.5
+        score = (h @ centroid_model.vector - centroid_model.threshold) / max(centroid_model.temperature, 1e-8)
+        return float(1.0 / (1.0 + np.exp(-score)))
+
+    # Use the original dev tasks directly (with their original task_ids)
+    # so utility_fn can look up the verified backend outcomes.
+    steering_tasks = dev_tasks[:min(10, len(dev_tasks))]
+
+    int_cfg = InterventionConfig(
+        layer=layer, alpha_grid=(-1.0, -0.5, 0.0, 0.5, 1.0),
+        max_vector_norm=1.0, clamp_norm=5.0)
+    intervention_results = run_real_intervention(
+        model, tok, steering_tasks, v,
+        config=int_cfg, policy_prob_fn=policy_prob_fn,
+        utility_fn=steering_utility_fn,
+        device=device)
+
+    # Aggregate dose-response.
+    steering_summary = {}
+    for alpha_val in (-1.0, -0.5, 0.0, 0.5, 1.0):
+        group = [r for r in intervention_results if r.alpha == alpha_val]
+        if group:
+            mean_p = float(np.mean([r.route_score_after for r in group]))
+            mean_u = float(np.mean([r.intervened_utility for r in group]))
+            steering_summary[alpha_val] = {
+                "mean_p": mean_p,
+                "mean_utility": mean_u,
+                "n": len(group),
+            }
+    if 1.0 in steering_summary and 0.0 in steering_summary and -1.0 in steering_summary:
+        print(f"  E[P(S|+v)] = {steering_summary[1.0]['mean_p']:.4f}")
+        print(f"  E[P(S| 0)] = {steering_summary[0.0]['mean_p']:.4f}")
+        print(f"  E[P(S|-v)] = {steering_summary[-1.0]['mean_p']:.4f}")
+        print(f"  E[U|+v]    = {steering_summary[1.0]['mean_utility']:.4f}")
+        print(f"  E[U| 0]    = {steering_summary[0.0]['mean_utility']:.4f}")
+        print(f"  E[U|-v]    = {steering_summary[-1.0]['mean_utility']:.4f}")
+    print(f"  evidence_level: REAL_MODEL_LATENT_INTERVENTION")
+
+    # ================================================================
+    # FREEZE: all configuration is now frozen.
+    # No more fitting, selection, or calibration after this point.
+    # ================================================================
+    print("\n--- FREEZE: all configuration frozen ---")
+    print(f"  best_policy: {best_ptype}")
+    print(f"  tau_conf: {best_threshold}")
+    print(f"  tau_ood: {tau_ood}")
+    print(f"  source_hash: {source_hash}")
+
+    # ================================================================
+    # Phase F: final evaluation (ONE pass, frozen pipeline — P0-8)
+    # ================================================================
+    print("\n--- Phase F: final evaluation (one pass, frozen) ---")
+    final_exp, final_recs, final_acts = collect_data(final_tasks, "final")
+
+    # Update exp_by_id with final experiences.
+    for exp in final_exp:
+        exp_by_id[exp.task_id] = exp
+
     final_ora_u = np.array([oracle_utility(t) for t in final_tasks], dtype=np.float64)
 
     # Candidate policy (AutoLearn) with calibration.
@@ -373,7 +489,6 @@ def main() -> int:
     # All baselines on final.
     final_u_llm = np.array([utility_fn(t, "llm") for t in final_tasks], dtype=np.float64)
     final_reg_llm = float(mean_regret(final_u_llm, final_ora_u))
-
     final_u_sym = np.array([utility_fn(t, "symbolic") for t in final_tasks], dtype=np.float64)
     final_reg_sym = float(mean_regret(final_u_sym, final_ora_u))
 
@@ -390,20 +505,31 @@ def main() -> int:
     final_u_hand = np.array([utility_fn(t, r) for t, r in zip(final_tasks, final_routes_hand)], dtype=np.float64)
     final_reg_hand = float(mean_regret(final_u_hand, final_ora_u))
 
-    # Unweighted centroid.
+    # Unweighted logistic and centroid (TRUE w=1).
     _, _, final_reg_uw = eval_policy(model_uw, final_tasks, final_acts, threshold=best_threshold, ood=ood, tau_ood=tau_ood)
+    _, _, final_reg_uwc = eval_policy(model_uwc, final_tasks, final_acts, threshold=best_threshold, ood=ood, tau_ood=tau_ood)
     # Hard-target logistic.
     _, _, final_reg_hard = eval_policy(model_hard, final_tasks, final_acts, threshold=best_threshold, ood=ood, tau_ood=tau_ood)
-    # Centroid.
+    # Centroid and MLP.
     _, _, final_reg_centroid = eval_policy(policies["centroid"]["model"], final_tasks, final_acts, threshold=best_threshold, ood=ood, tau_ood=tau_ood)
-    # MLP.
     _, _, final_reg_mlp = eval_policy(policies["mlp_experimental"]["model"], final_tasks, final_acts, threshold=best_threshold, ood=ood, tau_ood=tau_ood)
 
-    # Routing accuracy.
+    # P0-14 — Tie-aware routing accuracy.
     final_du = np.array([e.delta_utility for e in final_exp], dtype=np.float32)
-    final_acc = float(np.mean([
+    # Strict accuracy (old): only counts non-tie tasks.
+    decisive_mask = np.abs(final_du) > 0.01
+    if decisive_mask.sum() > 0:
+        strict_acc = float(np.mean([
+            (final_routes[i] == "symbolic" and final_du[i] > 0)
+            or (final_routes[i] == "llm" and final_du[i] < 0)
+            for i in range(len(final_tasks)) if decisive_mask[i]]))
+    else:
+        strict_acc = 0.0
+    # Tie-aware accuracy: on ties, either route is correct.
+    tie_aware_acc = float(np.mean([
         (final_routes[i] == "symbolic" and final_du[i] > 0)
         or (final_routes[i] == "llm" and final_du[i] < 0)
+        or abs(final_du[i]) <= 0.01  # tie → any route is correct
         for i in range(len(final_tasks))]))
 
     # Per-family metrics.
@@ -424,87 +550,33 @@ def main() -> int:
     stats = paired_promotion_statistics(
         final_cand_u, final_u_llm, final_ora_u, seed=42)
 
-    # Reason counts.
     from collections import Counter
     reason_counts = Counter(final_reasons)
 
     # Results table.
-    print(f"\n  {'Method':<25s} {'Utility':>8s} {'Regret':>8s} {'Acc':>6s}")
-    print(f"  {'-'*25} {'-'*8} {'-'*8} {'-'*6}")
-    print(f"  {'Always LLM':<25s} {final_u_llm.mean():8.4f} {final_reg_llm:8.4f} {'N/A':>6s}")
-    print(f"  {'Always symbolic':<25s} {final_u_sym.mean():8.4f} {final_reg_sym:8.4f} {'N/A':>6s}")
-    print(f"  {'Hand router':<25s} {final_u_hand.mean():8.4f} {final_reg_hand:8.4f} {'N/A':>6s}")
-    print(f"  {'Unweighted centroid':<25s} {'N/A':>8s} {final_reg_uw:8.4f} {'N/A':>6s}")
-    print(f"  {'Weighted centroid':<25s} {'N/A':>8s} {final_reg_centroid:8.4f} {'N/A':>6s}")
-    print(f"  {'Logistic soft':<25s} {'N/A':>8s} {final_cand_reg:8.4f} {final_acc:6.4f}")
-    print(f"  {'Logistic hard':<25s} {'N/A':>8s} {final_reg_hard:8.4f} {'N/A':>6s}")
-    print(f"  {'MLP':<25s} {'N/A':>8s} {final_reg_mlp:8.4f} {'N/A':>6s}")
-    print(f"\n  mean_utility_delta (cand - inc): {stats['mean_utility_delta']:.4f}")
-    print(f"  mean_regret_delta  (inc - cand): {stats.get('mean_regret_delta', 0):.4f}")
-    print(f"  win_rate: {stats['candidate_win_rate']:.2f}  loss_rate: {stats['incumbent_win_rate']:.2f}")
-    print(f"  routing_accuracy: {final_acc:.4f}")
+    print(f"\n  {'Method':<25s} {'Utility':>8s} {'Regret':>8s}")
+    print(f"  {'-'*25} {'-'*8} {'-'*8}")
+    print(f"  {'Always LLM':<25s} {final_u_llm.mean():8.4f} {final_reg_llm:8.4f}")
+    print(f"  {'Always symbolic':<25s} {final_u_sym.mean():8.4f} {final_reg_sym:8.4f}")
+    print(f"  {'Hand router':<25s} {final_u_hand.mean():8.4f} {final_reg_hand:8.4f}")
+    print(f"  {'Unweighted centroid':<25s} {'N/A':>8s} {final_reg_uwc:8.4f}")
+    print(f"  {'Weighted centroid':<25s} {'N/A':>8s} {final_reg_centroid:8.4f}")
+    print(f"  {'Unweighted logistic':<25s} {'N/A':>8s} {final_reg_uw:8.4f}")
+    print(f"  {'Weighted logistic':<25s} {final_cand_u.mean():8.4f} {final_cand_reg:8.4f}")
+    print(f"  {'Logistic hard':<25s} {'N/A':>8s} {final_reg_hard:8.4f}")
+    print(f"  {'MLP':<25s} {'N/A':>8s} {final_reg_mlp:8.4f}")
+    print(f"\n  strict_routing_accuracy (decisive only): {strict_acc:.4f}")
+    print(f"  tie_aware_routing_accuracy:              {tie_aware_acc:.4f}")
     print(f"  abstain_rate: {float(np.mean([r == 'abstain' for r in final_routes])):.4f}")
     print(f"  symbolic_fraction: {float(np.mean([r == 'symbolic' for r in final_routes])):.4f}")
     print(f"  llm_fraction: {float(np.mean([r == 'llm' for r in final_routes])):.4f}")
     print(f"  per_family: {json.dumps(per_family, indent=2)}")
 
     # ================================================================
-    # Phase E: steering dev study (dose-response)
-    # ================================================================
-    print("\n--- Phase E: steering dev study ---")
-    centroid_cfg = ExperimentConfig(
-        policy_type="centroid", gap_threshold=0.01,
-        confidence_threshold=0.5, random_seed=42, max_weight=2.0)
-    centroid_model = fit_policy(
-        centroid_cfg, train_acts, train_du, train_w)
-    v = centroid_model.vector
-    v_norm = float(np.linalg.norm(v))
-    print(f"  Centroid vector norm: {v_norm:.4f}")
-
-    # Steering: run dose-response on dev tasks.
-    def policy_prob_fn(h):
-        h = np.asarray(h, dtype=np.float64).flatten()
-        if centroid_model.vector.shape[0] != h.shape[0]:
-            return 0.5
-        score = (h @ centroid_model.vector - centroid_model.threshold) / max(centroid_model.temperature, 1e-8)
-        return float(1.0 / (1.0 + np.exp(-score)))
-
-    steering_tasks = [
-        {"task_id": f"steer_{i}", "prompt": dev_tasks[i]["prompt"],
-         "family": dev_tasks[i]["family"], "expected": dev_tasks[i]["expected"]}
-        for i in range(min(10, len(dev_tasks)))
-    ]
-
-    int_cfg = InterventionConfig(
-        layer=layer, alpha_grid=(-1.0, -0.5, 0.0, 0.5, 1.0),
-        max_vector_norm=1.0, clamp_norm=5.0)
-    intervention_results = run_real_intervention(
-        model, tok, steering_tasks, v,
-        config=int_cfg, policy_prob_fn=policy_prob_fn,
-        utility_fn=lambda task, route: 1.0 if route == Route.SYMBOLIC else 0.0,
-        device=device)
-
-    # Aggregate dose-response.
-    steering_summary = {}
-    for alpha_val in (-1.0, -0.5, 0.0, 0.5, 1.0):
-        group = [r for r in intervention_results if r.alpha == alpha_val]
-        if group:
-            mean_p = float(np.mean([r.route_score_after for r in group]))
-            steering_summary[alpha_val] = {
-                "mean_p": mean_p,
-                "n": len(group),
-            }
-    if 1.0 in steering_summary and 0.0 in steering_summary and -1.0 in steering_summary:
-        print(f"  E[P(S|+v)] = {steering_summary[1.0]['mean_p']:.4f}")
-        print(f"  E[P(S| 0)] = {steering_summary[0.0]['mean_p']:.4f}")
-        print(f"  E[P(S|-v)] = {steering_summary[-1.0]['mean_p']:.4f}")
-    print("  evidence_level: REAL_MODEL_LATENT_INTERVENTION")
-
-    # ================================================================
     # Save experiment artifact
     # ================================================================
     artifact = {
-        "release": "0.3.10.2-alpha",
+        "release": "0.3.10.3-alpha",
         "evidence_level": "REAL_MODEL_FINAL",
         "model_id": model_id,
         "device": device,
@@ -517,6 +589,7 @@ def main() -> int:
             "calibration": len(cal_tasks),
             "final": len(final_tasks),
         },
+        "split_disjointness": "VERIFIED — disjoint word pools per split",
         "task_composition": {
             "arithmetic": n_arith,
             "counting": n_count,
@@ -530,13 +603,11 @@ def main() -> int:
             "delta_u_max": float(train_du.max()),
         },
         "phase_b_results": {
-            ptype: {
-                "dev_regret": policies[ptype]["dev_regret"],
-                "dev_utility": policies[ptype]["dev_utility"],
-            }
+            ptype: {"dev_regret": policies[ptype]["dev_regret"]}
             for ptype in policies
         },
-        "phase_b_unweighted": {"dev_regret": dev_reg_uw},
+        "phase_b_unweighted_logistic": {"dev_regret": dev_reg_uw, "weight_mode": "uniform (TRUE w=1)"},
+        "phase_b_unweighted_centroid": {"dev_regret": dev_reg_uwc, "weight_mode": "uniform (TRUE w=1)"},
         "phase_b_hard_target": {"dev_regret": dev_reg_hard},
         "phase_c_selection": {
             "best_policy": best_ptype,
@@ -549,6 +620,15 @@ def main() -> int:
             "tau_conf": best_threshold,
             "preference_brier_soft": brier,
             "action_confidence_ece": ece,
+            "calibration_target_source": "delta_u (NOT cal_probs)",
+        },
+        "phase_e_steering": {
+            "n_intervention_results": len(intervention_results),
+            "dose_response": {str(k): v for k, v in steering_summary.items()},
+            "centroid_vector_norm": v_norm,
+            "weight_fallback": getattr(centroid_model, "weight_fallback", False),
+            "evidence_level": "REAL_MODEL_LATENT_INTERVENTION",
+            "utility_source": "verified_backend_utility",
         },
         "phase_f_final": {
             "candidate_utility": float(final_cand_u.mean()),
@@ -560,10 +640,12 @@ def main() -> int:
             "hand_router_utility": float(final_u_hand.mean()),
             "hand_router_regret": final_reg_hand,
             "unweighted_logistic_regret": final_reg_uw,
+            "unweighted_centroid_regret": final_reg_uwc,
             "weighted_centroid_regret": final_reg_centroid,
             "logistic_hard_regret": final_reg_hard,
             "mlp_regret": final_reg_mlp,
-            "routing_accuracy": final_acc,
+            "strict_routing_accuracy": strict_acc,
+            "tie_aware_routing_accuracy": tie_aware_acc,
             "abstain_rate": float(np.mean([r == "abstain" for r in final_routes])),
             "symbolic_fraction": float(np.mean([r == "symbolic" for r in final_routes])),
             "llm_fraction": float(np.mean([r == "llm" for r in final_routes])),
@@ -571,12 +653,6 @@ def main() -> int:
             "abstention_reasons": dict(reason_counts),
             "per_family": per_family,
             "paired_stats": stats,
-        },
-        "phase_e_steering": {
-            "n_intervention_results": len(intervention_results),
-            "dose_response": {str(k): v for k, v in steering_summary.items()},
-            "centroid_vector_norm": v_norm,
-            "evidence_level": "REAL_MODEL_LATENT_INTERVENTION",
         },
     }
 
@@ -586,14 +662,14 @@ def main() -> int:
         json.dump(artifact, f, indent=2, default=str)
     print(f"\nExperiment artifact saved to {out_path}")
 
-    # --- Scientific success tiers (Section 48) ---
-    print("\n--- Scientific success tiers (Section 48) ---")
-    tier2 = final_cand_reg < final_reg_llm  # incumbent = always-LLM
-    tier3 = final_cand_reg < final_reg_hand  # hand router
-    print(f"  Tier 1 (beats chance):         implied by routing_accuracy > 0.5 = {final_acc > 0.5}")
+    # --- Scientific success tiers ---
+    print("\n--- Scientific success tiers ---")
+    tier2 = final_cand_reg < final_reg_llm
+    tier3 = final_cand_reg < final_reg_hand
+    tier4 = final_cand_reg < final_reg_uw
     print(f"  Tier 2 (beats always-LLM):     {'YES' if tier2 else 'NO'} (cand={final_cand_reg:.4f} < llm={final_reg_llm:.4f})")
     print(f"  Tier 3 (beats hand router):    {'YES' if tier3 else 'NO'} (cand={final_cand_reg:.4f} < hand={final_reg_hand:.4f})")
-    print(f"  Tier 4 (beats unweighted):     {'YES' if final_cand_reg < final_reg_uw else 'NO'} (cand={final_cand_reg:.4f} < unw={final_reg_uw:.4f})")
+    print(f"  Tier 4 (beats unweighted):     {'YES' if tier4 else 'NO'} (cand={final_cand_reg:.4f} < unw={final_reg_uw:.4f})")
 
     print("\n" + "=" * 70)
     print("REAL QWEN EXPERIMENT COMPLETE")

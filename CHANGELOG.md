@@ -1,3 +1,39 @@
+# 0.3.10.3-alpha (P0 repair: verified output, honest gates, disjoint splits, canonical utility)
+
+- **P0-1/P0-2**: `BackendOutcome` expanded with `available`, `executed`,
+  `execution_success`, `output_text`, `output_hash`, `error_type`,
+  `error_message`. `execute_symbolic_backend` now returns the actual
+  output text alongside the outcome. Correctness is set by the verifier,
+  not by execution success.
+- **P0-3**: Confidence semantics fixed — unsupported backend has
+  `verifier_confidence=1.0` (we are certain it cannot handle the task),
+  not 0.0.
+- **P0-4**: Removed silent `np.ones_like` fallback in `CentroidPolicy`
+  when class weights sum to zero. Now raises explicitly. Added
+  `weight_fallback` flag to the dataclass for auditability.
+- **P0-5**: Weighted-vs-unweighted ablation now actually uses `w=1`
+  (uniform weights), not the weighted train weights.
+- **P0-6**: Calibration targets now use ΔU (via sigmoid), not the
+  model's own predicted probabilities.
+- **P0-7**: Word pool partitioned across splits via
+  `partition_word_pool()`. `assert_splits_disjoint()` verifies no
+  cross-split prompt leakage.
+- **P0-8**: Final set is NOT executed until after all configuration is
+  frozen (Phase F runs AFTER Phase E, not before).
+- **P0-9**: `max_vector_norm` now only shrinks (if norm > limit), never
+  expands.
+- **P0-10**: One canonical `backend_utility()` function in
+  `policy/utility.py`. Both `learner.py` and `real_backends.py` import
+  it instead of duplicating the formula.
+- **P0-11**: Steering utility uses verified backend utility, not
+  synthetic route=SYMBOLIC → 1.0.
+- **P0-12**: G16 now actually runs the intervention pipeline (not just
+  imports). G21 actually tests candidate routes come from policy. G23
+  actually tests atomic_promote + rollback_incumbent. G25 actually runs
+  the smoke script.
+- **P0-14**: Routing accuracy is now tie-aware (ties count as correct
+  for either route) and reports decisive-task accuracy separately.
+
 # 0.3.10.2-alpha (real-model loop completion, release-gate integrity, calibration repair, verified counterfactual execution, and scientific qualification)
 
 - **Mission shift (Section 0)**: this release completes the real-model

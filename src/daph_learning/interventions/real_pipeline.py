@@ -227,9 +227,11 @@ def run_real_intervention(
     import torch
     cfg = config or InterventionConfig()
     v = np.asarray(vector, dtype=np.float32)
+    # v0.3.10.3 — max_vector_norm is a MAX, not a normalize-to.
+    # Only shrink if the norm exceeds the limit; never expand.
     if cfg.max_vector_norm is not None:
         norm = float(np.linalg.norm(v))
-        if norm > 0:
+        if norm > cfg.max_vector_norm and norm > 0:
             v = v * (cfg.max_vector_norm / norm)
 
     if policy_prob_fn is None:

@@ -59,6 +59,7 @@ from .policy_factory import fit_policy, predict_proba
 from .regret import mean_regret, paired_promotion_statistics, per_task_regret
 from .targets import TargetMode, build_preference_targets
 from .types import BackendOutcome, CounterfactualExperience, FeatureRecord, Route
+from .utility import backend_utility as _utility
 from .weighting import WeightConfig, WeightMode, compute_weight
 
 
@@ -200,17 +201,6 @@ def build_counterfactual_experiences(
             sample_weight=weight,
         ))
     return experiences
-
-
-def _utility(outcome: BackendOutcome, cfg: ExperimentConfig) -> float:
-    """Compute ``U_b`` from a :class:`BackendOutcome` and config."""
-    t = outcome.latency_sec * 1000.0  # back to ms
-    time_term = cfg.lambda_time * (t / cfg.time_reference_ms)
-    compute_term = cfg.lambda_compute * (
-        outcome.normalized_cost / cfg.compute_reference)
-    risk_term = cfg.lambda_risk * outcome.risk
-    return (cfg.quality_weight * outcome.quality
-            - time_term - compute_term - risk_term)
 
 
 def _align_or_raise(
