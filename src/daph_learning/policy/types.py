@@ -42,13 +42,34 @@ class Route(str, Enum):
 class BackendOutcome:
     """Verified outcome of executing one backend on one task (Section 32).
 
+    v0.3.10.3 — expanded with execution semantics to distinguish:
+    - backend unavailable (not installed / no model)
+    - backend unsupported for this task type
+    - not executed (skipped)
+    - execution failed (error/timeout)
+    - execution succeeded but answer wrong
+    - execution succeeded and answer verified
+
     Attributes
     ----------
     task_id : str
     backend : str
         ``"symbolic"`` or ``"llm"``.
+    available : bool
+        Whether the backend was available for this task (not unsupported).
+    executed : bool
+        Whether the backend was actually executed (not skipped).
+    execution_success : bool
+        Whether execution completed without error.
+    output_text : str | None
+        The raw output produced by the backend (for verification).
+    output_hash : str | None
+        SHA-256 hash of the output text (for provenance).
+    verifier_status : str
+        One of: ``"verified_correct"``, ``"verified_incorrect"``,
+        ``"verifier_unsupported"``, ``"not_verified"``.
     correct : bool
-        Whether the verifier confirmed the output.
+        Whether the verifier confirmed the output. False if not verified.
     quality : float
         Verified task quality / correctness score in ``[0, 1]``.
     latency_sec : float
@@ -58,17 +79,27 @@ class BackendOutcome:
     risk : float
         Risk / safety penalty in ``[0, 1]``.
     verifier_confidence : float
-        Confidence of the verifier in ``[0, 1]``.
+        Confidence of the verifier in ``[0, 1]``. 1.0 for deterministic
+        verifiers. 0.0 if not verified.
+    failure_reason : str | None
+        If execution or verification failed, why.
     """
 
     task_id: str
     backend: str
-    correct: bool
-    quality: float
-    latency_sec: float
-    normalized_cost: float
-    risk: float
-    verifier_confidence: float
+    available: bool = True
+    executed: bool = True
+    execution_success: bool = True
+    output_text: str | None = None
+    output_hash: str | None = None
+    verifier_status: str = "not_verified"
+    correct: bool = False
+    quality: float = 0.0
+    latency_sec: float = 0.0
+    normalized_cost: float = 0.0
+    risk: float = 0.0
+    verifier_confidence: float = 0.0
+    failure_reason: str | None = None
 
     def __post_init__(self) -> None:
         if self.backend not in ("symbolic", "llm"):
@@ -83,6 +114,11 @@ class BackendOutcome:
             raise ValueError("latency_sec must be >= 0")
         if self.normalized_cost < 0:
             raise ValueError("normalized_cost must be >= 0")
+        if self.verifier_status not in (
+            "verified_correct", "verified_incorrect",
+            "verifier_unsupported", "not_verified",
+        ):
+            raise ValueError(f"invalid verifier_status: {self.verifier_status!r}")
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

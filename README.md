@@ -1,4 +1,4 @@
-# DAPH AutoLearn v0.3.10.2-alpha
+# DAPH AutoLearn v0.3.10.3-alpha
 
 <div align="center">
 
@@ -582,7 +582,8 @@ effects — see [`CLAIMS.md`](./CLAIMS.md) §6.
 | [`docs/EXPERIMENT_PLAN.md`](./docs/EXPERIMENT_PLAN.md) | Experiment planning template. |
 | [`AUDIT_REPORT_V0_3_9.md`](./AUDIT_REPORT_V0_3_9.md) | Independent audit of the v0.3.9 causal-chain repair. |
 | [`TEST_REPORT_V0_3_10.md`](./TEST_REPORT_V0_3_10.md) | v0.3.10 release-gate test report. |
-| [`MACHINE_READABLE_RESULTS.json`](./MACHINE_READABLE_RESULTS.json) | Machine-readable result summary. |
+| [`release_gates.json`](./release_gates.json) | Machine-readable release-gate results (source-tree hashed). |
+| [`experiment_results.json`](./experiment_results.json) | Machine-readable experiment results (source-tree hashed). |
 
 ## Licensed claims
 
@@ -617,8 +618,16 @@ result.**
 
 ## Changelog
 
-### v0.3.10.2-alpha
+### v0.3.10.3-alpha
 
+- **P0 repairs**: verified symbolic output (not just execution success),
+  expanded `BackendOutcome` with execution/error semantics, fixed
+  confidence semantics (unsupported ≠ zero confidence), removed silent
+  zero-class-weight fallback, true unweighted ablation (w=1), ΔU-based
+  calibration targets, disjoint word pools across splits, deferred final
+  set execution until freeze, `max_vector_norm` only shrinks, one
+  canonical `backend_utility()` function, verified steering utility,
+  G16/G21/G23/G25 literally test their names, tie-aware routing accuracy.
 - **Real-model loop completion**: actual symbolic + LLM backend
   execution, real verification, real utility, real regret. No more
   `symbolic_correct` / `llm_correct` placeholder labels.
@@ -663,7 +672,7 @@ result.**
 - **P13-20 / G16-G20**: real intervention pipeline + real
   train/evaluate/calibrate CLI + OOD threshold calibration + PCA safety.
 - **P30 / G13**: small MLP router for nonlinear diagnostic.
-- **P43 / G24**: version unified to `0.3.10.2-alpha` across all
+- **P43 / G24**: version unified to `0.3.10.3-alpha` across all
   surfaces.
 
 ### v0.3.10

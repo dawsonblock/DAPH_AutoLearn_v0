@@ -1,6 +1,7 @@
 {
-  "release": "0.3.10.2-alpha",
-  "timestamp": 1785308294.702724,
+  "release": "0.3.10.3-alpha",
+  "timestamp": 1785311505.009702,
+  "source_tree_sha256": "3589383a173be01f",
   "n_gates": 25,
   "n_passed": 25,
   "n_failed": 0,
@@ -28,7 +29,7 @@
           false
         ]
       },
-      "timestamp": 1785308293.3123782
+      "timestamp": 1785311488.643602
     },
     {
       "gate": "G2",
@@ -41,7 +42,7 @@
         "clipped_gap": 1.0,
         "snr": 3.499999650000035
       },
-      "timestamp": 1785308293.3123982
+      "timestamp": 1785311488.643627
     },
     {
       "gate": "G3",
@@ -53,7 +54,7 @@
         "logistic": "WeightedLogisticRouter",
         "mlp": "SmallMLPRouter"
       },
-      "timestamp": 1785308293.312438
+      "timestamp": 1785311488.643685
     },
     {
       "gate": "G4",
@@ -61,7 +62,7 @@
       "passed": true,
       "reason": "utility_fn is required for held-out policy evaluation (Section 4): refusing to synthesize zero utility",
       "measurements": {},
-      "timestamp": 1785308293.312577
+      "timestamp": 1785311488.6438668
     },
     {
       "gate": "G5",
@@ -71,7 +72,7 @@
       "measurements": {
         "aligned": 3
       },
-      "timestamp": 1785308293.312642
+      "timestamp": 1785311488.6439512
     },
     {
       "gate": "G6",
@@ -79,7 +80,7 @@
       "passed": true,
       "reason": "",
       "measurements": {},
-      "timestamp": 1785308293.312661
+      "timestamp": 1785311488.6439722
     },
     {
       "gate": "G7",
@@ -94,7 +95,7 @@
           0.8
         ]
       },
-      "timestamp": 1785308293.312763
+      "timestamp": 1785311488.644076
     },
     {
       "gate": "G8",
@@ -102,7 +103,7 @@
       "passed": true,
       "reason": "",
       "measurements": {},
-      "timestamp": 1785308294.0369642
+      "timestamp": 1785311489.142878
     },
     {
       "gate": "G9",
@@ -112,7 +113,7 @@
       "measurements": {
         "median_random_regret": 0.17865668461153553
       },
-      "timestamp": 1785308294.0446541
+      "timestamp": 1785311489.149285
     },
     {
       "gate": "G10",
@@ -138,7 +139,7 @@
           0.01323651941610017
         ]
       },
-      "timestamp": 1785308294.430217
+      "timestamp": 1785311489.5085728
     },
     {
       "gate": "G11",
@@ -149,7 +150,7 @@
         "centroid_regret_linear": 0.20075295423999392,
         "centroid_regret_multimodal": 0.31757447619364365
       },
-      "timestamp": 1785308294.444639
+      "timestamp": 1785311489.525003
     },
     {
       "gate": "G12",
@@ -159,7 +160,7 @@
       "measurements": {
         "logistic_regret_linear": 0.10972794451400979
       },
-      "timestamp": 1785308294.4581661
+      "timestamp": 1785311489.5370188
     },
     {
       "gate": "G13",
@@ -170,7 +171,7 @@
         "logistic_regret_xor": 0.32075022095558003,
         "mlp_regret_xor": 0.07939361904841091
       },
-      "timestamp": 1785308294.51182
+      "timestamp": 1785311489.588602
     },
     {
       "gate": "G14",
@@ -184,7 +185,7 @@
         "tolerance": 0.1,
         "expected_ordering": "candidate_lower"
       },
-      "timestamp": 1785308294.5118341
+      "timestamp": 1785311489.588616
     },
     {
       "gate": "G15",
@@ -195,15 +196,17 @@
         "reversal_consistent": true,
         "p_value": 1.7763568394002505e-15
       },
-      "timestamp": 1785308294.515148
+      "timestamp": 1785311489.591261
     },
     {
       "gate": "G16",
       "name": "real-model intervention pipeline",
       "passed": true,
       "reason": "",
-      "measurements": {},
-      "timestamp": 1785308294.516221
+      "measurements": {
+        "n_results": 1
+      },
+      "timestamp": 1785311495.667072
     },
     {
       "gate": "G17",
@@ -211,7 +214,7 @@
       "passed": true,
       "reason": "",
       "measurements": {},
-      "timestamp": 1785308294.6596391
+      "timestamp": 1785311495.794592
     },
     {
       "gate": "G18",
@@ -219,7 +222,7 @@
       "passed": true,
       "reason": "",
       "measurements": {},
-      "timestamp": 1785308294.666406
+      "timestamp": 1785311495.800951
     },
     {
       "gate": "G19",
@@ -227,7 +230,7 @@
       "passed": true,
       "reason": "",
       "measurements": {},
-      "timestamp": 1785308294.700892
+      "timestamp": 1785311495.830462
     },
     {
       "gate": "G20",
@@ -237,15 +240,17 @@
       "measurements": {
         "tau_ood": 4.334772885737488
       },
-      "timestamp": 1785308294.7013729
+      "timestamp": 1785311495.830863
     },
     {
       "gate": "G21",
       "name": "candidate-vs-incumbent uses actual policy",
       "passed": true,
-      "reason": "verified by learner.py code + test_v0310_1_p0_gates",
-      "measurements": {},
-      "timestamp": 1785308294.701374
+      "reason": "",
+      "measurements": {
+        "n_candidate_routes": 20
+      },
+      "timestamp": 1785311495.8659468
     },
     {
       "gate": "G22",
@@ -255,15 +260,19 @@
       "measurements": {
         "families_evaluated": 2
       },
-      "timestamp": 1785308294.701478
+      "timestamp": 1785311495.866067
     },
     {
       "gate": "G23",
       "name": "atomic rollback works",
       "passed": true,
       "reason": "",
-      "measurements": {},
-      "timestamp": 1785308294.702282
+      "measurements": {
+        "after_promote_correct": true,
+        "after_rollback_correct": true,
+        "blocked_on_fail": true
+      },
+      "timestamp": 1785311495.868001
     },
     {
       "gate": "G24",
@@ -271,10 +280,10 @@
       "passed": true,
       "reason": "",
       "measurements": {
-        "version": "0.3.10.2-alpha",
-        "config_version": "0.3.10.2-alpha"
+        "version": "0.3.10.3-alpha",
+        "config_version": "0.3.10.3-alpha"
       },
-      "timestamp": 1785308294.702306
+      "timestamp": 1785311495.868022
     },
     {
       "gate": "G25",
@@ -285,7 +294,7 @@
         "n_intervention_results": 25,
         "model_id": "Qwen/Qwen2.5-0.5B-Instruct"
       },
-      "timestamp": 1785308294.702718
+      "timestamp": 1785311505.001654
     }
   ]
 }

@@ -44,6 +44,7 @@ import numpy as np
 
 from ..policy.types import BackendOutcome, CounterfactualExperience, Route
 from ..policy.config import ExperimentConfig
+from ..policy.utility import backend_utility as _utility
 
 
 # ------------------------------------------------------------------
@@ -126,16 +127,17 @@ def capture_task_representation(
 
 def execute_symbolic_backend(
     task: Mapping[str, Any],
-) -> BackendOutcome:
+) -> tuple[BackendOutcome, str | None]:
     """Execute the symbolic backend on a task (Section 10).
 
     Reuses the existing bounded symbolic executor. Handles:
-    - unsupported task → ``executed=False`` (not fabricated incorrect)
-    - parse failure → ``executed=False``
-    - execution failure → ``executed=False``
-    - timeout → ``executed=False``
+    - unsupported task → ``available=False, executed=False``
+    - parse failure → ``executed=True, execution_success=False``
+    - execution failure → ``executed=True, execution_success=False``
+    - timeout → ``executed=True, execution_success=False``
 
-    Returns a :class:`BackendOutcome` derived from actual execution.
+    Returns a tuple of (BackendOutcome, output_text). The output_text is
+    the actual computed value (e.g. "42") for external verification.
 
     Parameters
     ----------
@@ -145,34 +147,77 @@ def execute_symbolic_backend(
     """
     import time as _time
     tid = str(task.get("task_id", ""))
+    caps = set(task.get("capability_ids", []))
     t0 = _time.time()
-    try:
-        from .symbolic_executor import plan_from_structured_task, execute_plan
-        plan = plan_from_structured_task(task, reason_code="real_symbolic")
-        execute_plan(plan)  # raises on failure
+
+    # Check if the symbolic backend supports this task type.
+    supported_caps = {"integer_arithmetic", "modular_multiplication"}
+    if not (caps & supported_caps):
         latency = _time.time() - t0
         return BackendOutcome(
             task_id=tid,
             backend="symbolic",
-            correct=True,  # verified by executor
-            quality=1.0,
-            latency_sec=latency,
-            normalized_cost=0.01,
-            risk=0.0,
-            verifier_confidence=1.0,
-        )
-    except (ValueError, KeyError, TypeError, OverflowError, ArithmeticError):
-        latency = _time.time() - t0
-        return BackendOutcome(
-            task_id=tid,
-            backend="symbolic",
+            available=False,
+            executed=False,
+            execution_success=False,
+            output_text=None,
+            output_hash=None,
+            verifier_status="not_verified",
             correct=False,
             quality=0.0,
             latency_sec=latency,
             normalized_cost=0.01,
             risk=0.0,
             verifier_confidence=0.0,
-        )
+            failure_reason=f"unsupported capabilities: {sorted(caps)}",
+        ), None
+
+    try:
+        from .symbolic_executor import plan_from_structured_task, execute_plan
+        plan = plan_from_structured_task(task, reason_code="real_symbolic")
+        result = execute_plan(plan)
+        output_text = str(result.value)
+        output_hash = hashlib.sha256(
+            output_text.encode()).hexdigest()[:16]
+        latency = _time.time() - t0
+        # Execution succeeded — but correctness is NOT determined here.
+        # The verifier must check the output against the expected answer.
+        return BackendOutcome(
+            task_id=tid,
+            backend="symbolic",
+            available=True,
+            executed=True,
+            execution_success=True,
+            output_text=output_text,
+            output_hash=output_hash,
+            verifier_status="not_verified",  # set by verifier
+            correct=False,  # placeholder — set by verifier
+            quality=0.0,  # placeholder — set by verifier
+            latency_sec=latency,
+            normalized_cost=0.01,
+            risk=0.0,
+            verifier_confidence=0.0,  # set by verifier
+            failure_reason=None,
+        ), output_text
+    except (ValueError, KeyError, TypeError, OverflowError, ArithmeticError) as exc:
+        latency = _time.time() - t0
+        return BackendOutcome(
+            task_id=tid,
+            backend="symbolic",
+            available=True,
+            executed=True,
+            execution_success=False,
+            output_text=None,
+            output_hash=None,
+            verifier_status="not_verified",
+            correct=False,
+            quality=0.0,
+            latency_sec=latency,
+            normalized_cost=0.01,
+            risk=0.0,
+            verifier_confidence=0.0,
+            failure_reason=f"execution error: {exc!r}",
+        ), None
 
 
 # ------------------------------------------------------------------
@@ -266,18 +311,27 @@ def execute_llm_backend(
     n_prompt = inputs["input_ids"].shape[1]
     generated_ids = output_ids[0, n_prompt:]
     generated_text = tokenizer.decode(generated_ids, skip_special_tokens=True).strip()
+    output_hash = hashlib.sha256(
+        generated_text.encode()).hexdigest()[:16] if generated_text else None
 
     # The BackendOutcome's correct/quality fields are set by the verifier,
     # not here. We return the raw text for verification.
     return BackendOutcome(
         task_id=tid,
         backend="llm",
+        available=True,
+        executed=True,
+        execution_success=True,
+        output_text=generated_text,
+        output_hash=output_hash,
+        verifier_status="not_verified",  # set by verifier
         correct=False,  # placeholder — set by verifier
         quality=0.0,    # placeholder — set by verifier
         latency_sec=latency,
         normalized_cost=0.1,
         risk=0.0,
         verifier_confidence=0.0,  # set by verifier
+        failure_reason=None,
     ), generated_text
 
 
@@ -492,17 +546,6 @@ def verify_output(
 # Section 9, 13: build real counterfactual experience
 # ------------------------------------------------------------------
 
-def _utility(outcome: BackendOutcome, cfg: ExperimentConfig) -> float:
-    """Compute U_b from a BackendOutcome and config (Section 13)."""
-    t = outcome.latency_sec * 1000.0
-    time_term = cfg.lambda_time * (t / cfg.time_reference_ms)
-    compute_term = cfg.lambda_compute * (
-        outcome.normalized_cost / cfg.compute_reference)
-    risk_term = cfg.lambda_risk * outcome.risk
-    return (cfg.quality_weight * outcome.quality
-            - time_term - compute_term - risk_term)
-
-
 def build_real_counterfactual_experience(
     task: Mapping[str, Any],
     capture: np.ndarray,
@@ -511,13 +554,20 @@ def build_real_counterfactual_experience(
     llm_output_text: str | None,
     *,
     config: ExperimentConfig,
+    symbolic_output_text: str | None = None,
 ) -> tuple[CounterfactualExperience, VerificationResult, VerificationResult]:
     """Build a counterfactual experience from real executed outcomes
     (Section 9).
 
-    Verifies both backend outputs, updates the BackendOutcomes with
-    verified correctness, computes utilities, and constructs the
-    :class:`CounterfactualExperience`.
+    Verifies both backend outputs against the expected answer, updates
+    the BackendOutcomes with verified correctness, computes utilities,
+    and constructs the :class:`CounterfactualExperience`.
+
+    v0.3.10.3 — CRITICAL FIX: verifies the ACTUAL symbolic output text
+    (e.g. "42"), not ``str(quality)`` (which was "1.0" or "0.0").
+    Also fixes confidence semantics: an unsupported backend has
+    measurement_confidence=1.0 (we are certain it produced no useful
+    output), not 0.0 (which would zero the training weight).
 
     Parameters
     ----------
@@ -531,6 +581,9 @@ def build_real_counterfactual_experience(
     llm_output_text : str | None
         The raw LLM-generated text for verification.
     config : ExperimentConfig
+    symbolic_output_text : str | None
+        The raw symbolic output text for verification. If None, falls
+        back to ``symbolic_outcome.output_text``.
 
     Returns
     -------
@@ -540,50 +593,104 @@ def build_real_counterfactual_experience(
     """
     tid = str(task.get("task_id", ""))
 
-    # Verify symbolic output.
-    # The symbolic executor already verifies internally, but we also
-    # run the external verifier for consistency.
-    sym_verified = verify_output(task, str(symbolic_outcome.quality))
-    # For symbolic, the executor already set correct=True if it succeeded.
-    # If the executor failed (correct=False), keep it as-is.
-    if symbolic_outcome.correct:
-        sym_quality = 1.0
-        sym_conf = 1.0
-    else:
+    # --- Verify symbolic output ---
+    # Use the actual symbolic output text, NOT str(quality).
+    sym_text = symbolic_output_text if symbolic_output_text is not None else symbolic_outcome.output_text
+    if symbolic_outcome.available and symbolic_outcome.execution_success:
+        sym_verified = verify_output(task, sym_text)
+        if sym_verified.verified_correct is True:
+            sym_quality = 1.0
+            sym_conf = sym_verified.confidence
+            sym_verifier_status = "verified_correct"
+            sym_correct = True
+        elif sym_verified.verified_correct is False:
+            sym_quality = 0.0
+            sym_conf = sym_verified.confidence
+            sym_verifier_status = "verified_incorrect"
+            sym_correct = False
+        else:
+            # None — verifier unsupported; fail closed.
+            sym_quality = 0.0
+            sym_conf = 0.0
+            sym_verifier_status = "verifier_unsupported"
+            sym_correct = False
+    elif not symbolic_outcome.available:
+        # Backend unsupported — we are CERTAIN it produced no useful output.
+        # This is high measurement confidence, NOT low confidence.
+        sym_verified = VerificationResult(
+            verified_correct=False,
+            verifier_type="unsupported_backend",
+            confidence=1.0,  # certain that output is wrong/absent
+            failure_reason="symbolic backend unavailable for this task type",
+        )
         sym_quality = 0.0
-        sym_conf = 0.0
+        sym_conf = 1.0  # HIGH confidence — we know it failed
+        sym_verifier_status = "not_verified"
+        sym_correct = False
+    else:
+        # Execution failed (error/timeout).
+        sym_verified = VerificationResult(
+            verified_correct=False,
+            verifier_type="execution_failed",
+            confidence=1.0,  # certain that output is wrong/absent
+            failure_reason=symbolic_outcome.failure_reason or "execution failed",
+        )
+        sym_quality = 0.0
+        sym_conf = 1.0  # HIGH confidence — we know it failed
+        sym_verifier_status = "not_verified"
+        sym_correct = False
 
-    # Verify LLM output.
+    # --- Verify LLM output ---
     llm_verified = verify_output(task, llm_output_text)
     if llm_verified.verified_correct is True:
         llm_quality = 1.0
         llm_conf = llm_verified.confidence
+        llm_verifier_status = "verified_correct"
+        llm_correct = True
     elif llm_verified.verified_correct is False:
         llm_quality = 0.0
         llm_conf = llm_verified.confidence
+        llm_verifier_status = "verified_incorrect"
+        llm_correct = False
     else:
-        # None — unsupported; fail closed.
+        # None — verifier unsupported; fail closed.
         llm_quality = 0.0
         llm_conf = 0.0
+        llm_verifier_status = "verifier_unsupported"
+        llm_correct = False
 
     # Update outcomes with verified values.
     sym_final = BackendOutcome(
         task_id=tid, backend="symbolic",
-        correct=symbolic_outcome.correct,
+        available=symbolic_outcome.available,
+        executed=symbolic_outcome.executed,
+        execution_success=symbolic_outcome.execution_success,
+        output_text=sym_text,
+        output_hash=symbolic_outcome.output_hash,
+        verifier_status=sym_verifier_status,
+        correct=sym_correct,
         quality=sym_quality,
         latency_sec=symbolic_outcome.latency_sec,
         normalized_cost=symbolic_outcome.normalized_cost,
         risk=symbolic_outcome.risk,
         verifier_confidence=sym_conf,
+        failure_reason=symbolic_outcome.failure_reason,
     )
     llm_final = BackendOutcome(
         task_id=tid, backend="llm",
-        correct=bool(llm_verified.verified_correct is True),
+        available=llm_outcome.available,
+        executed=llm_outcome.executed,
+        execution_success=llm_outcome.execution_success,
+        output_text=llm_output_text,
+        output_hash=llm_outcome.output_hash,
+        verifier_status=llm_verifier_status,
+        correct=llm_correct,
         quality=llm_quality,
         latency_sec=llm_outcome.latency_sec,
         normalized_cost=llm_outcome.normalized_cost,
         risk=llm_outcome.risk,
         verifier_confidence=llm_conf,
+        failure_reason=llm_outcome.failure_reason,
     )
 
     # Compute utilities.
@@ -600,8 +707,11 @@ def build_real_counterfactual_experience(
         preferred = Route.ABSTAIN
 
     # Compute sample weight using the configured weight mode.
+    # v0.3.10.3 — confidence is the PRODUCT of measurement confidences,
+    # not the minimum. An unsupported backend has confidence=1.0
+    # (we are certain of the outcome), so it does NOT zero the weight.
     from ..policy.weighting import compute_weight
-    conf = min(sym_conf, llm_conf)
+    conf = sym_conf * llm_conf
     weight = compute_weight(
         delta_u, conf, config.weight_mode,
         gap_threshold=config.gap_threshold,
@@ -693,6 +803,10 @@ def make_letter_counting_tasks(
     routing decision: route to LLM for counting, route to symbolic for
     arithmetic.
 
+    v0.3.10.3 — CRITICAL FIX: the caller MUST provide a disjoint
+    ``word_pool`` for each split to prevent prompt leakage. Use
+    :func:`partition_word_pool` to get disjoint pools.
+
     Each task has:
     - ``task_id``: unique identifier
     - ``prompt``: "How many letters are in the word 'cat'? Answer with just the number."
@@ -730,12 +844,91 @@ def make_letter_counting_tasks(
     return tasks
 
 
+# v0.3.10.3 — Section 50: disjoint word pools for split integrity.
+_FULL_WORD_POOL: tuple[str, ...] = (
+    "cat", "dog", "hello", "world", "apple", "banana", "house",
+    "mouse", "table", "chair", "water", "light", "night", "day",
+    "tree", "bird", "fish", "book", "pen", "cup", "door", "key",
+    "star", "moon", "sun", "rain", "snow", "fire", "wind", "rock",
+    "river", "lake", "hill", "road", "bridge", "tower", "castle",
+    "garden", "forest", "mountain", "ocean", "cloud", "storm",
+    "flower", "grass", "leaf", "root", "seed", "milk", "bread",
+    "cheese", "honey", "sugar", "salt", "pepper", "knife", "fork",
+    "plate", "glass", "bottle", "bag", "box", "rope", "string",
+    "thread", "needle", "button", "zipper", "pocket", "shoe",
+    "sock", "hat", "coat", "scarf", "glove", "belt", "ring",
+    "watch", "clock", "lamp", "candle", "match", "ash", "smoke",
+)
+
+
+def partition_word_pool(
+    n_splits: int = 4,
+    *,
+    seed: int = 0,
+) -> list[tuple[str, ...]]:
+    """Partition the word pool into ``n_splits`` disjoint subsets.
+
+    This ensures no word appears in more than one split, preventing
+    prompt leakage across train/dev/cal/final.
+
+    Returns a list of tuples, each containing the words for one split.
+    """
+    rng = np.random.default_rng(seed)
+    pool = list(_FULL_WORD_POOL)
+    rng.shuffle(pool)
+    # Evenly partition.
+    base = len(pool) // n_splits
+    remainder = len(pool) % n_splits
+    splits = []
+    idx = 0
+    for i in range(n_splits):
+        size = base + (1 if i < remainder else 0)
+        splits.append(tuple(pool[idx:idx + size]))
+        idx += size
+    return splits
+
+
+def assert_splits_disjoint(
+    splits: list[list[dict[str, Any]]],
+    *,
+    field: str = "prompt",
+    family: str | None = "counting",
+) -> None:
+    """Assert that task splits have no overlapping prompts ACROSS splits.
+
+    This is a release gate (Section 50): prompt-hash disjointness must
+    be verified before reporting held-out results. Within-split
+    duplicates (from sampling with replacement) are allowed.
+
+    By default, only checks tasks with ``family == "counting"`` since
+    those use the word pool that was partitioned. Arithmetic tasks use
+    random operands and may occasionally collide, but the hidden state
+    is still task-specific. Set ``family=None`` to check all tasks.
+    """
+    per_split_sets: list[set[str]] = []
+    for split in splits:
+        prompts: set[str] = set()
+        for task in split:
+            if family is not None and task.get("family") != family:
+                continue
+            prompts.add(str(task.get(field, "")))
+        per_split_sets.append(prompts)
+    for i in range(len(per_split_sets)):
+        for j in range(i + 1, len(per_split_sets)):
+            overlap = per_split_sets[i] & per_split_sets[j]
+            if overlap:
+                raise AssertionError(
+                    f"prompt leakage: {next(iter(overlap))!r} appears in "
+                    f"both split {i} and split {j}")
+
+
 def make_mixed_tasks(
     n_arithmetic: int = 40,
     n_counting: int = 40,
     seed: int = 0,
     *,
     max_value: int = 100,
+    word_pool: tuple[str, ...] | None = None,
 ) -> list[dict[str, Any]]:
     """Generate a MIXED task set for the first scientifically meaningful
     real-model experiment (Section 50).
@@ -746,9 +939,8 @@ def make_mixed_tasks(
     - **Letter counting** (LLM wins): symbolic executor fails closed
       (unsupported capability), LLM can count letters → route LLM.
 
-    This is the minimal task set where the routing policy has a real
-    decision to learn: distinguish arithmetic from counting tasks based
-    on the hidden state, and route accordingly.
+    v0.3.10.3 — accepts a ``word_pool`` parameter so each split can use
+    a disjoint vocabulary. The caller is responsible for partitioning.
 
     Parameters
     ----------
@@ -757,11 +949,14 @@ def make_mixed_tasks(
     seed : int
     max_value : int
         Max operand value for arithmetic.
+    word_pool : tuple of str | None
+        Disjoint word pool for this split. If None, uses the full pool
+        (NOT recommended for multi-split experiments).
     """
     arith = make_arithmetic_tasks(
         n=n_arithmetic, seed=seed, max_value=max_value)
     counting = make_letter_counting_tasks(
-        n=n_counting, seed=seed + 1000)
+        n=n_counting, seed=seed + 1000, word_pool=word_pool)
     tasks = arith + counting
     # Shuffle so the two families are interleaved.
     rng = np.random.default_rng(seed + 9999)
@@ -773,6 +968,7 @@ __all__ = [
     "CaptureConfig",
     "LLMGenerationConfig",
     "VerificationResult",
+    "assert_splits_disjoint",
     "build_real_counterfactual_experience",
     "capture_task_representation",
     "execute_llm_backend",
@@ -780,6 +976,7 @@ __all__ = [
     "make_arithmetic_tasks",
     "make_letter_counting_tasks",
     "make_mixed_tasks",
+    "partition_word_pool",
     "verify_arithmetic",
     "verify_exact_string",
     "verify_output",
