@@ -1,0 +1,98 @@
+{
+  "release": "0.3.10.1-alpha",
+  "timestamp": 1785300026.320991,
+  "synthetic_result_matrix": {
+    "linear": {
+      "centroid": {
+        "utility": 0.47821765550140144,
+        "regret": 0.20075295423999392,
+        "accuracy": 0.47,
+        "evidence_level": "SYNTHETIC"
+      },
+      "logistic": {
+        "utility": 0.5692426652273855,
+        "regret": 0.10972794451400979,
+        "accuracy": 0.635,
+        "evidence_level": "SYNTHETIC"
+      },
+      "mlp_experimental": {
+        "utility": 0.5413413009037551,
+        "regret": 0.13762930883764024,
+        "accuracy": 0.585,
+        "evidence_level": "SYNTHETIC"
+      }
+    },
+    "near_tie": {
+      "centroid": {
+        "utility": 0.5115313527569313,
+        "regret": 0.10578607462763089,
+        "accuracy": 0.555,
+        "evidence_level": "SYNTHETIC"
+      },
+      "logistic": {
+        "utility": 0.524363616905529,
+        "regret": 0.09295381047903316,
+        "accuracy": 0.59,
+        "evidence_level": "SYNTHETIC"
+      },
+      "mlp_experimental": {
+        "utility": 0.5317752082651385,
+        "regret": 0.08554221911942374,
+        "accuracy": 0.585,
+        "evidence_level": "SYNTHETIC"
+      },
+      "unweighted": {
+        "utility": 0.5245466267558855,
+        "regret": 0.09277080062867668,
+        "accuracy": 0.575,
+        "evidence_level": "SYNTHETIC"
+      },
+      "weighted": {
+        "utility": 0.524363616905529,
+        "regret": 0.09295381047903316,
+        "accuracy": 0.59,
+        "evidence_level": "SYNTHETIC"
+      }
+    },
+    "multimodal": {
+      "centroid": {
+        "utility": 0.49999999999999994,
+        "regret": 0.31757447619364365,
+        "accuracy": 0.5,
+        "evidence_level": "SYNTHETIC"
+      },
+      "logistic": {
+        "utility": 0.5063514895238729,
+        "regret": 0.3112229866697708,
+        "accuracy": 0.51,
+        "evidence_level": "SYNTHETIC"
+      },
+      "mlp_experimental": {
+        "utility": 0.8175744761936434,
+        "regret": 0.0,
+        "accuracy": 1.0,
+        "evidence_level": "SYNTHETIC"
+      }
+    },
+    "xor": {
+      "centroid": {
+        "utility": 0.5,
+        "regret": 0.31757447619364365,
+        "accuracy": 0.5,
+        "evidence_level": "SYNTHETIC"
+      },
+      "logistic": {
+        "utility": 0.5190544685716186,
+        "regret": 0.298520007622025,
+        "accuracy": 0.53,
+        "evidence_level": "SYNTHETIC"
+      },
+      "mlp_experimental": {
+        "utility": 0.7350051123832961,
+        "regret": 0.08256936381034734,
+        "accuracy": 0.87,
+        "evidence_level": "SYNTHETIC"
+      }
+    }
+  }
+}
