@@ -145,14 +145,12 @@ def choose_route_with_reason(
             confidence=confidence, p_symbolic=p_symbolic,
             ood_score=ood_score,
         )
-    # Confidence >= threshold. Handle exact tie at p=0.5.
-    if p_symbolic == 0.5:
-        return RouteDecision(
-            route=Route.ABSTAIN, reason="policy_tie",
-            confidence=confidence, p_symbolic=p_symbolic,
-            ood_score=ood_score,
-        )
-    if p_symbolic > 0.5:
+    # Confidence >= threshold. Route to symbolic or LLM.
+    # v0.3.10.2 — p=0.5 routes to symbolic (consistent with choose_route),
+    # NOT to abstain. The old policy_tie abstention was inconsistent with
+    # choose_route and caused the candidate to abstain on everything when
+    # the policy couldn't distinguish classes (e.g. zero centroid).
+    if p_symbolic >= 0.5:
         return RouteDecision(
             route=Route.SYMBOLIC, reason="symbolic",
             confidence=confidence, p_symbolic=p_symbolic,
