@@ -29,7 +29,7 @@ from typing import Any, Callable, Sequence
 
 import numpy as np
 
-from .interventions import RealInterventionResult
+from . import RealInterventionResult
 from ..policy.abstention import choose_route
 from ..policy.types import Route
 
