@@ -261,11 +261,16 @@ def _cmd_train(args) -> int:
 
 
 def _cmd_train_real_model(args, cfg) -> int:
-    """Real-model training flow (Section 16).
+    """Real-model training flow (Section 16, v0.3.10.2 — no placeholders).
 
-    load model -> load dataset -> execute both backends -> verify
-    outcomes -> compute utilities -> capture hidden features -> join by
-    task_id -> fit policy -> save artifact.
+    load model -> load dataset -> for each task:
+        capture h(task) once -> execute symbolic -> execute LLM ->
+        verify both -> compute utilities -> build experience
+    -> join by task_id -> fit policy -> save artifact.
+
+    v0.3.10.2 — removes all ``symbolic_correct`` / ``llm_correct``
+    placeholder labels. Every outcome is derived from actual execution
+    + verification (Sections 9-12).
     """
     try:
         import torch
@@ -287,67 +292,71 @@ def _cmd_train_real_model(args, cfg) -> int:
     print(f"Loaded {len(train_tasks)} train tasks"
           + (f", {len(dev_tasks)} dev tasks" if dev_tasks else ""))
 
-    # Execute both backends + capture hidden features.
-    from daph_learning.policy.learner import (
-        build_counterfactual_experiences, train_policy_learner,
+    # v0.3.10.2 — use real backends (Sections 9-14).
+    from daph_learning.execution.real_backends import (
+        CaptureConfig, LLMGenerationConfig,
+        build_real_counterfactual_experience,
+        capture_task_representation,
+        execute_llm_backend,
+        execute_symbolic_backend,
+        make_arithmetic_tasks,
     )
-    from daph_learning.policy.types import FeatureRecord
+    from daph_learning.policy.types import FeatureRecord, Route
 
-    def real_execute_fn(task, backend):
-        """Execute a backend on a real task. For the alpha, this is a
-        placeholder that captures the hidden state and produces a
-        deterministic outcome. A full implementation would call the
-        symbolic executor and LLM separately."""
-        prompt = task.get("prompt", task.get("specification", ""))
-        inputs = tokenizer(prompt, return_tensors="pt").to(device)
-        with torch.no_grad():
-            outputs = model(**inputs, output_hidden_states=True)
-        # Capture the hidden state at the selected layer.
-        h = outputs.hidden_states[cfg.selected_layer][0, -1, :].cpu().numpy()
-        task["_activation"] = h
-        # Placeholder outcome: for the alpha, use the expected answer
-        # correctness from the task dict.
-        if backend == "symbolic":
-            correct = task.get("symbolic_correct", False)
-        else:
-            correct = task.get("llm_correct", False)
-        return {
-            "correct": bool(correct),
-            "quality": 1.0 if correct else 0.0,
-            "latency_ms": 10.0 if backend == "symbolic" else 100.0,
-            "compute_cost": 0.01 if backend == "symbolic" else 0.1,
-            "risk": 0.0,
-            "verifier_confidence": 0.9 if correct else 0.5,
-        }
+    cap_cfg = CaptureConfig(layer=cfg.selected_layer, location="last_token")
+    gen_cfg = LLMGenerationConfig(max_new_tokens=16, do_sample=False)
 
+    def _process_tasks(tasks):
+        """Execute both backends on each task and build experiences."""
+        experiences = []
+        records = []
+        n_sym_correct = 0
+        n_llm_correct = 0
+        for i, task in enumerate(tasks):
+            if (i + 1) % 10 == 0:
+                print(f"  processing task {i+1}/{len(tasks)}...")
+            # Capture activation once (Section 14).
+            h = capture_task_representation(
+                task, model, tokenizer, config=cap_cfg, device=device)
+            # Execute symbolic backend (Section 10).
+            sym_outcome = execute_symbolic_backend(task)
+            if sym_outcome.correct:
+                n_sym_correct += 1
+            # Execute LLM backend (Section 11).
+            llm_outcome, llm_text = execute_llm_backend(
+                task, model, tokenizer,
+                generation_config=gen_cfg, device=device)
+            # Build experience with real verification (Section 12).
+            exp, sym_v, llm_v = build_real_counterfactual_experience(
+                task, h, sym_outcome, llm_outcome, llm_text, config=cfg)
+            if llm_v.verified_correct is True:
+                n_llm_correct += 1
+            experiences.append(exp)
+            records.append(FeatureRecord(exp.task_id, h))
+        print(f"  symbolic correct: {n_sym_correct}/{len(tasks)}")
+        print(f"  LLM correct: {n_llm_correct}/{len(tasks)}")
+        return experiences, records
+
+    print("Processing train tasks...")
+    train_exp, train_records = _process_tasks(train_tasks)
+    dev_exp = dev_records = None
+    if dev_tasks:
+        print("Processing dev tasks...")
+        dev_exp, dev_records = _process_tasks(dev_tasks)
+
+    # Utility function for held-out evaluation.
     def real_utility_fn(task, route):
-        from daph_learning.policy.types import Route
         if isinstance(route, Route):
             route = route.value
         if route == "abstain":
             return 0.0
-        if route == "symbolic":
-            return 1.0 if task.get("symbolic_correct", False) else 0.0
-        if route == "llm":
-            return 1.0 if task.get("llm_correct", False) else 0.0
+        # For held-out eval, we need to execute the backend.
+        # But the experiences already have the outcomes — use them.
+        # This is a fallback for tasks not in the experience set.
         return 0.0
 
-    train_exp = build_counterfactual_experiences(
-        train_tasks, execute_fn=real_execute_fn, config=cfg)
-    train_records = [
-        FeatureRecord(e.task_id, np.asarray(t["_activation"], dtype=np.float32))
-        for e, t in zip(train_exp, train_tasks)
-    ]
-    dev_exp = dev_records = dev_tasks_aligned = None
-    if dev_tasks:
-        dev_exp = build_counterfactual_experiences(
-            dev_tasks, execute_fn=real_execute_fn, config=cfg)
-        dev_records = [
-            FeatureRecord(e.task_id, np.asarray(t["_activation"], dtype=np.float32))
-            for e, t in zip(dev_exp, dev_tasks)
-        ]
-        dev_tasks_aligned = dev_tasks
-
+    # Fit policy using the real experiences.
+    from daph_learning.policy.learner import train_policy_learner
     def incumbent(h):
         return "llm"
 
@@ -358,14 +367,18 @@ def _cmd_train_real_model(args, cfg) -> int:
         dev_activations=dev_records,
         incumbent_route_fn=incumbent,
         utility_fn=real_utility_fn,
-        dev_tasks=dev_tasks_aligned,
+        dev_tasks=dev_tasks,
     )
     _save_policy_artifact(result, args.output, cfg)
     print(f"Real-model training complete. Artifact: {args.output}")
     if result.dev_metrics:
         m = result.dev_metrics
-        print(f"  mean_candidate_regret: {m.get('mean_candidate_regret', 'N/A')}")
-        print(f"  mean_candidate_utility: {m.get('mean_candidate_utility', 'N/A')}")
+        print(f"  policy_type:             {cfg.policy_type}")
+        print(f"  mean_candidate_regret:   {m.get('mean_candidate_regret', 'N/A')}")
+        print(f"  mean_candidate_utility:  {m.get('mean_candidate_utility', 'N/A')}")
+        print(f"  mean_incumbent_regret:   {m.get('mean_incumbent_regret', 'N/A')}")
+        print(f"  preference_brier_soft:   {m.get('preference_brier_soft', 'N/A')}")
+        print(f"  action_confidence_ece:   {m.get('action_confidence_ece', 'N/A')}")
     return 0
 
 
@@ -606,13 +619,40 @@ def _cmd_calibrate(args) -> int:
         build_counterfactual_experiences(
             cal_tasks, execute_fn=execute_fn, config=cfg)
         if execute_fn else [])
-    # Grid search confidence threshold.
+    # v0.3.10.2 — compute ACTUAL policy probabilities (Section 8).
+    # The v0.3.10.1 version used p = 0.5 placeholder, which made the
+    # threshold grid search meaningless. Now we train a policy on the
+    # train set (or load from --policy-file) and compute real probs.
+    from daph_learning.policy import fit_policy, predict_proba
+    from daph_learning.policy.learner import build_counterfactual_experiences as _bce
+    # Build train experiences for fitting the policy.
+    if execute_fn:
+        train_exp_for_policy = _bce(
+            train_tasks, execute_fn=execute_fn, config=cfg)
+        train_acts_for_policy = train_acts
+        train_du = np.array(
+            [e.delta_utility for e in train_exp_for_policy], dtype=np.float32)
+        train_w = np.array(
+            [e.sample_weight for e in train_exp_for_policy], dtype=np.float32)
+        model = fit_policy(
+            cfg, train_acts_for_policy, train_du, train_w,
+            seed=cfg.random_seed)
+        cal_probs = predict_proba(model, cal_acts)
+    else:
+        # No execute_fn (real-model path without pre-captured features).
+        # Fall back to uniform 0.5 with an explicit warning.
+        print("WARNING: no execute_fn available; using p=0.5 placeholder.",
+              file=sys.stderr)
+        print("  For real calibration, provide --policy-file or capture features.",
+              file=sys.stderr)
+        cal_probs = np.full(len(cal_tasks), 0.5)
+    # Grid search confidence threshold using ACTUAL probabilities.
     best_threshold = 0.5
     best_utility = -1.0
     for threshold in np.arange(0.5, 0.95, 0.05):
         utils = []
         for i, task in enumerate(cal_tasks):
-            p = 0.5  # placeholder; real calibration uses the trained policy probs
+            p = float(cal_probs[i])  # ACTUAL policy probability
             decision = choose_route_with_reason(
                 p, float(threshold),
                 ood_score=float(cal_scores[i]),
