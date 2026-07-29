@@ -319,8 +319,9 @@ def random_direction_control(
     n_random: int = 500,
     seed: int = 0,
     metric: str = "regret",
+    learned_metric_value: float | None = None,
 ) -> dict[str, Any]:
-    """Random direction control (Section 10E).
+    """Random direction control (Section 10E / 26).
 
     Generate ``n_random`` matched random directions (same norm, same
     dimension) and report the distribution of the metric achieved by
@@ -330,6 +331,16 @@ def random_direction_control(
     This detects benchmarks where arbitrary random directions trivially
     solve the task: if the median random metric is close to the best
     possible, the benchmark is too easy.
+
+    v0.3.10.1 — Section 26: if ``learned_metric_value`` is provided,
+    compute the empirical significance ``p_emp``::
+
+        p_emp = (1 + count(M_j >= M*)) / (N_random + 1)
+
+    For regret (lower-is-better), the comparison is inverted:
+    ``count(M_j <= M*)``. This is the random-direction qualification
+    formula; do NOT use Gaussian z-score alone as primary significance
+    evidence.
 
     Parameters
     ----------
@@ -341,12 +352,16 @@ def random_direction_control(
     metric : str
         ``"regret"`` (lower is better) or ``"accuracy"`` (higher is
         better).
+    learned_metric_value : float | None
+        The learned method's metric value M*. If provided, ``p_emp`` is
+        computed.
 
     Returns
     -------
     dict
         With keys: ``n_random``, ``metric``, ``random_values`` (list),
-        ``median``, ``mean``, ``p05``, ``p95``, ``min``, ``max``.
+        ``median``, ``mean``, ``p05``, ``p95``, ``min``, ``max``,
+        ``p_emp`` (if learned_metric_value provided), ``learned_metric_value``.
     """
     rng = np.random.default_rng(seed)
     H = np.asarray(activations, dtype=np.float64)
@@ -379,7 +394,7 @@ def random_direction_control(
         else:
             raise ValueError(f"unknown metric {metric!r}")
     values = np.array(values, dtype=np.float64)
-    return {
+    result = {
         "n_random": int(len(values)),
         "metric": metric,
         "random_values": values.tolist(),
@@ -390,6 +405,22 @@ def random_direction_control(
         "min": float(values.min()),
         "max": float(values.max()),
     }
+    # v0.3.10.1 — Section 26: empirical significance.
+    if learned_metric_value is not None:
+        m_star = float(learned_metric_value)
+        if metric == "regret":
+            # Lower is better: count how many random directions are
+            # at least as good (<= M*).
+            count_at_least_as_good = int(np.sum(values <= m_star))
+        else:
+            # Higher is better: count how many random directions are
+            # at least as good (>= M*).
+            count_at_least_as_good = int(np.sum(values >= m_star))
+        p_emp = (1 + count_at_least_as_good) / (len(values) + 1)
+        result["learned_metric_value"] = m_star
+        result["p_emp"] = float(p_emp)
+        result["count_random_at_least_as_good"] = count_at_least_as_good
+    return result
 
 
 # ------------------------------------------------------------------
