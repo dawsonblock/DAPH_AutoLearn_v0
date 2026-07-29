@@ -1,4 +1,4 @@
-# DAPH AutoLearn v0.3.10.1-alpha
+# DAPH AutoLearn v0.3.10.2-alpha
 
 <div align="center">
 
@@ -617,6 +617,22 @@ result.**
 
 ## Changelog
 
+### v0.3.10.2-alpha
+
+- **Real-model loop completion**: actual symbolic + LLM backend
+  execution, real verification, real utility, real regret. No more
+  `symbolic_correct` / `llm_correct` placeholder labels.
+- **Release-gate integrity**: G10 is now a true superiority gate
+  (multi-seed); G16-G25 actually execute what they claim.
+- **Calibration repair**: uses `policy.predict_proba`, not `p=0.5`.
+- **Near-tie env redesign**: weighting now has a real expected
+  advantage (decisive vs ambiguous with nuisance direction).
+- **Real steering utility test**: dose-response with verified utility,
+  route-flip analysis, random controls.
+- **Evidence labels**: finer categories
+  (latent/behavioral/utility intervention).
+- **Source-tree hash + pytest collection hash** in all artifacts.
+
 ### v0.3.10.1-alpha
 
 - **Correctness repair pass**: focused on implementation integrity and
@@ -647,7 +663,7 @@ result.**
 - **P13-20 / G16-G20**: real intervention pipeline + real
   train/evaluate/calibrate CLI + OOD threshold calibration + PCA safety.
 - **P30 / G13**: small MLP router for nonlinear diagnostic.
-- **P43 / G24**: version unified to `0.3.10.1-alpha` across all
+- **P43 / G24**: version unified to `0.3.10.2-alpha` across all
   surfaces.
 
 ### v0.3.10

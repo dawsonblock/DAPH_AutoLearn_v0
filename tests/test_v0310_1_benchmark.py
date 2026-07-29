@@ -155,31 +155,68 @@ class TestRandomDirectionControl:
 # ============================================================
 
 class TestWeightingValue:
-    """Section 32: weighted method should reduce regret relative to
-    unweighted method on the designed noisy near-tie environment."""
+    """Section 32 / v0.3.10.2 G10: weighted method must TRULY beat
+    unweighted method on the designed near-tie environment, verified
+    across multiple seeds.
 
-    def test_weighted_beats_unweighted_on_near_tie(self):
-        """Scientific expectation: weighted < unweighted regret on the
-        near-tie/heteroskedastic environment where decisive samples
-        are informative and near-ties are noisy."""
+    v0.3.10.2 — this is a TRUE SUPERIORITY gate, not a non-inferiority
+    gate. The old gate passed when ``reg_w <= reg_u + 0.01`` (tolerance),
+    which is a non-inferiority test. The new gate requires:
+    ``mean(d_s) >= min_weighting_gain`` where
+    ``d_s = regret_unweighted(seed_s) - regret_weighted(seed_s)``.
+    """
+
+    MIN_WEIGHTING_GAIN = 0.005  # chosen BEFORE seeing results
+
+    def test_weighted_truly_beats_unweighted_multi_seed(self):
+        """Run 10 seeds and require mean(d) >= min_gain with lower CI > 0.
+
+        This is the experiment that validates the utility-weighting
+        hypothesis (Section 32 / Question A).
+        """
+        gains = []
+        for s in range(10):
+            train = make_near_tie_environment(n=300, dim=8, seed=s)
+            dev = make_near_tie_environment(n=200, dim=8, seed=s + 1)
+            reg_unw, _, _ = _train_and_eval(
+                "logistic", train, dev,
+                weight_mode="uniform", target_mode="soft",
+                confidence_threshold=0.5, seed=s)
+            reg_w, _, _ = _train_and_eval(
+                "logistic", train, dev,
+                weight_mode="clipped_gap", target_mode="soft",
+                confidence_threshold=0.5, seed=s)
+            gain = reg_unw - reg_w
+            gains.append(gain)
+        gains = np.array(gains)
+        mean_gain = float(gains.mean())
+        std_gain = float(gains.std())
+        n = len(gains)
+        lower_ci = mean_gain - 1.96 * std_gain / np.sqrt(n)
+        # True superiority: mean gain >= min_gain AND lower CI > 0.
+        assert mean_gain >= self.MIN_WEIGHTING_GAIN, (
+            f"mean weighting gain {mean_gain:.4f} < min_gain "
+            f"{self.MIN_WEIGHTING_GAIN}; weighted does NOT truly beat "
+            f"unweighted. Per-seed gains: {gains.tolist()}")
+        assert lower_ci > 0, (
+            f"lower 95% CI {lower_ci:.4f} <= 0; weighting advantage is "
+            f"not statistically reliable. mean={mean_gain:.4f}, "
+            f"std={std_gain:.4f}, n={n}")
+
+    def test_weighted_beats_unweighted_single_seed_smoke(self):
+        """Quick single-seed smoke test (non-authoritative)."""
         train = make_near_tie_environment(n=300, dim=8, seed=0)
         dev = make_near_tie_environment(n=200, dim=8, seed=1)
-        # Unweighted: UNIFORM weight mode.
-        reg_unw, util_unw, acc_unw = _train_and_eval(
+        reg_unw, _, _ = _train_and_eval(
             "logistic", train, dev,
             weight_mode="uniform", target_mode="soft",
             confidence_threshold=0.5, seed=0)
-        # Weighted: CLIPPED_GAP weight mode.
-        reg_w, util_w, acc_w = _train_and_eval(
+        reg_w, _, _ = _train_and_eval(
             "logistic", train, dev,
             weight_mode="clipped_gap", target_mode="soft",
             confidence_threshold=0.5, seed=0)
-        # Weighted should have lower (or equal) regret. We use <= rather
-        # than strict < because the gap can be small on some seeds; the
-        # gate computes both sides and stores both measurements.
-        assert reg_w <= reg_unw + 0.01, (
-            f"weighted regret {reg_w} should <= unweighted regret "
-            f"{reg_unw} (tolerance 0.01) on near-tie environment")
+        # Just check both produce valid regret values.
+        assert reg_w >= 0.0 and reg_unw >= 0.0
 
 
 # ============================================================

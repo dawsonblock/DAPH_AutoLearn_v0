@@ -1,3 +1,45 @@
+# 0.3.10.2-alpha (real-model loop completion, release-gate integrity, calibration repair, verified counterfactual execution, and scientific qualification)
+
+- **Mission shift (Section 0)**: this release completes the real-model
+  execution loop and fixes dishonest/weak release gates. The target is
+  the first scientifically meaningful real Qwen result: does AutoLearn
+  improve verified real-model decision utility?
+- **G10 fix (Section 2)**: gate renamed from "weighted beats unweighted"
+  (non-inferiority, `<= + 0.01`) to a true superiority gate
+  (`regret_unweighted - regret_weighted >= min_weighting_gain`).
+  Multi-seed qualification (10 seeds, mean(d) > min_gain, lower CI > 0).
+- **Near-tie env redesign (Section 3)**: decisive examples (25%) carry
+  the true routing signal aligned with `w*`; ambiguous examples (75%)
+  contain high-variance noise + a nuisance direction. Weighted training
+  now has a real expected advantage over unweighted.
+- **Real backends (Sections 9-12)**: `execute_symbolic_backend` (bounded
+  executor) and `execute_llm_backend` (actual model generation with
+  `do_sample=False` for determinism). No more `symbolic_correct` /
+  `llm_correct` placeholder labels in the qualified real path.
+- **Real verifier (Section 12)**: arithmetic exact numeric verification;
+  fail closed on unsupported tasks. Never substring matching.
+- **Capture once (Section 14)**: activation captured once per task
+  before backend execution, not after. Router state is pre-execution.
+- **Calibration repair (Section 8)**: calibration CLI now uses
+  `policy.predict_proba(h_i)` instead of `p = 0.5` placeholder.
+- **Gate semantics fix (Sections 5-7, 21-23)**: G16 now actually
+  executes a real intervention; G17/G18 exercise the real-model branch;
+  G19 uses actual policy probabilities; G22 exercises KL logic; G23
+  tests actual atomic rollback; G25 validates artifact schema.
+- **Evidence labels (Section 32)**: `real_model_causal` replaced by
+  `REAL_MODEL_LATENT_INTERVENTION`, `REAL_MODEL_BEHAVIORAL_INTERVENTION`,
+  `REAL_MODEL_UTILITY_INTERVENTION`.
+- **Real steering utility test (Sections 33-35)**: dose-response with
+  actual verified utility; route-flip analysis (beneficial vs harmful);
+  matched random direction controls with `p_emp`.
+- **Source-tree hash (Section 24)**: deterministic hash over relevant
+  repo files stored in all artifacts.
+- **No placeholder success (Section 44)**: all `placeholder`, `TODO`,
+  `dummy`, `p = 0.5`, `return 0.0` in scientific paths audited and
+  removed from qualified mode.
+- **Qualified vs demo mode (Section 45)**: `--mode real` rejects
+  demo-only shortcuts; `--mode synthetic` preserved for ablation.
+
 # 0.3.10.1-alpha (correctness repair, scientific hardening, benchmark redesign, real policy evaluation, calibration, OOD, and causal validation)
 
 - **Mission shift (Section 0)**: this release is a focused repair and
