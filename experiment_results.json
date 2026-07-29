@@ -1,6 +1,6 @@
 {
   "release": "0.3.10.1-alpha",
-  "timestamp": 1785300496.997066,
+  "timestamp": 1785307431.005148,
   "synthetic_result_matrix": {
     "linear": {
       "centroid": {
@@ -24,33 +24,33 @@
     },
     "near_tie": {
       "centroid": {
-        "utility": 0.5115313527569313,
-        "regret": 0.10578607462763089,
-        "accuracy": 0.555,
+        "utility": 0.487534470745797,
+        "regret": 0.09647987693728208,
+        "accuracy": 0.475,
         "evidence_level": "SYNTHETIC"
       },
       "logistic": {
-        "utility": 0.524363616905529,
-        "regret": 0.09295381047903316,
-        "accuracy": 0.59,
+        "utility": 0.5182978501042885,
+        "regret": 0.06571649757879051,
+        "accuracy": 0.46,
         "evidence_level": "SYNTHETIC"
       },
       "mlp_experimental": {
-        "utility": 0.5317752082651385,
-        "regret": 0.08554221911942374,
-        "accuracy": 0.585,
+        "utility": 0.5062657410367024,
+        "regret": 0.07774860664637669,
+        "accuracy": 0.525,
         "evidence_level": "SYNTHETIC"
       },
       "unweighted": {
-        "utility": 0.5245466267558855,
-        "regret": 0.09277080062867668,
-        "accuracy": 0.575,
+        "utility": 0.5120206010330396,
+        "regret": 0.07199374665003944,
+        "accuracy": 0.46,
         "evidence_level": "SYNTHETIC"
       },
       "weighted": {
-        "utility": 0.524363616905529,
-        "regret": 0.09295381047903316,
-        "accuracy": 0.59,
+        "utility": 0.5182978501042885,
+        "regret": 0.06571649757879051,
+        "accuracy": 0.46,
         "evidence_level": "SYNTHETIC"
       }
     },

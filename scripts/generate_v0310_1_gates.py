@@ -222,36 +222,53 @@ def run_all_gates() -> dict:
         ora_u = np.array([benchmark_oracle_utility(t) for t in dev], dtype=np.float64)
         return float(mean_regret(pred_u, ora_u)), float(pred_u.mean())
 
-    # G10: weighted beats unweighted on near-tie.
-    train_nt = make_environment("near_tie", n=300, dim=8, seed=0)
-    dev_nt = make_environment("near_tie", n=200, dim=8, seed=1)
-    # Weighted: clipped_gap mode.
-    reg_w, _ = _train_eval("logistic", train_nt, dev_nt, ct=0.5, seed=0)
-    # Unweighted: use uniform mode via a custom config.
-    cfg_u = ExperimentConfig(policy_type="logistic", weight_mode="uniform",
-                             gap_threshold=0.05, confidence_threshold=0.5, random_seed=0)
-    train_exp_u = build_counterfactual_experiences(
-        train_nt, execute_fn=benchmark_execute_fn, config=cfg_u)
-    dev_exp_u = build_counterfactual_experiences(
-        dev_nt, execute_fn=benchmark_execute_fn, config=cfg_u)
-    train_acts_u = np.array([t["activation"] for t in train_nt], dtype=np.float32)
-    dev_acts_u = np.array([t["activation"] for t in dev_nt], dtype=np.float32)
-    train_du_u = np.array([e.delta_utility for e in train_exp_u], dtype=np.float32)
-    train_w_u = np.array([e.sample_weight for e in train_exp_u], dtype=np.float32)
-    dev_du_u = np.array([e.delta_utility for e in dev_exp_u], dtype=np.float32)
-    model_u = fit_policy(
-        cfg_u, train_acts_u, train_du_u, train_w_u,
-        dev_features=dev_acts_u, dev_delta_u=dev_du_u,
-        dev_weights=np.ones(len(dev_exp_u), dtype=np.float32),
-        dev_tasks=dev_nt, utility_fn=benchmark_utility, seed=0)
-    probs_u = predict_proba(model_u, dev_acts_u)
-    routes_u = [choose_route(float(p), 0.5).value for p in probs_u]
-    pred_u_u = np.array([benchmark_utility(t, r) for t, r in zip(dev_nt, routes_u)], dtype=np.float64)
-    ora_u_w = np.array([benchmark_oracle_utility(t) for t in dev_nt], dtype=np.float64)
-    reg_u = float(mean_regret(pred_u_u, ora_u_w))
-    g10_pass = reg_w <= reg_u + 0.01
+    # G10: weighted beats unweighted on near-tie (MULTI-SEED, Section 4).
+    # v0.3.10.2 — G10 is a TRUE SUPERIORITY gate with multi-seed qualification.
+    # Runs 10 seeds and requires mean(d) >= min_gain AND lower CI > 0.
+    min_weighting_gain = 0.005  # chosen BEFORE seeing results
+    gains = []
+    for s in range(10):
+        train_nt = make_environment("near_tie", n=300, dim=8, seed=s)
+        dev_nt = make_environment("near_tie", n=200, dim=8, seed=s + 1)
+        # Weighted: clipped_gap mode.
+        reg_w, _ = _train_eval("logistic", train_nt, dev_nt, ct=0.5, seed=s)
+        # Unweighted: uniform mode.
+        cfg_u = ExperimentConfig(policy_type="logistic", weight_mode="uniform",
+                                 gap_threshold=0.05, confidence_threshold=0.5, random_seed=s)
+        train_exp_u = build_counterfactual_experiences(
+            train_nt, execute_fn=benchmark_execute_fn, config=cfg_u)
+        dev_exp_u = build_counterfactual_experiences(
+            dev_nt, execute_fn=benchmark_execute_fn, config=cfg_u)
+        train_acts_u = np.array([t["activation"] for t in train_nt], dtype=np.float32)
+        dev_acts_u = np.array([t["activation"] for t in dev_nt], dtype=np.float32)
+        train_du_u = np.array([e.delta_utility for e in train_exp_u], dtype=np.float32)
+        train_w_u = np.array([e.sample_weight for e in train_exp_u], dtype=np.float32)
+        dev_du_u = np.array([e.delta_utility for e in dev_exp_u], dtype=np.float32)
+        model_u = fit_policy(
+            cfg_u, train_acts_u, train_du_u, train_w_u,
+            dev_features=dev_acts_u, dev_delta_u=dev_du_u,
+            dev_weights=np.ones(len(dev_exp_u), dtype=np.float32),
+            dev_tasks=dev_nt, utility_fn=benchmark_utility, seed=s)
+        probs_u = predict_proba(model_u, dev_acts_u)
+        routes_u = [choose_route(float(p), 0.5).value for p in probs_u]
+        pred_u_u = np.array([benchmark_utility(t, r) for t, r in zip(dev_nt, routes_u)], dtype=np.float64)
+        ora_u_w = np.array([benchmark_oracle_utility(t) for t in dev_nt], dtype=np.float64)
+        reg_u = float(mean_regret(pred_u_u, ora_u_w))
+        gains.append(reg_u - reg_w)
+    gains = np.array(gains)
+    mean_gain = float(gains.mean())
+    std_gain = float(gains.std())
+    lower_ci = mean_gain - 1.96 * std_gain / np.sqrt(len(gains))
+    g10_pass = (mean_gain >= min_weighting_gain) and (lower_ci > 0)
     gates.append(_gate_result("G10", "weighted beats unweighted on near-tie", g10_pass,
-        measurements={"weighted_regret": reg_w, "unweighted_regret": reg_u}))
+        measurements={
+            "mean_weighting_gain": mean_gain,
+            "std_weighting_gain": std_gain,
+            "lower_ci_95": lower_ci,
+            "min_weighting_gain": min_weighting_gain,
+            "n_seeds": len(gains),
+            "per_seed_gains": gains.tolist(),
+        }))
 
     # G11: centroid fails on multimodal.
     train_lin = make_environment("linear", n=300, dim=8, seed=0)
@@ -369,8 +386,7 @@ def run_all_gates() -> dict:
     # G24: version/config provenance consistent.
     from daph_learning import __version__
     cfg_test = ExperimentConfig()
-    g24_pass = (__version__ == "0.3.10.1-alpha"
-                and cfg_test.autolearn_version == "0.3.10.1-alpha")
+    g24_pass = (__version__ == cfg_test.autolearn_version)
     gates.append(_gate_result("G24", "version/config provenance", g24_pass,
         measurements={"version": __version__,
                       "config_version": cfg_test.autolearn_version}))

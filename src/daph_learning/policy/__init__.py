@@ -76,6 +76,7 @@ except ImportError:  # torch not installed
 
 from .abstention import choose_route, choose_route_with_reason
 from .calibration import (
+    CalibrationArtifact,
     action_confidence_ece,
     brier_score,
     expected_calibration_error,
@@ -106,7 +107,7 @@ from .policy_factory import (
     make_policy,
     predict_proba,
 )
-from .provenance import ProvenanceRecord, build_provenance, dataset_hash
+from .provenance import ProvenanceRecord, build_provenance, dataset_hash, source_tree_sha256
 from .config_audit import audit_report, validate_config_consistency
 from .atomic_promotion import (
     PromotionResult,
@@ -118,6 +119,7 @@ from .atomic_promotion import (
 __all__ = [
     "AlignmentResult",
     "BackendOutcome",
+    "CalibrationArtifact",
     "CapturedActivation",
     "CentroidPolicy",
     "CounterfactualExperience",
@@ -160,6 +162,7 @@ __all__ = [
     "selective_risk_curve",
     "snr_weight",
     "soft_calibration_error",
+    "source_tree_sha256",
     "soft_preference_target",
     "train_centroid_policy",
     "utility_weight",

@@ -388,6 +388,85 @@ def verify_arithmetic(
     )
 
 
+def verify_exact_string(
+    task: Mapping[str, Any],
+    output_text: str | None,
+) -> VerificationResult:
+    """Verify a free-form task output by exact string comparison (Section 12).
+
+    Extracts the expected answer from the task's ``expected`` field and
+    compares it to ``output_text`` after normalization (lowercase, strip,
+    remove trailing punctuation). This is for tasks like letter counting
+    or simple QA where the answer is a single word/number.
+
+    Fail closed: if the task has no ``expected`` field, return
+    ``verified_correct=None``.
+    """
+    expected = task.get("expected")
+    if expected is None:
+        return VerificationResult(
+            verified_correct=None,
+            verifier_type="exact_string",
+            confidence=0.0,
+            failure_reason="task has no 'expected' field",
+        )
+    expected_str = str(expected).strip().lower().rstrip(".!?")
+    if output_text is None:
+        return VerificationResult(
+            verified_correct=False,
+            verifier_type="exact_string",
+            confidence=1.0,
+            failure_reason="no output text provided",
+        )
+    # Extract the first word/line from the output (LLMs often add extra text).
+    output_str = output_text.strip().lower().rstrip(".!?")
+    # Try exact match first.
+    if output_str == expected_str:
+        return VerificationResult(
+            verified_correct=True,
+            verifier_type="exact_string",
+            confidence=1.0,
+        )
+    # Try first-word match (handles "5" from "5 letters").
+    words = output_str.split()
+    first_word = words[0] if words else ""
+    if first_word == expected_str:
+        return VerificationResult(
+            verified_correct=True,
+            verifier_type="exact_string",
+            confidence=0.9,
+        )
+    # Try last-word match (handles "The answer is 5" → "5").
+    last_word = words[-1] if words else ""
+    if last_word == expected_str:
+        return VerificationResult(
+            verified_correct=True,
+            verifier_type="exact_string",
+            confidence=0.9,
+        )
+    # Try first-line match.
+    first_line = output_str.split("\n")[0].strip()
+    if first_line == expected_str:
+        return VerificationResult(
+            verified_correct=True,
+            verifier_type="exact_string",
+            confidence=0.9,
+        )
+    # Try standalone word match (handles "The answer is cat" → "cat").
+    if expected_str in words:
+        return VerificationResult(
+            verified_correct=True,
+            verifier_type="exact_string",
+            confidence=0.85,
+        )
+    return VerificationResult(
+        verified_correct=False,
+        verifier_type="exact_string",
+        confidence=1.0,
+        failure_reason=f"expected {expected_str!r}, got {output_str!r}",
+    )
+
+
 def verify_output(
     task: Mapping[str, Any],
     output_text: str | None,
@@ -396,11 +475,14 @@ def verify_output(
 
     For arithmetic tasks (``capability_ids`` contains
     ``integer_arithmetic`` or ``modular_multiplication``), use
-    :func:`verify_arithmetic`. For unsupported tasks, fail closed.
+    :func:`verify_arithmetic`. For letter_counting and exact_string tasks,
+    use :func:`verify_exact_string`. For unsupported tasks, fail closed.
     """
     caps = set(task.get("capability_ids", []))
     if "integer_arithmetic" in caps or "modular_multiplication" in caps:
         return verify_arithmetic(task, output_text)
+    if "letter_counting" in caps or "exact_string" in caps:
+        return verify_exact_string(task, output_text)
     return VerificationResult(
         verified_correct=None,
         verifier_type="unsupported",
@@ -600,6 +682,96 @@ def make_arithmetic_tasks(
     return tasks
 
 
+def make_letter_counting_tasks(
+    n: int = 50,
+    seed: int = 0,
+    *,
+    word_pool: tuple[str, ...] | None = None,
+) -> list[dict[str, Any]]:
+    """Generate letter-counting tasks for the real experiment (Section 50).
+
+    These tasks ask "How many letters are in the word 'X'?" — the symbolic
+    executor CANNOT handle these (unsupported capability → fails closed,
+    quality=0), but a small LLM can answer them. This creates a real
+    routing decision: route to LLM for counting, route to symbolic for
+    arithmetic.
+
+    Each task has:
+    - ``task_id``: unique identifier
+    - ``prompt``: "How many letters are in the word 'cat'? Answer with just the number."
+    - ``expected``: the correct letter count (int)
+    - ``capability_ids``: ``["letter_counting"]``
+    - ``family``: "counting"
+    """
+    rng = np.random.default_rng(seed)
+    if word_pool is None:
+        word_pool = (
+            "cat", "dog", "hello", "world", "apple", "banana", "house",
+            "mouse", "table", "chair", "water", "light", "night", "day",
+            "tree", "bird", "fish", "book", "pen", "cup", "door", "key",
+            "star", "moon", "sun", "rain", "snow", "fire", "wind", "rock",
+            "river", "lake", "hill", "road", "bridge", "tower", "castle",
+            "garden", "forest", "mountain", "ocean", "cloud", "storm",
+            "flower", "grass", "leaf", "root", "seed", "milk", "bread",
+        )
+    tasks = []
+    for i in range(n):
+        word = str(word_pool[int(rng.integers(len(word_pool)))])
+        expected = len(word)
+        prompt = (
+            f"How many letters are in the word '{word}'? "
+            f"Answer with just the number.")
+        tasks.append({
+            "task_id": f"count_{seed}_{i}",
+            "prompt": prompt,
+            "specification": f"count_letters({word!r})",
+            "expected": expected,
+            "capability_ids": ["letter_counting"],
+            "inputs": {"word": word},
+            "family": "counting",
+        })
+    return tasks
+
+
+def make_mixed_tasks(
+    n_arithmetic: int = 40,
+    n_counting: int = 40,
+    seed: int = 0,
+    *,
+    max_value: int = 100,
+) -> list[dict[str, Any]]:
+    """Generate a MIXED task set for the first scientifically meaningful
+    real-model experiment (Section 50).
+
+    The mix creates a genuine routing decision:
+    - **Arithmetic** (symbolic wins): symbolic executor handles perfectly,
+      LLM may fail on large numbers → route symbolic.
+    - **Letter counting** (LLM wins): symbolic executor fails closed
+      (unsupported capability), LLM can count letters → route LLM.
+
+    This is the minimal task set where the routing policy has a real
+    decision to learn: distinguish arithmetic from counting tasks based
+    on the hidden state, and route accordingly.
+
+    Parameters
+    ----------
+    n_arithmetic : int
+    n_counting : int
+    seed : int
+    max_value : int
+        Max operand value for arithmetic.
+    """
+    arith = make_arithmetic_tasks(
+        n=n_arithmetic, seed=seed, max_value=max_value)
+    counting = make_letter_counting_tasks(
+        n=n_counting, seed=seed + 1000)
+    tasks = arith + counting
+    # Shuffle so the two families are interleaved.
+    rng = np.random.default_rng(seed + 9999)
+    rng.shuffle(tasks)
+    return tasks
+
+
 __all__ = [
     "CaptureConfig",
     "LLMGenerationConfig",
@@ -609,6 +781,9 @@ __all__ = [
     "execute_llm_backend",
     "execute_symbolic_backend",
     "make_arithmetic_tasks",
+    "make_letter_counting_tasks",
+    "make_mixed_tasks",
     "verify_arithmetic",
+    "verify_exact_string",
     "verify_output",
 ]

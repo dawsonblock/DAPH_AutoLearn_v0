@@ -11,9 +11,12 @@ It runs the complete real loop:
     Phase E: steering dev study (dose-response +v/0/-v)
     Phase F: final evaluation (frozen pipeline, one pass)
 
-The experiment uses Qwen2.5-0.5B-Instruct on integer arithmetic tasks
-(Section 50 — exact verification, reliable symbolic executor, low
-ambiguity, clear counterfactual backend utility).
+v0.3.10.2 — uses MIXED tasks (arithmetic + letter counting) so there is
+a genuine routing decision:
+    - Arithmetic: symbolic wins (perfect execution), LLM may fail.
+    - Counting: symbolic fails closed (unsupported), LLM can count.
+This creates tasks where ΔU > 0 (route symbolic) AND ΔU < 0 (route LLM),
+so the policy has a real decision to learn.
 
 Usage:
     python scripts/run_real_qwen_experiment.py
@@ -21,6 +24,7 @@ Usage:
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 import time
@@ -32,6 +36,18 @@ REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "src"))
 
 
+def _source_tree_sha256() -> str:
+    """Deterministic hash over relevant source files (Section 24)."""
+    h = hashlib.sha256()
+    src_dir = REPO / "src" / "daph_learning"
+    for py in sorted(src_dir.rglob("*.py")):
+        h.update(str(py.relative_to(REPO)).encode("utf-8"))
+        h.update(b"\0")
+        h.update(py.read_bytes())
+        h.update(b"\0")
+    return h.hexdigest()[:16]
+
+
 def main() -> int:
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -41,7 +57,7 @@ def main() -> int:
         capture_task_representation,
         execute_llm_backend,
         execute_symbolic_backend,
-        make_arithmetic_tasks,
+        make_mixed_tasks,
         verify_output,
     )
     from daph_learning.policy import (
@@ -65,6 +81,9 @@ def main() -> int:
     model_id = "Qwen/Qwen2.5-0.5B-Instruct"
     print(f"Device: {device}")
     print(f"Model: {model_id}")
+
+    source_hash = _source_tree_sha256()
+    print(f"Source tree SHA256: {source_hash}")
 
     # --- Load model ---
     t0 = time.time()
@@ -94,12 +113,16 @@ def main() -> int:
     gen_cfg = LLMGenerationConfig(max_new_tokens=16, do_sample=False)
 
     # --- Generate splits (smoke size for MPS speed) ---
-    print("\n--- Split sizes (smoke) ---")
-    train_tasks = make_arithmetic_tasks(n=50, seed=0, max_value=50)
-    dev_tasks = make_arithmetic_tasks(n=25, seed=100, max_value=50)
-    cal_tasks = make_arithmetic_tasks(n=25, seed=200, max_value=50)
-    final_tasks = make_arithmetic_tasks(n=50, seed=300, max_value=50)
+    # v0.3.10.2 — MIXED tasks: arithmetic (symbolic wins) + counting (LLM wins).
+    print("\n--- Split sizes (smoke, mixed tasks) ---")
+    train_tasks = make_mixed_tasks(n_arithmetic=30, n_counting=30, seed=0)
+    dev_tasks = make_mixed_tasks(n_arithmetic=15, n_counting=15, seed=100)
+    cal_tasks = make_mixed_tasks(n_arithmetic=15, n_counting=15, seed=200)
+    final_tasks = make_mixed_tasks(n_arithmetic=30, n_counting=30, seed=300)
     print(f"  train={len(train_tasks)} dev={len(dev_tasks)} cal={len(cal_tasks)} final={len(final_tasks)}")
+    n_arith = sum(1 for t in train_tasks if "integer_arithmetic" in t.get("capability_ids", []))
+    n_count = sum(1 for t in train_tasks if "letter_counting" in t.get("capability_ids", []))
+    print(f"  train composition: {n_arith} arithmetic, {n_count} counting")
 
     # ================================================================
     # Phase A: train data collection
@@ -166,14 +189,38 @@ def main() -> int:
         return max(cfg.quality_weight * exp.symbolic.quality,
                    cfg.quality_weight * exp.llm.quality)
 
+    # Report Phase A routing signal.
+    train_du = np.array([e.delta_utility for e in train_exp], dtype=np.float32)
+    n_sym_better = int(np.sum(train_du > 0.01))
+    n_llm_better = int(np.sum(train_du < -0.01))
+    n_tie = int(np.sum(np.abs(train_du) <= 0.01))
+    print(f"\n  Phase A routing signal: sym_better={n_sym_better} llm_better={n_llm_better} tie={n_tie}")
+    print(f"  ΔU range: [{train_du.min():.3f}, {train_du.max():.3f}] mean={train_du.mean():.3f}")
+
     # ================================================================
-    # Phase B: fit policies
+    # Phase B: fit policies (all baselines from Section 36)
     # ================================================================
     print("\n--- Phase B: fit policies ---")
-    train_du = np.array([e.delta_utility for e in train_exp], dtype=np.float32)
     train_w = np.array([e.sample_weight for e in train_exp], dtype=np.float32)
     dev_du = np.array([e.delta_utility for e in dev_exp], dtype=np.float32)
+    dev_ora_u = np.array([oracle_utility(t) for t in dev_tasks], dtype=np.float64)
 
+    def eval_policy(model, tasks, acts, threshold=0.5, ood=None, tau_ood=float("inf")):
+        """Evaluate a policy on tasks, return (routes, utilities, regret)."""
+        probs = predict_proba(model, acts)
+        routes = []
+        for i, task in enumerate(tasks):
+            p = float(probs[i])
+            ood_score = ood.score(acts[i]) if ood else None
+            decision = choose_route_with_reason(
+                p, threshold, ood_score=ood_score, ood_threshold=tau_ood)
+            routes.append(decision.route.value)
+        utils = np.array([utility_fn(t, r) for t, r in zip(tasks, routes)], dtype=np.float64)
+        ora = np.array([oracle_utility(t) for t in tasks], dtype=np.float64)
+        reg = float(mean_regret(utils, ora))
+        return routes, utils, reg
+
+    # Fit all policy types.
     policies = {}
     for ptype in ("centroid", "logistic", "mlp_experimental"):
         pcfg = ExperimentConfig(
@@ -194,12 +241,10 @@ def main() -> int:
             dev_weights=np.ones(len(dev_exp), dtype=np.float32),
             dev_tasks=dev_tasks, utility_fn=utility_fn, seed=42)
         elapsed = time.time() - t0
-        probs = predict_proba(model_p, dev_acts)
-        routes = [choose_route(float(p), 0.5).value for p in probs]
-        pred_u = np.array([utility_fn(t, r) for t, r in zip(dev_tasks, routes)], dtype=np.float64)
-        ora_u = np.array([oracle_utility(t) for t in dev_tasks], dtype=np.float64)
-        dev_reg = float(mean_regret(pred_u, ora_u))
-        dev_util = float(pred_u.mean())
+        _, _, dev_reg = eval_policy(model_p, dev_tasks, dev_acts)
+        dev_util = float(np.mean([utility_fn(t, r) for t, r in
+                     zip(dev_tasks, [choose_route(float(p), 0.5).value
+                                     for p in predict_proba(model_p, dev_acts)])]))
         print(f"  {ptype:20s}: dev_regret={dev_reg:.4f} dev_utility={dev_util:.4f} ({elapsed:.1f}s)")
         policies[ptype] = {
             "model": model_p,
@@ -208,7 +253,7 @@ def main() -> int:
             "dev_utility": dev_util,
         }
 
-    # Also fit unweighted logistic for the weighting test.
+    # Unweighted logistic (weighting test).
     pcfg_uw = ExperimentConfig(
         policy_type="logistic", target_mode="soft", target_temperature=0.5,
         weight_mode="uniform", gap_threshold=0.01, confidence_threshold=0.5,
@@ -218,37 +263,62 @@ def main() -> int:
         dev_features=dev_acts, dev_delta_u=dev_du,
         dev_weights=np.ones(len(dev_exp), dtype=np.float32),
         dev_tasks=dev_tasks, utility_fn=utility_fn, seed=42)
-    probs_uw = predict_proba(model_uw, dev_acts)
-    routes_uw = [choose_route(float(p), 0.5).value for p in probs_uw]
-    pred_u_uw = np.array([utility_fn(t, r) for t, r in zip(dev_tasks, routes_uw)], dtype=np.float64)
-    ora_u = np.array([oracle_utility(t) for t in dev_tasks], dtype=np.float64)
-    dev_reg_uw = float(mean_regret(pred_u_uw, ora_u))
+    _, _, dev_reg_uw = eval_policy(model_uw, dev_tasks, dev_acts)
     print(f"  {'logistic_unweighted':20s}: dev_regret={dev_reg_uw:.4f}")
 
+    # Hard-target logistic.
+    pcfg_hard = ExperimentConfig(
+        policy_type="logistic", target_mode="hard", target_temperature=0.5,
+        weight_mode="clipped_gap", gap_threshold=0.01, confidence_threshold=0.5,
+        selected_layer=layer, random_seed=42, max_weight=2.0)
+    model_hard = fit_policy(
+        pcfg_hard, train_acts, train_du, train_w,
+        dev_features=dev_acts, dev_delta_u=dev_du,
+        dev_weights=np.ones(len(dev_exp), dtype=np.float32),
+        dev_tasks=dev_tasks, utility_fn=utility_fn, seed=42)
+    _, _, dev_reg_hard = eval_policy(model_hard, dev_tasks, dev_acts)
+    print(f"  {'logistic_hard':20s}: dev_regret={dev_reg_hard:.4f}")
+
     # ================================================================
-    # Phase C: dev selection
+    # Phase C: dev selection + baselines
     # ================================================================
     print("\n--- Phase C: dev selection ---")
     best_ptype = min(policies, key=lambda k: policies[k]["dev_regret"])
     best_policy = policies[best_ptype]
     print(f"  Best policy: {best_ptype} (dev_regret={best_policy['dev_regret']:.4f})")
 
-    # Always-LLM baseline.
-    routes_llm = ["llm"] * len(dev_tasks)
-    pred_u_llm = np.array([utility_fn(t, "llm") for t in dev_tasks], dtype=np.float64)
-    reg_llm = float(mean_regret(pred_u_llm, ora_u))
-    print(f"  Always-LLM:   dev_regret={reg_llm:.4f}")
-    # Always-symbolic baseline.
-    routes_sym = ["symbolic"] * len(dev_tasks)
-    pred_u_sym = np.array([utility_fn(t, "symbolic") for t in dev_tasks], dtype=np.float64)
-    reg_sym = float(mean_regret(pred_u_sym, ora_u))
-    print(f"  Always-sym:   dev_regret={reg_sym:.4f}")
+    # Baselines on dev.
+    dev_routes_llm = ["llm"] * len(dev_tasks)
+    dev_u_llm = np.array([utility_fn(t, "llm") for t in dev_tasks], dtype=np.float64)
+    dev_reg_llm = float(mean_regret(dev_u_llm, dev_ora_u))
+
+    dev_routes_sym = ["symbolic"] * len(dev_tasks)
+    dev_u_sym = np.array([utility_fn(t, "symbolic") for t in dev_tasks], dtype=np.float64)
+    dev_reg_sym = float(mean_regret(dev_u_sym, dev_ora_u))
+
+    # Hand-coded router: route by family (arithmetic→symbolic, counting→llm).
+    dev_routes_hand = []
+    for t in dev_tasks:
+        caps = t.get("capability_ids", [])
+        if "integer_arithmetic" in caps:
+            dev_routes_hand.append("symbolic")
+        elif "letter_counting" in caps:
+            dev_routes_hand.append("llm")
+        else:
+            dev_routes_hand.append("llm")
+    dev_u_hand = np.array([utility_fn(t, r) for t, r in zip(dev_tasks, dev_routes_hand)], dtype=np.float64)
+    dev_reg_hand = float(mean_regret(dev_u_hand, dev_ora_u))
+
+    print(f"  Always-LLM:           dev_regret={dev_reg_llm:.4f}")
+    print(f"  Always-symbolic:      dev_regret={dev_reg_sym:.4f}")
+    print(f"  Hand router (family): dev_regret={dev_reg_hand:.4f}")
+    print(f"  Unweighted logistic:  dev_regret={dev_reg_uw:.4f}")
+    print(f"  Hard-target logistic: dev_regret={dev_reg_hard:.4f}")
 
     # ================================================================
     # Phase D: calibration
     # ================================================================
     print("\n--- Phase D: calibration ---")
-    # Fit OOD on train features.
     ood = MahalanobisOOD(ridge=cfg.ood_ridge)
     ood.fit(train_acts)
     cal_scores = np.array([ood.score(h) for h in cal_acts])
@@ -285,10 +355,10 @@ def main() -> int:
     # Phase F: final evaluation (one pass, frozen pipeline)
     # ================================================================
     print("\n--- Phase F: final evaluation ---")
-    final_probs = predict_proba(best_policy["model"], final_acts)
     final_ora_u = np.array([oracle_utility(t) for t in final_tasks], dtype=np.float64)
 
-    # Candidate policy (AutoLearn).
+    # Candidate policy (AutoLearn) with calibration.
+    final_probs = predict_proba(best_policy["model"], final_acts)
     final_routes = []
     final_reasons = []
     for i, task in enumerate(final_tasks):
@@ -303,15 +373,34 @@ def main() -> int:
         dtype=np.float64)
     final_cand_reg = float(mean_regret(final_cand_u, final_ora_u))
 
-    # Incumbent: always-LLM.
-    final_inc_u = np.array(
-        [utility_fn(t, "llm") for t in final_tasks], dtype=np.float64)
-    final_inc_reg = float(mean_regret(final_inc_u, final_ora_u))
+    # All baselines on final.
+    final_u_llm = np.array([utility_fn(t, "llm") for t in final_tasks], dtype=np.float64)
+    final_reg_llm = float(mean_regret(final_u_llm, final_ora_u))
 
-    # Always-symbolic.
-    final_sym_u = np.array(
-        [utility_fn(t, "symbolic") for t in final_tasks], dtype=np.float64)
-    final_sym_reg = float(mean_regret(final_sym_u, final_ora_u))
+    final_u_sym = np.array([utility_fn(t, "symbolic") for t in final_tasks], dtype=np.float64)
+    final_reg_sym = float(mean_regret(final_u_sym, final_ora_u))
+
+    # Hand router.
+    final_routes_hand = []
+    for t in final_tasks:
+        caps = t.get("capability_ids", [])
+        if "integer_arithmetic" in caps:
+            final_routes_hand.append("symbolic")
+        elif "letter_counting" in caps:
+            final_routes_hand.append("llm")
+        else:
+            final_routes_hand.append("llm")
+    final_u_hand = np.array([utility_fn(t, r) for t, r in zip(final_tasks, final_routes_hand)], dtype=np.float64)
+    final_reg_hand = float(mean_regret(final_u_hand, final_ora_u))
+
+    # Unweighted centroid.
+    _, _, final_reg_uw = eval_policy(model_uw, final_tasks, final_acts, threshold=best_threshold, ood=ood, tau_ood=tau_ood)
+    # Hard-target logistic.
+    _, _, final_reg_hard = eval_policy(model_hard, final_tasks, final_acts, threshold=best_threshold, ood=ood, tau_ood=tau_ood)
+    # Centroid.
+    _, _, final_reg_centroid = eval_policy(policies["centroid"]["model"], final_tasks, final_acts, threshold=best_threshold, ood=ood, tau_ood=tau_ood)
+    # MLP.
+    _, _, final_reg_mlp = eval_policy(policies["mlp_experimental"]["model"], final_tasks, final_acts, threshold=best_threshold, ood=ood, tau_ood=tau_ood)
 
     # Routing accuracy.
     final_du = np.array([e.delta_utility for e in final_exp], dtype=np.float32)
@@ -320,25 +409,52 @@ def main() -> int:
         or (final_routes[i] == "llm" and final_du[i] < 0)
         for i in range(len(final_tasks))]))
 
-    # Paired statistics.
-    stats = paired_promotion_statistics(
-        final_cand_u, final_inc_u, final_ora_u, seed=42)
+    # Per-family metrics.
+    arith_mask = np.array(["integer_arithmetic" in t.get("capability_ids", []) for t in final_tasks])
+    count_mask = ~arith_mask
+    per_family = {}
+    for name, mask in [("arithmetic", arith_mask), ("counting", count_mask)]:
+        if mask.sum() > 0:
+            per_family[name] = {
+                "n": int(mask.sum()),
+                "candidate_utility": float(final_cand_u[mask].mean()),
+                "candidate_regret": float(mean_regret(final_cand_u[mask], final_ora_u[mask])),
+                "llm_utility": float(final_u_llm[mask].mean()),
+                "sym_utility": float(final_u_sym[mask].mean()),
+            }
 
-    print(f"\n  FINAL RESULTS (evidence_level=REAL_MODEL_FINAL):")
-    print(f"  Method             | Utility ↑ | Regret ↓ | Accuracy ↑")
-    print(f"  -------------------|-----------|----------|----------")
-    print(f"  Always-LLM         | {final_inc_u.mean():.4f}    | {final_inc_reg:.4f}   | N/A")
-    print(f"  Always-symbolic    | {final_sym_u.mean():.4f}    | {final_sym_reg:.4f}   | N/A")
-    print(f"  Candidate AutoLearn| {final_cand_u.mean():.4f}    | {final_cand_reg:.4f}   | {final_acc:.4f}")
+    # Paired statistics (candidate vs incumbent=always-LLM).
+    stats = paired_promotion_statistics(
+        final_cand_u, final_u_llm, final_ora_u, seed=42)
+
+    # Reason counts.
+    from collections import Counter
+    reason_counts = Counter(final_reasons)
+
+    # Results table.
+    print(f"\n  {'Method':<25s} {'Utility':>8s} {'Regret':>8s} {'Acc':>6s}")
+    print(f"  {'-'*25} {'-'*8} {'-'*8} {'-'*6}")
+    print(f"  {'Always LLM':<25s} {final_u_llm.mean():8.4f} {final_reg_llm:8.4f} {'N/A':>6s}")
+    print(f"  {'Always symbolic':<25s} {final_u_sym.mean():8.4f} {final_reg_sym:8.4f} {'N/A':>6s}")
+    print(f"  {'Hand router':<25s} {final_u_hand.mean():8.4f} {final_reg_hand:8.4f} {'N/A':>6s}")
+    print(f"  {'Unweighted centroid':<25s} {'N/A':>8s} {final_reg_uw:8.4f} {'N/A':>6s}")
+    print(f"  {'Weighted centroid':<25s} {'N/A':>8s} {final_reg_centroid:8.4f} {'N/A':>6s}")
+    print(f"  {'Logistic soft':<25s} {'N/A':>8s} {final_cand_reg:8.4f} {final_acc:6.4f}")
+    print(f"  {'Logistic hard':<25s} {'N/A':>8s} {final_reg_hard:8.4f} {'N/A':>6s}")
+    print(f"  {'MLP':<25s} {'N/A':>8s} {final_reg_mlp:8.4f} {'N/A':>6s}")
     print(f"\n  mean_utility_delta (cand - inc): {stats['mean_utility_delta']:.4f}")
     print(f"  mean_regret_delta  (inc - cand): {stats.get('mean_regret_delta', 0):.4f}")
     print(f"  win_rate: {stats['candidate_win_rate']:.2f}  loss_rate: {stats['incumbent_win_rate']:.2f}")
+    print(f"  routing_accuracy: {final_acc:.4f}")
+    print(f"  abstain_rate: {float(np.mean([r == 'abstain' for r in final_routes])):.4f}")
+    print(f"  symbolic_fraction: {float(np.mean([r == 'symbolic' for r in final_routes])):.4f}")
+    print(f"  llm_fraction: {float(np.mean([r == 'llm' for r in final_routes])):.4f}")
+    print(f"  per_family: {json.dumps(per_family, indent=2)}")
 
     # ================================================================
     # Phase E: steering dev study (dose-response)
     # ================================================================
     print("\n--- Phase E: steering dev study ---")
-    # Get the centroid vector for steering.
     from daph_learning.policy.centroid_policy import CentroidPolicy
     centroid_cfg = ExperimentConfig(
         policy_type="centroid", gap_threshold=0.01,
@@ -372,21 +488,21 @@ def main() -> int:
         utility_fn=lambda task, route: 1.0 if route == Route.SYMBOLIC else 0.0,
         device=device)
 
-    # Aggregate +v / 0 / -v.
-    plus = [r for r in intervention_results if r.alpha == 1.0]
-    zero = [r for r in intervention_results if r.alpha == 0.0]
-    minus = [r for r in intervention_results if r.alpha == -1.0]
-    if plus and zero and minus:
-        mean_p_plus = float(np.mean([r.route_score_after for r in plus]))
-        mean_p_zero = float(np.mean([r.route_score_after for r in zero]))
-        mean_p_minus = float(np.mean([r.route_score_after for r in minus]))
-        print(f"  E[P(S|+v)] = {mean_p_plus:.4f}")
-        print(f"  E[P(S| 0)] = {mean_p_zero:.4f}")
-        print(f"  E[P(S|-v)] = {mean_p_minus:.4f}")
-        plus_gt = sum(1 for r in plus if r.route_score_after > r.route_score_before)
-        minus_lt = sum(1 for r in minus if r.route_score_after < r.route_score_before)
-        print(f"  +v > 0: {plus_gt}/{len(plus)}, -v < 0: {minus_lt}/{len(minus)}")
-        print(f"  evidence_level: REAL_MODEL_LATENT_INTERVENTION")
+    # Aggregate dose-response.
+    steering_summary = {}
+    for alpha_val in (-1.0, -0.5, 0.0, 0.5, 1.0):
+        group = [r for r in intervention_results if r.alpha == alpha_val]
+        if group:
+            mean_p = float(np.mean([r.route_score_after for r in group]))
+            steering_summary[alpha_val] = {
+                "mean_p": mean_p,
+                "n": len(group),
+            }
+    if 1.0 in steering_summary and 0.0 in steering_summary and -1.0 in steering_summary:
+        print(f"  E[P(S|+v)] = {steering_summary[1.0]['mean_p']:.4f}")
+        print(f"  E[P(S| 0)] = {steering_summary[0.0]['mean_p']:.4f}")
+        print(f"  E[P(S|-v)] = {steering_summary[-1.0]['mean_p']:.4f}")
+    print(f"  evidence_level: REAL_MODEL_LATENT_INTERVENTION")
 
     # ================================================================
     # Save experiment artifact
@@ -397,12 +513,25 @@ def main() -> int:
         "model_id": model_id,
         "device": device,
         "layer": layer,
+        "source_tree_sha256": source_hash,
         "timestamp": time.time(),
         "splits": {
             "train": len(train_tasks),
             "dev": len(dev_tasks),
             "calibration": len(cal_tasks),
             "final": len(final_tasks),
+        },
+        "task_composition": {
+            "arithmetic": n_arith,
+            "counting": n_count,
+        },
+        "phase_a_routing_signal": {
+            "sym_better": n_sym_better,
+            "llm_better": n_llm_better,
+            "tie": n_tie,
+            "delta_u_mean": float(train_du.mean()),
+            "delta_u_min": float(train_du.min()),
+            "delta_u_max": float(train_du.max()),
         },
         "phase_b_results": {
             ptype: {
@@ -412,10 +541,12 @@ def main() -> int:
             for ptype in policies
         },
         "phase_b_unweighted": {"dev_regret": dev_reg_uw},
+        "phase_b_hard_target": {"dev_regret": dev_reg_hard},
         "phase_c_selection": {
             "best_policy": best_ptype,
-            "always_llm_dev_regret": reg_llm,
-            "always_sym_dev_regret": reg_sym,
+            "always_llm_dev_regret": dev_reg_llm,
+            "always_sym_dev_regret": dev_reg_sym,
+            "hand_router_dev_regret": dev_reg_hand,
         },
         "phase_d_calibration": {
             "tau_ood": tau_ood,
@@ -426,23 +557,29 @@ def main() -> int:
         "phase_f_final": {
             "candidate_utility": float(final_cand_u.mean()),
             "candidate_regret": final_cand_reg,
-            "incumbent_utility": float(final_inc_u.mean()),
-            "incumbent_regret": final_inc_reg,
-            "always_sym_utility": float(final_sym_u.mean()),
-            "always_sym_regret": final_sym_reg,
+            "incumbent_utility": float(final_u_llm.mean()),
+            "incumbent_regret": final_reg_llm,
+            "always_sym_utility": float(final_u_sym.mean()),
+            "always_sym_regret": final_reg_sym,
+            "hand_router_utility": float(final_u_hand.mean()),
+            "hand_router_regret": final_reg_hand,
+            "unweighted_logistic_regret": final_reg_uw,
+            "weighted_centroid_regret": final_reg_centroid,
+            "logistic_hard_regret": final_reg_hard,
+            "mlp_regret": final_reg_mlp,
             "routing_accuracy": final_acc,
             "abstain_rate": float(np.mean([r == "abstain" for r in final_routes])),
-            "symbolic_utilization": float(np.mean([r == "symbolic" for r in final_routes])),
-            "llm_utilization": float(np.mean([r == "llm" for r in final_routes])),
+            "symbolic_fraction": float(np.mean([r == "symbolic" for r in final_routes])),
+            "llm_fraction": float(np.mean([r == "llm" for r in final_routes])),
+            "ood_rate": float(reason_counts.get("ood", 0) / len(final_reasons)),
+            "abstention_reasons": dict(reason_counts),
+            "per_family": per_family,
             "paired_stats": stats,
         },
         "phase_e_steering": {
             "n_intervention_results": len(intervention_results),
-            "mean_p_plus": mean_p_plus if plus else None,
-            "mean_p_zero": mean_p_zero if zero else None,
-            "mean_p_minus": mean_p_minus if minus else None,
-            "plus_gt_zero": plus_gt if plus else None,
-            "minus_lt_zero": minus_lt if minus else None,
+            "dose_response": {str(k): v for k, v in steering_summary.items()},
+            "centroid_vector_norm": v_norm,
             "evidence_level": "REAL_MODEL_LATENT_INTERVENTION",
         },
     }
@@ -455,10 +592,13 @@ def main() -> int:
 
     # --- Scientific success tiers (Section 48) ---
     print("\n--- Scientific success tiers (Section 48) ---")
-    tier1 = final_cand_reg < reg_llm  # Tier 1: beats always-LLM
-    tier2 = final_cand_reg < final_inc_reg  # Tier 2: counterfactual value
-    print(f"  Tier 1 (beats always-LLM):     {'YES' if tier1 else 'NO'} (cand_reg={final_cand_reg:.4f} < llm_reg={reg_llm:.4f})")
-    print(f"  Tier 2 (counterfactual value):  {'YES' if tier2 else 'NO'} (cand_reg={final_cand_reg:.4f} < inc_reg={final_inc_reg:.4f})")
+    tier1 = final_cand_reg < final_reg_llm
+    tier2 = final_cand_reg < final_reg_llm  # incumbent = always-LLM
+    tier3 = final_cand_reg < final_reg_hand  # hand router
+    print(f"  Tier 1 (beats chance):         implied by routing_accuracy > 0.5 = {final_acc > 0.5}")
+    print(f"  Tier 2 (beats always-LLM):     {'YES' if tier2 else 'NO'} (cand={final_cand_reg:.4f} < llm={final_reg_llm:.4f})")
+    print(f"  Tier 3 (beats hand router):    {'YES' if tier3 else 'NO'} (cand={final_cand_reg:.4f} < hand={final_reg_hand:.4f})")
+    print(f"  Tier 4 (beats unweighted):     {'YES' if final_cand_reg < final_reg_uw else 'NO'} (cand={final_cand_reg:.4f} < unw={final_reg_uw:.4f})")
 
     print("\n" + "=" * 70)
     print("REAL QWEN EXPERIMENT COMPLETE")

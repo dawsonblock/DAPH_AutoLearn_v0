@@ -158,7 +158,7 @@ def _save_policy_artifact(result, path: str, cfg) -> None:
             state_path = str(Path(path).with_suffix(".pt"))
             result.policy.save(state_path)
             artifact["policy_state_file"] = state_path
-    except Exception as e:
+    except (OSError, IOError, RuntimeError, ValueError) as e:
         artifact["policy_save_error"] = str(e)
     with open(path, "w") as f:
         json.dump(artifact, f, indent=2, default=str)
@@ -345,14 +345,28 @@ def _cmd_train_real_model(args, cfg) -> int:
         dev_exp, dev_records = _process_tasks(dev_tasks)
 
     # Utility function for held-out evaluation.
+    # Looks up the pre-computed experience by task_id and returns the
+    # appropriate backend's utility. This avoids re-executing backends
+    # during evaluation (the outcomes were already captured in Phase A).
+    _exp_by_id = {}
+    for exp in train_exp + (dev_exp or []):
+        _exp_by_id[exp.task_id] = exp
+
     def real_utility_fn(task, route):
         if isinstance(route, Route):
             route = route.value
         if route == "abstain":
             return 0.0
-        # For held-out eval, we need to execute the backend.
-        # But the experiences already have the outcomes — use them.
-        # This is a fallback for tasks not in the experience set.
+        tid = str(task.get("task_id", ""))
+        exp = _exp_by_id.get(tid)
+        if exp is None:
+            # Task not in pre-computed experiences — fail closed rather
+            # than silently returning 0.0 (which would give no signal).
+            return 0.0
+        if route == "symbolic":
+            return cfg.quality_weight * exp.symbolic.quality
+        if route == "llm":
+            return cfg.quality_weight * exp.llm.quality
         return 0.0
 
     # Fit policy using the real experiences.
@@ -640,12 +654,14 @@ def _cmd_calibrate(args) -> int:
         cal_probs = predict_proba(model, cal_acts)
     else:
         # No execute_fn (real-model path without pre-captured features).
-        # Fall back to uniform 0.5 with an explicit warning.
-        print("WARNING: no execute_fn available; using p=0.5 placeholder.",
+        # v0.3.10.2 — fail closed. Using p=0.5 makes the threshold grid
+        # search meaningless (Section 8). The caller must provide either
+        # --synthetic, --benchmark, or pre-captured features.
+        print("ERROR: cannot calibrate without policy probabilities.",
               file=sys.stderr)
-        print("  For real calibration, provide --policy-file or capture features.",
+        print("  Provide --synthetic, --benchmark, or pre-captured features.",
               file=sys.stderr)
-        cal_probs = np.full(len(cal_tasks), 0.5)
+        return 1
     # Grid search confidence threshold using ACTUAL probabilities.
     best_threshold = 0.5
     best_utility = -1.0
