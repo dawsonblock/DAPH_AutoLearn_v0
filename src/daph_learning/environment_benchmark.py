@@ -144,17 +144,31 @@ def make_near_tie_environment(
     dim: int = 8,
     seed: int = 0,
     w_star: np.ndarray | None = None,
-    small_frac: float = 0.7,
-    small_gap: float = 0.05,
-    large_gap: float = 1.5,
-    noise_std: float = 0.1,
+    decisive_frac: float = 0.25,
+    decisive_gap: float = 1.5,
+    ambiguous_gap: float = 0.03,
+    nuisance_strength: float = 8.0,
 ) -> list[dict[str, Any]]:
-    """Near-tie / heteroskedastic environment (Section 10B).
+    """Near-tie / heteroskedastic environment (Section 10B, v0.3.10.2 redesign).
 
-    70% of samples have ``|ΔU| ~ small`` (low-information near-ties),
-    30% have ``|ΔU| ~ large`` (decisive). Confidence is noise-dependent.
+    The v0.3.10.1 version did not demonstrate the benefit of utility
+    weighting because the ambiguous examples still contained signal
+    aligned with ``w*``. This v0.3.10.2 redesign ensures weighted
+    training has a real expected advantage:
 
-    Purpose: test whether utility weighting beats equal weighting.
+    * **Decisive** (25%): ``h`` contains strong signal aligned with
+      ``w*``; ``ΔU = large * sign(h @ w*)``; confidence = 0.95.
+    * **Ambiguous** (75%): ``h`` contains high-variance noise + a
+      **nuisance direction** (orthogonal to ``w*``) with small
+      ``|ΔU| ~ 0.03``; confidence = 0.5.
+
+    The nuisance direction in the ambiguous examples means an unweighted
+    router (which treats all examples equally) will be pulled toward the
+    nuisance direction, degrading its ability to recover the true routing
+    axis. A weighted router (which upweights decisive examples via
+    ``|ΔU| * confidence``) will focus on the clean signal and recover
+    the true direction more accurately.
+
     Required scientific expectation: weighted method should reduce
     regret relative to unweighted method under this controlled regime.
 
@@ -164,15 +178,17 @@ def make_near_tie_environment(
     dim : int
     seed : int
     w_star : np.ndarray | None
-        Direction that determines which backend is preferred.
-    small_frac : float
-        Fraction of near-tie samples (default 0.7).
-    small_gap : float
-        ``|ΔU|`` scale for near-tie samples.
-    large_gap : float
-        ``|ΔU|`` scale for decisive samples.
-    noise_std : float
-        Additive noise on the hidden representation.
+        True latent routing axis. If None, a random unit vector is drawn.
+    decisive_frac : float
+        Fraction of decisive examples (default 0.25).
+    decisive_gap : float
+        ``|ΔU|`` for decisive examples (default 1.5).
+    ambiguous_gap : float
+        ``|ΔU|`` scale for ambiguous examples (default 0.03).
+    nuisance_strength : float
+        Strength of the nuisance direction in ambiguous examples
+        (default 3.0). This is the coefficient on a direction orthogonal
+        to ``w*`` that misleads the unweighted router.
     """
     rng = np.random.default_rng(seed)
     if w_star is None:
@@ -180,28 +196,46 @@ def make_near_tie_environment(
         w = w / np.linalg.norm(w)
     else:
         w = np.asarray(w_star, dtype=np.float64)
-    H = rng.normal(0, 1, size=(n, dim))
-    n_small = int(n * small_frac)
-    n_large = n - n_small
-    signs = rng.choice([-1.0, 1.0], size=n)
-    gaps = np.concatenate([
-        rng.uniform(0.0, small_gap, size=n_small),
-        rng.uniform(large_gap * 0.5, large_gap, size=n_large),
-    ])
-    rng.shuffle(gaps)
-    scores = signs * gaps
-    # Add a small latent component so the direction is recoverable.
-    scores = scores + 0.3 * (H @ w)
+    # Create a nuisance direction orthogonal to w*.
+    if dim >= 2:
+        nuisance = rng.normal(0, 1, size=dim)
+        nuisance = nuisance - (nuisance @ w) * w  # orthogonalize
+        nuisance = nuisance / (np.linalg.norm(nuisance) + 1e-12)
+    else:
+        nuisance = np.array([0.0])
+
+    n_decisive = int(n * decisive_frac)
+    n_ambiguous = n - n_decisive
     tasks = []
-    for i in range(n):
-        du = float(scores[i])
-        family = "S" if du > 0.05 else ("L" if du < -0.05 else "tie")
-        # Noise-dependent confidence: near-ties have lower confidence.
-        conf = float(min(1.0, abs(du) / large_gap + 0.3))
-        task = _build_task(i, family, H[i], du, prefix="nt",
-                           noise_sigma=1.0 - conf)
-        task["confidence"] = conf
+    idx = 0
+    for _ in range(n_decisive):
+        h = rng.normal(0, 0.5, size=dim)
+        # Strong signal aligned with w*.
+        signal = float(h @ w)
+        delta_u = float(np.sign(signal) * decisive_gap)
+        confidence = 0.95
+        family = "S" if delta_u > 0.05 else ("L" if delta_u < -0.05 else "tie")
+        task = _build_task(idx, family, h, delta_u, prefix="nt")
+        task["confidence"] = confidence
+        task["decisive"] = True
         tasks.append(task)
+        idx += 1
+    for _ in range(n_ambiguous):
+        h = rng.normal(0, 1.0, size=dim)  # high-variance noise
+        # Add nuisance direction (misleading for unweighted router).
+        nuisance_val = rng.normal()
+        h = h + nuisance_strength * nuisance_val * nuisance
+        # Small |ΔU| — essentially a tie.
+        delta_u = float(rng.normal(scale=ambiguous_gap))
+        confidence = 0.5
+        family = "S" if delta_u > 0.01 else ("L" if delta_u < -0.01 else "tie")
+        task = _build_task(idx, family, h, delta_u, prefix="nt")
+        task["confidence"] = confidence
+        task["decisive"] = False
+        tasks.append(task)
+        idx += 1
+    # Shuffle so decisive/ambiguous are interleaved.
+    rng.shuffle(tasks)
     return tasks
 
 

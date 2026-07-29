@@ -115,7 +115,7 @@ def test_cli_load_script_main_raises_for_missing_script():
 def test_package_importable_without_pythonpath():
     """daph_learning must be importable without PYTHONPATH=src after install."""
     import daph_learning
-    assert daph_learning.__version__ == "0.3.10.1-alpha"
+    assert daph_learning.__version__ == "0.3.10.2-alpha"
 
 
 def test_cli_importable_without_pythonpath():

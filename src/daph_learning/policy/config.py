@@ -1,4 +1,4 @@
-"""v0.3.10.1-alpha — immutable experiment configuration (Section 33).
+"""v0.3.10.2-alpha — immutable experiment configuration (Section 33).
 
 A canonical frozen configuration containing all parameters that affect
 the experiment outcome. The config is hashed and saved with every
@@ -15,7 +15,7 @@ v0.3.10.1 — breaking changes (clean break):
   code always called the gap function, silently ignoring ``"snr"``.
 * ``policy_type``: ``"lowrank"`` removed (not in v0.3.10.1 spec);
   ``"mlp_experimental"`` added.
-* ``autolearn_version`` bumped to ``"0.3.10.1-alpha"``.
+* ``autolearn_version`` bumped to ``"0.3.10.2-alpha"``.
 * ``evidence_level`` and ``intervention_alpha_grid`` added to support
   the v0.3.10.1 real-model intervention pipeline.
 """
@@ -107,7 +107,7 @@ class ExperimentConfig:
     # Replay (Section 27). Optional.
     prioritized_replay_alpha: float = 0.0  # 0 = uniform / off
     # Version.
-    autolearn_version: str = "0.3.10.1-alpha"
+    autolearn_version: str = "0.3.10.2-alpha"
     config_sha256: str | None = None
 
     def __post_init__(self) -> None:
