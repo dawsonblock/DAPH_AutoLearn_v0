@@ -16,7 +16,7 @@ The intervention is::
     h' = h + alpha * v
 
 subject to existing norm/cosine safety clamps. Results are recorded as
-:class:`RealInterventionResult` with ``evidence_level="real_model_causal"``.
+:class:`RealInterventionResult` with ``evidence_level="REAL_MODEL_LATENT_INTERVENTION"``.
 
 This module is torch/transformers-dependent. It is imported lazily so
 the rest of the package works without those dependencies.
@@ -25,13 +25,12 @@ the rest of the package works without those dependencies.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Callable, Sequence
+from typing import Any, Callable, Mapping, Sequence
 
 import numpy as np
 
 from . import RealInterventionResult
 from ..policy.abstention import choose_route
-from ..policy.types import Route
 
 
 @dataclass(frozen=True)
@@ -223,7 +222,7 @@ def run_real_intervention(
     Returns
     -------
     list[RealInterventionResult]
-        One per (task, alpha) pair, with ``evidence_level="real_model_causal"``.
+        One per (task, alpha) pair, with ``evidence_level="REAL_MODEL_LATENT_INTERVENTION"``.
     """
     import torch
     cfg = config or InterventionConfig()
@@ -266,11 +265,6 @@ def run_real_intervention(
         p0 = float(policy_prob_fn(h0_vec))
         route0 = choose_route(p0, 0.5)
         u0 = float(utility_fn(task, route0))
-        # Neutral KL baseline.
-        kl_baseline = None
-        if neutral_prompts:
-            kl_baseline = _measure_neutral_kl(
-                model, tokenizer, neutral_prompts, v, 0.0, cfg, device)
         # Dose-response: for each alpha, re-run with the hook armed.
         # The hook modifies the layer output; captured_hidden reflects
         # the intervention.
@@ -305,7 +299,7 @@ def run_real_intervention(
                 route_score_after=p_int,
                 neutral_kl=kl_int,
                 clamp_triggered=hook.clamp_triggered,
-                evidence_level="real_model_causal",
+                evidence_level="REAL_MODEL_LATENT_INTERVENTION",
             ))
     return results
 

@@ -1,6 +1,6 @@
 {
-  "release": "0.3.10.1-alpha",
-  "timestamp": 1785307430.789999,
+  "release": "0.3.10.2-alpha",
+  "timestamp": 1785308294.702724,
   "n_gates": 25,
   "n_passed": 25,
   "n_failed": 0,
@@ -28,7 +28,7 @@
           false
         ]
       },
-      "timestamp": 1785307429.4371278
+      "timestamp": 1785308293.3123782
     },
     {
       "gate": "G2",
@@ -41,7 +41,7 @@
         "clipped_gap": 1.0,
         "snr": 3.499999650000035
       },
-      "timestamp": 1785307429.437151
+      "timestamp": 1785308293.3123982
     },
     {
       "gate": "G3",
@@ -53,7 +53,7 @@
         "logistic": "WeightedLogisticRouter",
         "mlp": "SmallMLPRouter"
       },
-      "timestamp": 1785307429.437193
+      "timestamp": 1785308293.312438
     },
     {
       "gate": "G4",
@@ -61,7 +61,7 @@
       "passed": true,
       "reason": "utility_fn is required for held-out policy evaluation (Section 4): refusing to synthesize zero utility",
       "measurements": {},
-      "timestamp": 1785307429.437335
+      "timestamp": 1785308293.312577
     },
     {
       "gate": "G5",
@@ -71,7 +71,7 @@
       "measurements": {
         "aligned": 3
       },
-      "timestamp": 1785307429.4374
+      "timestamp": 1785308293.312642
     },
     {
       "gate": "G6",
@@ -79,7 +79,7 @@
       "passed": true,
       "reason": "",
       "measurements": {},
-      "timestamp": 1785307429.4374201
+      "timestamp": 1785308293.312661
     },
     {
       "gate": "G7",
@@ -94,7 +94,7 @@
           0.8
         ]
       },
-      "timestamp": 1785307429.4379032
+      "timestamp": 1785308293.312763
     },
     {
       "gate": "G8",
@@ -102,7 +102,7 @@
       "passed": true,
       "reason": "",
       "measurements": {},
-      "timestamp": 1785307430.176964
+      "timestamp": 1785308294.0369642
     },
     {
       "gate": "G9",
@@ -112,7 +112,7 @@
       "measurements": {
         "median_random_regret": 0.17865668461153553
       },
-      "timestamp": 1785307430.188156
+      "timestamp": 1785308294.0446541
     },
     {
       "gate": "G10",
@@ -138,7 +138,7 @@
           0.01323651941610017
         ]
       },
-      "timestamp": 1785307430.5259898
+      "timestamp": 1785308294.430217
     },
     {
       "gate": "G11",
@@ -149,7 +149,7 @@
         "centroid_regret_linear": 0.20075295423999392,
         "centroid_regret_multimodal": 0.31757447619364365
       },
-      "timestamp": 1785307430.541116
+      "timestamp": 1785308294.444639
     },
     {
       "gate": "G12",
@@ -159,7 +159,7 @@
       "measurements": {
         "logistic_regret_linear": 0.10972794451400979
       },
-      "timestamp": 1785307430.552741
+      "timestamp": 1785308294.4581661
     },
     {
       "gate": "G13",
@@ -170,7 +170,7 @@
         "logistic_regret_xor": 0.32075022095558003,
         "mlp_regret_xor": 0.07939361904841091
       },
-      "timestamp": 1785307430.607054
+      "timestamp": 1785308294.51182
     },
     {
       "gate": "G14",
@@ -184,7 +184,7 @@
         "tolerance": 0.1,
         "expected_ordering": "candidate_lower"
       },
-      "timestamp": 1785307430.6070678
+      "timestamp": 1785308294.5118341
     },
     {
       "gate": "G15",
@@ -195,7 +195,7 @@
         "reversal_consistent": true,
         "p_value": 1.7763568394002505e-15
       },
-      "timestamp": 1785307430.609851
+      "timestamp": 1785308294.515148
     },
     {
       "gate": "G16",
@@ -203,7 +203,7 @@
       "passed": true,
       "reason": "",
       "measurements": {},
-      "timestamp": 1785307430.610847
+      "timestamp": 1785308294.516221
     },
     {
       "gate": "G17",
@@ -211,7 +211,7 @@
       "passed": true,
       "reason": "",
       "measurements": {},
-      "timestamp": 1785307430.748329
+      "timestamp": 1785308294.6596391
     },
     {
       "gate": "G18",
@@ -219,7 +219,7 @@
       "passed": true,
       "reason": "",
       "measurements": {},
-      "timestamp": 1785307430.7554371
+      "timestamp": 1785308294.666406
     },
     {
       "gate": "G19",
@@ -227,7 +227,7 @@
       "passed": true,
       "reason": "",
       "measurements": {},
-      "timestamp": 1785307430.788556
+      "timestamp": 1785308294.700892
     },
     {
       "gate": "G20",
@@ -237,7 +237,7 @@
       "measurements": {
         "tau_ood": 4.334772885737488
       },
-      "timestamp": 1785307430.7889512
+      "timestamp": 1785308294.7013729
     },
     {
       "gate": "G21",
@@ -245,7 +245,7 @@
       "passed": true,
       "reason": "verified by learner.py code + test_v0310_1_p0_gates",
       "measurements": {},
-      "timestamp": 1785307430.788952
+      "timestamp": 1785308294.701374
     },
     {
       "gate": "G22",
@@ -255,7 +255,7 @@
       "measurements": {
         "families_evaluated": 2
       },
-      "timestamp": 1785307430.7890491
+      "timestamp": 1785308294.701478
     },
     {
       "gate": "G23",
@@ -263,7 +263,7 @@
       "passed": true,
       "reason": "",
       "measurements": {},
-      "timestamp": 1785307430.7896152
+      "timestamp": 1785308294.702282
     },
     {
       "gate": "G24",
@@ -274,7 +274,7 @@
         "version": "0.3.10.2-alpha",
         "config_version": "0.3.10.2-alpha"
       },
-      "timestamp": 1785307430.7896352
+      "timestamp": 1785308294.702306
     },
     {
       "gate": "G25",
@@ -285,7 +285,7 @@
         "n_intervention_results": 25,
         "model_id": "Qwen/Qwen2.5-0.5B-Instruct"
       },
-      "timestamp": 1785307430.789993
+      "timestamp": 1785308294.702718
     }
   ]
 }

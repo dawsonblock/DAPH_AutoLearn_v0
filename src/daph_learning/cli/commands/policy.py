@@ -128,7 +128,6 @@ def _load_jsonl(path: str) -> list[dict]:
 
 def _save_policy_artifact(result, path: str, cfg) -> None:
     """Save the trained policy artifact with full provenance (Section 45)."""
-    import hashlib
     import time
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     artifact = {
@@ -299,7 +298,6 @@ def _cmd_train_real_model(args, cfg) -> int:
         capture_task_representation,
         execute_llm_backend,
         execute_symbolic_backend,
-        make_arithmetic_tasks,
     )
     from daph_learning.policy.types import FeatureRecord, Route
 
@@ -411,7 +409,6 @@ def _cmd_evaluate(args) -> int:
     if args.synthetic:
         from daph_learning.environment_synthetic import (
             make_synthetic_tasks, synthetic_execute_fn, synthetic_utility,
-            synthetic_oracle_utility,
         )
         test_tasks = make_synthetic_tasks(
             n_per_family=50, dim=8, seed=args.seed + 100)
@@ -422,7 +419,6 @@ def _cmd_evaluate(args) -> int:
     elif args.benchmark:
         from daph_learning.environment_benchmark import (
             make_environment, benchmark_execute_fn, benchmark_utility,
-            benchmark_oracle_utility,
         )
         test_tasks = make_environment(
             args.benchmark, n=200, dim=8, seed=args.seed + 100)
@@ -607,9 +603,7 @@ def _cmd_calibrate(args) -> int:
     tau_ood = float(np.quantile(cal_scores, cfg.ood_quantile))
     # Simple confidence threshold calibration: try a grid and pick the
     # one that minimizes abstain rate subject to accuracy constraint.
-    from daph_learning.policy.learner import build_counterfactual_experiences
     from daph_learning.policy.abstention import choose_route_with_reason
-    from daph_learning.policy.types import Route
     if args.synthetic:
         from daph_learning.environment_synthetic import synthetic_utility
         execute_fn = synthetic_execute_fn
@@ -629,10 +623,6 @@ def _cmd_calibrate(args) -> int:
 
         def utility_fn(task, route):
             return 0.0
-    cal_exp = (
-        build_counterfactual_experiences(
-            cal_tasks, execute_fn=execute_fn, config=cfg)
-        if execute_fn else [])
     # v0.3.10.2 — compute ACTUAL policy probabilities (Section 8).
     # The v0.3.10.1 version used p = 0.5 placeholder, which made the
     # threshold grid search meaningless. Now we train a policy on the

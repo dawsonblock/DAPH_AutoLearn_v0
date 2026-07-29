@@ -22,7 +22,6 @@ from typing import Any, Callable, Mapping, Protocol, Sequence, runtime_checkable
 import numpy as np
 
 from .config import ExperimentConfig
-from .targets import TargetMode
 
 
 @runtime_checkable
@@ -111,10 +110,9 @@ def fit_policy(
         )
     if pt == "logistic":
         from .logistic import (
-            LogisticTrainConfig, WeightedLogisticRouter,
+            LogisticTrainConfig,
             train_weighted_logistic_router,
         )
-        input_dim = train_features.shape[1]
         lcfg = LogisticTrainConfig(
             temperature=config.target_temperature,
             early_stopping_metric=config.early_stopping_metric,

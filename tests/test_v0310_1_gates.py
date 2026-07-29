@@ -96,7 +96,6 @@ class TestComparativeGate:
             dev_acts = np.array([t["activation"] for t in dev], dtype=np.float32)
             probs = predict_proba(model, dev_acts)
             from daph_learning.policy.abstention import choose_route
-            from daph_learning.policy.types import Route
             from daph_learning.environment_benchmark import benchmark_oracle_utility
             routes = [choose_route(float(p), 0.5).value for p in probs]
             pred_u = np.array([
@@ -193,9 +192,9 @@ class TestRealInterventionPipeline:
             utility_delta=1.0,
             route_score_before=0.3, route_score_after=0.8,
             neutral_kl=0.01, clamp_triggered=False,
-            evidence_level="real_model_causal")
+            evidence_level="REAL_MODEL_LATENT_INTERVENTION")
         d = r.to_dict()
-        assert d["evidence_level"] == "real_model_causal"
+        assert d["evidence_level"] == "REAL_MODEL_LATENT_INTERVENTION"
         assert d["utility_delta"] == 1.0
         assert d["route_score_before"] == 0.3
 
@@ -248,7 +247,6 @@ class TestAtomicPromotion:
 
     def test_logistic_save_and_load(self, tmp_path):
         from daph_learning.policy.logistic import WeightedLogisticRouter
-        import torch
         model = WeightedLogisticRouter(input_dim=4)
         path = str(tmp_path / "logistic.pt")
         model.save(path)

@@ -237,7 +237,6 @@ def _derive_oracles(
         and expected is not None
         and int(sym["symbolic_value"]) == int(expected)
     )
-    llm_ok = llm["llm_ran"]
     llm_correct = llm["llm_correct"]
 
     # capability_oracle: symbolic iff the executor finished without error.

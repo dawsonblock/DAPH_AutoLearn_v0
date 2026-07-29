@@ -1,4 +1,4 @@
-"""v0.3.10.1-alpha — real-model smoke test (Section 37 / G25).
+"""v0.3.10.2-alpha — real-model smoke test (Section 37 / G25).
 
 Runs a tiny end-to-end real-model intervention + policy evaluation
 using Qwen2.5-0.5B-Instruct on MPS (or CUDA if available). This is the
@@ -36,12 +36,11 @@ def main() -> int:
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
     from daph_learning.interventions.real_pipeline import (
-        InterventionConfig, ResidualStreamHook, run_real_intervention,
+        InterventionConfig, run_real_intervention,
     )
-    from daph_learning.interventions import RealInterventionResult
 
     print("=" * 60)
-    print("v0.3.10.1-alpha real-model smoke test (G25)")
+    print("v0.3.10.2-alpha real-model smoke test (G25)")
     print("=" * 60)
 
     device = "cuda" if torch.cuda.is_available() else (
@@ -61,7 +60,6 @@ def main() -> int:
 
     # --- Generate a tiny synthetic task set with real hidden states ---
     print("\n[1/4] Capturing hidden states on 20 tasks...")
-    rng = np.random.default_rng(0)
     prompts = [
         "What is 2+2?", "Solve: 3*5", "Define photosynthesis.",
         "Translate hello to French.", "What is the capital of France?",
