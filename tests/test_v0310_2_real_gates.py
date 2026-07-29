@@ -362,7 +362,7 @@ class TestRealInterventionExecutes:
             import torch
             from transformers import AutoModelForCausalLM, AutoTokenizer
             from daph_learning.interventions.real_pipeline import (
-                ResidualStreamHook, InterventionConfig,
+                ResidualStreamHook,
             )
             device = "mps" if torch.backends.mps.is_available() else "cpu"
             tok = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-0.5B-Instruct")
@@ -407,13 +407,12 @@ class TestNoLeakage:
         """The capture function must capture the hidden state from
         processing the task prompt, NOT from after generating an answer."""
         from daph_learning.execution.real_backends import (
-            capture_task_representation, CaptureConfig,
+            capture_task_representation,
         )
         # The capture function only takes the task prompt — it does NOT
         # take the expected answer, backend result, or verifier output.
         # This is verified by the function signature: it accepts
         # (task, model, tokenizer, config, device) — no answer/result.
-        task = {"task_id": "t1", "prompt": "What is 2+2?"}
         # The task dict does NOT contain the expected answer in the
         # capture path — the capture only reads 'prompt' or
         # 'specification', never 'expected'.
@@ -472,7 +471,7 @@ class TestMixedTasks:
             make_arithmetic_tasks, make_letter_counting_tasks,
             execute_symbolic_backend,
         )
-        from daph_learning.policy.types import BackendOutcome, Route
+        from daph_learning.policy.types import BackendOutcome
         from daph_learning.policy.config import ExperimentConfig
         from daph_learning.execution.real_backends import build_real_counterfactual_experience
         import numpy as np

@@ -1,4 +1,4 @@
-"""v0.3.10.1-alpha — generate release_gates.json and experiment_results.json
+"""v0.3.10.2-alpha — generate release_gates.json and experiment_results.json
 (Sections 47, 49).
 
 Runs the 25 release gates (G1-G25) and produces:
@@ -323,6 +323,7 @@ def run_all_gates() -> dict:
         from daph_learning.interventions.real_pipeline import (
             InterventionConfig, ResidualStreamHook, run_real_intervention,
         )
+        _ = (InterventionConfig, ResidualStreamHook, run_real_intervention)
         g16_pass = True
     except ImportError:
         g16_pass = False
@@ -409,7 +410,7 @@ def run_all_gates() -> dict:
     n_pass = sum(1 for g in gates if g["passed"])
     n_total = len(gates)
     return {
-        "release": "0.3.10.1-alpha",
+        "release": "0.3.10.2-alpha",
         "timestamp": time.time(),
         "n_gates": n_total,
         "n_passed": n_pass,
@@ -480,14 +481,14 @@ def run_experiment_results() -> dict:
             matrix[env]["weighted"] = _eval("logistic", env, weight_mode="clipped_gap")
 
     return {
-        "release": "0.3.10.1-alpha",
+        "release": "0.3.10.2-alpha",
         "timestamp": time.time(),
         "synthetic_result_matrix": matrix,
     }
 
 
 def main() -> int:
-    print("Running v0.3.10.1-alpha release gates...")
+    print("Running v0.3.10.2-alpha release gates...")
     gates = run_all_gates()
     out_gates = REPO / "release_gates.json"
     with open(out_gates, "w") as f:

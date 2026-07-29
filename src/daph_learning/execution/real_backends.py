@@ -37,8 +37,8 @@ import hashlib
 import json
 import re
 import time
-from dataclasses import dataclass, field
-from typing import Any, Callable, Mapping, Sequence
+from dataclasses import dataclass
+from typing import Any, Mapping
 
 import numpy as np
 
@@ -149,10 +149,8 @@ def execute_symbolic_backend(
     try:
         from .symbolic_executor import plan_from_structured_task, execute_plan
         plan = plan_from_structured_task(task, reason_code="real_symbolic")
-        result = execute_plan(plan)
+        execute_plan(plan)  # raises on failure
         latency = _time.time() - t0
-        output_text = str(result.value)
-        output_hash = hashlib.sha256(output_text.encode()).hexdigest()[:16]
         return BackendOutcome(
             task_id=tid,
             backend="symbolic",
@@ -163,7 +161,7 @@ def execute_symbolic_backend(
             risk=0.0,
             verifier_confidence=1.0,
         )
-    except (ValueError, KeyError, TypeError, OverflowError, ArithmeticError) as e:
+    except (ValueError, KeyError, TypeError, OverflowError, ArithmeticError):
         latency = _time.time() - t0
         return BackendOutcome(
             task_id=tid,
@@ -268,7 +266,6 @@ def execute_llm_backend(
     n_prompt = inputs["input_ids"].shape[1]
     generated_ids = output_ids[0, n_prompt:]
     generated_text = tokenizer.decode(generated_ids, skip_special_tokens=True).strip()
-    output_hash = hashlib.sha256(generated_text.encode()).hexdigest()[:16]
 
     # The BackendOutcome's correct/quality fields are set by the verifier,
     # not here. We return the raw text for verification.

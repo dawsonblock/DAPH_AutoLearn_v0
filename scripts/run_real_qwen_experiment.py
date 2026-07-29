@@ -58,7 +58,6 @@ def main() -> int:
         execute_llm_backend,
         execute_symbolic_backend,
         make_mixed_tasks,
-        verify_output,
     )
     from daph_learning.policy import (
         ExperimentConfig, fit_policy, predict_proba,
@@ -288,11 +287,9 @@ def main() -> int:
     print(f"  Best policy: {best_ptype} (dev_regret={best_policy['dev_regret']:.4f})")
 
     # Baselines on dev.
-    dev_routes_llm = ["llm"] * len(dev_tasks)
     dev_u_llm = np.array([utility_fn(t, "llm") for t in dev_tasks], dtype=np.float64)
     dev_reg_llm = float(mean_regret(dev_u_llm, dev_ora_u))
 
-    dev_routes_sym = ["symbolic"] * len(dev_tasks)
     dev_u_sym = np.array([utility_fn(t, "symbolic") for t in dev_tasks], dtype=np.float64)
     dev_reg_sym = float(mean_regret(dev_u_sym, dev_ora_u))
 
@@ -455,7 +452,6 @@ def main() -> int:
     # Phase E: steering dev study (dose-response)
     # ================================================================
     print("\n--- Phase E: steering dev study ---")
-    from daph_learning.policy.centroid_policy import CentroidPolicy
     centroid_cfg = ExperimentConfig(
         policy_type="centroid", gap_threshold=0.01,
         confidence_threshold=0.5, random_seed=42, max_weight=2.0)
@@ -502,7 +498,7 @@ def main() -> int:
         print(f"  E[P(S|+v)] = {steering_summary[1.0]['mean_p']:.4f}")
         print(f"  E[P(S| 0)] = {steering_summary[0.0]['mean_p']:.4f}")
         print(f"  E[P(S|-v)] = {steering_summary[-1.0]['mean_p']:.4f}")
-    print(f"  evidence_level: REAL_MODEL_LATENT_INTERVENTION")
+    print("  evidence_level: REAL_MODEL_LATENT_INTERVENTION")
 
     # ================================================================
     # Save experiment artifact
@@ -592,7 +588,6 @@ def main() -> int:
 
     # --- Scientific success tiers (Section 48) ---
     print("\n--- Scientific success tiers (Section 48) ---")
-    tier1 = final_cand_reg < final_reg_llm
     tier2 = final_cand_reg < final_reg_llm  # incumbent = always-LLM
     tier3 = final_cand_reg < final_reg_hand  # hand router
     print(f"  Tier 1 (beats chance):         implied by routing_accuracy > 0.5 = {final_acc > 0.5}")

@@ -57,7 +57,7 @@ except ImportError:  # pragma: no cover - torch is an optional dependency
     nn = None  # type: ignore[assignment]
     _HAS_TORCH = False
 
-from .targets import TargetMode, build_preference_targets
+from .targets import build_preference_targets
 
 
 # ------------------------------------------------------------------
@@ -424,8 +424,6 @@ if _HAS_TORCH:
 
         # For dev_loss, "lower is better" universally. For dev_utility
         # we return -utility so lower is better here too.
-        lower_is_better = True
-
         best_metric = float("inf")
         best_state = None
         patience = 0
