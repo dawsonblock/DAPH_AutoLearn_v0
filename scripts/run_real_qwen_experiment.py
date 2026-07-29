@@ -62,9 +62,8 @@ def main() -> int:
     from daph_learning.policy import (
         ExperimentConfig, fit_policy, predict_proba,
         action_confidence_ece, preference_brier_soft,
-        source_tree_sha256,
     )
-    from daph_learning.policy.abstention import choose_route, choose_route_with_reason
+    from daph_learning.policy.abstention import choose_route_with_reason
     from daph_learning.policy.regret import mean_regret, paired_promotion_statistics
     from daph_learning.policy.ood import MahalanobisOOD
     from daph_learning.policy.types import FeatureRecord, Route
@@ -446,7 +445,7 @@ def main() -> int:
         print(f"  E[U|+v]    = {steering_summary[1.0]['mean_utility']:.4f}")
         print(f"  E[U| 0]    = {steering_summary[0.0]['mean_utility']:.4f}")
         print(f"  E[U|-v]    = {steering_summary[-1.0]['mean_utility']:.4f}")
-    print(f"  evidence_level: REAL_MODEL_LATENT_INTERVENTION")
+    print("  evidence_level: REAL_MODEL_LATENT_INTERVENTION")
 
     # ================================================================
     # FREEZE: all configuration is now frozen.

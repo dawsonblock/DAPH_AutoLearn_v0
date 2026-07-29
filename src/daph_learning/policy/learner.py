@@ -43,7 +43,7 @@ from typing import Any, Callable, Mapping, Sequence
 
 import numpy as np
 
-from .abstention import choose_route, choose_route_with_reason
+from .abstention import choose_route_with_reason
 from .alignment import AlignmentResult, join_by_task_id
 from .calibration import (
     action_confidence_ece,
@@ -56,11 +56,11 @@ from .confidence import OutcomeConfidence
 from .features import PCAFeatureReducer
 from .ood import MahalanobisOOD
 from .policy_factory import fit_policy, predict_proba
-from .regret import mean_regret, paired_promotion_statistics, per_task_regret
+from .regret import mean_regret, paired_promotion_statistics
 from .targets import TargetMode, build_preference_targets
 from .types import BackendOutcome, CounterfactualExperience, FeatureRecord, Route
 from .utility import backend_utility as _utility
-from .weighting import WeightConfig, WeightMode, compute_weight
+from .weighting import compute_weight
 
 
 @dataclass

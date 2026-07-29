@@ -1,7 +1,7 @@
 {
   "release": "0.3.10.3-alpha",
   "evidence_level": "REAL_MODEL_DEV",
-  "source_tree_sha256": "3589383a173be01f",
+  "source_tree_sha256": "3a171769d64e68c1",
   "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
   "device": "mps",
   "n_layers": 24,

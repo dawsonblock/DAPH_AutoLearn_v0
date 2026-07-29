@@ -28,11 +28,11 @@ Required: ``regret_candidate < regret_incumbent`` and
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Callable, Sequence
+from typing import Any, Sequence
 
 import numpy as np
 
-from .policy.types import BackendOutcome, Route
+from .policy.types import Route
 
 
 @dataclass(frozen=True)

@@ -536,6 +536,12 @@ def run_experiment_results() -> dict:
         make_environment, benchmark_execute_fn, benchmark_utility,
         benchmark_oracle_utility,
     )
+    # v0.3.10.3 — bind artifact to current source-tree hash.
+    try:
+        from daph_learning.policy.provenance import source_tree_sha256
+        exp_src_hash = source_tree_sha256()
+    except Exception:
+        exp_src_hash = "unknown"
 
     def _eval(ptype, env, weight_mode="clipped_gap", seed=0):
         train = make_environment(env, n=300, dim=8, seed=seed)
@@ -589,7 +595,7 @@ def run_experiment_results() -> dict:
     return {
         "release": "0.3.10.3-alpha",
         "timestamp": time.time(),
-        "source_tree_sha256": src_hash if "src_hash" in dir() else "unknown",
+        "source_tree_sha256": exp_src_hash,
         "synthetic_result_matrix": matrix,
     }
 

@@ -6,12 +6,11 @@ outcomes. See ``daph_learning.autolearn.__init__`` for the design overview.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Callable, Literal, Sequence
+from dataclasses import dataclass
+from typing import Any, Callable, Literal
 
 import numpy as np
 
-from daph_learning.execution.plan import ExecutionResult
 from daph_learning.execution.symbolic_executor import (
     execute_plan,
     plan_from_structured_task,

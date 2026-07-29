@@ -24,12 +24,10 @@ depending on the weights supplied.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Sequence
 
 import numpy as np
 
-from .centroid import weighted_contrastive_mean, weighted_mean
-from .types import Route
+from .centroid import weighted_contrastive_mean
 
 
 @dataclass

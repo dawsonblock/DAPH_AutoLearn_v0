@@ -39,7 +39,6 @@ import numpy as np
 
 from .counterfactual import (
     ABSTAIN,
-    LearningTarget,
     UtilityConfig,
     compute_backend_utility,
     derive_learning_target,
@@ -62,7 +61,6 @@ from .promotion import (
     evaluate_promotion_gate,
 )
 from .route_policy import (
-    PolicyRouteDecision,
     RoutePolicyFn,
     SteeringPolicyConfig,
 )
@@ -592,7 +590,7 @@ class CounterfactualLearningLoop:
         cap_coverage = cap_succ / cap_att if cap_att > 0 else 0.0
         if cap_coverage < self.config.min_capture_coverage and cap_att > 0:
             # Insufficient coverage: skip promotion, record rollback.
-            from .promotion import PromotionDecision, PromotionGateConfig
+            from .promotion import PromotionDecision
             decision = PromotionDecision(
                 action="rollback",
                 reason=f"capture coverage {cap_coverage:.3f} < min_capture_coverage "

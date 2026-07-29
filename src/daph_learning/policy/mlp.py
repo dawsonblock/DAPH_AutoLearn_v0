@@ -28,7 +28,7 @@ from .logistic import (
     _evaluate_dev_metric,
     weighted_policy_loss,
 )
-from .targets import TargetMode, build_preference_targets
+from .targets import build_preference_targets
 
 
 if _HAS_TORCH:
