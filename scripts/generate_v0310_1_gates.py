@@ -515,7 +515,7 @@ def run_all_gates() -> dict:
     except Exception:
         src_hash = "unknown"
     return {
-        "release": "0.3.10.3-alpha",
+        "release": "0.3.10.3.1-alpha",
         "timestamp": time.time(),
         "source_tree_sha256": src_hash,
         "n_gates": n_total,
@@ -593,7 +593,7 @@ def run_experiment_results() -> dict:
             matrix[env]["weighted"] = _eval("logistic", env, weight_mode="clipped_gap")
 
     return {
-        "release": "0.3.10.3-alpha",
+        "release": "0.3.10.3.1-alpha",
         "timestamp": time.time(),
         "source_tree_sha256": exp_src_hash,
         "synthetic_result_matrix": matrix,
@@ -601,7 +601,7 @@ def run_experiment_results() -> dict:
 
 
 def main() -> int:
-    print("Running v0.3.10.3-alpha release gates...")
+    print("Running v0.3.10.3.1-alpha release gates...")
     gates = run_all_gates()
     out_gates = REPO / "release_gates.json"
     with open(out_gates, "w") as f:

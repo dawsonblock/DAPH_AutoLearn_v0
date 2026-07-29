@@ -71,9 +71,17 @@ class ExperimentConfig:
     weight_mode: str = "clipped_gap"
     min_weight: float = 0.0
     max_weight: float = 1.0
+    # v0.3.10.3.1 — Section 2: zero effective class-weight behavior.
+    # ERROR (default) raises InsufficientEffectiveWeight;
+    # UNWEIGHTED_FALLBACK substitutes the unweighted estimator with
+    # recorded provenance.
+    zero_weight_policy: str = "error"
     # Targets (Section 1). v0.3.10.1 — replaces soft_targets: bool.
     target_mode: str = "soft"
     target_temperature: float = 1.0
+    # v0.3.10.3.1 — Section 5: paired confidence combine for gap weighting.
+    # product (default) | min | geometric_mean.
+    confidence_combine: str = "product"
     # Feature transform (Section 13).
     feature_transform: str = "raw"  # "raw" | "pca"
     pca_components: int = 32
@@ -110,7 +118,7 @@ class ExperimentConfig:
     # Replay (Section 27). Optional.
     prioritized_replay_alpha: float = 0.0  # 0 = uniform / off
     # Version.
-    autolearn_version: str = "0.3.10.3-alpha"
+    autolearn_version: str = "0.3.10.3.1-alpha"
     config_sha256: str | None = None
 
     def __post_init__(self) -> None:
@@ -135,6 +143,10 @@ class ExperimentConfig:
         # Validate enums via from_str (raises on unknown values).
         WeightMode.from_str(self.weight_mode)
         TargetMode.from_str(self.target_mode)
+        from .weighting import ZeroWeightPolicy
+        ZeroWeightPolicy.from_str(self.zero_weight_policy)
+        from .confidence import ConfidenceCombine
+        ConfidenceCombine.from_str(self.confidence_combine)
         if self.feature_transform not in ("raw", "pca"):
             raise ValueError("feature_transform must be 'raw' or 'pca'")
         if self.policy_type not in (

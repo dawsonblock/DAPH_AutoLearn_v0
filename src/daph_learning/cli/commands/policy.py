@@ -352,6 +352,9 @@ def _cmd_train_real_model(args, cfg) -> int:
         _exp_by_id[exp.task_id] = exp
 
     def real_utility_fn(task, route):
+        # v0.3.10.3.1 — Section 3: use the canonical utility_for_route
+        # so this path uses the same U_b as training/calibration/final.
+        from daph_learning.policy.utility import utility_for_route
         if isinstance(route, Route):
             route = route.value
         if route == "abstain":
@@ -362,11 +365,7 @@ def _cmd_train_real_model(args, cfg) -> int:
             # Task not in pre-computed experiences — fail closed rather
             # than silently returning 0.0 (which would give no signal).
             return 0.0
-        if route == "symbolic":
-            return cfg.quality_weight * exp.symbolic.quality
-        if route == "llm":
-            return cfg.quality_weight * exp.llm.quality
-        return 0.0
+        return utility_for_route(exp, route, cfg)
 
     # Fit policy using the real experiences.
     from daph_learning.policy.learner import train_policy_learner

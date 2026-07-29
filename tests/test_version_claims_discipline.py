@@ -210,3 +210,35 @@ def test_no_stale_version_references_in_readme():
     assert current in header, (
         f"README.md header {header!r} does not reference current version {current!r}"
     )
+
+
+# --- 6. v0.3.10.3.1 — full version consistency across all surfaces ---
+
+def test_version_consistency():
+    """Section 1 / G1: every active version surface must agree on
+    0.3.10.3.1-alpha. Covers pyproject, __version__, ExperimentConfig
+    default, ProvenanceRecord default, CLI --version, README header,
+    and CLAIMS header. No active-root reference to 0.3.10, 0.3.10.1,
+    0.3.10.2, or 0.3.10.3 (without the .1 suffix) may remain in the
+    package source."""
+    from daph_learning.policy.config import ExperimentConfig
+    from daph_learning.policy.provenance import ProvenanceRecord
+
+    init_v = _init_version()
+    expected = "0.3.10.3.1-alpha"
+    assert init_v == expected, f"__version__ is {init_v!r}, expected {expected!r}"
+    assert _pyproject_version() == expected
+    assert _readme_header_version() == expected
+    assert _claims_header_version() == expected
+    cfg = ExperimentConfig()
+    assert cfg.autolearn_version == expected, (
+        f"ExperimentConfig.autolearn_version is {cfg.autolearn_version!r}")
+    prov = ProvenanceRecord()
+    assert prov.release_version == expected, (
+        f"ProvenanceRecord.release_version is {prov.release_version!r}")
+    # CLI --version must agree.
+    cli = subprocess.run(
+        [sys.executable, "-m", "daph_learning.cli.autolearn", "--version"],
+        cwd=str(REPO_ROOT), capture_output=True, text=True, timeout=30)
+    out = (cli.stdout + cli.stderr).strip()
+    assert expected in out, f"CLI --version output {out!r} missing {expected!r}"

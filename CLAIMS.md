@@ -1,4 +1,4 @@
-# DAPH AutoLearn v0.3.10.3-alpha — Licensed Claims
+# DAPH AutoLearn v0.3.10.3.1-alpha — Licensed Claims
 
 This file is the authoritative claim boundary for the release. Tests can
 establish that a mechanism is implemented and behaves as specified on covered
@@ -89,7 +89,7 @@ implemented as a per-forward hook constraint in this release.
 
 **Status: ESTABLISHED as engineering.**
 
-The main repository contains 778 collected tests in the release build (738
+The main repository contains 886 collected tests in the release build (846
 collected on macOS Darwin 25.2.0, Python 3.12.0, pytest 8.4.2). Tests
 that require explicitly enabled model downloads or unavailable hardware may
 skip. The bundled GDN2/ExFusion extension has a separate test suite.

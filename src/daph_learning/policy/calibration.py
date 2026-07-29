@@ -352,11 +352,16 @@ def action_confidence_ece(
 
 @dataclass(frozen=True)
 class CalibrationArtifact:
-    """Frozen calibration artifact (Section 29).
+    """Frozen calibration artifact (Section 18 / v0.3.10.3.1).
 
     After calibration, the tuned thresholds are saved as this artifact.
     Policy inference must load this artifact — it must NOT recompute
     thresholds on the final test set.
+
+    v0.3.10.3.1 — expanded with ``feature_transform_hash``,
+    ``ood_model_hash``, ``brier``, ``action_ece``, and
+    ``source_tree_hash`` so the artifact is fully bound to the exact
+    source tree that generated it (Section 33).
 
     Attributes
     ----------
@@ -366,15 +371,24 @@ class CalibrationArtifact:
         Hash of the policy parameters (for binding calibration to policy).
     calibration_dataset_sha256 : str
         Hash of the calibration dataset used.
+    feature_transform_hash : str
+        Hash of the frozen feature transform (PCA etc.).
+    ood_model_hash : str
+        Hash of the frozen OOD model.
     confidence_threshold : float
         Tuned ``τ_conf`` for abstention.
     ood_threshold : float
         Tuned ``τ_ood`` for OOD abstention.
     temperature_scale : float | None
         Temperature scaling parameter (if applied).
+    brier : float
+        Brier score on the calibration set.
+    action_ece : float
+        Action-level expected calibration error.
+    source_tree_hash : str
+        SHA-256 of the source tree that generated this artifact.
     calibration_metrics : dict
-        Brier, ECE, and other calibration metrics computed on the
-        calibration set.
+        Additional calibration metrics.
     """
 
     policy_id: str
@@ -384,14 +398,25 @@ class CalibrationArtifact:
     ood_threshold: float
     temperature_scale: float | None
     calibration_metrics: dict[str, float]
+    # v0.3.10.3.1 fields (defaults preserve backward compatibility).
+    feature_transform_hash: str = ""
+    ood_model_hash: str = ""
+    brier: float = 0.0
+    action_ece: float = 0.0
+    source_tree_hash: str = ""
 
     def to_dict(self) -> dict:
         return {
             "policy_id": self.policy_id,
             "policy_hash": self.policy_hash,
             "calibration_dataset_sha256": self.calibration_dataset_sha256,
+            "feature_transform_hash": self.feature_transform_hash,
+            "ood_model_hash": self.ood_model_hash,
             "confidence_threshold": self.confidence_threshold,
             "ood_threshold": self.ood_threshold,
             "temperature_scale": self.temperature_scale,
+            "brier": self.brier,
+            "action_ece": self.action_ece,
+            "source_tree_hash": self.source_tree_hash,
             "calibration_metrics": dict(self.calibration_metrics),
         }

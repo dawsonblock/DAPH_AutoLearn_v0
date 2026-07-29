@@ -28,6 +28,11 @@ from dataclasses import dataclass, field
 import numpy as np
 
 from .centroid import weighted_contrastive_mean
+from .weighting import (
+    InsufficientEffectiveWeight,
+    ZeroWeightPolicy,
+    require_effective_class_weight,
+)
 
 
 @dataclass
@@ -42,6 +47,13 @@ class CentroidPolicy:
         ``s0`` — mid-point of training signed-projection scores.
     temperature : float
         ``τ_cal`` — calibration temperature (std of training scores).
+    weight_fallback : bool
+        v0.3.10.3.1 — True iff a zero-weight class triggered
+        ``UNWEIGHTED_FALLBACK``. When True the estimator is NOT a true
+        weighted centroid; downstream provenance must report
+        ``weighted_centroid_with_unweighted_fallback``.
+    fallback_classes : tuple[str, ...]
+        Which class(es) triggered the fallback (for provenance).
     """
 
     vector: np.ndarray = field(default_factory=lambda: np.zeros(0, dtype=np.float32))
@@ -51,6 +63,7 @@ class CentroidPolicy:
     n_symbolic_: int = 0
     n_llm_: int = 0
     weight_fallback: bool = False
+    fallback_classes: tuple[str, ...] = ()
 
     def predict_proba(self, h: np.ndarray) -> np.ndarray:
         """Return ``P(S | h)`` for each row of ``h``.
@@ -85,6 +98,18 @@ class CentroidPolicy:
             probs = np.array([probs])
         return [choose_route(float(p), confidence_threshold).value for p in probs]
 
+    def estimator_name(self) -> str:
+        """v0.3.10.3.1 — canonical estimator name for provenance (Section 2).
+
+        Returns ``"weighted_centroid"`` when truly weighted, or
+        ``"weighted_centroid_with_unweighted_fallback"`` when a
+        zero-weight class triggered ``UNWEIGHTED_FALLBACK``. Never
+        report a fallback centroid as simply ``"weighted_centroid"``.
+        """
+        if self.weight_fallback:
+            return "weighted_centroid_with_unweighted_fallback"
+        return "weighted_centroid"
+
     # --- PolicyModel protocol (Section 3) ----------------------
 
     def fit(
@@ -94,6 +119,8 @@ class CentroidPolicy:
         train_weights: np.ndarray,
         *,
         gap_threshold: float = 0.0,
+        zero_weight_policy: ZeroWeightPolicy | str = ZeroWeightPolicy.ERROR,
+        eps: float = 1e-12,
     ) -> "CentroidPolicy":
         """Fit the centroid policy.
 
@@ -108,7 +135,18 @@ class CentroidPolicy:
         train_weights : np.ndarray  shape ``[N]``  (>= 0)
         gap_threshold : float
             Tie band for splitting the two classes.
+        zero_weight_policy : ZeroWeightPolicy | str
+            v0.3.10.3.1 — behavior when a class has zero effective
+            weight (Section 2). Default ``ERROR`` raises
+            ``InsufficientEffectiveWeight``. ``UNWEIGHTED_FALLBACK``
+            substitutes the unweighted mean, records it via
+            ``weight_fallback`` / ``fallback_classes``, and the caller
+            must report ``weighted_centroid_with_unweighted_fallback``.
+        eps : float
+            Threshold below which effective weight is considered zero.
         """
+        if isinstance(zero_weight_policy, str):
+            zero_weight_policy = ZeroWeightPolicy.from_str(zero_weight_policy)
         feats = np.asarray(train_features, dtype=np.float32)
         du = np.asarray(train_delta_u, dtype=np.float64)
         w = np.asarray(train_weights, dtype=np.float64)
@@ -130,23 +168,31 @@ class CentroidPolicy:
             self.n_train_ = feats.shape[0]
             self.n_symbolic_ = int(sym_mask.sum())
             self.n_llm_ = int(llm_mask.sum())
+            self.weight_fallback = False
+            self.fallback_classes = ()
             return self
         sym_feats = feats[sym_mask]
         sym_w = w[sym_mask]
         llm_feats = feats[llm_mask]
         llm_w = w[llm_mask]
-        # v0.3.10.3 — FAIL CLOSED if a class has all-zero weights.
-        # The old code silently fell back to unweighted mean, which
-        # changed the estimator without recording it in provenance.
-        # Now we record the fallback explicitly via the weight_fallback
-        # flag so downstream code knows the centroid is not truly weighted.
+        # v0.3.10.3.1 — FAIL CLOSED by default if a class has zero
+        # effective weight (Section 2). The old code silently fell back
+        # to the unweighted mean, changing the estimator without
+        # recording it in provenance. Now the behavior is explicit.
         self.weight_fallback = False
-        if sym_w.sum() <= 1e-12:
-            sym_w = np.ones_like(sym_w)
-            self.weight_fallback = True
-        if llm_w.sum() <= 1e-12:
-            llm_w = np.ones_like(llm_w)
-            self.weight_fallback = True
+        self.fallback_classes = ()
+        for name, class_w in (("symbolic", sym_w), ("llm", llm_w)):
+            if float(class_w.sum()) <= eps:
+                if zero_weight_policy == ZeroWeightPolicy.ERROR:
+                    require_effective_class_weight(class_w, name, eps=eps)
+                # UNWEIGHTED_FALLBACK: substitute unweighted mean, record it.
+                self.weight_fallback = True
+                self.fallback_classes = self.fallback_classes + (name,)
+        if self.weight_fallback:
+            if "symbolic" in self.fallback_classes:
+                sym_w = np.ones_like(sym_w)
+            if "llm" in self.fallback_classes:
+                llm_w = np.ones_like(llm_w)
         v = weighted_contrastive_mean(
             sym_feats, sym_w, llm_feats, llm_w, normalize=False)
         self.vector = v
@@ -176,6 +222,7 @@ class CentroidPolicy:
             "n_symbolic_": int(self.n_symbolic_),
             "n_llm_": int(self.n_llm_),
             "weight_fallback": bool(self.weight_fallback),
+            "fallback_classes": list(self.fallback_classes),
         }
         with open(path, "w") as f:
             json.dump(payload, f, indent=2)
@@ -197,6 +244,7 @@ class CentroidPolicy:
         model.n_symbolic_ = int(payload.get("n_symbolic_", 0))
         model.n_llm_ = int(payload.get("n_llm_", 0))
         model.weight_fallback = bool(payload.get("weight_fallback", False))
+        model.fallback_classes = tuple(payload.get("fallback_classes", []))
         return model
 
 
@@ -206,12 +254,16 @@ def train_centroid_policy(
     train_weights: np.ndarray,
     *,
     gap_threshold: float = 0.0,
+    zero_weight_policy: ZeroWeightPolicy | str = ZeroWeightPolicy.ERROR,
+    eps: float = 1e-12,
 ) -> CentroidPolicy:
     """Convenience: construct + fit a :class:`CentroidPolicy`."""
     model = CentroidPolicy()
     return model.fit(
         train_features, train_delta_u, train_weights,
-        gap_threshold=gap_threshold)
+        gap_threshold=gap_threshold,
+        zero_weight_policy=zero_weight_policy,
+        eps=eps)
 
 
 __all__ = ["CentroidPolicy", "train_centroid_policy"]

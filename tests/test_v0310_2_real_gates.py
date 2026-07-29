@@ -528,22 +528,37 @@ class TestMixedTasks:
 # ============================================================
 
 class TestExactStringVerifier:
-    """Section 12: exact string verification for non-arithmetic tasks."""
+    """Section 12 / v0.3.10.3.1 Section 27: exact string verification for
+    non-arithmetic tasks. verify_exact_string is now TRUE exact
+    (strip == strip); permissive parsing is verify_constrained_answer."""
 
     def test_exact_match(self):
         from daph_learning.execution.real_backends import verify_exact_string
         r = verify_exact_string({"expected": "cat"}, "cat")
         assert r.verified_correct is True
         assert r.verifier_type == "exact_string"
+        assert r.verifier_mode == "exact"
 
-    def test_answer_phrase(self):
+    def test_strict_rejects_answer_phrase(self):
+        # v0.3.10.3.1 — strict exact rejects "The answer is 5" for "5".
         from daph_learning.execution.real_backends import verify_exact_string
         r = verify_exact_string({"expected": "5"}, "The answer is 5")
-        assert r.verified_correct is True
+        assert r.verified_correct is False
 
-    def test_trailing_punctuation(self):
+    def test_constrained_answer_accepts_phrase(self):
+        from daph_learning.execution.real_backends import verify_constrained_answer
+        r = verify_constrained_answer({"expected": "5"}, "The answer is 5")
+        assert r.verified_correct is True
+        assert r.verifier_mode == "token_extractor"
+
+    def test_strict_rejects_trailing_punctuation(self):
         from daph_learning.execution.real_backends import verify_exact_string
         r = verify_exact_string({"expected": "cat"}, "cat.")
+        assert r.verified_correct is False
+
+    def test_constrained_accepts_trailing_punctuation(self):
+        from daph_learning.execution.real_backends import verify_constrained_answer
+        r = verify_constrained_answer({"expected": "cat"}, "cat.")
         assert r.verified_correct is True
 
     def test_wrong_answer(self):

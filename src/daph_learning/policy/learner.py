@@ -52,7 +52,7 @@ from .calibration import (
     preference_brier_soft,
 )
 from .config import ExperimentConfig
-from .confidence import OutcomeConfidence
+from .confidence import OutcomeConfidence, combine_paired_confidence
 from .features import PCAFeatureReducer
 from .ood import MahalanobisOOD
 from .policy_factory import fit_policy, predict_proba
@@ -184,7 +184,7 @@ def build_counterfactual_experiences(
             preferred = Route.LLM
         else:
             preferred = Route.ABSTAIN
-        conf = min(sym_conf, llm_conf)
+        conf = combine_paired_confidence(sym_conf, llm_conf, cfg.confidence_combine)
         sigma = (
             sigma_delta_u_fn(task, u_sym, u_llm)
             if sigma_delta_u_fn is not None else None)
