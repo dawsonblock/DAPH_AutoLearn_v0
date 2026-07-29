@@ -20,12 +20,8 @@ from daph_learning import __version__
 from daph_learning.policy.config import ExperimentConfig
 from daph_learning.policy.learner import build_counterfactual_experiences, train_policy_learner
 from daph_learning.policy.types import Route
-from daph_learning.policy.abstention import choose_route
-from daph_learning.policy.calibration import brier_score, expected_calibration_error
-from daph_learning.policy.regret import mean_regret, per_task_regret
+from daph_learning.policy.regret import mean_regret
 from daph_learning.policy.centroid import weighted_contrastive_mean, unweighted_contrastive_mean
-from daph_learning.policy.weighting import utility_weight, WeightConfig
-from daph_learning.policy.confidence import OutcomeConfidence
 from daph_learning.environment_synthetic import (
     make_synthetic_tasks, synthetic_execute_fn, synthetic_utility, synthetic_oracle_utility,
 )

@@ -26,7 +26,7 @@ from __future__ import annotations
 import importlib.metadata
 import platform
 from dataclasses import dataclass, field
-from typing import Any, Mapping
+from typing import Any
 
 # Packages whose installed versions we capture via importlib.metadata.
 # These are the packages that affect reproducibility of a steering experiment.

@@ -39,8 +39,7 @@ correct backend always has strictly higher utility.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, Sequence
+from typing import Any
 
 import numpy as np
 
