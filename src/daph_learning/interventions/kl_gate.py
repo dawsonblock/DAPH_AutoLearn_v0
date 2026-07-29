@@ -125,10 +125,11 @@ def evaluate_kl_capability_gate(
             capability_drops=cap_drops,
             n_samples=n_samples,
         )
-    if neutral_kl > constraints.max_neutral_kl:
+    if neutral_kl is None or neutral_kl > constraints.max_neutral_kl:
+        kl_str = "N/A" if neutral_kl is None else f"{neutral_kl:.4f}"
         return PromotionGateResult(
             promoted=False,
-            reason=f"neutral KL {neutral_kl:.4f} > max {constraints.max_neutral_kl:.4f}",
+            reason=f"neutral KL {kl_str} > max {constraints.max_neutral_kl:.4f}",
             mean_utility_gain=mean_utility_gain,
             mean_neutral_kl=neutral_kl,
             capability_drops=cap_drops,
