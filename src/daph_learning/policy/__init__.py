@@ -99,11 +99,19 @@ from .alignment import (
     assert_unique_task_ids,
     join_by_task_id,
 )
+from .centroid_policy import CentroidPolicy, train_centroid_policy
+from .policy_factory import (
+    PolicyModel,
+    fit_policy,
+    make_policy,
+    predict_proba,
+)
 
 __all__ = [
     "AlignmentResult",
     "BackendOutcome",
     "CapturedActivation",
+    "CentroidPolicy",
     "CounterfactualExperience",
     "ExperimentConfig",
     "FeatureRecord",
@@ -112,6 +120,7 @@ __all__ = [
     "OutcomeConfidence",
     "PCAFeatureReducer",
     "PolicyDecision",
+    "PolicyModel",
     "Route",
     "SmallMLPRouter",
     "TargetMode",
@@ -128,12 +137,15 @@ __all__ = [
     "compute_weight",
     "compute_weights_batch",
     "expected_calibration_error",
+    "fit_policy",
     "hard_preference_target",
     "join_by_task_id",
+    "make_policy",
     "mean_regret",
     "paired_bootstrap_mean_ci",
     "paired_promotion_statistics",
     "per_task_regret",
+    "predict_proba",
     "predicted_action_correctness_target",
     "preference_brier_soft",
     "reliability_bins",
@@ -141,6 +153,7 @@ __all__ = [
     "snr_weight",
     "soft_calibration_error",
     "soft_preference_target",
+    "train_centroid_policy",
     "utility_weight",
     "weighted_contrastive_mean",
     "weighted_mean",

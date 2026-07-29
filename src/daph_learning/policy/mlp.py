@@ -133,6 +133,7 @@ if _HAS_TORCH:
         dev_weights: np.ndarray | None = None,
         dev_tasks=None,
         utility_fn=None,
+        confidence_threshold: float = 0.5,
         seed: int = 0,
     ) -> "SmallMLPRouter":
         """Train a :class:`SmallMLPRouter` on soft or hard targets.
@@ -192,6 +193,7 @@ if _HAS_TORCH:
                     model, cfg.early_stopping_metric,
                     h_dev, du_dev, w_dev, targets_dev, mask_dev,
                     dev_tasks=dev_tasks, utility_fn=utility_fn, cfg=cfg,
+                    confidence_threshold=confidence_threshold,
                 )
             else:
                 metric = loss.item()

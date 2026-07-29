@@ -293,6 +293,7 @@ if _HAS_TORCH:
         dev_tasks: "Sequence[Mapping[str, Any]] | None" = None,
         utility_fn: "Callable[[Mapping[str, Any], str], float] | None" = None,
         cfg: "LogisticTrainConfig | None" = None,
+        confidence_threshold: float = 0.5,
     ) -> float:
         """Compute the dev metric used for early stopping.
 
@@ -302,6 +303,13 @@ if _HAS_TORCH:
         ``dev_utility`` : mean selected-route utility (HIGHER is better,
                           so we return ``-utility`` so that "lower is
                           better" is the universal convention here).
+
+        v0.3.10.1 — ``dev_regret`` / ``dev_utility`` use
+        :func:`choose_route` with the deployment ``confidence_threshold``
+        (not 0.5), so early stopping optimizes the same decision rule
+        used at inference. Otherwise the trainer stops as soon as the
+        0.5-threshold routing is correct, before the probs are
+        confident enough to clear the deployment abstention threshold.
         """
         router.eval()
         with torch.no_grad():
@@ -331,7 +339,7 @@ if _HAS_TORCH:
             ora_utils = []
             for i, task in enumerate(dev_tasks):
                 p = float(p_np[i])
-                route = choose_route(p, 0.5)
+                route = choose_route(p, confidence_threshold)
                 cu = utility_fn(task, route)
                 cand_utils.append(cu)
                 u_sym = utility_fn(task, Route.SYMBOLIC)
@@ -358,6 +366,7 @@ if _HAS_TORCH:
         dev_weights: np.ndarray | None = None,
         dev_tasks: "Sequence[Mapping[str, Any]] | None" = None,
         utility_fn: "Callable[[Mapping[str, Any], str], float] | None" = None,
+        confidence_threshold: float = 0.5,
         seed: int = 0,
     ) -> "WeightedLogisticRouter":
         """Train a :class:`WeightedLogisticRouter` on soft or hard targets.
@@ -432,6 +441,7 @@ if _HAS_TORCH:
                     model, cfg.early_stopping_metric,
                     h_dev, du_dev, w_dev, targets_dev, mask_dev,
                     dev_tasks=dev_tasks, utility_fn=utility_fn, cfg=cfg,
+                    confidence_threshold=confidence_threshold,
                 )
             else:
                 metric = loss.item()
