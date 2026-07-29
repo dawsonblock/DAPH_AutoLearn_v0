@@ -107,7 +107,7 @@ def _run_baseline_matrix(seed: int = 42) -> dict:
     cfg_soft = ExperimentConfig(
         gap_threshold=0.1, abstention_band=0.1,
         target_temperature=0.5, confidence_threshold=0.55,
-        random_seed=seed, soft_targets=True,
+        random_seed=seed, target_mode="soft", weight_mode="clipped_gap",
     )
     result_soft = train_policy_learner(
         train_exp, train_acts, config=cfg_soft,
@@ -129,7 +129,7 @@ def _run_baseline_matrix(seed: int = 42) -> dict:
     cfg_hard = ExperimentConfig(
         gap_threshold=0.1, abstention_band=0.1,
         target_temperature=0.01, confidence_threshold=0.55,
-        random_seed=seed, soft_targets=False,
+        random_seed=seed, target_mode="hard", weight_mode="clipped_gap",
     )
     result_hard = train_policy_learner(
         train_exp, train_acts, config=cfg_hard,

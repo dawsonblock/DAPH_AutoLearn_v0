@@ -30,7 +30,11 @@ from ..policy.types import Route
 
 @dataclass(frozen=True)
 class InterventionResult:
-    """Result of a single intervention at one dose (Section 14)."""
+    """Result of a single intervention at one dose (Section 14).
+
+    v0.3.10.1 — adds ``evidence_level`` (Section 12) to distinguish
+    mechanical sanity tests from synthetic/real causal evidence.
+    """
 
     task_id: str
     direction_id: str
@@ -41,6 +45,8 @@ class InterventionResult:
     intervened_utility: float
     baseline_prob_symbolic: float
     intervened_prob_symbolic: float
+    # v0.3.10.1 — Section 12: evidence level tag.
+    evidence_level: str = "unit_sanity"
 
     @property
     def utility_delta(self) -> float:
@@ -58,6 +64,77 @@ class InterventionResult:
             "utility_delta": self.utility_delta,
             "baseline_prob_symbolic": self.baseline_prob_symbolic,
             "intervened_prob_symbolic": self.intervened_prob_symbolic,
+            "evidence_level": self.evidence_level,
+        }
+
+
+@dataclass(frozen=True)
+class RealInterventionResult:
+    """Result of a real-model residual-stream intervention (Section 13).
+
+    For a loaded transformer model with a residual-stream hook installed
+    at ``layer``, the baseline hidden state ``h`` is captured, then the
+    model is run with ``h' = h + alpha * v`` for each ``alpha`` in the
+    dose grid. This record captures the route, utility, KL, and clamp
+    telemetry for one (task, vector, alpha) tuple.
+
+    Attributes
+    ----------
+    task_id : str
+    vector_id : str
+    layer : int
+    alpha : float
+        Dose strength.
+    baseline_route : str
+    intervened_route : str
+    baseline_utility : float
+    intervened_utility : float
+    utility_delta : float
+        ``intervened_utility - baseline_utility``.
+    route_score_before : float | None
+        ``P(S | h)`` before intervention (None if not captured).
+    route_score_after : float | None
+        ``P(S | h + alpha * v)`` after intervention.
+    neutral_kl : float | None
+        KL divergence on a neutral prompt suite at this alpha
+        (None if not measured).
+    clamp_triggered : bool
+        Whether a norm/cosine safety clamp fired during the intervention.
+    evidence_level : str
+        ``"real_model_causal"`` for real-model interventions.
+    """
+
+    task_id: str
+    vector_id: str
+    layer: int
+    alpha: float
+    baseline_route: str
+    intervened_route: str
+    baseline_utility: float
+    intervened_utility: float
+    utility_delta: float
+    route_score_before: float | None = None
+    route_score_after: float | None = None
+    neutral_kl: float | None = None
+    clamp_triggered: bool = False
+    evidence_level: str = "real_model_causal"
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "task_id": self.task_id,
+            "vector_id": self.vector_id,
+            "layer": self.layer,
+            "alpha": self.alpha,
+            "baseline_route": self.baseline_route,
+            "intervened_route": self.intervened_route,
+            "baseline_utility": self.baseline_utility,
+            "intervened_utility": self.intervened_utility,
+            "utility_delta": self.utility_delta,
+            "route_score_before": self.route_score_before,
+            "route_score_after": self.route_score_after,
+            "neutral_kl": self.neutral_kl,
+            "clamp_triggered": self.clamp_triggered,
+            "evidence_level": self.evidence_level,
         }
 
 
@@ -296,6 +373,7 @@ __all__ = [
     "DirectionReversalResult",
     "InterventionResult",
     "PolicyProbFn",
+    "RealInterventionResult",
     "UtilityFn",
     "direction_reversal_test",
     "dose_response_summary",
