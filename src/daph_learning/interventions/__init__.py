@@ -101,7 +101,11 @@ class RealInterventionResult:
     clamp_triggered : bool
         Whether a norm/cosine safety clamp fired during the intervention.
     evidence_level : str
-        ``"real_model_causal"`` for real-model interventions.
+        ``"REAL_MODEL_LATENT_INTERVENTION"`` for real-model interventions
+        where the hidden state changed and downstream policy score changed.
+        Use ``"REAL_MODEL_BEHAVIORAL_INTERVENTION"`` when the actual routed
+        behavior changed, and ``"REAL_MODEL_UTILITY_INTERVENTION"`` when
+        verified downstream utility changed (Section 32).
     """
 
     task_id: str
@@ -117,7 +121,7 @@ class RealInterventionResult:
     route_score_after: float | None = None
     neutral_kl: float | None = None
     clamp_triggered: bool = False
-    evidence_level: str = "real_model_causal"
+    evidence_level: str = "REAL_MODEL_LATENT_INTERVENTION"
 
     def to_dict(self) -> dict[str, Any]:
         return {

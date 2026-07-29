@@ -424,3 +424,237 @@ class TestNoLeakage:
         assert "expected" not in src, (
             "capture_task_representation must not access 'expected' "
             "field — that would leak oracle labels into the router state")
+
+
+# ============================================================
+# G26: Mixed task types create real routing decisions
+# ============================================================
+
+class TestMixedTasks:
+    """v0.3.10.2 — mixed tasks (arithmetic + counting) create a genuine
+    routing decision where sometimes symbolic wins and sometimes LLM wins."""
+
+    def test_mixed_tasks_have_both_families(self):
+        from daph_learning.execution.real_backends import make_mixed_tasks
+        tasks = make_mixed_tasks(n_arithmetic=10, n_counting=10, seed=0)
+        families = set(t["family"] for t in tasks)
+        assert "counting" in families
+        assert "+" in families or "-" in families or "*" in families
+
+    def test_counting_tasks_symbolic_fails_closed(self):
+        """Symbolic executor must fail closed on counting tasks (unsupported)."""
+        from daph_learning.execution.real_backends import (
+            execute_symbolic_backend, make_letter_counting_tasks,
+        )
+        tasks = make_letter_counting_tasks(n=5, seed=0)
+        for task in tasks:
+            outcome = execute_symbolic_backend(task)
+            assert outcome.correct is False
+            assert outcome.quality == 0.0
+
+    def test_arithmetic_tasks_symbolic_succeeds(self):
+        """Symbolic executor must succeed on arithmetic tasks."""
+        from daph_learning.execution.real_backends import (
+            execute_symbolic_backend, make_arithmetic_tasks,
+        )
+        tasks = make_arithmetic_tasks(n=5, seed=0, max_value=50)
+        n_correct = 0
+        for task in tasks:
+            outcome = execute_symbolic_backend(task)
+            if outcome.correct:
+                n_correct += 1
+        assert n_correct == 5  # all arithmetic should succeed
+
+    def test_mixed_tasks_create_routing_signal(self):
+        """Mixed tasks must produce both positive and negative ΔU when
+        both backends are executed — this is the routing signal."""
+        from daph_learning.execution.real_backends import (
+            make_arithmetic_tasks, make_letter_counting_tasks,
+            execute_symbolic_backend,
+        )
+        from daph_learning.policy.types import BackendOutcome, Route
+        from daph_learning.policy.config import ExperimentConfig
+        from daph_learning.execution.real_backends import build_real_counterfactual_experience
+        import numpy as np
+        cfg = ExperimentConfig(gap_threshold=0.01, abstention_band=0.01)
+        # Arithmetic: symbolic succeeds, LLM (simulated wrong) fails → ΔU > 0
+        arith = make_arithmetic_tasks(n=5, seed=0)[0]
+        h = np.ones(8, dtype=np.float32)
+        sym = execute_symbolic_backend(arith)
+        llm = BackendOutcome(
+            task_id=arith["task_id"], backend="llm", correct=False,
+            quality=0.0, latency_sec=0.5, normalized_cost=0.1,
+            risk=0.0, verifier_confidence=0.0)
+        exp_a, _, _ = build_real_counterfactual_experience(
+            arith, h, sym, llm, "wrong", config=cfg)
+        assert exp_a.delta_utility > 0  # symbolic better
+        # Counting: symbolic fails, LLM (simulated correct) succeeds → ΔU < 0
+        counting = make_letter_counting_tasks(n=5, seed=0)[0]
+        sym_c = execute_symbolic_backend(counting)  # fails closed
+        assert sym_c.correct is False
+        llm_c = BackendOutcome(
+            task_id=counting["task_id"], backend="llm", correct=True,
+            quality=1.0, latency_sec=0.5, normalized_cost=0.1,
+            risk=0.0, verifier_confidence=1.0)
+        exp_c, _, _ = build_real_counterfactual_experience(
+            counting, h, sym_c, llm_c, str(counting["expected"]), config=cfg)
+        assert exp_c.delta_utility < 0  # LLM better
+
+
+# ============================================================
+# G27: Exact string verifier (Section 12)
+# ============================================================
+
+class TestExactStringVerifier:
+    """Section 12: exact string verification for non-arithmetic tasks."""
+
+    def test_exact_match(self):
+        from daph_learning.execution.real_backends import verify_exact_string
+        r = verify_exact_string({"expected": "cat"}, "cat")
+        assert r.verified_correct is True
+        assert r.verifier_type == "exact_string"
+
+    def test_answer_phrase(self):
+        from daph_learning.execution.real_backends import verify_exact_string
+        r = verify_exact_string({"expected": "5"}, "The answer is 5")
+        assert r.verified_correct is True
+
+    def test_trailing_punctuation(self):
+        from daph_learning.execution.real_backends import verify_exact_string
+        r = verify_exact_string({"expected": "cat"}, "cat.")
+        assert r.verified_correct is True
+
+    def test_wrong_answer(self):
+        from daph_learning.execution.real_backends import verify_exact_string
+        r = verify_exact_string({"expected": "cat"}, "dog")
+        assert r.verified_correct is False
+
+    def test_no_expected_field(self):
+        from daph_learning.execution.real_backends import verify_exact_string
+        r = verify_exact_string({}, "cat")
+        assert r.verified_correct is None
+
+    def test_verify_output_dispatches_to_exact_string(self):
+        from daph_learning.execution.real_backends import verify_output
+        task = {"expected": "5", "capability_ids": ["letter_counting"]}
+        r = verify_output(task, "5")
+        assert r.verified_correct is True
+        assert r.verifier_type == "exact_string"
+
+
+# ============================================================
+# G28: CalibrationArtifact dataclass (Section 29)
+# ============================================================
+
+class TestCalibrationArtifact:
+    """Section 29: CalibrationArtifact must be a frozen dataclass with
+    the required fields for binding calibration to a policy."""
+
+    def test_calibration_artifact_construction(self):
+        from daph_learning.policy.calibration import CalibrationArtifact
+        art = CalibrationArtifact(
+            policy_id="logistic_v1",
+            policy_hash="abc123",
+            calibration_dataset_sha256="def456",
+            confidence_threshold=0.65,
+            ood_threshold=4.5,
+            temperature_scale=None,
+            calibration_metrics={"brier": 0.1, "ece": 0.05},
+        )
+        assert art.confidence_threshold == 0.65
+        assert art.ood_threshold == 4.5
+        d = art.to_dict()
+        assert d["policy_id"] == "logistic_v1"
+        assert d["calibration_metrics"]["brier"] == 0.1
+
+    def test_calibration_artifact_is_frozen(self):
+        from daph_learning.policy.calibration import CalibrationArtifact
+        art = CalibrationArtifact(
+            policy_id="p1", policy_hash="h", calibration_dataset_sha256="s",
+            confidence_threshold=0.5, ood_threshold=1.0,
+            temperature_scale=None, calibration_metrics={})
+        with pytest.raises(Exception):
+            art.confidence_threshold = 0.9
+
+
+# ============================================================
+# G29: Source tree hash (Section 24)
+# ============================================================
+
+class TestSourceTreeHash:
+    """Section 24: source_tree_sha256 must be deterministic and change
+    when source code changes."""
+
+    def test_source_tree_hash_deterministic(self):
+        from daph_learning.policy.provenance import source_tree_sha256
+        h1 = source_tree_sha256(REPO_ROOT)
+        h2 = source_tree_sha256(REPO_ROOT)
+        assert h1 == h2
+        assert len(h1) == 16  # truncated hex
+
+    def test_source_tree_hash_is_hex(self):
+        from daph_learning.policy.provenance import source_tree_sha256
+        h = source_tree_sha256(REPO_ROOT)
+        int(h, 16)  # should not raise
+
+
+# ============================================================
+# G30: Evidence level labels are refined (Section 32)
+# ============================================================
+
+class TestEvidenceLabels:
+    """Section 32: evidence labels must distinguish latent, behavioral,
+    and utility intervention levels."""
+
+    def test_refined_evidence_levels_exist(self):
+        from daph_learning.policy.config import EVIDENCE_LEVELS
+        assert "REAL_MODEL_LATENT_INTERVENTION" in EVIDENCE_LEVELS
+        assert "REAL_MODEL_BEHAVIORAL_INTERVENTION" in EVIDENCE_LEVELS
+        assert "REAL_MODEL_UTILITY_INTERVENTION" in EVIDENCE_LEVELS
+        assert "REAL_MODEL_FINAL" in EVIDENCE_LEVELS
+
+    def test_real_intervention_result_uses_refined_label(self):
+        from daph_learning.interventions import RealInterventionResult
+        r = RealInterventionResult(
+            task_id="t1", vector_id="v1", layer=10, alpha=1.0,
+            baseline_route="llm", intervened_route="symbolic",
+            baseline_utility=0.0, intervened_utility=1.0,
+            utility_delta=1.0)
+        assert r.evidence_level == "REAL_MODEL_LATENT_INTERVENTION"
+
+
+# ============================================================
+# G31: Real experiment artifact has mixed-task results
+# ============================================================
+
+class TestRealExperimentArtifact:
+    """The real experiment artifact must contain mixed-task results with
+    a genuine routing signal."""
+
+    def test_artifact_has_mixed_task_signal(self):
+        exp_path = REPO_ROOT / "artifacts" / "real_qwen_experiment_result.json"
+        if not exp_path.exists():
+            pytest.skip("experiment artifact not found")
+        with open(exp_path) as f:
+            art = json.load(f)
+        # Must have source tree hash (Section 24).
+        assert "source_tree_sha256" in art
+        # Must have task composition showing both families.
+        comp = art.get("task_composition", {})
+        assert comp.get("arithmetic", 0) > 0
+        assert comp.get("counting", 0) > 0
+        # Must have a routing signal with both sym_better and llm_better.
+        signal = art.get("phase_a_routing_signal", {})
+        assert signal.get("sym_better", 0) > 0, "no tasks where symbolic is better"
+        assert signal.get("llm_better", 0) > 0, "no tasks where LLM is better"
+        # Must have per-family metrics.
+        per_family = art.get("phase_f_final", {}).get("per_family", {})
+        assert "arithmetic" in per_family
+        assert "counting" in per_family
+        # Must have all baselines.
+        final = art.get("phase_f_final", {})
+        assert "incumbent_regret" in final  # always-LLM
+        assert "always_sym_regret" in final
+        assert "hand_router_regret" in final
+        assert "unweighted_logistic_regret" in final
+        assert "mlp_regret" in final

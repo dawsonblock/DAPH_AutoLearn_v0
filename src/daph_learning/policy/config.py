@@ -34,11 +34,14 @@ from .weighting import WeightMode
 # Default intervention alpha grid (Section 15): symmetric dose-response.
 DEFAULT_ALPHA_GRID: tuple[float, ...] = (-1.0, -0.5, 0.0, 0.5, 1.0)
 
-# Evidence level tags (Section 41).
+# Evidence level tags (Section 32, v0.3.10.2 refinement).
 EVIDENCE_LEVELS: tuple[str, ...] = (
     "UNIT",
     "SYNTHETIC",
     "REAL_MODEL_DEV",
+    "REAL_MODEL_LATENT_INTERVENTION",
+    "REAL_MODEL_BEHAVIORAL_INTERVENTION",
+    "REAL_MODEL_UTILITY_INTERVENTION",
     "REAL_MODEL_FINAL",
 )
 

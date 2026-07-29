@@ -174,6 +174,7 @@ def selective_risk_curve(
 
 
 __all__ = [
+    "CalibrationArtifact",
     "ReliabilityBin",
     "SelectiveRiskPoint",
     "action_confidence_ece",
@@ -343,3 +344,54 @@ def action_confidence_ece(
         ece += (count / n) * abs(
             float(confidences[mask].mean() - correctness[mask].mean()))
     return float(ece)
+
+
+# ------------------------------------------------------------------
+# v0.3.10.2 — Section 29: CalibrationArtifact
+# ------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class CalibrationArtifact:
+    """Frozen calibration artifact (Section 29).
+
+    After calibration, the tuned thresholds are saved as this artifact.
+    Policy inference must load this artifact — it must NOT recompute
+    thresholds on the final test set.
+
+    Attributes
+    ----------
+    policy_id : str
+        Identifier of the policy this calibration applies to.
+    policy_hash : str
+        Hash of the policy parameters (for binding calibration to policy).
+    calibration_dataset_sha256 : str
+        Hash of the calibration dataset used.
+    confidence_threshold : float
+        Tuned ``τ_conf`` for abstention.
+    ood_threshold : float
+        Tuned ``τ_ood`` for OOD abstention.
+    temperature_scale : float | None
+        Temperature scaling parameter (if applied).
+    calibration_metrics : dict
+        Brier, ECE, and other calibration metrics computed on the
+        calibration set.
+    """
+
+    policy_id: str
+    policy_hash: str
+    calibration_dataset_sha256: str
+    confidence_threshold: float
+    ood_threshold: float
+    temperature_scale: float | None
+    calibration_metrics: dict[str, float]
+
+    def to_dict(self) -> dict:
+        return {
+            "policy_id": self.policy_id,
+            "policy_hash": self.policy_hash,
+            "calibration_dataset_sha256": self.calibration_dataset_sha256,
+            "confidence_threshold": self.confidence_threshold,
+            "ood_threshold": self.ood_threshold,
+            "temperature_scale": self.temperature_scale,
+            "calibration_metrics": dict(self.calibration_metrics),
+        }
