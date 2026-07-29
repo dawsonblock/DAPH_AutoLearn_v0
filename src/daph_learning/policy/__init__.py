@@ -106,6 +106,14 @@ from .policy_factory import (
     make_policy,
     predict_proba,
 )
+from .provenance import ProvenanceRecord, build_provenance, dataset_hash
+from .config_audit import audit_report, validate_config_consistency
+from .atomic_promotion import (
+    PromotionResult,
+    atomic_promote,
+    atomic_write_json,
+    rollback_incumbent,
+)
 
 __all__ = [
     "AlignmentResult",
