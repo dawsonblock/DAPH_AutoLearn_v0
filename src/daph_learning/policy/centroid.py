@@ -44,6 +44,13 @@ def weighted_mean(
     -------
     np.ndarray
         Shape ``[D]`` weighted mean.
+
+    Raises
+    ------
+    ValueError
+        On shape mismatch, NaN/Inf in activations or weights, negative
+        weights (Section 7), all-zero effective weights, or
+        non-finite inputs.
     """
     if activations.ndim != 2:
         raise ValueError("activations must have shape [N, D]")
@@ -55,6 +62,9 @@ def weighted_mean(
         raise ValueError("activations contain NaN/Inf")
     if not np.all(np.isfinite(weights)):
         raise ValueError("weights contain NaN/Inf")
+    # v0.3.10.1 — Section 7: reject negative weights.
+    if np.any(weights < 0):
+        raise ValueError("weights must be non-negative")
     total = float(weights.sum())
     if total <= eps:
         raise ValueError("effective sample weight is zero")

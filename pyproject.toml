@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "daph-autolearn"
-version = "0.3.10"
-description = "DAPH AutoLearn v0.3.10-alpha: counterfactual utility learning, weighted latent routing, causal intervention validation, uncertainty and regret optimization"
+version = "0.3.10.1-alpha"
+description = "DAPH AutoLearn v0.3.10.1-alpha: correctness repair, scientific hardening, benchmark redesign, real policy evaluation, calibration, OOD, and causal validation"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "packaging>=23"]
