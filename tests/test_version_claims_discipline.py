@@ -42,14 +42,14 @@ def _init_version() -> str:
 
 def _readme_header_version() -> str:
     text = _read(REPO_ROOT / "README.md")
-    m = re.search(r"^#\s*DAPH AutoLearn v(\d+\.\d+\.\d+)", text, re.MULTILINE)
+    m = re.search(r"^#\s*DAPH AutoLearn v(\S+)", text, re.MULTILINE)
     assert m, "README.md has no version header"
     return m.group(1)
 
 
 def _claims_header_version() -> str:
     text = _read(REPO_ROOT / "CLAIMS.md")
-    m = re.search(r"^#\s*DAPH AutoLearn v(\d+\.\d+\.\d+)", text, re.MULTILINE)
+    m = re.search(r"^#\s*DAPH AutoLearn v(\S+)", text, re.MULTILINE)
     assert m, "CLAIMS.md has no version header"
     return m.group(1)
 
@@ -82,8 +82,11 @@ def test_claims_header_matches_init_version():
 def test_changelog_has_current_version_entry():
     text = _read(REPO_ROOT / "CHANGELOG.md")
     version = _init_version()
-    # CHANGELOG entries look like "# 0.3.7 (description)" or "## 0.3.7"
-    pattern = rf"^#\s*{re.escape(version)}\b"
+    # CHANGELOG entries look like "# 0.3.7 (description)" or "## 0.3.7".
+    # v0.3.10.1 — pre-release suffix "-alpha" must be matched; the
+    # boundary \b does not match after "-" so we accept end-of-line or
+    # whitespace after the version string instead.
+    pattern = rf"^#\s*{re.escape(version)}(?:\s|$)"
     assert re.search(pattern, text, re.MULTILINE), (
         f"CHANGELOG.md has no entry for version {version!r}"
     )
@@ -92,7 +95,7 @@ def test_changelog_has_current_version_entry():
 def test_readme_changelog_has_current_version_entry():
     text = _read(REPO_ROOT / "README.md")
     version = _init_version()
-    pattern = rf"^###\s*v{re.escape(version)}\b"
+    pattern = rf"^###\s*v{re.escape(version)}(?:\s|$)"
     assert re.search(pattern, text, re.MULTILINE), (
         f"README.md changelog has no entry for version {version!r}"
     )

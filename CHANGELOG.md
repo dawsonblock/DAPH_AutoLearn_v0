@@ -1,3 +1,180 @@
+# 0.3.10.1-alpha (correctness repair, scientific hardening, benchmark redesign, real policy evaluation, calibration, OOD, and causal validation)
+
+- **Mission shift (Section 0)**: this release is a focused repair and
+  scientific-hardening pass. The release must answer whether AutoLearn
+  learns a routing policy that reduces held-out regret and improves
+  held-out utility on non-trivial tasks — not merely whether pytest
+  passes, a logistic model trains, or a toy steering function moves
+  logits. The system must be capable of falsifying its own assumptions.
+- **P0-1 / G1 — `soft_targets` correctness bug fixed (Section 1)**:
+  the `soft_targets: bool` flag was a *correctness bug*: the logistic
+  trainer always produced `q_i = sigmoid(ΔU_i / τ)` regardless of the
+  flag. Replaced by an explicit `TargetMode` enum (`SOFT` | `HARD`) and
+  `build_preference_targets(delta_u, mode, temperature, gap_threshold)`
+  which returns `(targets, valid_mask)`. Hard-mode ties
+  (`|ΔU| <= gap_threshold`) are *ignored* via the mask, not coerced to
+  0.5. The loss applies the mask.
+- **P0-2 / G2 — `weight_mode` correctness bug fixed (Section 2)**: the
+  config exposed `weight_mode: "gap" | "snr"` but experience
+  construction always called the gap function, silently ignoring
+  `"snr"`. Replaced by a four-mode `WeightMode` enum
+  (`UNIFORM`, `ABSOLUTE_GAP`, `CLIPPED_GAP`, `SNR`) and a unified
+  `compute_weight(...)` that actually dispatches on mode. SNR requires
+  `sigma_delta_u` and fails closed if absent. Clean break: old `"gap"`
+  string raises `ValueError` at config construction.
+- **P0-3 / G3 — `policy_type` correctness bug fixed (Section 3)**: the
+  config accepted multiple policy types but the integrated learner
+  always trained logistic routing. Added a `PolicyModel` protocol and
+  real `centroid` / `logistic` / `mlp_experimental` implementations.
+  The CLI now instantiates different implementations based on
+  `--policy`.
+- **P0-4 / G4 — fail closed on missing `utility_fn` (Section 4)**:
+  held-out evaluation no longer defaults to zero utility when
+  `utility_fn` is absent. `dev_tasks is not None and utility_fn is None`
+  raises `ValueError`. All scorer/verifier/utility callbacks fail
+  closed.
+- **P0-5 / G5 — strict task-ID alignment (Sections 5, 6)**: naked row
+  arrays at cross-module boundaries replaced with task-bound
+  `FeatureRecord` objects. New `join_by_task_id(experiences,
+  feature_records)` asserts no duplicate task_ids in either input,
+  reports missing feature records explicitly (no silent truncation),
+  and is order-independent. `assert_unique_task_ids` helper provided.
+- **P0-6 — silent zip truncation audit (Section 6)**: every
+  `zip(experiences, activations)` and `zip(dev_tasks, dev_experiences)`
+  in AutoLearn code audited; replaced with task-ID joins or explicit
+  length assertions.
+- **P0-7 / G6 — `weighted_mean` math validation (Section 7)**:
+  `weighted_mean` now rejects negative weights, NaN, Inf, all-zero
+  effective weights, and non-finite activations.
+- **P0-8 / G7 — calibration / ECE math fix (Section 8)**: the old ECE
+  used `confidence = max(p, 1-p)` with `accuracy = y` for soft labels,
+  which is mathematically wrong. Added two clearly named metrics:
+  `preference_brier_soft` (compares `p_i` directly against `q_i`) and
+  `action_confidence_ece` (compares `c_hat_i = max(p, 1-p)` against
+  `c*_i = predicted_action_correctness_target(p, q)`). For hard labels,
+  `c*_i` reduces to ordinary 0/1 correctness.
+- **P0-9 / G8 — dev regret early stopping (Section 9)**: the trainer
+  used dev BCE loss even when the config said `dev_regret`. Early
+  stopping is now selectable (`dev_loss` | `dev_regret` |
+  `dev_utility`), default `dev_regret`. The `dev_regret` path executes
+  the actual utility function; `dev_loss` remains available for
+  ablation.
+- **P10 / G9-G13 — synthetic benchmark redesign (Section 10)**: the
+  old benchmark was too easy (one coordinate almost directly encoded
+  class membership; a matched random direction achieved perfect
+  regret). Replaced with four mathematical environments: linear,
+  near-tie/heteroskedastic, multimodal/covariance, nonlinear XOR, plus
+  a random-direction control. Each environment is designed so a
+  specific method can fail.
+- **P11 / G14 — comparative gates literally compare methods
+  (Section 11)**: the G4 gate claimed `logistic >= centroid` but only
+  checked logistic accuracy. Rewritten to compute both sides and
+  assert `logistic_result.mean_regret <= centroid_result.mean_regret +
+  tolerance`. Both measurements stored in the gate artifact.
+- **P12 / G15 — distinguish toy causal test from real evidence
+  (Section 12)**: the mechanical `+v / 0 / -v` sanity test is now
+  labeled `evidence_level: "unit_sanity"`, not "evidence that AutoLearn
+  discovered causal transformer steering". New evidence-level field:
+  `unit_sanity` | `synthetic_causal` | `real_model_causal`.
+- **P13-15 / G16 — real intervention pipeline (Sections 13-15)**:
+  added residual-stream hook installation, baseline hidden-state
+  capture, alpha grid `{-A, -A/2, 0, A/2, A}` dose-response, and
+  `RealInterventionResult` records with route/utility/KL/clamp
+  telemetry.
+- **P16-19 / G17-G20 — real CLI: train / evaluate / calibrate
+  (Sections 16-19)**: `daph-autolearn train` loads a real model,
+  executes both backends, verifies outcomes, computes utilities,
+  captures hidden features, joins by `task_id`, fits the policy, saves
+  the artifact. `evaluate` and `calibrate` mirror this. OOD threshold
+  is now calibrated (quantile-based `tau_ood`), not infinite by
+  default in qualified runs.
+- **P20 — PCA safety (Section 20)**: PCA fitted on TRAIN only; artifact
+  records `n_components`, explained variance, and train dataset hash.
+  Dimensionality tuned on dev regret only.
+- **P21 — policy calibration + abstention at inference (Section 21)**:
+  `choose_route_with_reason` records abstention reason codes
+  (`low_confidence`, `ood`, `policy_tie`, `execution_failure`,
+  `safety_gate`). No opaque single-category abstention.
+- **P22 / G21 — promotion gate uses real policy behavior (Section 22)**:
+  candidate_action = `candidate_policy(h_i)`, incumbent_action =
+  `incumbent_policy(h_i)`. Oracle is only for scoring regret, never for
+  choosing the candidate action.
+- **P23 — paired statistics (Section 23)**: mean/median utility delta,
+  mean regret delta, win/loss/tie rate, 10,000-draw bootstrap CI by
+  task.
+- **P24 / G22 — capability regression gates (Section 24)**:
+  `CapabilityGateConfig` rejects candidates that regress beyond
+  per-family utility/accuracy thresholds.
+- **P25 / G22 — neutral KL gate (Section 25)**: mean / p95 neutral KL
+  with prompt-suite hash; promotion requires `mean_KL <= threshold`.
+- **P26 — random direction qualification (Section 26)**: `N_random >= 500`
+  matched random directions; `p_emp = (1 + count(M_j >= M*)) / (N+1)`.
+  No Gaussian z-score as primary significance evidence.
+- **P27 — prioritized replay integration (Section 27)**: optional
+  `prioritized_replay_alpha ∈ [0, 1]`; `p_i = |error| * |ΔU|` or
+  `regret_i`; normalized sampling `P(i) = p_i^α / Σ p_j^α`. Ablate
+  uniform vs prioritized.
+- **P28 — bandit logging (Section 28)**: `PolicyDecision` dataclass
+  logs `task_id`, `available_actions`, `action`, `probabilities`,
+  `chosen_propensity`, `policy_version` on every decision. No
+  doubly-robust learning claim unless actually used.
+- **P29 — low-rank controller stays experimental (Section 29)**:
+  clearly labeled `experimental`, not default, only enabled after
+  centroid + logistic baselines validated.
+- **P30 / G13 — small MLP router (Section 30)**: `SmallMLPRouter`
+  (`Linear → GELU → Linear`) trained with the same targets / weights /
+  dev regret / calibration path as the logistic router. Diagnostic: if
+  `MLP >> logistic`, routing geometry is nonlinear.
+- **P31-36 — synthetic result matrix + 5 scientific tests (Sections
+  31-36)**: per-environment result tables; weighting-value test
+  (weighted < unweighted regret on near-tie), centroid-failure test
+  (multimodal geometry), linear-router-value test, nonlinear-router-
+  value test (MLP > logistic on XOR), random-steering test (learned >
+  median random).
+- **P37-39 / G25 — real-model smoke + baseline matrix + final-test
+  discipline (Sections 37-39)**: Qwen2.5-1.5B-Instruct smoke split
+  (100/50/50/100) and research split (2000/500/500/1000). Baselines
+  A-K (always-LLM, always-symbolic, hand router, unweighted/weighted
+  centroid, soft/hard logistic, MLP, random direction, incumbent,
+  candidate). Final-test access ledger.
+- **P40-41 — real intervention study + evidence categories (Sections
+  40-41)**: `{-A, -A/2, 0, A/2, A}` dose-response on dev; frozen best
+  setting repeated once on final. Every reported result tagged
+  `UNIT` | `SYNTHETIC` | `REAL_MODEL_DEV` | `REAL_MODEL_FINAL`.
+- **P42 — test report honesty (Section 42)**: `TEST_REPORT` distinguishes
+  executed / copied / skipped / env-failure / algo-failure. No stored
+  historical pytest output presented as current execution.
+- **P43 / G24 — version consistency (Section 43)**: `0.3.10.1-alpha`
+  unified across `pyproject.toml`, `daph_learning.__version__`, CLI,
+  README, CHANGELOG, manifest schema, generated artifacts. Automated
+  consistency test.
+- **P44 — config field audit (Section 44)**: every config field and CLI
+  option classified `USED` / `DEPRECATED` / `EXPERIMENTAL` /
+  `UNUSED_BUG`. No CLI flag silently does nothing; unsupported
+  combinations fail at startup.
+- **P45 — provenance (Section 45)**: policy artifact contains release
+  version, git/source tree hash, model ID + revision, tokenizer
+  revision, dataset/split hashes, policy type, target mode, target
+  temperature, weight mode, gap threshold, confidence formulation,
+  feature transform, PCA artifact hash, OOD model hash, selected
+  layer, steering alpha, random seed, train timestamp, environment
+  metadata. No hard-coded lineage.
+- **P46 / G23 — atomic policy promotion (Section 46)**: write candidate
+  → evaluate → pass all gates → atomically update incumbent pointer.
+  Any gate failure leaves incumbent unchanged. No partially-written
+  promoted state.
+- **P47 — release gates G1-G25 (Section 47)**: the release is blocked
+  unless all applicable gates pass. Gates are computed, not claimed.
+- **Out of scope (Section 48)**: no GDN2, COCONUT, model merging, TIES,
+  DARE, full SAE training, large PPO/GRPO, multi-agent debate, new
+  databases, or major repo-wide rewrite. The bottleneck is evidence,
+  not architecture.
+- **Final scientific standard (Section 50)**: the release answers six
+  separate questions (weighting value, centroid geometry sufficiency,
+  linear router sufficiency, causal steering, intervention utility,
+  AutoLearn vs simpler alternatives) without blurring them together.
+  AutoLearn must be able to prove its preferred method wrong.
+
 # 0.3.10 (counterfactual utility learning, weighted latent routing, causal intervention validation, uncertainty and regret optimization)
 
 - **Architecture shift**: upgraded AutoLearn from a "weighted steering-vector

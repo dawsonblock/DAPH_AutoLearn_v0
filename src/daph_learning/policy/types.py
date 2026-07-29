@@ -161,6 +161,41 @@ class CapturedActivation:
 
 
 @dataclass(frozen=True)
+class FeatureRecord:
+    """Task-bound feature vector (Section 5).
+
+    Replaces naked ``np.ndarray`` rows at cross-module boundaries so
+    that experiences and activations can be joined by ``task_id``
+    instead of inferred from array order. Naked arrays at module
+    boundaries are unsafe — a shuffled feature order would silently
+    misalign features from experiences.
+
+    Attributes
+    ----------
+    task_id : str
+        Unique task identifier (must match a
+        :class:`CounterfactualExperience` task_id).
+    features : np.ndarray
+        1-D feature vector (e.g. captured activation or PCA-projected
+        representation). Must be finite.
+    """
+
+    task_id: str
+    features: np.ndarray
+
+    def __post_init__(self) -> None:
+        arr = np.asarray(self.features)
+        if arr.ndim != 1:
+            raise ValueError("features must be 1-D")
+        if not np.all(np.isfinite(arr)):
+            raise ValueError("features contain NaN/Inf")
+        object.__setattr__(self, "features", arr.astype(np.float32, copy=False))
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"task_id": self.task_id, "features": np.asarray(self.features).tolist()}
+
+
+@dataclass(frozen=True)
 class PolicyDecision:
     """Contextual-bandit-compatible logging record for one deployment
     routing decision (Section 20).
@@ -170,12 +205,16 @@ class PolicyDecision:
     the full policy probability distribution, the policy version, and
     the set of available actions. This enables future off-policy
     learning (IPS, doubly-robust estimation).
+
+    v0.3.10.1 — adds ``chosen_propensity`` as an explicit field (the
+    historical ``propensity`` property is kept as a back-compat alias).
     """
 
     task_id: str
     action: Route
     probabilities: dict[str, float]
     policy_version: str
+    chosen_propensity: float | None = None
     available_actions: tuple[str, ...] = ("symbolic", "llm", "abstain")
 
     def __post_init__(self) -> None:
@@ -195,13 +234,22 @@ class PolicyDecision:
 
     @property
     def propensity(self) -> float:
-        """Probability of the chosen action (for IPS weighting)."""
+        """Probability of the chosen action (for IPS weighting).
+
+        v0.3.10.1 — back-compat alias for ``chosen_propensity``. If
+        ``chosen_propensity`` was set explicitly at construction, that
+        value is returned; otherwise it is looked up in
+        ``probabilities``.
+        """
+        if self.chosen_propensity is not None:
+            return float(self.chosen_propensity)
         return float(self.probabilities[self.action.value])
 
     def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d["action"] = self.action.value
         d["available_actions"] = list(self.available_actions)
+        d["chosen_propensity"] = self.propensity
         return d
 
 
@@ -209,6 +257,7 @@ __all__ = [
     "BackendOutcome",
     "CapturedActivation",
     "CounterfactualExperience",
+    "FeatureRecord",
     "PolicyDecision",
     "Route",
 ]

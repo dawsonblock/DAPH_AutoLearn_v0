@@ -1,4 +1,4 @@
-# DAPH AutoLearn v0.3.10-alpha
+# DAPH AutoLearn v0.3.10.1-alpha
 
 <div align="center">
 
@@ -616,6 +616,39 @@ test-set tuning, and leaky splits. **Its reported z-score is not a licensed
 result.**
 
 ## Changelog
+
+### v0.3.10.1-alpha
+
+- **Correctness repair pass**: focused on implementation integrity and
+  scientific validity. The release answers whether AutoLearn reduces
+  held-out regret and improves held-out utility on non-trivial tasks.
+- **P0-1 / G1**: `soft_targets: bool` replaced by explicit
+  `TargetMode.SOFT` | `TargetMode.HARD` with validity mask; hard-mode
+  ties ignored, not coerced to 0.5.
+- **P0-2 / G2**: `weight_mode` made real — four modes
+  (`UNIFORM`, `ABSOLUTE_GAP`, `CLIPPED_GAP`, `SNR`) via
+  `compute_weight(...)`. Clean break: old `"gap"` string raises.
+- **P0-3 / G3**: `policy_type` made real — `centroid` / `logistic` /
+  `mlp_experimental` select different implementations.
+- **P0-4 / G4**: held-out evaluation fails closed on missing
+  `utility_fn`; no zero-utility synthesis.
+- **P0-5/6 / G5**: strict task-ID alignment — `FeatureRecord` +
+  `join_by_task_id`; no silent zip truncation.
+- **P0-7 / G6**: `weighted_mean` rejects negative weights, NaN, Inf,
+  all-zero effective weights.
+- **P0-8 / G7**: calibration math fixed — `preference_brier_soft` and
+  `action_confidence_ece` replace the wrong soft-label ECE.
+- **P0-9 / G8**: dev early stopping selectable
+  (`dev_loss` | `dev_regret` | `dev_utility`), default `dev_regret`.
+- **P10 / G9-G13**: synthetic benchmark redesigned — four environments
+  (linear, near-tie/heteroskedastic, multimodal, XOR) + random control.
+- **P11/G14, P22/G21, P24/G22**: comparative gates literally compare;
+  promotion uses real policy decisions; capability + neutral KL gates.
+- **P13-20 / G16-G20**: real intervention pipeline + real
+  train/evaluate/calibrate CLI + OOD threshold calibration + PCA safety.
+- **P30 / G13**: small MLP router for nonlinear diagnostic.
+- **P43 / G24**: version unified to `0.3.10.1-alpha` across all
+  surfaces.
 
 ### v0.3.10
 
