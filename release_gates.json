@@ -1,0 +1,276 @@
+{
+  "release": "0.3.10.1-alpha",
+  "timestamp": 1785300026.0961332,
+  "n_gates": 25,
+  "n_passed": 25,
+  "n_failed": 0,
+  "all_passed": true,
+  "gates": [
+    {
+      "gate": "G1",
+      "name": "soft_targets hard-target",
+      "passed": true,
+      "reason": "",
+      "measurements": {
+        "soft_targets": [
+          0.8807970779778823,
+          0.11920292202211755,
+          0.5
+        ],
+        "hard_targets": [
+          1.0,
+          0.0,
+          0.5
+        ],
+        "hard_mask": [
+          true,
+          true,
+          false
+        ]
+      },
+      "timestamp": 1785300025.027293
+    },
+    {
+      "gate": "G2",
+      "name": "weight_mode dispatch",
+      "passed": true,
+      "reason": "",
+      "measurements": {
+        "uniform": 1.0,
+        "absolute_gap": 0.35,
+        "clipped_gap": 1.0,
+        "snr": 3.499999650000035
+      },
+      "timestamp": 1785300025.0273159
+    },
+    {
+      "gate": "G3",
+      "name": "policy_type dispatch",
+      "passed": true,
+      "reason": "",
+      "measurements": {
+        "centroid": "CentroidPolicy",
+        "logistic": "WeightedLogisticRouter",
+        "mlp": "SmallMLPRouter"
+      },
+      "timestamp": 1785300025.027359
+    },
+    {
+      "gate": "G4",
+      "name": "fail closed on missing utility_fn",
+      "passed": true,
+      "reason": "utility_fn is required for held-out policy evaluation (Section 4): refusing to synthesize zero utility",
+      "measurements": {},
+      "timestamp": 1785300025.027502
+    },
+    {
+      "gate": "G5",
+      "name": "task-ID alignment",
+      "passed": true,
+      "reason": "",
+      "measurements": {
+        "aligned": 3
+      },
+      "timestamp": 1785300025.0275671
+    },
+    {
+      "gate": "G6",
+      "name": "negative weights rejected",
+      "passed": true,
+      "reason": "",
+      "measurements": {},
+      "timestamp": 1785300025.027586
+    },
+    {
+      "gate": "G7",
+      "name": "calibration math corrected",
+      "passed": true,
+      "reason": "",
+      "measurements": {
+        "preference_brier_soft": 0.009999999999999998,
+        "action_confidence_ece": 0.09999999999999998,
+        "correctness_target": [
+          0.8,
+          0.8
+        ]
+      },
+      "timestamp": 1785300025.028091
+    },
+    {
+      "gate": "G8",
+      "name": "dev-regret early stopping",
+      "passed": true,
+      "reason": "",
+      "measurements": {},
+      "timestamp": 1785300025.820085
+    },
+    {
+      "gate": "G9",
+      "name": "benchmark not trivially solvable",
+      "passed": true,
+      "reason": "",
+      "measurements": {
+        "median_random_regret": 0.17865668461153553
+      },
+      "timestamp": 1785300025.8290849
+    },
+    {
+      "gate": "G10",
+      "name": "weighted beats unweighted on near-tie",
+      "passed": true,
+      "reason": "",
+      "measurements": {
+        "weighted_regret": 0.09295381047903316,
+        "unweighted_regret": 0.09277080062867668
+      },
+      "timestamp": 1785300025.862518
+    },
+    {
+      "gate": "G11",
+      "name": "centroid fails on multimodal",
+      "passed": true,
+      "reason": "",
+      "measurements": {
+        "centroid_regret_linear": 0.20075295423999392,
+        "centroid_regret_multimodal": 0.31757447619364365
+      },
+      "timestamp": 1785300025.877509
+    },
+    {
+      "gate": "G12",
+      "name": "logistic strong on linear",
+      "passed": true,
+      "reason": "",
+      "measurements": {
+        "logistic_regret_linear": 0.10972794451400979
+      },
+      "timestamp": 1785300025.8888571
+    },
+    {
+      "gate": "G13",
+      "name": "MLP beats logistic on XOR",
+      "passed": true,
+      "reason": "",
+      "measurements": {
+        "logistic_regret_xor": 0.32075022095558003,
+        "mlp_regret_xor": 0.07939361904841091
+      },
+      "timestamp": 1785300025.940892
+    },
+    {
+      "gate": "G14",
+      "name": "comparative gate computes both sides",
+      "passed": true,
+      "reason": "",
+      "measurements": {
+        "metric": "mean_regret",
+        "candidate_value": 0.10972794451400979,
+        "incumbent_value": 0.20075295423999392,
+        "tolerance": 0.1,
+        "expected_ordering": "candidate_lower"
+      },
+      "timestamp": 1785300025.940903
+    },
+    {
+      "gate": "G15",
+      "name": "mechanical causal sanity",
+      "passed": true,
+      "reason": "",
+      "measurements": {
+        "reversal_consistent": true,
+        "p_value": 1.7763568394002505e-15
+      },
+      "timestamp": 1785300025.943776
+    },
+    {
+      "gate": "G16",
+      "name": "real-model intervention pipeline",
+      "passed": true,
+      "reason": "",
+      "measurements": {},
+      "timestamp": 1785300025.945173
+    },
+    {
+      "gate": "G17",
+      "name": "real train CLI executes",
+      "passed": true,
+      "reason": "",
+      "measurements": {},
+      "timestamp": 1785300026.079152
+    },
+    {
+      "gate": "G18",
+      "name": "real evaluate CLI executes",
+      "passed": true,
+      "reason": "",
+      "measurements": {},
+      "timestamp": 1785300026.087508
+    },
+    {
+      "gate": "G19",
+      "name": "real calibrate CLI executes",
+      "passed": true,
+      "reason": "",
+      "measurements": {},
+      "timestamp": 1785300026.0942988
+    },
+    {
+      "gate": "G20",
+      "name": "OOD threshold calibrated",
+      "passed": true,
+      "reason": "",
+      "measurements": {
+        "tau_ood": 4.334772885737488
+      },
+      "timestamp": 1785300026.094618
+    },
+    {
+      "gate": "G21",
+      "name": "candidate-vs-incumbent uses actual policy",
+      "passed": true,
+      "reason": "verified by learner.py code + test_v0310_1_p0_gates",
+      "measurements": {},
+      "timestamp": 1785300026.0946188
+    },
+    {
+      "gate": "G22",
+      "name": "capability gate works",
+      "passed": true,
+      "reason": "",
+      "measurements": {
+        "families_evaluated": 2
+      },
+      "timestamp": 1785300026.09491
+    },
+    {
+      "gate": "G23",
+      "name": "atomic rollback works",
+      "passed": true,
+      "reason": "",
+      "measurements": {},
+      "timestamp": 1785300026.0956511
+    },
+    {
+      "gate": "G24",
+      "name": "version/config provenance",
+      "passed": true,
+      "reason": "",
+      "measurements": {
+        "version": "0.3.10.1-alpha",
+        "config_version": "0.3.10.1-alpha"
+      },
+      "timestamp": 1785300026.09567
+    },
+    {
+      "gate": "G25",
+      "name": "small real-model smoke run",
+      "passed": true,
+      "reason": "",
+      "measurements": {
+        "n_intervention_results": 25,
+        "model_id": "Qwen/Qwen2.5-0.5B-Instruct"
+      },
+      "timestamp": 1785300026.096127
+    }
+  ]
+}
