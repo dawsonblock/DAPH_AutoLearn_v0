@@ -1,4 +1,4 @@
-"""v0.3.10.3-alpha — real-model smoke test (Section 37 / G25).
+"""v0.3.10.3.1-alpha — real-model smoke test (Section 37 / G25).
 
 Runs a tiny end-to-end real-model intervention + policy evaluation
 using Qwen2.5-0.5B-Instruct on MPS (or CUDA if available). This is the
@@ -40,7 +40,7 @@ def main() -> int:
     )
 
     print("=" * 60)
-    print("v0.3.10.3-alpha real-model smoke test (G25)")
+    print("v0.3.10.3.1-alpha real-model smoke test (G25)")
     print("=" * 60)
 
     device = "cuda" if torch.cuda.is_available() else (
@@ -171,7 +171,7 @@ def main() -> int:
     out_path = REPO / "artifacts" / "smoke_real_model_result.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     artifact = {
-        "release": "0.3.10.3-alpha",
+        "release": "0.3.10.3.1-alpha",
         "evidence_level": "REAL_MODEL_DEV",
         "source_tree_sha256": src_hash,
         "model_id": model_id,

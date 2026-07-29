@@ -107,6 +107,7 @@ def fit_policy(
         return train_centroid_policy(
             train_features, train_delta_u, train_weights,
             gap_threshold=config.gap_threshold,
+            zero_weight_policy=config.zero_weight_policy,
         )
     if pt == "logistic":
         from .logistic import (

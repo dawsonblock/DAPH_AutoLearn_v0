@@ -73,6 +73,71 @@ class WeightMode(str, Enum):
         )
 
 
+class ZeroWeightPolicy(str, Enum):
+    """v0.3.10.3.1 — behavior when a class has zero effective training
+    weight (Section 2).
+
+    Silently substituting the unweighted estimator for the weighted one
+    is scientifically dangerous: it changes the estimator without
+    recording it in provenance. This enum makes the behavior explicit.
+
+    ERROR                : raise ``InsufficientEffectiveWeight`` (default).
+    UNWEIGHTED_FALLBACK  : fall back to unweighted mean, record it in
+                           provenance, and report the estimator as
+                           ``weighted_centroid_with_unweighted_fallback``
+                           rather than ``weighted_centroid``.
+    """
+
+    ERROR = "error"
+    UNWEIGHTED_FALLBACK = "unweighted_fallback"
+
+    @classmethod
+    def from_str(cls, value: str) -> "ZeroWeightPolicy":
+        for member in cls:
+            if member.value == value:
+                return member
+        raise ValueError(
+            f"unknown zero_weight_policy {value!r}; expected one of "
+            f"{[m.value for m in cls]}")
+
+
+class InsufficientEffectiveWeight(ValueError):
+    """Raised when a class has zero (or near-zero) effective training
+    weight and ``ZeroWeightPolicy.ERROR`` is in effect (Section 2).
+
+    A zero effective weight means the weighted estimator is undefined;
+    silently falling back to the unweighted estimator would change the
+    experiment without recording it.
+    """
+
+
+def require_effective_class_weight(
+    weights: np.ndarray,
+    class_name: str,
+    eps: float = 1e-12,
+) -> None:
+    """Raise ``InsufficientEffectiveWeight`` if ``weights.sum() <= eps``.
+
+    Parameters
+    ----------
+    weights : np.ndarray
+        Non-negative class weights.
+    class_name : str
+        Human-readable class label for the error message
+        (e.g. ``"symbolic"``, ``"llm"``).
+    eps : float
+        Threshold below which the effective weight is considered zero.
+    """
+    total = float(np.asarray(weights, dtype=np.float64).sum())
+    if total <= eps:
+        raise InsufficientEffectiveWeight(
+            f"{class_name} has zero effective training weight "
+            f"(sum={total!r} <= eps={eps!r}); the weighted estimator is "
+            f"undefined. Enable ZeroWeightPolicy.UNWEIGHTED_FALLBACK to "
+            f"fall back to the unweighted estimator with recorded provenance."
+        )
+
+
 @dataclass(frozen=True)
 class WeightConfig:
     """Configuration for utility-weighted sample weighting.
@@ -339,11 +404,14 @@ def snr_weight(
 
 
 __all__ = [
+    "InsufficientEffectiveWeight",
     "WeightConfig",
     "WeightMode",
+    "ZeroWeightPolicy",
     "compute_sample_weight",
     "compute_weight",
     "compute_weights_batch",
+    "require_effective_class_weight",
     "snr_weight",
     "utility_weight",
 ]

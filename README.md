@@ -1,4 +1,4 @@
-# DAPH AutoLearn v0.3.10.3-alpha
+# DAPH AutoLearn v0.3.10.3.1-alpha
 
 <div align="center">
 
@@ -617,6 +617,25 @@ test-set tuning, and leaky splits. **Its reported z-score is not a licensed
 result.**
 
 ## Changelog
+
+### v0.3.10.3.1-alpha
+
+- **Qualification repair release** (not architecture expansion). Mission:
+  make the evidence trustworthy. See `CHANGELOG_V0_3_10_3_1.md`.
+- **Within-family crossover benchmark** (Section 10-12): structured +
+  natural-language mathematics where both symbolic and LLM win on different
+  instances inside the same family. The central scientific question is
+  whether AutoLearn can choose the better computation for an individual
+  task, not merely classify the task family.
+- **Steering optimizes verified utility** (Section 21-25): `ΔU(α)` not
+  `P(symbolic)`. Per-alpha beneficial/harmful flip analysis; random
+  direction controls; neutral KL release gate.
+- **Frozen evaluation** (Section 14-19): `ExperimentStage` access control,
+  final-test access ledger, zero fitting on final, real
+  evaluate/calibrate/intervene CLIs.
+- **Source-hash enforcement** (Section 32-35): current artifacts must share
+  `source_tree_sha256`; mismatched artifacts archived and excluded from
+  headline claims.
 
 ### v0.3.10.3-alpha
 

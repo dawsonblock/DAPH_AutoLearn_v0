@@ -123,6 +123,22 @@ class BackendOutcome:
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
+    @property
+    def verified_correct(self) -> bool | None:
+        """v0.3.10.3.1 — Section 4: ``True``/``False``/``None`` verified
+        correctness, derived from ``verifier_status``.
+
+        ``execution_success != verified_correct`` is the key invariant:
+        execution can succeed while the verifier rejects the output.
+        ``None`` means the verifier did not make a binary judgment
+        (unsupported / not run).
+        """
+        if self.verifier_status == "verified_correct":
+            return True
+        if self.verifier_status == "verified_incorrect":
+            return False
+        return None
+
 
 @dataclass(frozen=True)
 class CounterfactualExperience:

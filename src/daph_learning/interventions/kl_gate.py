@@ -43,6 +43,8 @@ class PromotionGateResult:
     mean_neutral_kl: float
     capability_drops: dict[str, float]
     n_samples: int
+    p95_neutral_kl: float | None = None
+    kl_threshold: float | None = None
 
     def to_dict(self) -> dict:
         return {
@@ -50,6 +52,8 @@ class PromotionGateResult:
             "reason": self.reason,
             "mean_utility_gain": self.mean_utility_gain,
             "mean_neutral_kl": self.mean_neutral_kl,
+            "p95_neutral_kl": self.p95_neutral_kl,
+            "kl_threshold": self.kl_threshold,
             "capability_drops": dict(self.capability_drops),
             "n_samples": self.n_samples,
         }
@@ -100,11 +104,13 @@ def evaluate_kl_capability_gate(
     capability_drops: dict[str, float] | None = None,
     n_samples: int,
     constraints: PromotionConstraints,
+    p95_neutral_kl: float | None = None,
 ) -> PromotionGateResult:
-    """Evaluate the KL/capability promotion gate (Section 17).
+    """Evaluate the KL/capability promotion gate (Section 17 / 26).
 
     Returns a :class:`PromotionGateResult`. Promotion requires all
-    constraints to pass.
+    constraints to pass. v0.3.10.3.1 — records p95 KL and the threshold
+    (Section 26).
     """
     cap_drops = dict(capability_drops or {})
     if n_samples < constraints.min_samples:
@@ -115,6 +121,8 @@ def evaluate_kl_capability_gate(
             mean_neutral_kl=neutral_kl,
             capability_drops=cap_drops,
             n_samples=n_samples,
+            p95_neutral_kl=p95_neutral_kl,
+            kl_threshold=constraints.max_neutral_kl,
         )
     if mean_utility_gain < constraints.min_mean_utility_gain:
         return PromotionGateResult(
@@ -124,6 +132,8 @@ def evaluate_kl_capability_gate(
             mean_neutral_kl=neutral_kl,
             capability_drops=cap_drops,
             n_samples=n_samples,
+            p95_neutral_kl=p95_neutral_kl,
+            kl_threshold=constraints.max_neutral_kl,
         )
     if neutral_kl is None or neutral_kl > constraints.max_neutral_kl:
         kl_str = "N/A" if neutral_kl is None else f"{neutral_kl:.4f}"
@@ -134,6 +144,8 @@ def evaluate_kl_capability_gate(
             mean_neutral_kl=neutral_kl,
             capability_drops=cap_drops,
             n_samples=n_samples,
+            p95_neutral_kl=p95_neutral_kl,
+            kl_threshold=constraints.max_neutral_kl,
         )
     for cap, drop in cap_drops.items():
         if drop > constraints.max_capability_drop:
@@ -144,6 +156,8 @@ def evaluate_kl_capability_gate(
                 mean_neutral_kl=neutral_kl,
                 capability_drops=cap_drops,
                 n_samples=n_samples,
+                p95_neutral_kl=p95_neutral_kl,
+                kl_threshold=constraints.max_neutral_kl,
             )
     return PromotionGateResult(
         promoted=True,
@@ -152,6 +166,8 @@ def evaluate_kl_capability_gate(
         mean_neutral_kl=neutral_kl,
         capability_drops=cap_drops,
         n_samples=n_samples,
+        p95_neutral_kl=p95_neutral_kl,
+        kl_threshold=constraints.max_neutral_kl,
     )
 
 

@@ -1,3 +1,75 @@
+# 0.3.10.3.1-alpha (qualification repair: within-family crossover benchmark, steering utility validation, frozen evaluation, source-hash enforcement)
+
+- **Mission shift**: implementation quality > qualification quality. This
+  release makes the evidence trustworthy rather than expanding architecture.
+  No GDN2, COCONUT, model merging, SAE, PPO/GRPO, or multi-agent systems.
+- **Section 1 — version unification**: all active surfaces bumped to
+  `0.3.10.3.1-alpha` (pyproject, `__version__`, `ExperimentConfig`,
+  `ProvenanceRecord`, CLI `--version`, README, CLAIMS). Added
+  `test_version_consistency` (G1).
+- **Section 2 — centroid zero-weight fail-closed**: `ZeroWeightPolicy` enum
+  (`ERROR` default, `UNWEIGHTED_FALLBACK` opt-in). `InsufficientEffectiveWeight`
+  raised by default instead of silently substituting the unweighted
+  estimator. Fallback records provenance and reports
+  `weighted_centroid_with_unweighted_fallback`.
+- **Section 3 — canonical utility**: `backend_utility` is the single
+  implementation of `U_b`; `utility_for_route` centralizes route-utility
+  lookup. `test_all_real_scoring_paths_use_backend_utility` (G7).
+- **Section 4-5 — outcome contract + confidence**: `BackendOutcome.verifier_status`
+  tightened; `execution_success != verified_correct` invariant enforced.
+  Confidence kept separate from quality; paired confidence combine
+  (product/min/geometric_mean, configurable).
+- **Section 6-7 — true weighted vs unweighted ablation**: comparisons hold
+  the policy family fixed; uniform and weighted models receive different
+  weight arrays. Per-policy weight diagnostics (ESS, min/max/mean, zero
+  fraction) recorded.
+- **Section 8-9 — dedup + group stats**: within-split prompt dedup
+  (`test_no_within_split_prompt_duplicates`); `group_id`/`template_id`/
+  `family_id` metadata; `grouped_bootstrap_mean_delta` for honest CI when
+  tasks share a generator.
+- **Section 10-12 — within-family crossover benchmark** (highest priority):
+  structured + natural-language mathematics family with subtypes A-F where
+  both symbolic and LLM can win on different instances inside the same
+  family. Optimal backend never encoded in task metadata; derived only
+  after both backends execute and verify. Instance-level routing test
+  controls for family (G26).
+- **Section 13 — strong hand router**: rule-based router using only
+  decision-time information (structured expression → symbolic, unsupported
+  syntax → LLM, NL extraction → LLM, exact modular → symbolic).
+- **Section 14-15 — stage access control**: `ExperimentStage` enum;
+  final split inaccessible before `FROZEN`; final-test access ledger.
+- **Section 16-19 — real CLIs**: `daph-evaluate-routes` / calibrate /
+  intervene load frozen artifacts, capture real hidden states, perform zero
+  fitting on final. `CalibrationArtifact` dataclass with full hashes.
+- **Section 20 — fail closed**: missing utility/verifier/policy/executor
+  raise instead of returning 0.0.
+- **Section 21-25 — steering optimizes utility** (second priority):
+  objective is `argmax_alpha E[U(pi(h+alpha v), x)]`, not
+  `max_alpha P(symbolic)`. Per-alpha verified utility, regret, route flips
+  (beneficial/harmful/neutral), neutral KL. Oracle alpha probe on DEV only.
+  Random direction controls with `p_emp` significance.
+- **Section 26 — KL release gate**: `steering/promotion KL guard` exercises
+  utility-up/KL-exceeds reject, utility-up/KL-below allow, KL-unavailable
+  fail-closed.
+- **Section 27 — verifier naming**: `verify_exact_string` tightened to true
+  `strip() == strip()`; permissive parsing renamed
+  `verify_constrained_answer`. Explicit modes EXACT/FINAL_MARKER/
+  NUMERIC_EXTRACTOR/TOKEN_EXTRACTOR recorded per result.
+- **Section 28-31 — representation ablation, policy class comparison,
+  tie-aware metrics, ESS**: decisive vs tie-aware accuracy; ESS per class.
+- **Section 32-35 — artifact discipline**: `artifacts/current` vs
+  `artifacts/archive/<version>/<source_hash>`; current artifacts must share
+  `source_tree_sha256`; test collection hash; re-run test report on current
+  tree.
+- **Section 36 — CLI doc validation**: documented flags validated against
+  argparse; stale `--soft-targets`/`--weight-mode gap` removed.
+- **Section 37-40 — release gates**: G1-G32 with claim/evidence/
+  measurement/assertion contract. G17-G19 real-model gates execute on
+  Qwen2.5-1.5B-Instruct or explicitly SKIP.
+- **Section 41-48 — scientific success tiers + deliverables**: Tier 0-7
+  separation; negative results (weighting did not help, steering hurt
+  utility) are acceptable and supported.
+
 # 0.3.10.3-alpha (P0 repair: verified output, honest gates, disjoint splits, canonical utility)
 
 - **P0-1/P0-2**: `BackendOutcome` expanded with `available`, `executed`,

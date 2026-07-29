@@ -21,6 +21,8 @@ from .policy import (
     steered_router,
 )
 from .steered_router import build_route_prompt, parse_route_action
+# v0.3.10.3.1 — Section 13: strong hand-router baseline.
+from .hand_router import hand_router_route, hand_router_routes
 
 __all__ = [
     "CapabilityAssessment",
@@ -35,6 +37,8 @@ __all__ = [
     "build_route_prompt",
     "coerce_route_decision",
     "decision_from_action",
+    "hand_router_route",
+    "hand_router_routes",
     "parse_route_action",
     "route_task",
     "route_tasks",

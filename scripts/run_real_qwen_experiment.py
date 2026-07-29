@@ -1,4 +1,4 @@
-"""v0.3.10.3-alpha — real Qwen experiment (Section 51, Phase A-F).
+"""v0.3.10.3.1-alpha — real Qwen experiment (Section 51, Phase A-F).
 
 v0.3.10.3 — CRITICAL FIXES from external review:
 
@@ -72,7 +72,7 @@ def main() -> int:
     )
 
     print("=" * 70)
-    print("v0.3.10.3-alpha REAL QWEN EXPERIMENT (Section 51, Phase A-F)")
+    print("v0.3.10.3.1-alpha REAL QWEN EXPERIMENT (Section 51, Phase A-F)")
     print("=" * 70)
 
     device = "cuda" if torch.cuda.is_available() else (
@@ -575,7 +575,7 @@ def main() -> int:
     # Save experiment artifact
     # ================================================================
     artifact = {
-        "release": "0.3.10.3-alpha",
+        "release": "0.3.10.3.1-alpha",
         "evidence_level": "REAL_MODEL_FINAL",
         "model_id": model_id,
         "device": device,

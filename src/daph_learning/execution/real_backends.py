@@ -38,6 +38,7 @@ import json
 import re
 import time
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any, Mapping
 
 import numpy as np
@@ -339,7 +340,19 @@ def execute_llm_backend(
 # Section 12: real verification
 # ------------------------------------------------------------------
 
-@dataclass(frozen=True)
+class VerifierMode(str, Enum):
+    """v0.3.10.3.1 — Section 27: explicit verifier modes.
+
+    Every result records its mode so permissive parsing is never
+    labelled as exact verification.
+    """
+    EXACT = "exact"
+    FINAL_MARKER = "final_marker"
+    NUMERIC_EXTRACTOR = "numeric_extractor"
+    TOKEN_EXTRACTOR = "token_extractor"
+
+
+@dataclass
 class VerificationResult:
     """Result of verifying a backend output (Section 12).
 
@@ -355,12 +368,15 @@ class VerificationResult:
         Verifier confidence in [0, 1].
     failure_reason : str | None
         If verification failed, why.
+    verifier_mode : str
+        v0.3.10.3.1 — the VerifierMode used (Section 27).
     """
 
     verified_correct: bool | None
     verifier_type: str
     confidence: float
     failure_reason: str | None = None
+    verifier_mode: str = "exact"
 
     def to_dict(self) -> dict:
         return {
@@ -368,6 +384,7 @@ class VerificationResult:
             "verifier_type": self.verifier_type,
             "confidence": self.confidence,
             "failure_reason": self.failure_reason,
+            "verifier_mode": self.verifier_mode,
         }
 
 
@@ -397,7 +414,7 @@ def verify_arithmetic(
     if expected is None:
         return VerificationResult(
             verified_correct=None,
-            verifier_type="arithmetic_exact",
+            verifier_type="arithmetic_exact", verifier_mode=VerifierMode.NUMERIC_EXTRACTOR.value,
             confidence=0.0,
             failure_reason="task has no 'expected' field",
         )
@@ -406,14 +423,14 @@ def verify_arithmetic(
     except (ValueError, TypeError):
         return VerificationResult(
             verified_correct=None,
-            verifier_type="arithmetic_exact",
+            verifier_type="arithmetic_exact", verifier_mode=VerifierMode.NUMERIC_EXTRACTOR.value,
             confidence=0.0,
             failure_reason=f"expected value {expected!r} is not an integer",
         )
     if output_text is None:
         return VerificationResult(
             verified_correct=False,
-            verifier_type="arithmetic_exact",
+            verifier_type="arithmetic_exact", verifier_mode=VerifierMode.NUMERIC_EXTRACTOR.value,
             confidence=1.0,
             failure_reason="no output text provided",
         )
@@ -423,7 +440,7 @@ def verify_arithmetic(
     if not numbers:
         return VerificationResult(
             verified_correct=False,
-            verifier_type="arithmetic_exact",
+            verifier_type="arithmetic_exact", verifier_mode=VerifierMode.NUMERIC_EXTRACTOR.value,
             confidence=1.0,
             failure_reason=f"no integer found in output: {output_text!r}",
         )
@@ -432,7 +449,7 @@ def verify_arithmetic(
     is_correct = (output_int == expected_int)
     return VerificationResult(
         verified_correct=is_correct,
-        verifier_type="arithmetic_exact",
+        verifier_type="arithmetic_exact", verifier_mode=VerifierMode.NUMERIC_EXTRACTOR.value,
         confidence=1.0,
         failure_reason=None if is_correct else (
             f"expected {expected_int}, got {output_int}"),
@@ -443,15 +460,15 @@ def verify_exact_string(
     task: Mapping[str, Any],
     output_text: str | None,
 ) -> VerificationResult:
-    """Verify a free-form task output by exact string comparison (Section 12).
+    """v0.3.10.3.1 — Section 27: TRUE exact string verification.
 
-    Extracts the expected answer from the task's ``expected`` field and
-    compares it to ``output_text`` after normalization (lowercase, strip,
-    remove trailing punctuation). This is for tasks like letter counting
-    or simple QA where the answer is a single word/number.
+    ``strip(output) == strip(expected)`` — no permissive parsing, no
+    first-word/last-word extraction. If the output is not an exact
+    match after whitespace stripping, it is incorrect.
 
-    Fail closed: if the task has no ``expected`` field, return
-    ``verified_correct=None``.
+    The permissive parsing logic that used to live under this name is
+    now :func:`verify_constrained_answer` (TOKEN_EXTRACTOR mode), so
+    permissive parsing is never labelled as exact verification.
     """
     expected = task.get("expected")
     if expected is None:
@@ -460,61 +477,108 @@ def verify_exact_string(
             verifier_type="exact_string",
             confidence=0.0,
             failure_reason="task has no 'expected' field",
+            verifier_mode=VerifierMode.EXACT.value,
         )
-    expected_str = str(expected).strip().lower().rstrip(".!?")
+    expected_str = str(expected).strip()
     if output_text is None:
         return VerificationResult(
             verified_correct=False,
             verifier_type="exact_string",
             confidence=1.0,
             failure_reason="no output text provided",
+            verifier_mode=VerifierMode.EXACT.value,
         )
-    # Extract the first word/line from the output (LLMs often add extra text).
+    output_str = output_text.strip()
+    is_correct = (output_str == expected_str)
+    return VerificationResult(
+        verified_correct=is_correct,
+        verifier_type="exact_string",
+        confidence=1.0,
+        failure_reason=None if is_correct else (
+            f"expected {expected_str!r}, got {output_str!r}"),
+        verifier_mode=VerifierMode.EXACT.value,
+    )
+
+
+def verify_constrained_answer(
+    task: Mapping[str, Any],
+    output_text: str | None,
+) -> VerificationResult:
+    """v0.3.10.3.1 — Section 27: permissive constrained-answer extraction.
+
+    Renamed from the old ``verify_exact_string``. This is NOT exact
+    verification — it extracts the first/last word, first line, or
+    standalone word and compares. The verifier_mode is TOKEN_EXTRACTOR
+    so results are never labelled as exact verification.
+
+    Use :func:`verify_exact_string` for true ``strip() == strip()``
+    equality. Use this for tasks where the LLM wraps the answer in
+    prose and exact equality would be too strict.
+    """
+    expected = task.get("expected")
+    if expected is None:
+        return VerificationResult(
+            verified_correct=None,
+            verifier_type="constrained_answer",
+            confidence=0.0,
+            failure_reason="task has no 'expected' field",
+            verifier_mode=VerifierMode.TOKEN_EXTRACTOR.value,
+        )
+    expected_str = str(expected).strip().lower().rstrip(".!?")
+    if output_text is None:
+        return VerificationResult(
+            verified_correct=False,
+            verifier_type="constrained_answer",
+            confidence=1.0,
+            failure_reason="no output text provided",
+            verifier_mode=VerifierMode.TOKEN_EXTRACTOR.value,
+        )
     output_str = output_text.strip().lower().rstrip(".!?")
-    # Try exact match first.
     if output_str == expected_str:
         return VerificationResult(
             verified_correct=True,
-            verifier_type="exact_string",
+            verifier_type="constrained_answer",
             confidence=1.0,
+            verifier_mode=VerifierMode.TOKEN_EXTRACTOR.value,
         )
-    # Try first-word match (handles "5" from "5 letters").
     words = output_str.split()
     first_word = words[0] if words else ""
     if first_word == expected_str:
         return VerificationResult(
             verified_correct=True,
-            verifier_type="exact_string",
+            verifier_type="constrained_answer",
             confidence=0.9,
+            verifier_mode=VerifierMode.TOKEN_EXTRACTOR.value,
         )
-    # Try last-word match (handles "The answer is 5" → "5").
     last_word = words[-1] if words else ""
     if last_word == expected_str:
         return VerificationResult(
             verified_correct=True,
-            verifier_type="exact_string",
+            verifier_type="constrained_answer",
             confidence=0.9,
+            verifier_mode=VerifierMode.TOKEN_EXTRACTOR.value,
         )
-    # Try first-line match.
     first_line = output_str.split("\n")[0].strip()
     if first_line == expected_str:
         return VerificationResult(
             verified_correct=True,
-            verifier_type="exact_string",
+            verifier_type="constrained_answer",
             confidence=0.9,
+            verifier_mode=VerifierMode.TOKEN_EXTRACTOR.value,
         )
-    # Try standalone word match (handles "The answer is cat" → "cat").
     if expected_str in words:
         return VerificationResult(
             verified_correct=True,
-            verifier_type="exact_string",
+            verifier_type="constrained_answer",
             confidence=0.85,
+            verifier_mode=VerifierMode.TOKEN_EXTRACTOR.value,
         )
     return VerificationResult(
         verified_correct=False,
-        verifier_type="exact_string",
+        verifier_type="constrained_answer",
         confidence=1.0,
         failure_reason=f"expected {expected_str!r}, got {output_str!r}",
+        verifier_mode=VerifierMode.TOKEN_EXTRACTOR.value,
     )
 
 
@@ -978,6 +1042,7 @@ __all__ = [
     "make_mixed_tasks",
     "partition_word_pool",
     "verify_arithmetic",
+    "verify_constrained_answer",
     "verify_exact_string",
     "verify_output",
 ]

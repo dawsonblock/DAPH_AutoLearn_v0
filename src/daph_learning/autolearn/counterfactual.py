@@ -166,20 +166,34 @@ def compute_backend_utility(
     record: BackendExecutionRecord,
     config: UtilityConfig,
 ) -> UtilityBreakdown:
-    """Compute the frozen utility ``U_b`` for one backend record."""
+    """Compute the frozen utility ``U_b`` for one backend record.
+
+    v0.3.10.3.1 — Section 3: delegates to the canonical
+    :func:`daph_learning.policy.utility.utility_formula` so the
+    experience-construction path and the evaluation path share one
+    formula implementation and cannot drift.
+    """
+    from daph_learning.policy.utility import utility_formula
     cfg = config.freeze()
     q = _quality(record)
     t = record.latency_ms if record.latency_ms is not None else 0.0
     c = record.compute_cost if record.compute_cost is not None else 0.0
+    r = _risk(record)
+    utility = utility_formula(
+        quality=q,
+        latency_ms=t,
+        compute_cost=c,
+        risk=r,
+        quality_weight=cfg.quality_weight,
+        lambda_time=cfg.lambda_time,
+        lambda_compute=cfg.lambda_compute,
+        lambda_risk=cfg.lambda_risk,
+        time_reference_ms=cfg.time_reference_ms,
+        compute_reference=cfg.compute_reference,
+    )
     time_term = cfg.lambda_time * (t / cfg.time_reference_ms)
     compute_term = cfg.lambda_compute * (c / cfg.compute_reference)
-    risk_term = cfg.lambda_risk * _risk(record)
-    utility = (
-        cfg.quality_weight * q
-        - time_term
-        - compute_term
-        - risk_term
-    )
+    risk_term = cfg.lambda_risk * r
     return UtilityBreakdown(
         backend=record.backend,
         quality=q,
