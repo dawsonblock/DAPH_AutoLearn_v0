@@ -1,0 +1,78 @@
+{
+  "release": "0.3.10.2-alpha",
+  "evidence_level": "REAL_MODEL_FINAL",
+  "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+  "device": "mps",
+  "layer": 10,
+  "timestamp": 1785303194.6907678,
+  "splits": {
+    "train": 50,
+    "dev": 25,
+    "calibration": 25,
+    "final": 50
+  },
+  "phase_b_results": {
+    "centroid": {
+      "dev_regret": 0.0,
+      "dev_utility": 1.0
+    },
+    "logistic": {
+      "dev_regret": 0.0,
+      "dev_utility": 1.0
+    },
+    "mlp_experimental": {
+      "dev_regret": 0.0,
+      "dev_utility": 1.0
+    }
+  },
+  "phase_b_unweighted": {
+    "dev_regret": 0.0
+  },
+  "phase_c_selection": {
+    "best_policy": "centroid",
+    "always_llm_dev_regret": 0.44,
+    "always_sym_dev_regret": 0.0
+  },
+  "phase_d_calibration": {
+    "tau_ood": 51.3128813566223,
+    "tau_conf": 0.5,
+    "preference_brier_soft": 0.05338806675851816,
+    "action_confidence_ece": 0.2310585786300049
+  },
+  "phase_f_final": {
+    "candidate_utility": 0.98,
+    "candidate_regret": 0.02,
+    "incumbent_utility": 0.54,
+    "incumbent_regret": 0.46,
+    "always_sym_utility": 1.0,
+    "always_sym_regret": 0.0,
+    "routing_accuracy": 0.46,
+    "abstain_rate": 0.02,
+    "symbolic_utilization": 0.98,
+    "llm_utilization": 0.0,
+    "paired_stats": {
+      "n": 50,
+      "mean_utility_delta": 0.44,
+      "median_utility_delta": 0.0,
+      "candidate_win_rate": 0.46,
+      "incumbent_win_rate": 0.02,
+      "tie_rate": 0.52,
+      "bootstrap_ci_low": 0.3,
+      "bootstrap_ci_high": 0.58,
+      "mean_regret_delta": 0.44,
+      "mean_candidate_regret": 0.02,
+      "mean_incumbent_regret": 0.46,
+      "regret_bootstrap_ci_low": 0.3,
+      "regret_bootstrap_ci_high": 0.58
+    }
+  },
+  "phase_e_steering": {
+    "n_intervention_results": 50,
+    "mean_p_plus": 0.5,
+    "mean_p_zero": 0.5,
+    "mean_p_minus": 0.5,
+    "plus_gt_zero": 0,
+    "minus_lt_zero": 0,
+    "evidence_level": "REAL_MODEL_LATENT_INTERVENTION"
+  }
+}
