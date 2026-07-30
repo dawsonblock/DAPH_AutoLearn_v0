@@ -62,6 +62,10 @@ def main() -> int:
     import os
     os.environ["DAPH_DISABLE_SEMANTIC_PARSE"] = "1"
 
+    # vLLM requires spawn start method for CUDA multiprocessing.
+    import multiprocessing
+    multiprocessing.set_start_method("spawn", force=True)
+
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
     from daph_learning.data.crossover_benchmark import (
