@@ -1,4 +1,4 @@
-"""v0.3.10.3.1-alpha — real-model smoke test (Section 37 / G25).
+"""v0.3.10.3.2-alpha — real-model smoke test (Section 37 / G25).
 
 Runs a tiny end-to-end real-model intervention + policy evaluation
 using Qwen2.5-0.5B-Instruct on MPS (or CUDA if available). This is the
@@ -40,7 +40,7 @@ def main() -> int:
     )
 
     print("=" * 60)
-    print("v0.3.10.3.1-alpha real-model smoke test (G25)")
+    print("v0.3.10.3.2-alpha real-model smoke test (G25)")
     print("=" * 60)
 
     device = "cuda" if torch.cuda.is_available() else (
@@ -162,16 +162,16 @@ def main() -> int:
         print(f"  +v > 0: {plus_gt}/{len(plus_results)}, -v < 0: {minus_lt}/{len(minus_results)}")
 
     # --- Save smoke artifact ---
-    # v0.3.10.3 — bind artifact to current source-tree hash.
+    # v0.3.10.3.2 — bind artifact to current source-tree hash (canonical).
     try:
-        from daph_learning.policy.provenance import source_tree_sha256
-        src_hash = source_tree_sha256()
+        from daph_learning.provenance import compute_source_tree_sha256
+        src_hash = compute_source_tree_sha256(REPO)
     except Exception:
         src_hash = "unknown"
     out_path = REPO / "artifacts" / "smoke_real_model_result.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     artifact = {
-        "release": "0.3.10.3.1-alpha",
+        "release": "0.3.10.3.2-alpha",
         "evidence_level": "REAL_MODEL_DEV",
         "source_tree_sha256": src_hash,
         "model_id": model_id,

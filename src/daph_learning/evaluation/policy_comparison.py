@@ -1,4 +1,4 @@
-"""v0.3.10.3.1-alpha — decisive policy class comparison (Sections 29-31).
+"""v0.3.10.3.2-alpha — decisive policy class comparison (Sections 29-31).
 
 Section 29: decisive comparison
   Compare policy classes (centroid, logistic, hand-router, random)

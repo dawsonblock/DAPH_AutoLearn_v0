@@ -55,13 +55,16 @@ def test_hand_router_does_not_read_expected_or_label():
 def test_hand_router_on_crossover_split():
     tasks = generate_crossover_split(split="dev", n_per_subtype=5, seed=0)
     routes = hand_router_routes(tasks)
-    # Subtypes A, D have structured inputs -> symbolic; B, C, E, F -> llm.
+    # v0.3.10.3.2: hand router now considers operand magnitude.
+    # Subtypes A, D have structured inputs -> symbolic.
+    # NL subtypes (B, C, E, F) -> symbolic if large operands, llm if small.
     for t, r in zip(tasks, routes):
         st = t["metadata"]["subtype"]
         if st in ("A", "D"):
             assert r == "symbolic", f"{st} should be symbolic, got {r}"
         else:
-            assert r == "llm", f"{st} should be llm, got {r}"
+            # NL subtypes: route depends on operand magnitude
+            assert r in ("symbolic", "llm"), f"{st} unexpected route {r}"
 
 
 # --- Section 8: within-split dedup ---

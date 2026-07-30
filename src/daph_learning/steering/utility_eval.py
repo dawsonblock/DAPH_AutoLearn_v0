@@ -1,4 +1,4 @@
-"""v0.3.10.3.1-alpha — steering utility evaluation (Sections 21-25).
+"""v0.3.10.3.2-alpha — steering utility evaluation (Sections 21-25).
 
 THE SECOND MOST IMPORTANT CHANGE.
 
@@ -174,7 +174,7 @@ def evaluate_steering_utility(
                 output_hash=None, verifier_status=_verifier_status(vr),
                 correct=bool(getattr(vr, "verified_correct", None) is True),
                 quality=1.0 if getattr(vr, "verified_correct", None) is True else 0.0,
-                latency_sec=0.05, normalized_cost=0.1, risk=0.0,
+                latency_sec=0.02, normalized_cost=0.001, risk=0.0,
                 verifier_confidence=float(getattr(vr, "confidence", 0.0)),
                 failure_reason=getattr(vr, "failure_reason", None),
             )

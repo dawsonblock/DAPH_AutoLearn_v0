@@ -1,4 +1,4 @@
-"""v0.3.10.3.1-alpha — real Qwen experiment (Section 51, Phase A-F).
+"""v0.3.10.3.2-alpha — real Qwen experiment (Section 51, Phase A-F).
 
 v0.3.10.3 — CRITICAL FIXES from external review:
 
@@ -34,15 +34,13 @@ sys.path.insert(0, str(REPO / "src"))
 
 
 def _source_tree_sha256() -> str:
-    """Deterministic hash over relevant source files (Section 24)."""
-    h = hashlib.sha256()
-    src_dir = REPO / "src" / "daph_learning"
-    for py in sorted(src_dir.rglob("*.py")):
-        h.update(str(py.relative_to(REPO)).encode("utf-8"))
-        h.update(b"\0")
-        h.update(py.read_bytes())
-        h.update(b"\0")
-    return h.hexdigest()[:16]
+    """Canonical source-tree hash (Section 2).
+
+    Delegates to :func:`daph_learning.provenance.compute_source_tree_sha256`
+    so that all components record the same hash.
+    """
+    from daph_learning.provenance import compute_source_tree_sha256
+    return compute_source_tree_sha256(REPO)
 
 
 def main() -> int:
@@ -72,7 +70,7 @@ def main() -> int:
     )
 
     print("=" * 70)
-    print("v0.3.10.3.1-alpha REAL QWEN EXPERIMENT (Section 51, Phase A-F)")
+    print("v0.3.10.3.2-alpha REAL QWEN EXPERIMENT (Section 51, Phase A-F)")
     print("=" * 70)
 
     device = "cuda" if torch.cuda.is_available() else (
@@ -575,7 +573,7 @@ def main() -> int:
     # Save experiment artifact
     # ================================================================
     artifact = {
-        "release": "0.3.10.3.1-alpha",
+        "release": "0.3.10.3.2-alpha",
         "evidence_level": "REAL_MODEL_FINAL",
         "model_id": model_id,
         "device": device,

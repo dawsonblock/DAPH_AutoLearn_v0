@@ -129,13 +129,19 @@ def capture_task_representation(
 def execute_symbolic_backend(
     task: Mapping[str, Any],
 ) -> tuple[BackendOutcome, str | None]:
-    """Execute the symbolic backend on a task (Section 10).
+    """Execute the symbolic backend on a task (Section 10, 14).
 
     Reuses the existing bounded symbolic executor. Handles:
     - unsupported task → ``available=False, executed=False``
     - parse failure → ``executed=True, execution_success=False``
     - execution failure → ``executed=True, execution_success=False``
     - timeout → ``executed=True, execution_success=False``
+
+    Section 14: if the task has no structured ``capability_ids`` (NL
+    task), the semantic parser is attempted. If parsing succeeds, the
+    parsed expression is evaluated directly. This allows the symbolic
+    backend to compete on natural-language arithmetic tasks, enabling
+    true within-subtype crossover.
 
     Returns a tuple of (BackendOutcome, output_text). The output_text is
     the actual computed value (e.g. "42") for external verification.
@@ -153,25 +159,84 @@ def execute_symbolic_backend(
 
     # Check if the symbolic backend supports this task type.
     supported_caps = {"integer_arithmetic", "modular_multiplication"}
-    if not (caps & supported_caps):
-        latency = _time.time() - t0
-        return BackendOutcome(
-            task_id=tid,
-            backend="symbolic",
-            available=False,
-            executed=False,
-            execution_success=False,
-            output_text=None,
-            output_hash=None,
-            verifier_status="not_verified",
-            correct=False,
-            quality=0.0,
-            latency_sec=latency,
-            normalized_cost=0.01,
-            risk=0.0,
-            verifier_confidence=0.0,
-            failure_reason=f"unsupported capabilities: {sorted(caps)}",
-        ), None
+    has_structured = bool(caps & supported_caps)
+
+    # Section 14: if no structured capabilities, try semantic parsing.
+    if not has_structured:
+        try:
+            from ..data.semantic_parser import parse_task
+            parse_result = parse_task(dict(task))
+        except (ValueError, TypeError, KeyError, AttributeError):
+            parse_result = None
+        if parse_result is None:
+            latency = _time.time() - t0
+            return BackendOutcome(
+                task_id=tid,
+                backend="symbolic",
+                available=False,
+                executed=False,
+                execution_success=False,
+                output_text=None,
+                output_hash=None,
+                verifier_status="not_verified",
+                correct=False,
+                quality=0.0,
+                latency_sec=latency,
+                normalized_cost=0.05,
+                risk=0.0,
+                verifier_confidence=0.0,
+                failure_reason="semantic parse failed (no structured caps)",
+            ), None
+        # Semantic parse succeeded — evaluate the expression directly.
+        try:
+            expr = parse_result.expression
+            # Safe evaluation: only integers and basic operators.
+            allowed = set("0123456789+-*/() //")
+            if not all(c in allowed for c in expr):
+                raise ValueError(f"unsafe expression: {expr!r}")
+            result_val = eval(expr, {"__builtins__": {}}, {})
+            output_text = str(int(result_val))
+            output_hash = hashlib.sha256(
+                output_text.encode()).hexdigest()[:16]
+            latency = _time.time() - t0
+            # Symbolic via semantic parse is slower (parse + execute).
+            return BackendOutcome(
+                task_id=tid,
+                backend="symbolic",
+                available=True,
+                executed=True,
+                execution_success=True,
+                output_text=output_text,
+                output_hash=output_hash,
+                verifier_status="not_verified",
+                correct=False,
+                quality=0.0,
+                latency_sec=latency,
+                normalized_cost=0.05,
+                risk=0.0,
+                verifier_confidence=0.0,
+                failure_reason=None,
+            ), output_text
+        except (ValueError, KeyError, TypeError, OverflowError,
+                ArithmeticError, SyntaxError) as exc:
+            latency = _time.time() - t0
+            return BackendOutcome(
+                task_id=tid,
+                backend="symbolic",
+                available=True,
+                executed=True,
+                execution_success=False,
+                output_text=None,
+                output_hash=None,
+                verifier_status="not_verified",
+                correct=False,
+                quality=0.0,
+                latency_sec=latency,
+                normalized_cost=0.05,
+                risk=0.0,
+                verifier_confidence=0.0,
+                failure_reason=f"semantic execution error: {exc!r}",
+            ), None
 
     try:
         from .symbolic_executor import plan_from_structured_task, execute_plan

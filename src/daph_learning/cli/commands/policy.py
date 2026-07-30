@@ -428,9 +428,38 @@ def _cmd_evaluate(args) -> int:
             return benchmark_utility(task, route)
     elif args.test_tasks:
         test_tasks = _load_jsonl(args.test_tasks)
-        # Real-model evaluate would load the model and execute; for the
-        # alpha, we use the stored activations if present.
+        # Section 22: use real backends for evaluation.
+        from daph_learning.execution.real_backends import (
+            execute_symbolic_backend, execute_llm_backend, verify_arithmetic,
+        )
+        from daph_learning.policy.utility import backend_utility
+        from daph_learning.policy.types import Route as _Route
+
+        def _real_utility_fn(task, route):
+            """Section 22: canonical utility from executed backends."""
+            route_str = route.value if hasattr(route, "value") else str(route)
+            if route_str == "abstain":
+                return 0.0
+            if route_str == "symbolic":
+                outcome, out_text = execute_symbolic_backend(task)
+                if out_text:
+                    vr = verify_arithmetic(task, out_text.strip())
+                    outcome = outcome.__class__(
+                        **{**outcome.__dict__,
+                           "quality": 1.0 if vr.verified_correct else 0.0})
+            elif route_str == "llm":
+                outcome, out_text = execute_llm_backend(task, cfg)
+                if out_text:
+                    vr = verify_arithmetic(task, out_text)
+                    outcome = outcome.__class__(
+                        **{**outcome.__dict__,
+                           "quality": 1.0 if vr.verified_correct else 0.0})
+            else:
+                return 0.0
+            return backend_utility(outcome, cfg)
+
         execute_fn = None
+        utility_fn = _real_utility_fn
     else:
         print("ERROR: must specify --synthetic, --benchmark, or --test-tasks.",
               file=sys.stderr)
@@ -531,23 +560,64 @@ def _cmd_evaluate(args) -> int:
 
 
 def _cmd_intervene(args) -> int:
-    """Run causal intervention experiments (+v/0/-v dose-response)."""
+    """Run causal intervention experiments (+v/0/-v dose-response).
+
+    Section 25: uses the canonical backend_utility from executed
+    backends, not a synthetic utility_fn. The utility is computed by
+    executing both backends on the task and applying the canonical
+    utility formula.
+    """
     from daph_learning.interventions import (
         run_intervention_experiment,
         dose_response_summary,
     )
     from daph_learning.policy.types import Route
+    from daph_learning.policy.utility import backend_utility
+    from daph_learning.execution.real_backends import (
+        execute_symbolic_backend, execute_llm_backend, verify_arithmetic,
+    )
+    from daph_learning.policy.config import ExperimentConfig
     if not args.vector_file:
         print("ERROR: --vector-file is required for intervene mode.",
               file=sys.stderr)
         return 1
     vec = np.load(args.vector_file)
+    cfg = _build_config(args)
 
     def policy_prob(h):
         return 1.0 / (1.0 + np.exp(-(np.asarray(h) @ vec)))
 
-    def utility_fn(h, route):
-        return 1.0 if route == Route.SYMBOLIC else 0.0
+    # Section 25: real utility from executed backends.
+    # Build a cache of task -> utility per route so we don't re-execute
+    # for every alpha.
+    _util_cache: dict[tuple[str, str], float] = {}
+
+    def utility_fn(h, route, task=None):
+        if task is None:
+            # Fallback: use policy probability as utility proxy.
+            # This is only used if no task is provided.
+            p = float(policy_prob(h))
+            if route == Route.SYMBOLIC:
+                return p
+            return 1.0 - p
+        tid = str(task.get("task_id", ""))
+        key = (tid, route.value if hasattr(route, "value") else str(route))
+        if key not in _util_cache:
+            route_str = route.value if hasattr(route, "value") else str(route)
+            if route_str == "symbolic":
+                outcome, _ = execute_symbolic_backend(task)
+                vr = verify_arithmetic(task, _.strip() if _ else None)
+                outcome.quality = 1.0 if vr.verified_correct else 0.0
+            elif route_str == "llm":
+                outcome, _ = execute_llm_backend(task, cfg)
+                vr = verify_arithmetic(task, _)
+                outcome.quality = 1.0 if vr.verified_correct else 0.0
+            else:
+                _util_cache[key] = 0.0
+                return 0.0
+            _util_cache[key] = backend_utility(outcome, cfg)
+        return _util_cache[key]
+
     h0 = np.zeros_like(vec)
     results = run_intervention_experiment(
         "demo", "candidate", h0, vec,
@@ -619,10 +689,11 @@ def _cmd_calibrate(args) -> int:
         def utility_fn(task, route):
             return benchmark_utility(task, route)
     else:
+        # Section 22: no execute_fn available — fail closed.
+        # The caller must provide --synthetic, --benchmark, or
+        # pre-captured features with an execute_fn.
         execute_fn = None
-
-        def utility_fn(task, route):
-            return 0.0
+        utility_fn = None
     # v0.3.10.2 — compute ACTUAL policy probabilities (Section 8).
     # The v0.3.10.1 version used p = 0.5 placeholder, which made the
     # threshold grid search meaningless. Now we train a policy on the

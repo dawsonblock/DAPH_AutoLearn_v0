@@ -1,4 +1,4 @@
-"""v0.3.10.3.1-alpha — experiment stage access control (Sections 14-15).
+"""v0.3.10.3.2-alpha — experiment stage access control (Sections 14-15).
 
 Enforces split access discipline:
 
@@ -66,7 +66,7 @@ class FinalAccessLedger:
     No hyperparameter updates after the first final access.
     """
     max_accesses: int = 1
-    release_version: str = "0.3.10.3.1-alpha"
+    release_version: str = "0.3.10.3.2-alpha"
     source_hash: str = ""
     config_hash: str = ""
     policy_hash: str = ""
@@ -129,18 +129,119 @@ class FinalAccessLedger:
 
 
 @dataclass
+class FreezeManifest:
+    """Section 33: freeze manifest recording the exact state at freeze
+    time.
+
+    The freeze manifest binds the final evaluation to the exact source
+    tree, config, policy, and calibration state that was frozen. Any
+    change after freezing invalidates the final evaluation.
+    """
+    release_version: str = "0.3.10.3.2-alpha"
+    source_tree_sha256: str = ""
+    config_sha256: str = ""
+    policy_sha256: str = ""
+    calibration_sha256: str = ""
+    frozen_at: float = 0.0
+    stage: str = "frozen"
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "release_version": self.release_version,
+            "source_tree_sha256": self.source_tree_sha256,
+            "config_sha256": self.config_sha256,
+            "policy_sha256": self.policy_sha256,
+            "calibration_sha256": self.calibration_sha256,
+            "frozen_at": self.frozen_at,
+            "stage": self.stage,
+        }
+
+    def save(self, path: str | Path) -> None:
+        p = Path(path)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with open(p, "w") as f:
+            json.dump(self.to_dict(), f, indent=2)
+
+    @classmethod
+    def load(cls, path: str | Path) -> "FreezeManifest":
+        with open(path) as f:
+            data = json.load(f)
+        return cls(**data)
+
+    def verify_current_state(
+        self,
+        *,
+        current_source_hash: str = "",
+        current_config_hash: str = "",
+        current_policy_hash: str = "",
+        current_calibration_hash: str = "",
+        strict: bool = True,
+    ) -> bool:
+        """Section 33: verify that the current state matches the frozen
+        state. If ``strict=True``, raises on mismatch; otherwise returns
+        False.
+        """
+        mismatches = []
+        if current_source_hash and self.source_tree_sha256:
+            if current_source_hash[:64] != self.source_tree_sha256[:64]:
+                mismatches.append("source_tree_sha256")
+        if current_config_hash and self.config_sha256:
+            if current_config_hash != self.config_sha256:
+                mismatches.append("config_sha256")
+        if current_policy_hash and self.policy_sha256:
+            if current_policy_hash != self.policy_sha256:
+                mismatches.append("policy_sha256")
+        if current_calibration_hash and self.calibration_sha256:
+            if current_calibration_hash != self.calibration_sha256:
+                mismatches.append("calibration_sha256")
+        if mismatches:
+            msg = f"freeze manifest mismatch: {mismatches}"
+            if strict:
+                raise RuntimeError(msg)
+            return False
+        return True
+
+
+@dataclass
 class StageGuard:
     """Section 14: enforces that the final split is inaccessible before
     ``FROZEN`` and that final access goes through the ledger.
+
+    Section 33: also manages the freeze manifest, which binds the final
+    evaluation to the exact state at freeze time.
     """
     stage: ExperimentStage = ExperimentStage.TRAIN
     ledger: FinalAccessLedger = field(default_factory=FinalAccessLedger)
+    freeze_manifest: FreezeManifest | None = None
 
     def transition_to(self, stage: ExperimentStage) -> None:
         self.stage = stage
 
-    def freeze(self) -> None:
+    def freeze(
+        self,
+        *,
+        source_hash: str = "",
+        config_hash: str = "",
+        policy_hash: str = "",
+        calibration_hash: str = "",
+    ) -> FreezeManifest:
+        """Section 33: transition to FROZEN and record the freeze
+        manifest."""
         self.stage = ExperimentStage.FROZEN
+        self.freeze_manifest = FreezeManifest(
+            release_version=self.ledger.release_version,
+            source_tree_sha256=source_hash,
+            config_sha256=config_hash,
+            policy_sha256=policy_hash,
+            calibration_sha256=calibration_hash,
+            frozen_at=time.time(),
+        )
+        # Update the ledger with the freeze hashes.
+        self.ledger.source_hash = source_hash
+        self.ledger.config_hash = config_hash
+        self.ledger.policy_hash = policy_hash
+        self.ledger.calibration_hash = calibration_hash
+        return self.freeze_manifest
 
     def assert_can_access_split(self, split: str) -> None:
         if split == "final":
@@ -154,11 +255,34 @@ class StageGuard:
         self.assert_can_access_split("final")
         return self.ledger.request_access(command=command, reason=reason)
 
+    def verify_frozen_state(
+        self,
+        *,
+        current_source_hash: str = "",
+        current_config_hash: str = "",
+        current_policy_hash: str = "",
+        current_calibration_hash: str = "",
+    ) -> bool:
+        """Section 33: verify that the current state matches the frozen
+        state before final evaluation."""
+        if self.freeze_manifest is None:
+            raise RuntimeError(
+                "no freeze manifest — cannot verify frozen state "
+                "(Section 33)")
+        return self.freeze_manifest.verify_current_state(
+            current_source_hash=current_source_hash,
+            current_config_hash=current_config_hash,
+            current_policy_hash=current_policy_hash,
+            current_calibration_hash=current_calibration_hash,
+            strict=True,
+        )
+
 
 __all__ = [
     "ExperimentStage",
     "FinalAccessError",
     "FinalAccessLedger",
     "FinalAccessRecord",
+    "FreezeManifest",
     "StageGuard",
 ]

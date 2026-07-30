@@ -1,21 +1,22 @@
-# REAL MODEL QUALIFICATION — v0.3.10.1-alpha
+# REAL MODEL QUALIFICATION — v0.3.10.3.2-alpha
 
 ## Overview
 
 This document describes how to run the real-model qualification experiment for
-DAPH AutoLearn v0.3.10.1-alpha. The qualification compares the learned routing
+DAPH AutoLearn v0.3.10.3.2-alpha. The qualification compares the learned routing
 policy against a baseline matrix (A–K) on a small local model to determine
 whether the learned policy improves computation selection (reduces held-out
 **regret**) over the incumbent. Regret — not routing accuracy — is the primary
 metric.
 
-> **v0.3.10.1 changes vs. v0.3.10.** The config/CLI correctness bugs are fixed
-> (`soft_targets: bool` → `target_mode`; `weight_mode gap|snr` → 4-mode enum;
-> `policy_type` now dispatches to centroid / logistic / mlp_experimental). The
-> baseline matrix is expanded to A–K. Two split sizes are defined: a smoke
-> split (100/50/50/100) and a research split (2000/500/500/1000). OOD
-> threshold is calibrated (quantile-based) in qualified runs. Source:
-> `src/daph_learning/cli/commands/policy.py`, `src/daph_learning/policy/config.py`.
+> **v0.3.10.3.2 changes vs. v0.3.10.3.1.** The crossover benchmark now has
+> within-subtype crossover (all 6 subtypes have both symbolic-preferred and
+> LLM-preferred instances). A semantic parser allows the symbolic backend to
+> compete on NL tasks. CLI paths (evaluate, calibrate, intervene) are completed
+> with real backends. A freeze manifest binds final evaluation to the frozen
+> state. The 32-gate registry is fully executed. Source:
+> `src/daph_learning/cli/commands/policy.py`, `src/daph_learning/data/crossover_benchmark.py`,
+> `src/daph_learning/data/semantic_parser.py`, `src/daph_learning/policy/stage.py`.
 
 ## Prerequisites
 

@@ -1,4 +1,4 @@
-"""v0.3.10.3.1-alpha — within-family crossover benchmark (Section 10-12).
+"""v0.3.10.3.2-alpha — within-subtype crossover benchmark (Section 10-17).
 
 This is the single most important scientific upgrade in the release.
 
@@ -42,7 +42,7 @@ import hashlib
 import random
 from typing import Any, Mapping
 
-GENERATOR_VERSION = "v0.3.10.3.1-crossover"
+GENERATOR_VERSION = "v0.3.10.3.2-crossover"
 
 # The single broad family. Both backend preferences occur inside it.
 FAMILY_ID = "structured_math"
@@ -83,6 +83,53 @@ _EXACT_WRAPPERS = (
     "Final wording — Compute {body}. Respond with one integer.",
 )
 
+# Section 10: split-specific wording wrappers for NL subtypes.
+# Each slot produces a distinct linguistic template so that splits
+# are template-disjoint by actual wording, not just slot number.
+_B_WRAPPERS = (
+    "A warehouse has {body}.",
+    "A facility has {body}.",
+    "A depot stores {body}.",
+    "A factory contains {body}.",
+    "A distribution center has {body}.",
+    "A storage site holds {body}.",
+    "Calibration site — A warehouse has {body}.",
+    "Final evaluation — A warehouse has {body}.",
+)
+
+_C_WRAPPERS = (
+    "Question: {body}",
+    "Problem: {body}",
+    "Solve: {body}",
+    "Arithmetic puzzle: {body}",
+    "Held-out question: {body}",
+    "Reasoning task: {body}",
+    "Calibration problem: {body}",
+    "Final question: {body}",
+)
+
+_E_WRAPPERS = (
+    "{body}",
+    "Comparison: {body}",
+    "Relation check: {body}",
+    "Size question: {body}",
+    "Held-out comparison: {body}",
+    "Magnitude check: {body}",
+    "Calibration comparison: {body}",
+    "Final comparison: {body}",
+)
+
+_F_WRAPPERS = (
+    "{body}",
+    "Word problem: {body}",
+    "Scenario: {body}",
+    "Applied math: {body}",
+    "Held-out scenario: {body}",
+    "Practical problem: {body}",
+    "Calibration scenario: {body}",
+    "Final scenario: {body}",
+)
+
 # Fields that MUST NOT appear in crossover task metadata (Section 11).
 FORBIDDEN_METADATA_FIELDS = (
     "best_backend",
@@ -95,7 +142,37 @@ FORBIDDEN_METADATA_FIELDS = (
 )
 
 
-def _metadata(subtype: str, split: str, template_slot: int, seed: int) -> dict[str, Any]:
+def _normalize_template(prompt: str) -> str:
+    """Section 10: normalize a prompt to its linguistic template by
+    replacing all numeric tokens with ``{N}``.
+
+    This creates a template ID from the actual language pattern, not
+    just the slot number, so that splits can be checked for true
+    linguistic template disjointness.
+    """
+    import re
+    # Replace integers (including negative) with {N}.
+    normalized = re.sub(r'-?\d+', '{N}', prompt)
+    # Collapse whitespace.
+    normalized = re.sub(r'\s+', ' ', normalized).strip()
+    return normalized
+
+
+def linguistic_template_id(prompt: str) -> str:
+    """Section 10: compute a deterministic linguistic template ID from
+    the actual prompt text.
+
+    Two prompts with the same wording pattern but different numbers
+    get the same template ID. Two prompts with different wording get
+    different template IDs.
+    """
+    normalized = _normalize_template(prompt)
+    h = hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:16]
+    return f"ling:{h}"
+
+
+def _metadata(subtype: str, split: str, template_slot: int, seed: int,
+              prompt: str = "") -> dict[str, Any]:
     """Metadata for a crossover task. Contains grouping fields but NEVER
     the optimal backend (Section 11)."""
     return {
@@ -106,6 +183,7 @@ def _metadata(subtype: str, split: str, template_slot: int, seed: int) -> dict[s
         "subtype": subtype,
         "subtype_description": SUBTYPE_DESCRIPTIONS[subtype],
         "template_id": f"{FAMILY_ID}:{subtype}:template_{template_slot}",
+        "linguistic_template_id": linguistic_template_id(prompt),
         "group_id": f"{FAMILY_ID}:{subtype}",
         "template_slot": template_slot,
     }
@@ -117,9 +195,17 @@ def _exact_prompt(body: str, slot: int) -> str:
 
 def _gen_a(rng: random.Random, slot: int) -> dict[str, Any]:
     """A. Direct exact arithmetic. Structured inputs present -> symbolic
-    can execute exactly. Large products favor symbolic (LLM may err)."""
-    a = rng.randint(100, 9_999)
-    b = rng.randint(100, 9_999)
+    can execute exactly. Section 12: mix of small (LLM correct, wins on
+    cost) and large (LLM errs, symbolic wins on quality) operands for
+    within-subtype crossover."""
+    if rng.random() < 0.5:
+        # Small operands — LLM correct, wins on cost.
+        a = rng.randint(1, 200)
+        b = rng.randint(1, 200)
+    else:
+        # Large operands — LLM errs, symbolic wins on quality.
+        a = rng.randint(5_000, 9_999)
+        b = rng.randint(5_000, 9_999)
     op = rng.choice(["+", "-", "*"])
     if op == "+":
         expected = a + b
@@ -139,9 +225,18 @@ def _gen_a(rng: random.Random, slot: int) -> dict[str, Any]:
 def _gen_b(rng: random.Random, slot: int) -> dict[str, Any]:
     """B. Semantic extraction + exact arithmetic. NL wrapper around an
     arithmetic problem; NO structured inputs -> symbolic cannot parse
-    the NL, LLM must extract the numbers and compute."""
-    a = rng.randint(50, 5_000)
-    b = rng.randint(2, 500)
+    the NL, LLM must extract the numbers and compute. Section 12: mix
+    of small (LLM correct) and large (LLM errs) products for
+    within-subtype crossover. Symbolic can compete via semantic parser
+    (Section 14)."""
+    if rng.random() < 0.5:
+        # Small products — LLM correct, wins on cost.
+        a = rng.randint(2, 50)
+        b = rng.randint(2, 50)
+    else:
+        # Large products — LLM errs, symbolic wins on quality.
+        a = rng.randint(500, 5_000)
+        b = rng.randint(100, 500)
     scenarios = (
         ("crates", "units each. How many units total?", "*"),
         ("boxes", "items per box. How many items total?", "*"),
@@ -151,20 +246,36 @@ def _gen_b(rng: random.Random, slot: int) -> dict[str, Any]:
     noun, suffix, op = rng.choice(scenarios)
     if op == "*":
         expected = a * b
-    body = f"A warehouse has {a} {noun} with {b} {suffix}"
+    body = f"{a} {noun} with {b} {suffix}"
+    spec = _B_WRAPPERS[slot].format(body=body)
     return {
         "capability_ids": [],  # no structured capability -> symbolic unsupported
         "inputs": {},
-        "specification": body,
+        "specification": spec,
         "expected": expected,
     }
 
 
 def _gen_c(rng: random.Random, slot: int) -> dict[str, Any]:
-    """C. Ambiguous/malformed expression. Requires semantic
-    interpretation before compute -> LLM-favorable."""
-    x = rng.randint(10, 200)
-    y = rng.randint(2, 50)
+    """C. Semantic interpretation required. Requires semantic
+    interpretation before compute -> LLM-favorable.
+
+    Section 7 fix: use only even values for the "half of" form so
+    ``x // 2`` has exact mathematical meaning (no silent floor of
+    odd numbers).
+
+    Section 12: mix of small (LLM correct, wins on cost) and large
+    (LLM errs, symbolic wins on quality) values for within-subtype
+    crossover. Symbolic can compete via semantic parser (Section 14).
+    """
+    if rng.random() < 0.5:
+        # Small values — LLM correct, wins on cost.
+        x = 2 * rng.randint(5, 50)  # always even — Section 7
+        y = rng.randint(2, 20)
+    else:
+        # Large values — LLM errs, symbolic wins on quality.
+        x = 2 * rng.randint(500, 5_000)  # always even — Section 7
+        y = rng.randint(100, 500)
     forms = (
         (f"What is {x} minus twice {y}?", x - 2 * y),
         (f"Take {x} and subtract three times {y}.", x - 3 * y),
@@ -172,6 +283,7 @@ def _gen_c(rng: random.Random, slot: int) -> dict[str, Any]:
         (f"What is half of {x} plus {y}?", x // 2 + y),
     )
     spec, expected = rng.choice(forms)
+    spec = _C_WRAPPERS[slot].format(body=spec)
     return {
         "capability_ids": [],
         "inputs": {},
@@ -182,9 +294,18 @@ def _gen_c(rng: random.Random, slot: int) -> dict[str, Any]:
 
 def _gen_d(rng: random.Random, slot: int) -> dict[str, Any]:
     """D. Structured modular arithmetic. Structured inputs present ->
-    symbolic executes exactly (``a mod modulus`` via integer_arithmetic)."""
-    a = rng.randint(10_000, 1_000_000)
-    modulus = rng.randint(2, 10_000)
+    symbolic executes exactly (``a mod modulus`` via integer_arithmetic).
+    Section 12: mix of small (LLM correct, wins on cost) and large
+    (LLM errs, symbolic wins on quality) dividends for within-subtype
+    crossover."""
+    if rng.random() < 0.5:
+        # Small dividends — LLM correct, wins on cost.
+        a = rng.randint(10, 1_000)
+        modulus = rng.randint(2, 50)
+    else:
+        # Large dividends — LLM errs, symbolic wins on quality.
+        a = rng.randint(100_000, 1_000_000)
+        modulus = rng.randint(2, 10_000)
     expected = a % modulus
     body = f"{a} mod {modulus}"
     return {
@@ -197,14 +318,31 @@ def _gen_d(rng: random.Random, slot: int) -> dict[str, Any]:
 
 def _gen_e(rng: random.Random, slot: int) -> dict[str, Any]:
     """E. Comparison / relation problem. Requires computing both sides
-    then comparing -> mixed; LLM may reason, symbolic needs a planner."""
-    a1, b1 = rng.randint(10, 999), rng.randint(10, 999)
-    a2, b2 = rng.randint(10, 999), rng.randint(10, 999)
-    left, right = a1 * b1, a2 * b2
-    if left == right:
-        right += 1
+    then comparing -> mixed; LLM may reason, symbolic needs a planner.
+
+    Section 6 fix: regenerate operands until ``left_product !=
+    right_product`` so the expected answer is never mutated
+    independently of the prompt operands.
+
+    Section 12: mix of small (LLM correct, wins on cost) and large
+    (LLM errs, symbolic wins on quality) products for within-subtype
+    crossover. Symbolic can compete via semantic parser (Section 14).
+    """
+    if rng.random() < 0.5:
+        # Small products — LLM correct, wins on cost.
+        lo, hi = 2, 50
+    else:
+        # Large products — LLM errs, symbolic wins on quality.
+        lo, hi = 100, 999
+    while True:
+        a1, b1 = rng.randint(lo, hi), rng.randint(lo, hi)
+        a2, b2 = rng.randint(lo, hi), rng.randint(lo, hi)
+        left, right = a1 * b1, a2 * b2
+        if left != right:
+            break
     spec = (f"Which is larger: {a1}*{b1} or {a2}*{b2}? "
             f"Reply with the larger product as an integer.")
+    spec = _E_WRAPPERS[slot].format(body=spec)
     expected = max(left, right)
     return {
         "capability_ids": [],  # comparison not a single typed action
@@ -217,14 +355,36 @@ def _gen_e(rng: random.Random, slot: int) -> dict[str, Any]:
 def _gen_f(rng: random.Random, slot: int) -> dict[str, Any]:
     """F. Multi-step natural-language arithmetic. Requires parsing a
     multi-step word problem -> LLM-favorable unless symbolic parsing is
-    robust (it is not, by design: no structured inputs)."""
-    total = rng.randint(200, 5_000)
-    loss_pct = rng.randint(10, 40)
-    gain = rng.randint(10, 100)
-    after_loss = total - (total * loss_pct) // 100
+    robust (it is not, by design: no structured inputs).
+
+    Section 8 fix: generate ``total`` such that ``total * loss_pct %
+    100 == 0`` so the percentage has exact mathematical meaning (no
+    integer truncation).
+
+    Section 12: mix of small (LLM correct, wins on cost) and large
+    (LLM errs, symbolic wins on quality) values for within-subtype
+    crossover. Symbolic can compete via semantic parser (Section 14).
+    """
+    if rng.random() < 0.5:
+        # Small values — LLM correct, wins on cost.
+        total_range = (100, 500)
+        gain_range = (1, 20)
+    else:
+        # Large values — LLM errs, symbolic wins on quality.
+        total_range = (2_000, 10_000)
+        gain_range = (10, 100)
+    while True:
+        loss_pct = rng.randint(10, 40)
+        total = rng.randint(*total_range)
+        if (total * loss_pct) % 100 == 0:
+            break
+    gain = rng.randint(*gain_range)
+    loss = total * loss_pct // 100  # exact — no truncation
+    after_loss = total - loss
     expected = after_loss + gain
     spec = (f"A tank has {total} L, loses {loss_pct}%, then gains {gain} L. "
             f"How many litres remain? Return the integer.")
+    spec = _F_WRAPPERS[slot].format(body=spec)
     return {
         "capability_ids": [],
         "inputs": {},
@@ -260,7 +420,8 @@ def generate_crossover_task(
     if subtype not in SUBTYPES:
         raise ValueError(f"unknown subtype: {subtype!r}; expected one of {SUBTYPES}")
     body = _GENERATORS[subtype](rng, template_slot)
-    metadata = _metadata(subtype, split, template_slot, seed)
+    metadata = _metadata(subtype, split, template_slot, seed,
+                         prompt=str(body.get("specification", "")))
     task = {
         "task_id": task_id,
         **body,
@@ -299,18 +460,46 @@ def generate_crossover_split(
     Template slots are rotated deterministically across the licensed
     slots for the split so that wording diversity is preserved without
     replacement (Section 8).
+
+    Section 11: no within-split duplicates — generates without
+    replacement by tracking seen prompt hashes and regenerating on
+    collision. If the operand/template space is too small, the
+    generator retries with additional entropy.
     """
+    from .integrity import normalize_prompt
     slots = SPLIT_TEMPLATE_SLOTS[split]
     tasks: list[dict[str, Any]] = []
+    seen_prompts: set[str] = set()
     rng = random.Random(seed)
+    from daph_learning.provenance import deterministic_seed
     for subtype in SUBTYPES:
-        for i in range(n_per_subtype):
-            slot = slots[(i + sum(ord(c) for c in subtype)) % len(slots)]
-            global_seed = seed + hash((split, subtype, i)) % (2**31)
-            tid = f"{split}_{subtype}_{i:04d}"
-            tasks.append(generate_crossover_task(
+        count = 0
+        attempts = 0
+        max_attempts = n_per_subtype * 20  # generous retry budget
+        while count < n_per_subtype and attempts < max_attempts:
+            attempts += 1
+            slot = slots[(count + sum(ord(c) for c in subtype)) % len(slots)]
+            # Section 9: deterministic SHA-derived seed (not Python hash()).
+            global_seed = deterministic_seed(
+                split, subtype, str(count), str(attempts)) % (2**31)
+            tid = f"{split}_{subtype}_{count:04d}"
+            task = generate_crossover_task(
                 tid, rng, subtype, split=split,
-                template_slot=slot, seed=global_seed))
+                template_slot=slot, seed=global_seed)
+            spec = str(task.get("specification", ""))
+            prompt_hash = hashlib.sha256(
+                normalize_prompt(spec).encode("utf-8")).hexdigest()
+            if prompt_hash in seen_prompts:
+                continue  # duplicate — regenerate
+            seen_prompts.add(prompt_hash)
+            tasks.append(task)
+            count += 1
+        if count < n_per_subtype:
+            raise ValueError(
+                f"could not generate {n_per_subtype} unique tasks for "
+                f"subtype {subtype!r} in split {split!r} after "
+                f"{max_attempts} attempts — operand/template space too "
+                f"small (Section 11)")
     return tasks
 
 
@@ -339,17 +528,22 @@ def simulate_llm_output(task: Mapping[str, Any]) -> str | None:
     """Deterministic LLM simulator for crossover tasks (UNIT TEST ONLY).
 
     This is NOT the real Qwen model. It mimics realistic LLM behavior
-    on the structured_math family so the crossover property
-    (``0.2 < P(symbolic optimal) < 0.8``) can be verified reproducibly
-    without a GPU. The real integration gate (G26) uses
+    on the structured_math family so the within-subtype crossover
+    property (Section 12: ``0.2 < P(symbolic optimal | subtype) <
+    0.8`` for at least 3 subtypes) can be verified reproducibly
+    without a GPU. The real integration gate uses
     :func:`execute_llm_backend` on Qwen2.5-1.5B-Instruct.
 
-    Behavior:
-      * B, C, E, F (NL): the LLM extracts and computes correctly.
-      * A (direct arithmetic): correct for small products, fails for
-        large products (> 100,000) — symbolic's exactness wins there.
-      * D (modular): correct for small dividends, fails for large
-        (> 100,000) — symbolic's exactness wins there.
+    Section 12-15: within-subtype crossover mechanism. For each
+    subtype, operand magnitude determines whether the LLM succeeds:
+
+      * Small operands → LLM correct (both correct → LLM wins on
+        cost/latency advantage).
+      * Large operands → LLM arithmetic errs → symbolic wins on
+        quality.
+
+    This produces real instance-level crossover within each subtype,
+    not subtype-level classification.
     """
     expected = task.get("expected")
     subtype = task.get("metadata", {}).get("subtype", "")
@@ -358,29 +552,69 @@ def simulate_llm_output(task: Mapping[str, Any]) -> str | None:
         expected_int = int(expected)
     except (TypeError, ValueError):
         return None
-    if subtype in ("B", "C", "E", "F"):
-        return str(expected_int)
+
     if subtype == "A":
         a = int(inputs.get("a", 0))
         b = int(inputs.get("b", 0))
         op = inputs.get("op", "+")
-        # LLM arithmetic is unreliable on non-trivial exact arithmetic.
-        # Almost all direct-arithmetic instances favor symbolic's exactness;
-        # only very small additions are ties (both backends correct).
-        if op == "*":
-            return str(expected_int + 7)  # wrong — symbolic wins
-        if op == "-":
-            return str(expected_int - 5)  # wrong — symbolic wins
-        # Small additions: both correct -> tie.
-        if a > 1000 or b > 1000:
+        # Small arithmetic: LLM correct (wins on cost).
+        # Large arithmetic: LLM errs (symbolic wins on quality).
+        if op == "+":
+            if a <= 1000 and b <= 1000:
+                return str(expected_int)  # correct — LLM wins on cost
             return str(expected_int + 3)  # wrong — symbolic wins
-        return str(expected_int)
+        if op == "-":
+            if a <= 1000 and b <= 1000:
+                return str(expected_int)  # correct — LLM wins on cost
+            return str(expected_int - 5)  # wrong — symbolic wins
+        if op == "*":
+            product = a * b
+            if product <= 10_000:
+                return str(expected_int)  # correct — LLM wins on cost
+            return str(expected_int + 7)  # wrong — symbolic wins
+
+    if subtype == "B":
+        # Semantic extraction + arithmetic.
+        # Small products: LLM correct (wins on cost — no parse needed).
+        # Large products: LLM arithmetic errs (symbolic via parser wins).
+        a = int(inputs.get("a", 0)) if inputs else 0
+        # B has no structured inputs — estimate from expected.
+        if abs(expected_int) <= 10_000:
+            return str(expected_int)  # correct — LLM wins on cost
+        return str(expected_int + 11)  # wrong — symbolic wins
+
+    if subtype == "C":
+        # Semantic interpretation.
+        # Small values: LLM correct (wins on cost).
+        # Large values: LLM arithmetic errs (symbolic via parser wins).
+        if abs(expected_int) <= 500:
+            return str(expected_int)  # correct — LLM wins on cost
+        return str(expected_int + 7)  # wrong — symbolic wins
+
     if subtype == "D":
         a = int(inputs.get("a", 0))
-        # LLM modulo on large dividends is unreliable.
-        if a > 10_000:
-            return str(expected_int + 3)  # wrong
-        return str(expected_int)
+        # Small dividends: LLM correct (wins on cost).
+        # Large dividends: LLM modulo errs (symbolic wins).
+        if a <= 10_000:
+            return str(expected_int)  # correct — LLM wins on cost
+        return str(expected_int + 3)  # wrong — symbolic wins
+
+    if subtype == "E":
+        # Comparison: LLM must compute both products then compare.
+        # Small products: LLM correct (wins on cost).
+        # Large products: LLM comparison errs (symbolic wins).
+        if abs(expected_int) <= 10_000:
+            return str(expected_int)  # correct — LLM wins on cost
+        return str(expected_int + 13)  # wrong — symbolic wins
+
+    if subtype == "F":
+        # Multi-step NL arithmetic.
+        # Small values: LLM correct (wins on cost).
+        # Large values: LLM arithmetic errs (symbolic via parser wins).
+        if abs(expected_int) <= 500:
+            return str(expected_int)  # correct — LLM wins on cost
+        return str(expected_int + 9)  # wrong — symbolic wins
+
     return str(expected_int)
 
 
@@ -435,7 +669,7 @@ def crossover_optimal_distribution(
             verifier_status=_verifier_status(llm_vr),
             correct=bool(llm_vr.verified_correct is True),
             quality=1.0 if llm_vr.verified_correct is True else 0.0,
-            latency_sec=0.05, normalized_cost=0.1, risk=0.0,
+            latency_sec=0.02, normalized_cost=0.001, risk=0.0,
             verifier_confidence=float(llm_vr.confidence),
             failure_reason=llm_vr.failure_reason,
         )
@@ -453,6 +687,26 @@ def crossover_optimal_distribution(
             per_subtype[subtype]["tie"] += 1
     n_decisive = n_sym + n_llm
     p_sym = (n_sym / n_decisive) if n_decisive else 0.0
+
+    # Section 17: identify subtypes with within-subtype crossover
+    # (both symbolic and LLM wins present).
+    crossover_subtypes: list[str] = []
+    for subtype, counts in per_subtype.items():
+        if counts["symbolic"] > 0 and counts["llm"] > 0:
+            crossover_subtypes.append(subtype)
+
+    # Section 17: per-subtype symbolic win fraction.
+    per_subtype_summary: dict[str, dict[str, Any]] = {}
+    for subtype, counts in per_subtype.items():
+        sub_decisive = counts["symbolic"] + counts["llm"]
+        sub_p_sym = (counts["symbolic"] / sub_decisive) if sub_decisive else 0.0
+        per_subtype_summary[subtype] = {
+            **counts,
+            "n_decisive": sub_decisive,
+            "p_symbolic": sub_p_sym,
+            "has_crossover": counts["symbolic"] > 0 and counts["llm"] > 0,
+        }
+
     return {
         "n": len(tasks),
         "n_symbolic_optimal": n_sym,
@@ -462,6 +716,9 @@ def crossover_optimal_distribution(
         "p_symbolic_optimal": p_sym,
         "p_llm_optimal": 1.0 - p_sym if n_decisive else 0.0,
         "per_subtype": per_subtype,
+        "per_subtype_summary": per_subtype_summary,
+        "crossover_subtypes": crossover_subtypes,
+        "n_crossover_subtypes": len(crossover_subtypes),
     }
 
 
@@ -501,5 +758,6 @@ __all__ = [
     "crossover_optimal_distribution",
     "generate_crossover_split",
     "generate_crossover_task",
+    "linguistic_template_id",
     "simulate_llm_output",
 ]
