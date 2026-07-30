@@ -174,7 +174,7 @@ def main() -> int:
         max_weight=2.0,
     )
     cap_cfg = CaptureConfig(layer=layer, location="last_token")
-    gen_cfg = LLMGenerationConfig(max_new_tokens=256, do_sample=False)
+    gen_cfg = LLMGenerationConfig(max_new_tokens=512, do_sample=False)
 
     # ================================================================
     # Phase 2 — Generate and validate benchmark
