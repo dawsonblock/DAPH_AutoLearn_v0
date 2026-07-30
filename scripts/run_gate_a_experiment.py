@@ -80,6 +80,7 @@ def main() -> int:
     )
     from daph_learning.policy.ood import MahalanobisOOD
     from daph_learning.policy.types import Route
+    from daph_learning.policy.utility import backend_utility
     from daph_learning.evaluation.grouped_stats import (
         grouped_bootstrap_mean_delta, effective_sample_size,
         weight_diagnostics,
@@ -240,8 +241,11 @@ def main() -> int:
                 exp, sym_v, llm_v = build_real_counterfactual_experience(
                     task, h, sym_outcome, llm_out, llm_text,
                     config=cfg, symbolic_output_text=sym_text)
-                sym_utils.append(cfg.quality_weight * exp.symbolic.quality)
-                llm_utils.append(cfg.quality_weight * exp.llm.quality)
+                # Use full utility (quality + cost/time/risk penalties).
+                u_sym = backend_utility(exp.symbolic, cfg)
+                u_llm = backend_utility(exp.llm, cfg)
+                sym_utils.append(u_sym)
+                llm_utils.append(u_llm)
                 sym_quals.append(exp.symbolic.quality)
                 llm_quals.append(exp.llm.quality)
 
