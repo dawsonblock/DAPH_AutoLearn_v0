@@ -75,6 +75,7 @@ def main() -> int:
         execute_llm_backend,
         execute_symbolic_backend,
     )
+    from daph_learning.policy.types import BackendOutcome
     from daph_learning.policy import (
         ExperimentConfig, fit_policy, predict_proba,
     )
@@ -131,12 +132,24 @@ def main() -> int:
     print(f"total tasks: {sum(v * 6 for v in n_per_subtype.values())}")
 
     # ================================================================
-    # Load model
+    # Load model — vLLM for fast batched generation, HF for hidden states
     # ================================================================
     device = "cuda" if torch.cuda.is_available() else (
         "mps" if torch.backends.mps.is_available() else "cpu")
     print(f"\nDevice: {device}")
 
+    # vLLM engine for fast batched LLM generation.
+    from vllm import LLM as VLLM, SamplingParams
+    t0 = time.time()
+    vllm_engine = VLLM(
+        model=model_id, dtype="float16", gpu_memory_utilization=0.5,
+        max_model_len=2048, enforce_eager=False)
+    vllm_tok = AutoTokenizer.from_pretrained(model_id)
+    if vllm_tok.pad_token_id is None and vllm_tok.eos_token_id is not None:
+        vllm_tok.pad_token = vllm_tok.eos_token
+    print(f"vLLM loaded in {time.time()-t0:.1f}s")
+
+    # HF model in float16 for hidden state capture only (single forward pass).
     t0 = time.time()
     tok = AutoTokenizer.from_pretrained(model_id)
     if tok.pad_token_id is None and tok.eos_token_id is not None:
@@ -146,7 +159,7 @@ def main() -> int:
     model.eval()
     n_layers = model.config.num_hidden_layers
     hidden_dim = model.config.hidden_size
-    print(f"Loaded in {time.time()-t0:.1f}s ({n_layers} layers, dim {hidden_dim})")
+    print(f"HF model loaded in {time.time()-t0:.1f}s ({n_layers} layers, dim {hidden_dim})")
 
     # Record model revision.
     try:
@@ -212,7 +225,8 @@ def main() -> int:
     print(f"\n--- Phase 4: Experience collection (R={R} replicates) ---")
 
     def collect_data(tasks, label):
-        """Execute both backends R times per task, build experiences."""
+        """Execute both backends R times per task, build experiences.
+        Uses vLLM for fast batched LLM generation, HF model for hidden states."""
         experiences = []
         captures = []
         n_sym_correct = 0
@@ -225,33 +239,90 @@ def main() -> int:
         n_llm_verified = 0
         t0 = time.time()
 
+        # --- Phase A: Batch-generate all LLM outputs via vLLM ---
+        # Build chat-formatted prompts for all tasks × R replicates.
+        print(f"  [{label}] Generating LLM outputs via vLLM "
+              f"({len(tasks)} tasks × {R} replicates)...")
+        vllm_prompts = []
+        prompt_indices = []  # (task_idx, rep_idx) for each prompt
         for i, task in enumerate(tasks):
-            if (i + 1) % 50 == 0:
-                print(f"  [{label}] {i+1}/{len(tasks)}... "
-                      f"({time.time()-t0:.0f}s)")
-            # Capture hidden state once (pre-execution).
+            prompt = str(task.get("prompt", task.get("specification", "")))
+            for r in range(R):
+                messages = [{"role": "user", "content": prompt}]
+                chat_text = vllm_tok.apply_chat_template(
+                    messages, add_generation_prompt=True, tokenize=False)
+                vllm_prompts.append(chat_text)
+                prompt_indices.append((i, r))
+
+        sampling_params = SamplingParams(
+            max_tokens=128, temperature=0.0, top_p=1.0)
+        vllm_outputs = vllm_engine.generate(
+            vllm_prompts, sampling_params, use_tqdm=True)
+        # Organize outputs by (task_idx, rep_idx).
+        llm_texts_map = {}
+        for idx, (task_idx, rep_idx) in enumerate(prompt_indices):
+            llm_texts_map[(task_idx, rep_idx)] = vllm_outputs[idx].outputs[0].text
+        print(f"  [{label}] vLLM generation done in {time.time()-t0:.1f}s")
+
+        # --- Phase B: Hidden state capture + symbolic + build experiences ---
+        t1 = time.time()
+        for i, task in enumerate(tasks):
+            if (i + 1) % 200 == 0:
+                print(f"  [{label}] Processing {i+1}/{len(tasks)}... "
+                      f"({time.time()-t1:.0f}s)")
+            # Capture hidden state once (pre-execution) — fast single forward pass.
             h = capture_task_representation(
                 task, model, tok, config=cap_cfg, device=device)
 
-            # R replicates of both backends.
+            # R replicates: symbolic is deterministic so just run once;
+            # LLM texts come from vLLm batch above.
             sym_utils = []
             llm_utils = []
             sym_quals = []
             llm_quals = []
+            sym_outcome = None
+            sym_text = None
+            llm_v_last = None
+            sym_v_last = None
+            llm_out_last = None
             for r in range(R):
                 sym_outcome, sym_text = execute_symbolic_backend(task)
-                llm_out, llm_text = execute_llm_backend(
-                    task, model, tok, generation_config=gen_cfg, device=device)
+                llm_text = llm_texts_map.get((i, r), "")
+                # Build a minimal BackendOutcome for LLM from vLLM text.
+                # We need to construct llm_out for build_real_counterfactual_experience.
+                # Reuse execute_llm_backend's outcome-building but skip generation.
+                import time as _time
+                _llm_t0 = _time.time()
+                llm_out = BackendOutcome(
+                    task_id=str(task.get("task_id", "")),
+                    backend="llm",
+                    available=True,
+                    executed=True,
+                    execution_success=True,
+                    output_text=llm_text,
+                    output_hash=hashlib.sha256(
+                        (llm_text or "").encode()).hexdigest()[:16],
+                    verifier_status="pending",
+                    correct=False,
+                    quality=0.0,
+                    latency_sec=_time.time() - _llm_t0,
+                    normalized_cost=0.1,
+                    risk=0.0,
+                    verifier_confidence=0.0,
+                    failure_reason=None,
+                )
                 exp, sym_v, llm_v = build_real_counterfactual_experience(
                     task, h, sym_outcome, llm_out, llm_text,
                     config=cfg, symbolic_output_text=sym_text)
-                # Use full utility (quality + cost/time/risk penalties).
                 u_sym = backend_utility(exp.symbolic, cfg)
                 u_llm = backend_utility(exp.llm, cfg)
                 sym_utils.append(u_sym)
                 llm_utils.append(u_llm)
                 sym_quals.append(exp.symbolic.quality)
                 llm_quals.append(exp.llm.quality)
+                sym_v_last = sym_v
+                llm_v_last = llm_v
+                llm_out_last = llm_out
 
             # Average over replicates.
             sym_u = float(np.mean(sym_utils))
@@ -263,13 +334,13 @@ def main() -> int:
                 n_sym_avail += 1
             if sym_outcome.executed:
                 n_sym_exec += 1
-            if sym_v.verified_correct:
+            if sym_v_last.verified_correct:
                 n_sym_verified += 1
-            if llm_out.available:
+            if llm_out_last.available:
                 n_llm_avail += 1
-            if llm_out.executed:
+            if llm_out_last.executed:
                 n_llm_exec += 1
-            if llm_v.verified_correct:
+            if llm_v_last.verified_correct:
                 n_llm_verified += 1
 
             if sym_u > llm_u:
@@ -278,30 +349,12 @@ def main() -> int:
                 n_llm_correct += 1
 
             # Debug: print first 5 tasks where LLM is verified correct.
-            if llm_v.verified_correct and n_llm_verified <= 5:
+            if llm_v_last.verified_correct and n_llm_verified <= 5:
                 st = task.get("metadata", {}).get("subtype", "?")
                 print(f"    DEBUG [LLM-OK {st}] sym_q={exp.symbolic.quality:.1f} "
                       f"llm_q={exp.llm.quality:.1f} "
                       f"sym_u={sym_u:.4f} llm_u={llm_u:.4f} "
-                      f"delta={delta_u:.4f} sym_cost={exp.symbolic.normalized_cost:.3f} "
-                      f"llm_cost={exp.llm.normalized_cost:.3f} "
-                      f"sym_lat={exp.symbolic.latency_sec:.4f} "
-                      f"llm_lat={exp.llm.latency_sec:.4f}")
-
-            # Debug: print first 5 NL tasks where LLM fails.
-            if not llm_v.verified_correct and task.get("metadata", {}).get("subtype") in ("B", "C", "E", "F"):
-                st = task.get("metadata", {}).get("subtype", "?")
-                llm_text_short = (llm_text or '')[:80]
-                if not hasattr(collect_data, '_nl_fail_count'):
-                    collect_data._nl_fail_count = 0
-                collect_data._nl_fail_count += 1
-                if collect_data._nl_fail_count <= 5:
-                    print(f"    DEBUG [LLM-FAIL {st}] sym_q={exp.symbolic.quality:.1f} "
-                          f"llm_q={exp.llm.quality:.1f} "
-                          f"sym_u={sym_u:.4f} llm_u={llm_u:.4f} "
-                          f"delta={delta_u:.4f} "
-                          f"llm_text={llm_text_short!r} "
-                          f"fail={llm_v.failure_reason}")
+                      f"delta={delta_u:.4f}")
 
             # Determine optimal action from executed utility.
             if delta_u > 0.01:
@@ -330,10 +383,10 @@ def main() -> int:
                 "linguistic_template_id": linguistic_template_id,
                 "sym_available": sym_outcome.available,
                 "sym_executed": sym_outcome.executed,
-                "sym_verified": sym_v.verified_correct,
-                "llm_available": llm_out.available,
-                "llm_executed": llm_out.executed,
-                "llm_verified": llm_v.verified_correct,
+                "sym_verified": sym_v_last.verified_correct,
+                "llm_available": llm_out_last.available,
+                "llm_executed": llm_out_last.executed,
+                "llm_verified": llm_v_last.verified_correct,
             })
             captures.append(h)
 
