@@ -1,7 +1,7 @@
-"""v0.3.10.3.2-alpha — Section 1 / G01: all version surfaces match.
+"""v0.3.10.4-alpha — Section 1 / G01: all version surfaces match.
 
 Verifies that every active version surface agrees on
-``0.3.10.3.2-alpha`` and that no active source file defaults to an
+``0.3.10.4-alpha`` and that no active source file defaults to an
 older version string.
 """
 
@@ -15,7 +15,7 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-TARGET_VERSION = "0.3.10.3.2-alpha"
+TARGET_VERSION = "0.3.10.4-alpha"
 
 # Older versions that must NOT appear as defaults in active source.
 FORBIDDEN_DEFAULTS = (

@@ -1,19 +1,28 @@
-# DAPH AutoLearn v0.3.10.3.2-alpha
+# DAPH AutoLearn v0.3.10.4-alpha
 
 <div align="center">
 
 **Counterfactual compute-selection learning for auditable LLM tool-routing research.**
 
-`v0.3.10-alpha` · Python ≥ 3.10 · MIT-style research software
+`v0.3.10.4-alpha` · Python ≥ 3.10 · MIT-style research software
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/version-0.3.10--alpha-orange.svg)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.3.10.4--alpha-orange.svg)](./CHANGELOG.md)
 [![Tests](https://img.shields.io/badge/tests-655%2B-brightgreen.svg)](#testing)
 [![Status](https://img.shields.io/badge/status-research%20alpha-lightgrey.svg)](./CLAIMS.md)
 
 </div>
 
 ---
+
+> **Gate A status: NOT YET REQUALIFIED.** This repository implements an
+> experimental counterfactual routing learner. A Gate A PASS is not assumed
+> from implementation completeness. Only a validated bundle under
+> `artifacts/gate_a_qualified/` constitutes current Gate A evidence. The
+> earlier real-model run (`daph_gate_a_real_001_failed`) is archived under
+> `artifacts/legacy/` after failing its group-aware confidence-bound gate
+> (LCB95% for P1−P0 = −0.041 < 0); it is retained for audit history only.
+> No synthetic artifact is presented as Gate A qualification evidence.
 
 DAPH AutoLearn connects **capability assessment**, **bounded symbolic
 execution**, **residual activation steering**, and **outcome evaluation** into a
@@ -617,6 +626,26 @@ test-set tuning, and leaky splits. **Its reported z-score is not a licensed
 result.**
 
 ## Changelog
+
+### v0.3.10.4-alpha
+
+- **Gate A scientific-integrity repair (Priority 0)** — not an architecture
+  expansion. Eliminates the ambiguity where reports, manifests, and
+  experiment artifacts did not describe the same repository state.
+- Canonical `compute_canonical_source_hash()` with explicit globs and
+  normalized line endings; CLI `python -m daph_learning.provenance source-hash`.
+- Old failed real-model Gate A run archived as
+  `daph_gate_a_real_001_failed` under `artifacts/legacy/` with
+  `LEGACY_NOTICE.md`; new experiment ID `daph_gate_a_real_002`.
+- `eval()` removed from symbolic execution paths; bounded AST evaluator
+  `safe_eval_int_expr` extended with explicitly enumerated permitted nodes.
+- Canonical `FINAL_ANSWER: <integer>` verifier
+  (`parse_canonical_integer_answer`); qualification fails closed on
+  ambiguity; legacy permissive extraction can no longer award credit.
+- New `artifacts/` layout + `validate_artifact_bundle()` recursive validator
+  + `tests/test_artifact_integrity.py` CI gate.
+- **Gate A status: NOT YET REQUALIFIED.** No new full real-model run
+  executed; no synthetic artifact presented as qualification evidence.
 
 ### v0.3.10.3.2-alpha
 

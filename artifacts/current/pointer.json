@@ -1,0 +1,10 @@
+{
+  "artifact_type": "pointer",
+  "experiment_id": "daph_gate_a_real_002",
+  "target": null,
+  "source_hash": "c98cfeaff06abb6d144aa97633d3be571dff9e16031d13b6706a688721947978",
+  "generated_at": "2026-07-30",
+  "status": "NOT_YET_REQUALIFIED",
+  "evidence_level": "IMPLEMENTED_AND_TESTED",
+  "note": "Priority 0+1 implementation complete (Sections 8-19). No full real-model Gate A experiment has been executed. A minimal real-model smoke (REAL_MODEL_SMOKE) was executed on the locally-cached Qwen2.5-0.5B-Instruct and is stored under artifacts/real_model_smoke/; it is NOT Gate A evidence. This pointer asserts no qualification claim."
+}

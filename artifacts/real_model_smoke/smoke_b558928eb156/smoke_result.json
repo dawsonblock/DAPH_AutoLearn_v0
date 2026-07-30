@@ -1,0 +1,132 @@
+{
+  "artifact_type": "real_model_smoke",
+  "experiment_id": "daph_gate_a_smoke",
+  "run_id": "smoke_b558928eb156",
+  "evidence_level": "REAL_MODEL_SMOKE",
+  "status": "SMOKE",
+  "source_hash": "c98cfeaff06abb6d144aa97633d3be571dff9e16031d13b6706a688721947978",
+  "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+  "model_revision": "Qwen/Qwen2.5-0.5B-Instruct",
+  "tokenizer_revision": "Qwen/Qwen2.5-0.5B-Instruct",
+  "device": "mps",
+  "n_layers": 24,
+  "n_tasks": 6,
+  "generated_at": 1785452767.989726,
+  "outcomes": [
+    {
+      "task_id": "smoke_00",
+      "expected": 2408552,
+      "hidden_state_shape": [
+        896
+      ],
+      "symbolic": {
+        "output": "2408552",
+        "execution_success": true,
+        "latency_sec": 0.0166,
+        "verification_status": "UNVERIFIABLE"
+      },
+      "llm": {
+        "output": "The calculation of 8137 * 296 is as follows:\n\n8137 * 296 = 24,05152",
+        "execution_success": true,
+        "latency_sec": 1.0429,
+        "verification_status": "UNVERIFIABLE"
+      }
+    },
+    {
+      "task_id": "smoke_01",
+      "expected": 6912,
+      "hidden_state_shape": [
+        896
+      ],
+      "symbolic": {
+        "output": "6912",
+        "execution_success": true,
+        "latency_sec": 0.0001,
+        "verification_status": "UNVERIFIABLE"
+      },
+      "llm": {
+        "output": "The calculation of 1234 + 5678 is as follows:\n\n1234 + 5678 = 6912\n\nSo, the final answer is 6912.",
+        "execution_success": true,
+        "latency_sec": 0.9176,
+        "verification_status": "UNVERIFIABLE"
+      }
+    },
+    {
+      "task_id": "smoke_02",
+      "expected": 9899,
+      "hidden_state_shape": [
+        896
+      ],
+      "symbolic": {
+        "output": "9899",
+        "execution_success": true,
+        "latency_sec": 0.0001,
+        "verification_status": "UNVERIFIABLE"
+      },
+      "llm": {
+        "output": "8999",
+        "execution_success": true,
+        "latency_sec": 0.0958,
+        "verification_status": "UNVERIFIABLE"
+      }
+    },
+    {
+      "task_id": "smoke_03",
+      "expected": 32768,
+      "hidden_state_shape": [
+        896
+      ],
+      "symbolic": {
+        "output": "32768",
+        "execution_success": true,
+        "latency_sec": 0.0001,
+        "verification_status": "UNVERIFIABLE"
+      },
+      "llm": {
+        "output": "4096 * 8 = 32768",
+        "execution_success": true,
+        "latency_sec": 0.3003,
+        "verification_status": "UNVERIFIABLE"
+      }
+    },
+    {
+      "task_id": "smoke_04",
+      "expected": 142,
+      "hidden_state_shape": [
+        896
+      ],
+      "symbolic": {
+        "output": "142",
+        "execution_success": true,
+        "latency_sec": 0.0001,
+        "verification_status": "UNVERIFIABLE"
+      },
+      "llm": {
+        "output": "1000 // 7 = 142",
+        "execution_success": true,
+        "latency_sec": 0.2158,
+        "verification_status": "UNVERIFIABLE"
+      }
+    },
+    {
+      "task_id": "smoke_05",
+      "expected": 3,
+      "hidden_state_shape": [
+        896
+      ],
+      "symbolic": {
+        "output": "3",
+        "execution_success": true,
+        "latency_sec": 0.0001,
+        "verification_status": "UNVERIFIABLE"
+      },
+      "llm": {
+        "output": "8",
+        "execution_success": true,
+        "latency_sec": 0.0634,
+        "verification_status": "UNVERIFIABLE"
+      }
+    }
+  ],
+  "note": "Minimal real-model smoke. NOT a Gate A run. Does not train a policy, compute confidence bounds, or produce qualification evidence. Never mark as Gate A qualified."
+}

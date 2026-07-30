@@ -217,11 +217,11 @@ def execute_symbolic_backend(
         # Semantic parse succeeded — evaluate the expression directly.
         try:
             expr = parse_result.expression
-            # Safe evaluation: only integers and basic operators.
-            allowed = set("0123456789+-*/() //")
-            if not all(c in allowed for c in expr):
-                raise ValueError(f"unsafe expression: {expr!r}")
-            result_val = eval(expr, {"__builtins__": {}}, {})
+            # Section 6: route ALL arithmetic through the bounded AST
+            # evaluator. Python eval()/exec()/compile() are forbidden in
+            # symbolic execution paths.
+            from daph_learning.tools.symbolic_math import safe_eval_int_expr
+            result_val = safe_eval_int_expr(expr)
             output_text = str(int(result_val))
             output_hash = hashlib.sha256(
                 output_text.encode()).hexdigest()[:16]
