@@ -273,6 +273,17 @@ def main() -> int:
             if llm_u > sym_u:
                 n_llm_correct += 1
 
+            # Debug: print first 5 tasks where LLM is verified correct.
+            if llm_v.verified_correct and n_llm_verified <= 5:
+                st = task.get("metadata", {}).get("subtype", "?")
+                print(f"    DEBUG [{st}] sym_q={exp.symbolic.quality:.1f} "
+                      f"llm_q={exp.llm.quality:.1f} "
+                      f"sym_u={sym_u:.4f} llm_u={llm_u:.4f} "
+                      f"delta={delta_u:.4f} sym_cost={exp.symbolic.normalized_cost:.3f} "
+                      f"llm_cost={exp.llm.normalized_cost:.3f} "
+                      f"sym_lat={exp.symbolic.latency_sec:.4f} "
+                      f"llm_lat={exp.llm.latency_sec:.4f}")
+
             # Determine optimal action from executed utility.
             if delta_u > 0.01:
                 optimal_action = "symbolic"
