@@ -42,7 +42,7 @@ def _source_tree_sha256() -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Gate A real-model qualification")
-    parser.add_argument("--model", default="Qwen/Qwen2.5-1.5B-Instruct",
+    parser.add_argument("--model", default="Qwen/Qwen2.5-3B-Instruct",
                         help="HuggingFace model id")
     parser.add_argument("--replicates", type=int, default=3,
                         help="Counterfactual replicates R")
@@ -142,7 +142,7 @@ def main() -> int:
     if tok.pad_token_id is None and tok.eos_token_id is not None:
         tok.pad_token = tok.eos_token
     model = AutoModelForCausalLM.from_pretrained(
-        model_id, torch_dtype=torch.float32).to(device)
+        model_id, torch_dtype=torch.float16).to(device)
     model.eval()
     n_layers = model.config.num_hidden_layers
     hidden_dim = model.config.hidden_size
