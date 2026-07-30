@@ -62,25 +62,26 @@ SUBTYPE_DESCRIPTIONS: dict[str, str] = {
 }
 
 # Split licensing by template slot (disjoint from the v0.3.8 generator).
+# Fix 1a: give final 3 slots (5,6,7) for ~42 bootstrap groups instead of 14.
 SPLIT_TEMPLATE_SLOTS: dict[str, tuple[int, ...]] = {
-    "train": (0, 1, 2, 3),
-    "dev": (4, 5),
-    "calibration": (6,),
-    "final": (7,),
+    "train": (0, 1),
+    "dev": (2, 3),
+    "calibration": (4,),
+    "final": (5, 6, 7),
 }
 
-# Wording templates per slot. Slot 0-3 train, 4-5 dev, 6 calibration,
-# 7 final. Each slot is a distinct wording so splits are
+# Wording templates per slot. Slot 0-1 train, 2-3 dev, 4 calibration,
+# 5-7 final. Each slot is a distinct wording so splits are
 # template-disjoint (no wording leakage).
 _EXACT_WRAPPERS = (
     "Compute {body}. Return only the integer.",
     "Please compute {body}. Reply with the exact integer only.",
     "Exact arithmetic request: Compute {body}. Output one integer.",
     "Task: Compute {body}. Give no prose, only the integer.",
-    "Held-out wording: Compute {body}. Print only its integer value.",
-    "Evaluate exactly: Compute {body}. The response must be an integer.",
     "Calibration wording — Compute {body}. Return the integer result only.",
-    "Final wording — Compute {body}. Respond with one integer.",
+    "Final wording A — Compute {body}. Respond with one integer.",
+    "Final wording B — Evaluate {body}. Return only the integer.",
+    "Final wording C — Calculate {body}. Output the integer value only.",
 )
 
 # Section 10: split-specific wording wrappers for NL subtypes.
@@ -91,10 +92,10 @@ _B_WRAPPERS = (
     "A facility has {body}.",
     "A depot stores {body}.",
     "A factory contains {body}.",
-    "A distribution center has {body}.",
-    "A storage site holds {body}.",
     "Calibration site — A warehouse has {body}.",
-    "Final evaluation — A warehouse has {body}.",
+    "Final site A — A warehouse has {body}.",
+    "Final site B — A facility has {body}.",
+    "Final site C — A depot stores {body}.",
 )
 
 _C_WRAPPERS = (
@@ -102,10 +103,10 @@ _C_WRAPPERS = (
     "Problem: {body}",
     "Solve: {body}",
     "Arithmetic puzzle: {body}",
-    "Held-out question: {body}",
-    "Reasoning task: {body}",
     "Calibration problem: {body}",
-    "Final question: {body}",
+    "Final question A: {body}",
+    "Final question B: {body}",
+    "Final question C: {body}",
 )
 
 _E_WRAPPERS = (
@@ -113,10 +114,10 @@ _E_WRAPPERS = (
     "Comparison: {body}",
     "Relation check: {body}",
     "Size question: {body}",
-    "Held-out comparison: {body}",
-    "Magnitude check: {body}",
     "Calibration comparison: {body}",
-    "Final comparison: {body}",
+    "Final comparison A: {body}",
+    "Final comparison B: {body}",
+    "Final comparison C: {body}",
 )
 
 _F_WRAPPERS = (
@@ -124,10 +125,10 @@ _F_WRAPPERS = (
     "Word problem: {body}",
     "Scenario: {body}",
     "Applied math: {body}",
-    "Held-out scenario: {body}",
-    "Practical problem: {body}",
     "Calibration scenario: {body}",
-    "Final scenario: {body}",
+    "Final scenario A: {body}",
+    "Final scenario B: {body}",
+    "Final scenario C: {body}",
 )
 
 # Fields that MUST NOT appear in crossover task metadata (Section 11).
@@ -200,12 +201,14 @@ def _gen_a(rng: random.Random, slot: int) -> dict[str, Any]:
     within-subtype crossover."""
     if rng.random() < 0.5:
         # Small operands — LLM correct, wins on cost.
-        a = rng.randint(1, 200)
-        b = rng.randint(1, 200)
+        a = rng.randint(1, 50)
+        b = rng.randint(1, 50)
     else:
         # Large operands — LLM errs, symbolic wins on quality.
-        a = rng.randint(5_000, 9_999)
-        b = rng.randint(5_000, 9_999)
+        # Fix 2c: widen gap (50k-99k) so hidden states more clearly
+        # separate small vs large for better P1 routing on subtype A.
+        a = rng.randint(50_000, 99_999)
+        b = rng.randint(50_000, 99_999)
     op = rng.choice(["+", "-", "*"])
     if op == "+":
         expected = a + b
@@ -371,8 +374,10 @@ def _gen_f(rng: random.Random, slot: int) -> dict[str, Any]:
         gain_range = (1, 20)
     else:
         # Large values — LLM errs, symbolic wins on quality.
-        total_range = (2_000, 10_000)
-        gain_range = (10, 100)
+        # Fix 4b: increase range from (2k,10k) to (100k,1M) so LLM
+        # fails more reliably, converting F ties to decisive examples.
+        total_range = (100_000, 1_000_000)
+        gain_range = (100, 1_000)
     while True:
         loss_pct = rng.randint(10, 40)
         total = rng.randint(*total_range)

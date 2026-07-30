@@ -109,9 +109,11 @@ def main() -> int:
     model_id = args.model
 
     # Utility config (frozen).
+    # Fix 2d/4a: increase lambda_compute from 0.1 to 0.3 so cost-based
+    # ties (both backends correct, diff=0.009) become decisive (diff=0.027).
     quality_weight = 1.0
     lambda_time = 0.001
-    lambda_compute = 0.1
+    lambda_compute = 0.3
     lambda_risk = 1.0
     confidence_level = 0.95
     min_effect_size = 0.01
@@ -161,20 +163,26 @@ def main() -> int:
     # ================================================================
     # Config
     # ================================================================
-    layer = min(10, n_layers - 1)
+    # Fix 2b: use earlier layer (5 instead of 10) to preserve surface
+    # features like operand magnitude for better routing on subtype A.
+    layer = min(5, n_layers - 1)
     cfg = ExperimentConfig(
         policy_type="logistic",
         target_mode="soft",
         target_temperature=0.5,
         weight_mode="clipped_gap",
-        gap_threshold=0.01,
-        abstention_band=0.01,
+        # Fix 4c: lower gap_threshold from 0.01 to 0.005 to convert
+        # near-ties into decisive training examples (increases ESS).
+        gap_threshold=0.005,
+        abstention_band=0.005,
         confidence_threshold=0.55,
         selected_layer=layer,
         random_seed=seed,
         max_weight=2.0,
     )
-    cap_cfg = CaptureConfig(layer=layer, location="last_token")
+    # Fix 2a: use mean_pool instead of last_token to capture operand
+    # magnitude from all prompt tokens, not just the last token.
+    cap_cfg = CaptureConfig(layer=layer, location="mean_pool")
     gen_cfg = LLMGenerationConfig(max_new_tokens=128, do_sample=False)
 
     # ================================================================

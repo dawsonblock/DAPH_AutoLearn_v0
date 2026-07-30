@@ -164,8 +164,13 @@ def execute_symbolic_backend(
     # Section 14: if no structured capabilities, try semantic parsing.
     # Set env var DAPH_DISABLE_SEMANTIC_PARSE=1 to disable (for crossover
     # experiments where symbolic should fail on NL tasks).
+    # Fix 3a: allow semantic parsing for subtype B even when globally
+    # disabled, so symbolic can compete on B (creating true crossover).
     import os as _os
-    if not has_structured and _os.environ.get("DAPH_DISABLE_SEMANTIC_PARSE", "0") == "1":
+    subtype = str(task.get("metadata", {}).get("subtype", ""))
+    semantic_disabled = _os.environ.get("DAPH_DISABLE_SEMANTIC_PARSE", "0") == "1"
+    # B is allowed through even when disabled; all others blocked.
+    if not has_structured and semantic_disabled and subtype != "B":
         latency = _time.time() - t0
         return BackendOutcome(
             task_id=tid,
