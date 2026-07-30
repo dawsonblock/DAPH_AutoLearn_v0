@@ -282,13 +282,28 @@ def main() -> int:
             # Debug: print first 5 tasks where LLM is verified correct.
             if llm_v.verified_correct and n_llm_verified <= 5:
                 st = task.get("metadata", {}).get("subtype", "?")
-                print(f"    DEBUG [{st}] sym_q={exp.symbolic.quality:.1f} "
+                print(f"    DEBUG [LLM-OK {st}] sym_q={exp.symbolic.quality:.1f} "
                       f"llm_q={exp.llm.quality:.1f} "
                       f"sym_u={sym_u:.4f} llm_u={llm_u:.4f} "
                       f"delta={delta_u:.4f} sym_cost={exp.symbolic.normalized_cost:.3f} "
                       f"llm_cost={exp.llm.normalized_cost:.3f} "
                       f"sym_lat={exp.symbolic.latency_sec:.4f} "
                       f"llm_lat={exp.llm.latency_sec:.4f}")
+
+            # Debug: print first 5 NL tasks where LLM fails.
+            if not llm_v.verified_correct and task.get("metadata", {}).get("subtype") in ("B", "C", "E", "F"):
+                st = task.get("metadata", {}).get("subtype", "?")
+                llm_text_short = (llm_text or '')[:80]
+                if not hasattr(collect_data, '_nl_fail_count'):
+                    collect_data._nl_fail_count = 0
+                collect_data._nl_fail_count += 1
+                if collect_data._nl_fail_count <= 5:
+                    print(f"    DEBUG [LLM-FAIL {st}] sym_q={exp.symbolic.quality:.1f} "
+                          f"llm_q={exp.llm.quality:.1f} "
+                          f"sym_u={sym_u:.4f} llm_u={llm_u:.4f} "
+                          f"delta={delta_u:.4f} "
+                          f"llm_text={llm_text_short!r} "
+                          f"fail={llm_v.failure_reason}")
 
             # Determine optimal action from executed utility.
             if delta_u > 0.01:
