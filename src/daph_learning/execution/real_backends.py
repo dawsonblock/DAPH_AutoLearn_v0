@@ -162,6 +162,28 @@ def execute_symbolic_backend(
     has_structured = bool(caps & supported_caps)
 
     # Section 14: if no structured capabilities, try semantic parsing.
+    # Set env var DAPH_DISABLE_SEMANTIC_PARSE=1 to disable (for crossover
+    # experiments where symbolic should fail on NL tasks).
+    import os as _os
+    if not has_structured and _os.environ.get("DAPH_DISABLE_SEMANTIC_PARSE", "0") == "1":
+        latency = _time.time() - t0
+        return BackendOutcome(
+            task_id=tid,
+            backend="symbolic",
+            available=False,
+            executed=False,
+            execution_success=False,
+            output_text=None,
+            output_hash=None,
+            verifier_status="not_verified",
+            correct=False,
+            quality=0.0,
+            latency_sec=latency,
+            normalized_cost=0.05,
+            risk=0.0,
+            verifier_confidence=0.0,
+            failure_reason="semantic parsing disabled (DAPH_DISABLE_SEMANTIC_PARSE=1)",
+        ), None
     if not has_structured:
         try:
             from ..data.semantic_parser import parse_task

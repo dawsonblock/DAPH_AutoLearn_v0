@@ -42,7 +42,7 @@ def _source_tree_sha256() -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Gate A real-model qualification")
-    parser.add_argument("--model", default="Qwen/Qwen3-4B-Instruct-2507",
+    parser.add_argument("--model", default="Qwen/Qwen2.5-0.5B-Instruct",
                         help="HuggingFace model id")
     parser.add_argument("--replicates", type=int, default=3,
                         help="Counterfactual replicates R")
@@ -58,8 +58,12 @@ def main() -> int:
                         help="Output artifact path")
     args = parser.parse_args()
 
+    # Disable semantic parsing so symbolic fails on NL tasks (crossover).
+    import os
+    os.environ["DAPH_DISABLE_SEMANTIC_PARSE"] = "1"
+
     import torch
-    from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+    from transformers import AutoModelForCausalLM, AutoTokenizer
     from daph_learning.data.crossover_benchmark import (
         SUBTYPES, FAMILY_ID, generate_crossover_split,
         assert_no_within_split_duplicates,
@@ -137,14 +141,8 @@ def main() -> int:
     tok = AutoTokenizer.from_pretrained(model_id)
     if tok.pad_token_id is None and tok.eos_token_id is not None:
         tok.pad_token = tok.eos_token
-    bnb_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_compute_dtype=torch.float16,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_use_double_quant=True,
-    )
     model = AutoModelForCausalLM.from_pretrained(
-        model_id, quantization_config=bnb_config, device_map="auto")
+        model_id, torch_dtype=torch.float32).to(device)
     model.eval()
     n_layers = model.config.num_hidden_layers
     hidden_dim = model.config.hidden_size
