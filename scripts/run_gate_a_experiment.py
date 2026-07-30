@@ -309,7 +309,7 @@ def main() -> int:
                 output_text=llm_text,
                 output_hash=hashlib.sha256(
                     (llm_text or "").encode()).hexdigest()[:16],
-                verifier_status="pending",
+                verifier_status="not_verified",
                 correct=False,
                 quality=0.0,
                 latency_sec=llm_lat,
