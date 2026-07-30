@@ -42,7 +42,7 @@ def _source_tree_sha256() -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Gate A real-model qualification")
-    parser.add_argument("--model", default="Qwen/Qwen2.5-0.5B-Instruct",
+    parser.add_argument("--model", default="Qwen/Qwen2.5-1.5B-Instruct",
                         help="HuggingFace model id")
     parser.add_argument("--replicates", type=int, default=3,
                         help="Counterfactual replicates R")
