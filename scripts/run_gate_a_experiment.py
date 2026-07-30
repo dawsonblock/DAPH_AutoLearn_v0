@@ -176,10 +176,12 @@ def main() -> int:
     # ================================================================
     print("\n--- Phase 2: Generate crossover benchmark ---")
     split_seeds = {"train": seed, "dev": seed + 1,
-                   "calibration": seed + 2, "final": seed + 3}
+                   "cal": seed + 2, "final": seed + 3}
+    split_name_map = {"train": "train", "dev": "dev",
+                      "cal": "calibration", "final": "final"}
     all_tasks = {}
     for split, n_ps in n_per_subtype.items():
-        s = split if split != "cal" else "calibration"
+        s = split_name_map[split]
         tasks = generate_crossover_split(
             split=s, n_per_subtype=n_ps, seed=split_seeds[split])
         assert_no_within_split_duplicates(tasks)
