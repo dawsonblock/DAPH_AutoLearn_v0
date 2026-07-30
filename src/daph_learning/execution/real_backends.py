@@ -656,13 +656,24 @@ def verify_output(
     For arithmetic tasks (``capability_ids`` contains
     ``integer_arithmetic`` or ``modular_multiplication``), use
     :func:`verify_arithmetic`. For letter_counting and exact_string tasks,
-    use :func:`verify_exact_string`. For unsupported tasks, fail closed.
+    use :func:`verify_exact_string`. For tasks with no structured
+    capabilities but an integer ``expected`` field (e.g. crossover NL
+    subtypes), fall back to :func:`verify_arithmetic` to extract the final
+    number from the output. For unsupported tasks, fail closed.
     """
     caps = set(task.get("capability_ids", []))
     if "integer_arithmetic" in caps or "modular_multiplication" in caps:
         return verify_arithmetic(task, output_text)
     if "letter_counting" in caps or "exact_string" in caps:
         return verify_exact_string(task, output_text)
+    # Crossover NL tasks: no structured caps but have an integer expected.
+    expected = task.get("expected")
+    if expected is not None:
+        try:
+            int(expected)
+            return verify_arithmetic(task, output_text)
+        except (ValueError, TypeError):
+            pass
     return VerificationResult(
         verified_correct=None,
         verifier_type="unsupported",
