@@ -42,7 +42,7 @@ def _source_tree_sha256() -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Gate A real-model qualification")
-    parser.add_argument("--model", default="Qwen/Qwen2.5-0.5B-Instruct",
+    parser.add_argument("--model", default="Qwen/Qwen2.5-1.5B-Instruct",
                         help="HuggingFace model id")
     parser.add_argument("--replicates", type=int, default=3,
                         help="Counterfactual replicates R")
@@ -169,7 +169,7 @@ def main() -> int:
         max_weight=2.0,
     )
     cap_cfg = CaptureConfig(layer=layer, location="last_token")
-    gen_cfg = LLMGenerationConfig(max_new_tokens=32, do_sample=False)
+    gen_cfg = LLMGenerationConfig(max_new_tokens=64, do_sample=False)
 
     # ================================================================
     # Phase 2 — Generate and validate benchmark
@@ -1010,7 +1010,7 @@ def main() -> int:
 
 def _utility_lookup(task, route, exps):
     """Look up verified utility for a task+route from experience records."""
-    if isinstance(route, Route):
+    if hasattr(route, "value"):
         route = route.value
     if route == "abstain":
         return 0.0
