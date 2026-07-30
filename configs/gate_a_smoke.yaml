@@ -1,0 +1,70 @@
+# Section 21 — minimal real-model smoke config for daph_gate_a_smoke.
+#
+# This is NOT a Gate A run. It exercises the full pipeline on a small
+# scale with a real Hugging Face model. The result is labeled
+# REAL_MODEL_SMOKE and must NEVER be marked Gate A qualified.
+
+experiment_id: daph_gate_a_smoke
+release_version: 0.3.10.4-alpha
+evidence_level: REAL_MODEL_SMOKE
+
+primary_endpoint:
+  name: verified_utility
+  estimand: group_weighted
+  confidence_level: 0.95
+  bootstrap_iterations: 2000
+
+utility_protocol: gate_a_accuracy_primary
+secondary_utility_protocol: gate_a_cost_sensitive_secondary
+
+gates:
+  minimum_point_gain_vs_p0: 0.0      # relaxed for smoke
+  require_lcb_vs_p0_above: -1.0     # relaxed for smoke (no gate enforced)
+  require_lcb_vs_sham_above: -1.0
+  minimum_oracle_gap_capture: 0.0
+  maximum_worst_subtype_regression: 1.0
+  minimum_positive_group_fraction: 0.0
+  maximum_final_access_count: 1
+
+dataset:
+  minimum_groups: 8
+  minimum_crossover_subtypes: 1
+  minimum_backend_win_fraction: 0.10
+  minimum_decisive_fraction: 0.10
+
+evidence:
+  require_real_model: true
+  allow_synthetic: false
+  require_model_revision: true
+  require_source_hash_match: true
+  require_dataset_hashes: true
+  require_final_access_ledger: false   # smoke does not require a ledger
+
+model:
+  model_id: Qwen/Qwen2.5-0.5B-Instruct
+  dtype: float16
+  max_new_tokens: 48
+  do_sample: false
+  replicates: 1
+
+representation:
+  layer_strategy: depth_fractional
+  pooling_candidates:
+    - last_prompt_token
+  selection_metric: dev_objective
+  selection_data: development
+
+targets:
+  mode_selection_data: development
+  modes:
+    - hard_gap
+
+sham:
+  n_seeds: 5
+  procedure: subtype_split_decisive_shuffle
+
+splits:
+  train: 0.50
+  development: 0.20
+  calibration: 0.15
+  final: 0.15

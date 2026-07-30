@@ -25,6 +25,7 @@ Section 35: re-run test report
 from __future__ import annotations
 
 import hashlib
+import json
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -302,12 +303,309 @@ __all__ = [
     "RESULT_FILES",
     "ReRunTestReport",
     "REQUIRED_ARTIFACT_FIELDS",
+    "ArtifactValidationResult",
     "assert_artifact_has_integrity_fields",
     "assert_artifact_matches_current_source",
     "assert_source_tree_matches",
     "compute_source_tree_hash",
     "compute_test_collection_hash",
     "rerun_tests",
+    "validate_artifact_bundle",
     "validate_policy_artifact_dir",
     "validate_result_dir",
 ]
+
+
+# ------------------------------------------------------------------
+# Section 4.2: recursive artifact bundle validator
+# ------------------------------------------------------------------
+
+# Evidence levels that may be recorded in an artifact. Synthetic evidence
+# must never be presented as real Gate A qualification evidence.
+_REAL_EVIDENCE_LEVELS = frozenset({
+    "REAL_MODEL_FINAL", "REAL_MODEL_SMOKE", "REAL",
+})
+_SYNTHETIC_EVIDENCE_LEVELS = frozenset({
+    "SYNTHETIC", "SYNTHETIC_CI", "SIMULATED",
+})
+_QUALIFIED_STATUSES = frozenset({"PASS", "PASSED", "QUALIFIED", "QUALIFIED_PASS"})
+_FAILED_STATUSES = frozenset({"FAIL", "FAILED"})
+
+
+@dataclass(frozen=True)
+class ArtifactValidationResult:
+    """Section 4.2: result of validating an artifact bundle."""
+
+    valid: bool
+    errors: tuple[str, ...]
+    warnings: tuple[str, ...]
+
+
+def _load_json(path: Path) -> dict | None:
+    try:
+        with open(path) as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def _is_legacy_marker(data: dict) -> bool:
+    return bool(data.get("legacy") or data.get("not_current_source")
+                or data.get("historical_source_hash"))
+
+
+def validate_artifact_bundle(
+    artifact_dir: Path,
+    repo_root: Path,
+    *,
+    require_real_model: bool = False,
+    require_final_access_ledger: bool = False,
+) -> ArtifactValidationResult:
+    """Section 4.2: recursively validate all evidence files in a bundle.
+
+    Validates that:
+
+    * the source hash matches the current repository (unless the bundle is
+      explicitly marked as legacy);
+    * experiment ID is consistent across all artifacts that declare one;
+    * run ID is consistent across all artifacts that declare one;
+    * evidence level is consistent;
+    * dataset hashes match across artifacts that declare them;
+    * model revision matches;
+    * tokenizer revision matches;
+    * utility configuration hash matches;
+    * policy hash matches;
+    * split names are valid;
+    * a final-access ledger exists when required;
+    * no synthetic result is labeled real;
+    * no failed run is labeled qualified;
+    * no metrics are copied from another run;
+    * no manifest contains an obsolete source hash (when not legacy).
+
+    Any inconsistency causes validation to fail (``valid=False``).
+    """
+    from daph_learning.provenance import compute_canonical_source_hash
+
+    errors: list[str] = []
+    warnings: list[str] = []
+    bundle = Path(artifact_dir)
+    if not bundle.is_dir():
+        return ArtifactValidationResult(
+            valid=False,
+            errors=(f"artifact bundle directory not found: {bundle}",),
+            warnings=(),
+        )
+
+    current_hash = compute_canonical_source_hash(Path(repo_root))
+
+    # Collect every JSON evidence file in the bundle.
+    json_files = sorted(bundle.rglob("*.json"))
+    if not json_files:
+        errors.append(f"bundle contains no JSON evidence files: {bundle}")
+
+    # Pass 1: detect whether the bundle is explicitly marked as legacy.
+    # A legacy bundle retains its historical source hash and is exempt
+    # from the current-source-hash requirement across ALL its files.
+    bundle_is_legacy = False
+    for jf in json_files:
+        data = _load_json(jf)
+        if data is not None and _is_legacy_marker(data):
+            bundle_is_legacy = True
+            break
+
+    # Aggregate declared values; any disagreement is an error.
+    experiment_ids: set[str] = set()
+    run_ids: set[str] = set()
+    evidence_levels: set[str] = set()
+    dataset_hashes: set[str] = set()
+    model_revisions: set[str] = set()
+    tokenizer_revisions: set[str] = set()
+    utility_hashes: set[str] = set()
+    policy_hashes: set[str] = set()
+    split_names: set[str] = set()
+    statuses: set[str] = set()
+    saw_real_evidence = False
+    saw_synthetic_evidence = False
+    saw_qualified_status = False
+    saw_failed_status = False
+    source_hashes: dict[str, str] = {}  # path -> declared source hash
+
+    VALID_SPLITS = frozenset({"train", "dev", "development", "calibration", "final"})
+
+    for jf in json_files:
+        data = _load_json(jf)
+        if data is None:
+            errors.append(f"unreadable/invalid JSON: {jf.relative_to(bundle)}")
+            continue
+
+        if _is_legacy_marker(data):
+            # Already accounted for in pass 1; skip further checks.
+            continue
+
+        # Source hash consistency.
+        declared_hash = (
+            data.get("source_hash")
+            or data.get("source_tree_sha256")
+            or data.get("source_tree_hash")
+        )
+        if declared_hash:
+            source_hashes[str(jf.relative_to(bundle))] = str(declared_hash)
+            # Legacy bundles retain their historical source hash and are
+            # exempt from the current-source-hash requirement.
+            if not bundle_is_legacy:
+                cmp_len = min(len(declared_hash), len(current_hash))
+                if declared_hash[:cmp_len] != current_hash[:cmp_len]:
+                    errors.append(
+                        f"{jf.relative_to(bundle)}: stale source hash "
+                        f"{declared_hash[:16]}... != current {current_hash[:16]}..."
+                    )
+
+        # Experiment ID.
+        eid = data.get("experiment_id")
+        if eid:
+            experiment_ids.add(str(eid))
+
+        # Run ID.
+        rid = data.get("run_id")
+        if rid:
+            run_ids.add(str(rid))
+
+        # Evidence level.
+        ev = data.get("evidence_level")
+        if ev:
+            evidence_levels.add(str(ev))
+            if str(ev) in _REAL_EVIDENCE_LEVELS:
+                saw_real_evidence = True
+            if str(ev) in _SYNTHETIC_EVIDENCE_LEVELS:
+                saw_synthetic_evidence = True
+
+        # Dataset hashes.
+        for key in ("dataset_hash", "final_dataset_sha256", "train_dataset_sha256",
+                    "dev_dataset_sha256", "calibration_dataset_sha256"):
+            val = data.get(key)
+            if val:
+                dataset_hashes.add(str(val))
+
+        # Model / tokenizer revisions.
+        if data.get("model_revision"):
+            model_revisions.add(str(data["model_revision"]))
+        if data.get("tokenizer_revision"):
+            tokenizer_revisions.add(str(data["tokenizer_revision"]))
+
+        # Utility config hash.
+        for key in ("utility_config_hash", "utility_config_sha256", "config_sha256"):
+            val = data.get(key)
+            if val and key == "utility_config_hash":
+                utility_hashes.add(str(val))
+
+        # Policy hash.
+        for key in ("policy_hash", "policy_sha256"):
+            val = data.get(key)
+            if val:
+                policy_hashes.add(str(val))
+
+        # Split names.
+        sp = data.get("split")
+        if sp:
+            split_names.add(str(sp))
+
+        # Status / verdict.
+        st = data.get("status") or data.get("gate_verdict") or data.get("verdict")
+        if st:
+            statuses.add(str(st).upper())
+            if str(st).upper() in _QUALIFIED_STATUSES:
+                saw_qualified_status = True
+            if str(st).upper() in _FAILED_STATUSES:
+                saw_failed_status = True
+
+    # Cross-artifact consistency checks.
+    if len(experiment_ids) > 1:
+        errors.append(f"mixed experiment IDs in bundle: {sorted(experiment_ids)}")
+    if len(run_ids) > 1:
+        errors.append(f"mixed run IDs in bundle: {sorted(run_ids)}")
+    if len(model_revisions) > 1:
+        errors.append(f"mixed model revisions in bundle: {sorted(model_revisions)}")
+    if len(tokenizer_revisions) > 1:
+        errors.append(
+            f"mixed tokenizer revisions in bundle: {sorted(tokenizer_revisions)}")
+    if len(utility_hashes) > 1:
+        errors.append(f"mixed utility config hashes in bundle: {sorted(utility_hashes)}")
+    if len(policy_hashes) > 1:
+        errors.append(f"mixed policy hashes in bundle: {sorted(policy_hashes)}")
+    if len(dataset_hashes) > 1:
+        errors.append(f"mixed dataset hashes in bundle: {sorted(dataset_hashes)}")
+
+    bad_splits = split_names - VALID_SPLITS
+    if bad_splits:
+        errors.append(f"invalid split names in bundle: {sorted(bad_splits)}")
+
+    # Synthetic evidence must never be labeled real or qualified.
+    # These fraud checks apply to CURRENT bundles only; legacy bundles
+    # are preserved as-is for audit history and mixing is recorded as a
+    # warning rather than a hard failure.
+    if saw_synthetic_evidence and saw_qualified_status:
+        msg = ("synthetic evidence is labeled qualified — synthetic artifacts "
+               "cannot pass Gate A")
+        (errors if not bundle_is_legacy else warnings).append(msg)
+    if saw_synthetic_evidence and require_real_model and not bundle_is_legacy:
+        errors.append(
+            "bundle contains synthetic evidence but real-model evidence was "
+            "required")
+
+    # A failed run must never be labeled qualified.
+    if saw_failed_status and saw_qualified_status:
+        msg = ("bundle contains both FAILED and QUALIFIED statuses — a failed "
+               "run cannot be promoted")
+        (errors if not bundle_is_legacy else warnings).append(msg)
+
+    # Real/synthetic evidence-level mixing is a hard error for current
+    # bundles and a warning for legacy bundles.
+    if saw_real_evidence and saw_synthetic_evidence:
+        msg = ("bundle mixes real and synthetic evidence levels: "
+               f"{sorted(evidence_levels)}")
+        (errors if not bundle_is_legacy else warnings).append(msg)
+
+    # Final-access ledger requirement.
+    if require_final_access_ledger:
+        ledger = bundle / "final_access_ledger.json"
+        if not ledger.is_file():
+            errors.append(
+                f"required final-access ledger missing: {ledger.relative_to(bundle)}")
+        else:
+            ledger_data = _load_json(ledger) or {}
+            if ledger_data.get("final_access_count") not in (1, "1"):
+                errors.append(
+                    "final_access_ledger.json does not record exactly one "
+                    "final access")
+            ledger_hash = (
+                ledger_data.get("source_hash")
+                or ledger_data.get("source_tree_sha256")
+            )
+            if ledger_hash:
+                cmp_len = min(len(ledger_hash), len(current_hash))
+                if ledger_hash[:cmp_len] != current_hash[:cmp_len] and not bundle_is_legacy:
+                    errors.append(
+                        "final_access_ledger.json source hash does not match "
+                        "current source")
+
+    # Mixed source hashes (metrics copied from another run) — only an error
+    # for non-legacy bundles.
+    if not bundle_is_legacy and source_hashes:
+        distinct = set(source_hashes.values())
+        if len(distinct) > 1:
+            errors.append(
+                f"bundle contains metrics from multiple source hashes "
+                f"(possible cross-run copy): {sorted(h[:16] for h in distinct)}")
+
+    if bundle_is_legacy:
+        warnings.append(
+            "bundle is marked legacy and is exempt from the current "
+            "source-hash requirement; it must not be presented as current "
+            "Gate A evidence")
+
+    return ArtifactValidationResult(
+        valid=(len(errors) == 0),
+        errors=tuple(errors),
+        warnings=tuple(warnings),
+    )

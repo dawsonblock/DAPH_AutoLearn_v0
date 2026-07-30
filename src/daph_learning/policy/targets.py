@@ -51,10 +51,20 @@ class TargetMode(str, Enum):
 
     SOFT : ``q_i = sigmoid(ΔU_i / τ)`` — continuous soft labels (default).
     HARD : ``y_i ∈ {0, 1}`` with ties (``|ΔU| <= gap``) masked out.
+    HARD_GAP : Section 14 — same as HARD but with explicit gap threshold
+        selected on dev data and frozen.
+    SOFT_TEMPERATURE : Section 14 — same as SOFT but with temperature
+        selected on dev data and frozen.
+    SIGNAL_TO_NOISE : Section 14 — reliability-weighted targets using
+        ``w_i = min(w_max, |ΔU_i| / (σ_i + ε))`` where σ_i is the
+        per-example uncertainty.
     """
 
     SOFT = "soft"
     HARD = "hard"
+    HARD_GAP = "hard_gap"
+    SOFT_TEMPERATURE = "soft_temperature"
+    SIGNAL_TO_NOISE = "signal_to_noise"
 
     @classmethod
     def from_str(cls, value: str) -> "TargetMode":
@@ -160,4 +170,117 @@ def build_preference_targets(
     raise ValueError(f"Unsupported target mode: {mode}")
 
 
-__all__ = ["TargetMode", "build_preference_targets"]
+# ------------------------------------------------------------------
+# Section 14: uncertainty-aware targets
+# ------------------------------------------------------------------
+
+def estimate_sigma(
+    u_symbolic,
+    u_llm,
+    *,
+    n_replicates: int = 1,
+) -> np.ndarray | "torch.Tensor":
+    """Section 14 — estimate per-example uncertainty σ_i.
+
+    σ_i = sqrt(Var(U_S) + Var(U_L))
+
+    When only one replicate is available, σ_i is estimated from the
+    magnitude of the utility gap itself (larger gaps → lower relative
+    uncertainty).
+
+    Parameters
+    ----------
+    u_symbolic, u_llm : array-like
+        Utility arrays for symbolic and LLM backends. Shape ``[N]`` for
+        single-replicate, or ``[N, R]`` for R replicates.
+    n_replicates : int
+        Number of replicates. If 1, uses the gap-based fallback.
+
+    Returns
+    -------
+    sigma : same type as inputs
+        Per-example uncertainty, shape ``[N]``.
+    """
+    is_torch = _HAS_TORCH and isinstance(u_symbolic, torch.Tensor)
+    if is_torch:
+        if n_replicates > 1 and u_symbolic.dim() > 1:
+            var_s = u_symbolic.var(dim=-1)
+            var_l = u_llm.var(dim=-1)
+            return torch.sqrt(var_s + var_l + 1e-8)
+        # Fallback: σ_i = |ΔU| * 0.1 + ε (proportional to gap).
+        du = u_symbolic - u_llm
+        return du.abs() * 0.1 + 1e-6
+
+    us = np.asarray(u_symbolic, dtype=np.float64)
+    ul = np.asarray(u_llm, dtype=np.float64)
+    if n_replicates > 1 and us.ndim > 1:
+        var_s = us.var(axis=-1)
+        var_l = ul.var(axis=-1)
+        return np.sqrt(var_s + var_l + 1e-8)
+    du = us - ul
+    return np.abs(du) * 0.1 + 1e-6
+
+
+def build_uncertainty_aware_targets(
+    delta_u,
+    sigma,
+    *,
+    mode: TargetMode | str = TargetMode.SIGNAL_TO_NOISE,
+    temperature: float = 1.0,
+    gap_threshold: float = 0.0,
+    w_max: float = 1.0,
+    epsilon: float = 1e-6,
+):
+    """Section 14 — build uncertainty-aware training targets.
+
+    For SIGNAL_TO_NOISE mode::
+
+        w_i = min(w_max, |ΔU_i| / (σ_i + ε))
+        q_i = sigmoid(ΔU_i / τ) * w_i  (soft)
+        y_i = (ΔU_i > gap) * w_i       (hard)
+
+    The reliability weight ``w_i`` down-weights examples with high
+    uncertainty relative to their gap.
+
+    Returns
+    -------
+    targets, valid_mask, weights : same type as delta_u
+    """
+    if isinstance(mode, str):
+        mode = TargetMode.from_str(mode)
+    is_torch = _HAS_TORCH and isinstance(delta_u, torch.Tensor)
+
+    if mode == TargetMode.SIGNAL_TO_NOISE:
+        if is_torch:
+            w = torch.clamp(
+                torch.abs(delta_u) / (sigma + epsilon),
+                max=w_max)
+            targets = torch.sigmoid(delta_u / temperature) * w
+            valid_mask = torch.ones_like(delta_u, dtype=torch.bool)
+            return targets, valid_mask, w
+        du = np.asarray(delta_u, dtype=np.float64)
+        sig = np.asarray(sigma, dtype=np.float64)
+        w = np.clip(np.abs(du) / (sig + epsilon), 0.0, w_max)
+        targets = (1.0 / (1.0 + np.exp(-du / temperature))) * w
+        valid_mask = np.ones(du.shape, dtype=np.bool_)
+        return targets, valid_mask, w
+
+    if mode == TargetMode.HARD_GAP:
+        # Same as HARD but with explicit frozen gap threshold.
+        return build_preference_targets(
+            delta_u, TargetMode.HARD, temperature, gap_threshold)
+
+    if mode == TargetMode.SOFT_TEMPERATURE:
+        # Same as SOFT but with explicit frozen temperature.
+        return build_preference_targets(
+            delta_u, TargetMode.SOFT, temperature, gap_threshold)
+
+    raise ValueError(f"Unsupported uncertainty-aware mode: {mode}")
+
+
+__all__ = [
+    "TargetMode",
+    "build_preference_targets",
+    "build_uncertainty_aware_targets",
+    "estimate_sigma",
+]

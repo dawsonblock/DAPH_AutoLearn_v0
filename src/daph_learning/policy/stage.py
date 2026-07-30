@@ -1,4 +1,4 @@
-"""v0.3.10.3.2-alpha — experiment stage access control (Sections 14-15).
+"""v0.3.10.4-alpha — experiment stage access control (Sections 14-15).
 
 Enforces split access discipline:
 
@@ -23,12 +23,33 @@ from typing import Any
 
 
 class ExperimentStage(str, Enum):
-    """Section 14: experiment lifecycle stages."""
+    """Section 14/16: experiment lifecycle stages.
+
+    Section 16 adds 9 fine-grained stages. The original 5 stages (TRAIN,
+    DEV, CALIBRATION, FROZEN, FINAL) are retained as aliases for backward
+    compatibility.
+
+    The 9 Section 16 stages (in order):
+      CREATED → DATASET_FROZEN → EXPERIENCE_COLLECTED →
+      DEVELOPMENT_COMPLETE → CALIBRATED → POLICY_FROZEN →
+      FINAL_RESERVED → FINAL_EVALUATED → REPORTED
+    """
+    # Original 5 stages (backward compatible).
     TRAIN = "train"
     DEV = "dev"
     CALIBRATION = "calibration"
     FROZEN = "frozen"
     FINAL = "final"
+    # Section 16 — 9 fine-grained stages.
+    CREATED = "created"
+    DATASET_FROZEN = "dataset_frozen"
+    EXPERIENCE_COLLECTED = "experience_collected"
+    DEVELOPMENT_COMPLETE = "development_complete"
+    CALIBRATED = "calibrated"
+    POLICY_FROZEN = "policy_frozen"
+    FINAL_RESERVED = "final_reserved"
+    FINAL_EVALUATED = "final_evaluated"
+    REPORTED = "reported"
 
     @classmethod
     def from_str(cls, value: str) -> "ExperimentStage":
@@ -38,6 +59,51 @@ class ExperimentStage(str, Enum):
         raise ValueError(
             f"unknown stage {value!r}; expected one of "
             f"{[m.value for m in cls]}")
+
+
+# Section 16 — valid forward transitions. Backward transitions are invalid.
+_VALID_TRANSITIONS: dict[ExperimentStage, set[ExperimentStage]] = {
+    ExperimentStage.CREATED: {
+        ExperimentStage.DATASET_FROZEN, ExperimentStage.TRAIN,
+    },
+    ExperimentStage.DATASET_FROZEN: {
+        ExperimentStage.EXPERIENCE_COLLECTED,
+    },
+    ExperimentStage.EXPERIENCE_COLLECTED: {
+        ExperimentStage.DEVELOPMENT_COMPLETE, ExperimentStage.DEV,
+    },
+    ExperimentStage.DEVELOPMENT_COMPLETE: {
+        ExperimentStage.CALIBRATED, ExperimentStage.CALIBRATION,
+    },
+    ExperimentStage.CALIBRATED: {
+        ExperimentStage.POLICY_FROZEN, ExperimentStage.FROZEN,
+    },
+    ExperimentStage.POLICY_FROZEN: {
+        ExperimentStage.FINAL_RESERVED,
+    },
+    ExperimentStage.FINAL_RESERVED: {
+        ExperimentStage.FINAL_EVALUATED, ExperimentStage.FINAL,
+    },
+    ExperimentStage.FINAL_EVALUATED: {
+        ExperimentStage.REPORTED,
+    },
+    ExperimentStage.REPORTED: set(),  # terminal
+    # Legacy 5-stage transitions.
+    ExperimentStage.TRAIN: {
+        ExperimentStage.DEV, ExperimentStage.CALIBRATION,
+        ExperimentStage.FROZEN,
+    },
+    ExperimentStage.DEV: {
+        ExperimentStage.CALIBRATION, ExperimentStage.FROZEN,
+    },
+    ExperimentStage.CALIBRATION: {
+        ExperimentStage.FROZEN,
+    },
+    ExperimentStage.FROZEN: {
+        ExperimentStage.FINAL,
+    },
+    ExperimentStage.FINAL: set(),  # terminal
+}
 
 
 class FinalAccessError(RuntimeError):
@@ -66,7 +132,7 @@ class FinalAccessLedger:
     No hyperparameter updates after the first final access.
     """
     max_accesses: int = 1
-    release_version: str = "0.3.10.3.2-alpha"
+    release_version: str = "0.3.10.4-alpha"
     source_hash: str = ""
     config_hash: str = ""
     policy_hash: str = ""
@@ -137,7 +203,7 @@ class FreezeManifest:
     tree, config, policy, and calibration state that was frozen. Any
     change after freezing invalidates the final evaluation.
     """
-    release_version: str = "0.3.10.3.2-alpha"
+    release_version: str = "0.3.10.4-alpha"
     source_tree_sha256: str = ""
     config_sha256: str = ""
     policy_sha256: str = ""
@@ -215,6 +281,15 @@ class StageGuard:
     freeze_manifest: FreezeManifest | None = None
 
     def transition_to(self, stage: ExperimentStage) -> None:
+        """Section 16 — transition to a new stage. Raises on invalid
+        backward transitions."""
+        if stage != self.stage:
+            allowed = _VALID_TRANSITIONS.get(self.stage, set())
+            if stage not in allowed:
+                raise FinalAccessError(
+                    f"invalid stage transition: {self.stage.value!r} → "
+                    f"{stage.value!r}; valid next stages: "
+                    f"{sorted(s.value for s in allowed)}")
         self.stage = stage
 
     def freeze(

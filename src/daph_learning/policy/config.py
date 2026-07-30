@@ -121,7 +121,7 @@ class ExperimentConfig:
     # Replay (Section 27). Optional.
     prioritized_replay_alpha: float = 0.0  # 0 = uniform / off
     # Version.
-    autolearn_version: str = "0.3.10.3.2-alpha"
+    autolearn_version: str = "0.3.10.4-alpha"
     config_sha256: str | None = None
 
     def __post_init__(self) -> None:

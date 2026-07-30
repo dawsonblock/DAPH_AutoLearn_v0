@@ -23,10 +23,12 @@ class ResourceLimitError(SymbolicMathError):
 
 
 MAX_EXPR_CHARS = 256
-MAX_AST_NODES = 32
-MAX_AST_DEPTH = 12
+MAX_AST_NODES = 128
+MAX_AST_DEPTH = 32
 MAX_INT_DIGITS = 64
 MAX_RESULT_BITS = 4096
+MAX_INTEGER_BITS = 4096
+MAX_EXPONENT = 12
 
 _ALLOWED_BINOPS = {
     ast.Add: operator.add,
@@ -41,12 +43,12 @@ _ALLOWED_UNARYOPS = {
 }
 
 
-def _require_int(value: Any, name: str = "value") -> int:
+def _require_int(value: Any, name: str = "value", *, max_bits: int = MAX_INTEGER_BITS) -> int:
     # bool is a subclass of int; require the exact type.
     if type(value) is not int:
         raise UnsafeExpressionError(f"{name} must be an integer, got {type(value).__name__}")
-    if len(str(abs(value))) > MAX_INT_DIGITS:
-        raise ResourceLimitError(f"{name} exceeds {MAX_INT_DIGITS} decimal digits")
+    if value.bit_length() > max_bits:
+        raise ResourceLimitError(f"{name} exceeds {max_bits} bits")
     return value
 
 
@@ -65,26 +67,58 @@ def _depth(node: ast.AST) -> int:
     return 1 + max(_depth(child) for child in children)
 
 
-def _validate_tree(tree: ast.AST) -> None:
+# Node types that are explicitly permitted in the integer-expression
+# grammar. Anything else is rejected.
+_PERMITTED_NODE_TYPES: frozenset[type] = frozenset({
+    ast.Expression,
+    ast.Constant,
+    ast.UnaryOp,
+    ast.UAdd,
+    ast.USub,
+    ast.BinOp,
+    ast.Add,
+    ast.Sub,
+    ast.Mult,
+    ast.Mod,
+    ast.FloorDiv,
+})
+
+
+def _validate_tree(
+    tree: ast.AST,
+    *,
+    max_ast_nodes: int = MAX_AST_NODES,
+    max_depth: int = MAX_AST_DEPTH,
+) -> None:
     nodes = list(ast.walk(tree))
-    if len(nodes) > MAX_AST_NODES:
-        raise ResourceLimitError(f"expression exceeds {MAX_AST_NODES} AST nodes")
-    if _depth(tree) > MAX_AST_DEPTH:
-        raise ResourceLimitError(f"expression exceeds AST depth {MAX_AST_DEPTH}")
+    if len(nodes) > max_ast_nodes:
+        raise ResourceLimitError(f"expression exceeds {max_ast_nodes} AST nodes")
+    if _depth(tree) > max_depth:
+        raise ResourceLimitError(f"expression exceeds AST depth {max_depth}")
+    # Explicitly reject every node type that is not in the permitted set.
+    for node in nodes:
+        if type(node) not in _PERMITTED_NODE_TYPES:
+            raise UnsafeExpressionError(
+                f"disallowed expression node: {type(node).__name__}")
 
 
-def _eval_node(node: ast.AST) -> int:
+def _eval_node(node: ast.AST, *, max_integer_bits: int = MAX_INTEGER_BITS) -> int:
     if isinstance(node, ast.Constant):
-        return _require_int(node.value, "constant")
+        # Reject floats, booleans, strings, and any non-int constant.
+        if isinstance(node.value, bool) or type(node.value) is not int:
+            raise UnsafeExpressionError(
+                f"non-integer constant: {node.value!r}")
+        return _require_int(node.value, "constant", max_bits=max_integer_bits)
 
     if isinstance(node, ast.UnaryOp) and type(node.op) in _ALLOWED_UNARYOPS:
         return _check_result(
-            _ALLOWED_UNARYOPS[type(node.op)](_eval_node(node.operand))
+            _ALLOWED_UNARYOPS[type(node.op)](
+                _eval_node(node.operand, max_integer_bits=max_integer_bits))
         )
 
     if isinstance(node, ast.BinOp) and type(node.op) in _ALLOWED_BINOPS:
-        left = _eval_node(node.left)
-        right = _eval_node(node.right)
+        left = _eval_node(node.left, max_integer_bits=max_integer_bits)
+        right = _eval_node(node.right, max_integer_bits=max_integer_bits)
         if isinstance(node.op, (ast.Mod, ast.FloorDiv)) and right == 0:
             raise ZeroDivisionError("integer division or modulo by zero")
         return _check_result(_ALLOWED_BINOPS[type(node.op)](left, right))
@@ -94,20 +128,51 @@ def _eval_node(node: ast.AST) -> int:
     )
 
 
-def safe_eval_int_expr(expr: str) -> int:
-    """Bounded fallback evaluator for a tiny exact-integer expression grammar.
+def safe_eval_int_expr(
+    expr: str,
+    *,
+    max_ast_nodes: int = MAX_AST_NODES,
+    max_depth: int = MAX_AST_DEPTH,
+    max_integer_bits: int = MAX_INTEGER_BITS,
+    max_exponent: int = MAX_EXPONENT,
+) -> int:
+    """Section 6: bounded AST evaluator for a tiny exact-integer grammar.
 
-    Deliberately unsupported: names, calls, attributes, subscripts, lists,
-    comprehensions, floats, booleans, true division, exponentiation, bitwise
-    operators, comparisons, lambdas, and assignment expressions.
+    Permitted nodes (explicitly enumerated):
+
+    * integer ``Constant`` (no floats, no booleans, no strings);
+    * ``UnaryOp`` with ``UAdd`` / ``USub``;
+    * ``BinOp`` with ``Add`` / ``Sub`` / ``Mult`` / ``FloorDiv`` / ``Mod``.
+
+    Deliberately unsupported (rejected): names, calls, attributes,
+    subscripts, lists/tuples/sets/dicts, comprehensions, lambdas, imports,
+    floating-point literals, true division (``/``), arbitrary
+    exponentiation (``**``), bitwise operators, comparisons, boolean
+    operators, conditional expressions, assignment expressions, and
+    generator expressions.
+
+    Resource limits: ``max_ast_nodes``, ``max_depth``, ``max_integer_bits``
+    (per literal), and ``max_exponent`` (reserved for future Pow support;
+    currently Pow is rejected outright).
     """
     if not isinstance(expr, str):
         raise TypeError("expr must be str")
     if len(expr) > MAX_EXPR_CHARS:
         raise ResourceLimitError(f"expression exceeds {MAX_EXPR_CHARS} characters")
+
+    # Reject any forbidden characters early so that true division ("/"),
+    # exponentiation ("**"), and bitwise operators never reach the parser.
+    _ALLOWED_CHARS = set("0123456789+-*/%() \t")
+    # Note: "/" alone is rejected below at the AST level (true division);
+    # "//" is permitted. We keep "/" allowed at the char level so "//"
+    # parses, then reject ast.Div at the node level.
+    if any(c not in _ALLOWED_CHARS for c in expr):
+        raise UnsafeExpressionError(
+            f"expression contains disallowed characters: {expr!r}")
+
     tree = ast.parse(expr, mode="eval")
-    _validate_tree(tree)
-    return _eval_node(tree.body)
+    _validate_tree(tree, max_ast_nodes=max_ast_nodes, max_depth=max_depth)
+    return _eval_node(tree.body, max_integer_bits=max_integer_bits)
 
 
 def execute_integer_arithmetic(inputs: Mapping[str, Any]) -> int:

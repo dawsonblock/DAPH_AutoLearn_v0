@@ -1,3 +1,82 @@
+# 0.3.10.4-alpha (Gate A scientific-integrity repair — Priority 0)
+
+This is a **scientific-integrity, reproducibility, and qualification repair**,
+not an architecture expansion. It is the first slice (Priority 0, Sections 1–7
+of the repair plan) of requalifying Gate A under a new frozen experiment ID.
+
+## What changed
+
+- **Stale artifact discovery**: `artifacts/current/` previously contained
+  synthetic evidence and manifests carrying the historical source hash
+  `fd4d47e3...` (v0.3.10.3.2-alpha), which did not match the current source
+  tree. The repo's reports, manifests, and experiment artifacts did not
+  describe the same repository state. This ambiguity is eliminated.
+- **Source-hash mismatch fixed**: a single canonical
+  `compute_canonical_source_hash()` with explicit include/exclude globs,
+  deterministic ordering, normalized POSIX paths, and **normalized line
+  endings** (CRLF/CR → LF) is now the only accepted implementation. CLI:
+  `python -m daph_learning.provenance source-hash [--json]`.
+- **Old failed run archived**: the v0.3.10.3.2-alpha real-model Gate A run
+  (Qwen2.5-1.5B-Instruct, point estimate +0.193, **LCB95% = −0.041 → FAIL**)
+  is preserved as legacy evidence at
+  `artifacts/legacy/daph_gate_a_real_001_failed/` with `LEGACY_NOTICE.md`
+  and `historical_source_manifest.json`. It is NOT presented as current.
+  Missing historical evidence (`raw_metrics.json`, `bootstrap_results.json`,
+  `environment.json`) is recorded honestly, not fabricated.
+- **New experiment identity**: version bumped to `0.3.10.4-alpha`; new
+  experiment ID `daph_gate_a_real_002`; old run retained as
+  `daph_gate_a_real_001_failed`. The new experiment changes material
+  variables and is therefore a new experiment, not a rerun.
+- **Verifier hardening**: canonical `FINAL_ANSWER: <integer>` parser
+  (`parse_canonical_integer_answer`) with closed statuses
+  VALID/MISSING/MULTIPLE/MALFORMED/CONTRADICTORY and a closed
+  `VerificationStatus` enum (CORRECT/INCORRECT/UNVERIFIABLE/EXECUTION_ERROR/
+  TIMEOUT). Qualification fails closed on ambiguity; legacy permissive
+  extraction can no longer award qualification credit.
+- **eval() removal**: Python `eval()` was removed from the symbolic
+  execution path in `real_backends.py`. All arithmetic now routes through
+  the bounded AST evaluator `safe_eval_int_expr`, extended to the spec'd
+  signature (`max_ast_nodes`, `max_depth`, `max_integer_bits`,
+  `max_exponent`) with explicitly enumerated permitted nodes and rejection
+  of names, calls, attributes, floats, true division, exponentiation,
+  containers, and lambdas.
+- **Artifact layout**: new `artifacts/` tree
+  (`synthetic_ci/`, `real_model_smoke/`, `gate_a_qualified/`,
+  `gate_a_failed/`, `legacy/`, `current/pointer.json`). `current/` holds
+  only a pointer; the pointer currently declares
+  `NOT_YET_REQUALIFIED` because no new full real-model Gate A run has been
+  executed.
+- **Artifact validator**: `validate_artifact_bundle()` recursively checks
+  source-hash consistency, experiment/run ID consistency, evidence-level
+  consistency, dataset/model/tokenizer/utility/policy hash consistency,
+  split validity, final-access ledger presence, and rejects synthetic-as-
+  qualified, failed-as-promoted, and cross-run metric copying. Legacy
+  bundles are exempt from the current-hash requirement but cannot be
+  presented as current.
+- **CI gate**: `tests/test_artifact_integrity.py` enforces the layout and
+  validation rules; `tests/test_symbolic_safety_section6.py` statically
+  scans symbolic paths for `eval(`/`exec(`/`compile(`;
+  `tests/test_canonical_verifier_section7.py` covers the verifier.
+
+## What did NOT change (out of scope for Priority 0)
+
+Priority 1+ items from the repair plan are NOT in this slice: frozen
+`UtilityConfig`, benchmark crossover redesign, dataset leakage audit
+module, latency protocol, representation-selection study, structured-
+feature baselines, uncertainty-aware targets, multi-seed sham control,
+final-access state machine, group-aware bootstrap statistics, frozen gate
+criteria config, report generator, real-model smoke, and full Gate A
+execution. These remain as documented next steps
+(see `REMAINING_EXPERIMENT_STEPS.md`).
+
+## Gate A status
+
+`NOT_YET_REQUALIFIED`. No new full real-model Gate A experiment has been
+run for `daph_gate_a_real_002`. No synthetic artifact is presented as
+qualification evidence.
+
+---
+
 # 0.3.10.3.2-alpha (qualification integrity: within-subtype crossover, frozen real evaluation, canonical provenance, real steering utility validation)
 
 - **Mission**: prove or falsify that AutoLearn can choose the better
