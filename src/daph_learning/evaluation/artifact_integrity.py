@@ -1,4 +1,4 @@
-"""v0.3.10.3.1-alpha — artifact directory discipline + source hash
+"""v0.3.10.3.2-alpha — artifact directory discipline + source hash
 enforcement (Sections 32-35).
 
 Section 32: artifact directory discipline
@@ -67,31 +67,45 @@ def validate_result_dir(path: str | Path) -> list[str]:
 # --- Section 33: source tree hash ---
 
 def compute_source_tree_hash(src_dir: str | Path) -> str:
-    """Section 33: SHA-256 of all .py files under src/.
+    """Section 2: canonical SHA-256 of the source tree.
 
-    Files are sorted by relative path and concatenated, then hashed.
-    This binds every artifact to the exact source tree that generated
-    it.
+    .. deprecated::
+        This function now delegates to the canonical
+        :func:`daph_learning.provenance.compute_source_tree_sha256`.
+        All new code should call the canonical function directly.
+
+    For backward compatibility, if ``src_dir`` is a subdirectory of a
+    repository root (e.g. ``repo/src``), the hash is computed over the
+    repository root. If ``src_dir`` is the repository root itself, the
+    hash is computed over it directly.
+
+    Returns the **full 64-character** SHA-256 hex digest.
     """
+    from daph_learning.provenance import compute_source_tree_sha256
     src = Path(src_dir)
-    h = hashlib.sha256()
-    py_files = sorted(src.rglob("*.py"), key=lambda p: str(p.relative_to(src)))
-    for f in py_files:
-        rel = str(f.relative_to(src))
-        h.update(rel.encode("utf-8"))
-        h.update(b"\0")
-        h.update(f.read_bytes())
-        h.update(b"\0")
-    return h.hexdigest()
+    # If src_dir is "repo/src", walk up to the repo root.
+    # If src_dir is the repo root itself, use it directly.
+    root = src
+    if src.name == "src":
+        root = src.parent
+    return compute_source_tree_sha256(root)
 
 
 def assert_source_tree_matches(
     artifact_hash: str, src_dir: str | Path, *, strict: bool = False,
 ) -> None:
-    """Section 33: warn (or error in strict mode) if the current source
-    tree hash differs from the artifact's recorded hash."""
+    """Section 3: warn (or error in strict mode) if the current source
+    tree hash differs from the artifact's recorded hash.
+
+    Both the artifact hash and current hash are compared as full
+    64-character SHA-256 digests. If the artifact hash is a truncated
+    16-character hash (legacy), only the first 16 characters are
+    compared for backward compatibility.
+    """
     current = compute_source_tree_hash(src_dir)
-    if current != artifact_hash:
+    # Support both full 64-char and legacy 16-char artifact hashes.
+    cmp_len = min(len(artifact_hash), len(current))
+    if current[:cmp_len] != artifact_hash[:cmp_len]:
         msg = (f"source tree hash mismatch: artifact={artifact_hash[:16]}... "
                f"current={current[:16]}... — artifacts may be stale")
         if strict:
@@ -210,14 +224,86 @@ def rerun_tests(
         n_skipped=n_skipped, exit_code=result.returncode,
         collection_hash=compute_test_collection_hash(root),
         source_tree_hash=compute_source_tree_hash(src_dir),
-        raw_output=output[-2000:],
+        raw_output=output[-4000:],
     )
+
+
+# --- Section 3: artifact integrity fields ---
+
+REQUIRED_ARTIFACT_FIELDS: tuple[str, ...] = (
+    "release_version",
+    "source_tree_sha256",
+    "config_sha256",
+    "created_at",
+)
+
+# Additional fields required for model experiment artifacts.
+MODEL_ARTIFACT_FIELDS: tuple[str, ...] = (
+    "model_id",
+    "model_revision",
+    "tokenizer_revision",
+)
+
+
+def assert_artifact_has_integrity_fields(
+    artifact: dict, *, is_model_artifact: bool = False,
+) -> None:
+    """Section 3: verify that an artifact contains all required
+    integrity fields.
+
+    Required for all artifacts:
+    - ``release_version``
+    - ``source_tree_sha256``
+    - ``config_sha256``
+    - ``created_at``
+
+    For model experiment artifacts also:
+    - ``model_id``
+    - ``model_revision``
+    - ``tokenizer_revision``
+    """
+    required = REQUIRED_ARTIFACT_FIELDS
+    if is_model_artifact:
+        required = required + MODEL_ARTIFACT_FIELDS
+    missing = [f for f in required if f not in artifact or artifact[f] is None]
+    if missing:
+        raise ValueError(
+            f"artifact missing required integrity fields: {missing}")
+
+
+def assert_artifact_matches_current_source(
+    artifact: dict, current_hash: str, *, strict: bool = True,
+) -> None:
+    """Section 3: verify that an artifact's ``source_tree_sha256``
+    matches the current source tree hash.
+
+    If ``strict=True`` (default), raises ``RuntimeError`` on mismatch.
+    Otherwise prints a warning.
+    """
+    artifact_hash = artifact.get("source_tree_sha256", "")
+    if not artifact_hash:
+        raise ValueError(
+            "artifact has no source_tree_sha256 field — cannot verify "
+            "integrity (Section 3)")
+    # Support both full 64-char and legacy 16-char hashes.
+    cmp_len = min(len(artifact_hash), len(current_hash))
+    if artifact_hash[:cmp_len] != current_hash[:cmp_len]:
+        msg = (
+            f"artifact source_tree_sha256 mismatch: "
+            f"artifact={artifact_hash[:16]}... current={current_hash[:16]}... "
+            f"— stale artifact (Section 3)")
+        if strict:
+            raise RuntimeError(msg)
+        print(f"WARNING: {msg}", file=sys.stderr)
 
 
 __all__ = [
     "POLICY_ARTIFACT_FILES",
     "RESULT_FILES",
     "ReRunTestReport",
+    "REQUIRED_ARTIFACT_FIELDS",
+    "assert_artifact_has_integrity_fields",
+    "assert_artifact_matches_current_source",
     "assert_source_tree_matches",
     "compute_source_tree_hash",
     "compute_test_collection_hash",

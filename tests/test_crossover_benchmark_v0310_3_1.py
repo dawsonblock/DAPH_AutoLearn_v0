@@ -70,17 +70,24 @@ def test_crossover_family_contains_both_backend_preferences():
 def test_optimal_derived_from_execution_not_metadata():
     """Section 11: the optimal action is derived only after both
     backends execute and verify. The distribution function must not
-    read any stored label."""
-    tasks = generate_crossover_split(split="dev", n_per_subtype=10, seed=3)
+    read any stored label.
+
+    v0.3.10.3.2: updated to reflect within-subtype crossover (Section 12).
+    B, C, E, F now have both symbolic and LLM wins within each subtype.
+    """
+    tasks = generate_crossover_split(split="dev", n_per_subtype=20, seed=3)
     dist = crossover_optimal_distribution(tasks)
-    # If the function had read a stored label, removing execution would
-    # still return a distribution. Verify it actually executed by
-    # checking per-subtype structure matches the known simulator behavior:
-    # B, C, E, F -> LLM-optimal; A, D -> mixed (some symbolic, some tie).
+    # Verify it actually executed by checking per-subtype structure.
+    # With within-subtype crossover, each subtype should have both
+    # symbolic and LLM wins (not all-one-backend).
     ps = dist["per_subtype"]
-    assert ps["B"]["llm"] > 0 and ps["B"]["symbolic"] == 0
-    assert ps["C"]["llm"] > 0 and ps["C"]["symbolic"] == 0
-    assert ps["F"]["llm"] > 0 and ps["F"]["symbolic"] == 0
+    # At least some LLM wins must exist (proves execution happened).
+    total_llm = sum(s["llm"] for s in ps.values())
+    total_sym = sum(s["symbolic"] for s in ps.values())
+    assert total_llm > 0, "no LLM wins — execution may not have happened"
+    assert total_sym > 0, "no symbolic wins — execution may not have happened"
+    # At least 3 subtypes must have crossover (Section 12).
+    assert dist["n_crossover_subtypes"] >= 3
 
 
 def test_splits_are_template_disjoint():

@@ -330,7 +330,9 @@ class TestEvidenceVersionMatch:
         if exp_path.exists():
             with open(exp_path) as f:
                 exp = json.load(f)
-            assert "synthetic_result_matrix" in exp
+            # v0.3.10.3.2: accept either the old synthetic_result_matrix
+            # or the new baseline_matrix format.
+            assert "synthetic_result_matrix" in exp or "baseline_matrix" in exp
 
 
 # ============================================================
@@ -627,7 +629,8 @@ class TestSourceTreeHash:
         h1 = source_tree_sha256(REPO_ROOT)
         h2 = source_tree_sha256(REPO_ROOT)
         assert h1 == h2
-        assert len(h1) == 16  # truncated hex
+        # v0.3.10.3.2: canonical hash is full 64-char SHA-256
+        assert len(h1) == 64  # full SHA-256 hex
 
     def test_source_tree_hash_is_hex(self):
         from daph_learning.policy.provenance import source_tree_sha256

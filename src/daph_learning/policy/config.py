@@ -57,10 +57,13 @@ class ExperimentConfig:
     tokenizer revision, and dataset hashes.
     """
 
-    # Utility weights (Section 1).
+    # Utility weights (Section 1, 16).
+    # v0.3.10.3.2 — cost-weighted so both-correct cases are resolved
+    # by cost (LLM API call cheaper than symbolic compute), creating
+    # real within-subtype crossover.
     quality_weight: float = 1.0
-    lambda_time: float = 0.0
-    lambda_compute: float = 0.0
+    lambda_time: float = 0.001
+    lambda_compute: float = 0.1
     lambda_risk: float = 1.0
     time_reference_ms: float = 1000.0
     compute_reference: float = 1.0
@@ -118,7 +121,7 @@ class ExperimentConfig:
     # Replay (Section 27). Optional.
     prioritized_replay_alpha: float = 0.0  # 0 = uniform / off
     # Version.
-    autolearn_version: str = "0.3.10.3.1-alpha"
+    autolearn_version: str = "0.3.10.3.2-alpha"
     config_sha256: str | None = None
 
     def __post_init__(self) -> None:

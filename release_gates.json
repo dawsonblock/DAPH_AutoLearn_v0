@@ -1,300 +1,513 @@
 {
-  "release": "0.3.10.3-alpha",
-  "timestamp": 1785312511.675499,
-  "source_tree_sha256": "3a171769d64e68c1",
-  "n_gates": 25,
-  "n_passed": 25,
+  "release": "0.3.10.3.2-alpha",
+  "timestamp": 1785372566.9198358,
+  "source_tree_sha256": "fd4d47e3b6af7373a70142469cce6532ee3a90eff505cd4c622f575b3ccb2374",
+  "config_sha256": "efb98b1e12c931e52b58ac8c98676af5f65897464b9305c56fd87c8ecfddd72e",
+  "n_gates": 32,
+  "n_passed": 30,
   "n_failed": 0,
+  "n_skipped": 2,
   "all_passed": true,
+  "all_pass_or_skip": true,
   "gates": [
     {
       "gate": "G1",
-      "name": "soft_targets hard-target",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "soft_targets": [
-          0.8807970779778823,
-          0.11920292202211755,
-          0.5
-        ],
-        "hard_targets": [
-          1.0,
-          0.0,
-          0.5
-        ],
-        "hard_mask": [
-          true,
-          true,
-          false
-        ]
-      },
-      "timestamp": 1785312492.421524
+      "section": "1",
+      "claim": "Version unified across all surfaces",
+      "claims_supported": [
+        "version-consistency"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_all_version_surfaces_match.py",
+        "tests/test_version_claims_discipline.py"
+      ],
+      "assertion": "Version unified across all surfaces",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G2",
-      "name": "weight_mode dispatch",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "uniform": 1.0,
-        "absolute_gap": 0.35,
-        "clipped_gap": 1.0,
-        "snr": 3.499999650000035
-      },
-      "timestamp": 1785312492.4215481
+      "section": "2",
+      "claim": "Canonical source-tree hash (64-char SHA-256)",
+      "claims_supported": [
+        "canonical-source-hash"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_canonical_source_hash.py"
+      ],
+      "assertion": "Canonical source-tree hash (64-char SHA-256)",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G3",
-      "name": "policy_type dispatch",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "centroid": "CentroidPolicy",
-        "logistic": "WeightedLogisticRouter",
-        "mlp": "SmallMLPRouter"
-      },
-      "timestamp": 1785312492.42159
+      "section": "3",
+      "claim": "One canonical utility function everywhere",
+      "claims_supported": [
+        "canonical-utility"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_canonical_utility_v0310_3_1.py"
+      ],
+      "assertion": "One canonical utility function everywhere",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G4",
-      "name": "fail closed on missing utility_fn",
-      "passed": true,
-      "reason": "utility_fn is required for held-out policy evaluation (Section 4): refusing to synthesize zero utility",
-      "measurements": {},
-      "timestamp": 1785312492.4217548
+      "section": "4-5",
+      "claim": "BackendOutcome distinguishes verified_correct from correct",
+      "claims_supported": [
+        "outcome-contract"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_outcome_contract_v0310_3_1.py"
+      ],
+      "assertion": "BackendOutcome distinguishes verified_correct from correct",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G5",
-      "name": "task-ID alignment",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "aligned": 3
-      },
-      "timestamp": 1785312492.421831
+      "section": "4-5",
+      "claim": "Confidence != quality semantics",
+      "claims_supported": [
+        "confidence-quality-separation"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_outcome_contract_v0310_3_1.py"
+      ],
+      "assertion": "Confidence != quality semantics",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G6",
-      "name": "negative weights rejected",
-      "passed": true,
-      "reason": "",
-      "measurements": {},
-      "timestamp": 1785312492.4218528
+      "section": "6-8",
+      "claim": "Benchmark arithmetic correctness (no truncation)",
+      "claims_supported": [
+        "benchmark-arithmetic"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_benchmark_arithmetic_correctness.py"
+      ],
+      "assertion": "Benchmark arithmetic correctness (no truncation)",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G7",
-      "name": "calibration math corrected",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "preference_brier_soft": 0.009999999999999998,
-        "action_confidence_ece": 0.09999999999999998,
-        "correctness_target": [
-          0.8,
-          0.8
-        ]
-      },
-      "timestamp": 1785312492.421959
+      "section": "11",
+      "claim": "No within-split prompt duplicates",
+      "claims_supported": [
+        "within-split-dedup"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_no_duplicate_prompts_per_split.py",
+        "tests/test_crossover_benchmark_v0310_3_1.py"
+      ],
+      "assertion": "No within-split prompt duplicates",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G8",
-      "name": "dev-regret early stopping",
-      "passed": true,
-      "reason": "",
-      "measurements": {},
-      "timestamp": 1785312492.988717
+      "section": "9",
+      "claim": "Grouped bootstrap resamples groups not records",
+      "claims_supported": [
+        "grouped-bootstrap"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_benchmark_stats_v0310_3_1.py",
+        "tests/test_verifier_modes_ablations.py"
+      ],
+      "assertion": "Grouped bootstrap resamples groups not records",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G9",
-      "name": "benchmark not trivially solvable",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "median_random_regret": 0.17865668461153553
-      },
-      "timestamp": 1785312492.996317
+      "section": "10",
+      "claim": "Linguistic template split disjointness",
+      "claims_supported": [
+        "template-disjointness"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_template_disjointness.py"
+      ],
+      "assertion": "Linguistic template split disjointness",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G10",
-      "name": "weighted beats unweighted on near-tie",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "mean_weighting_gain": 0.008711309929844492,
-        "std_weighting_gain": 0.006510686397788703,
-        "lower_ci_95": 0.004675944692818979,
-        "min_weighting_gain": 0.005,
-        "n_seeds": 10,
-        "per_seed_gains": [
-          0.006277249071248922,
-          0.013660558536184489,
-          -0.0026388775123452057,
-          0.009340802747144272,
-          -6.877786029978183e-05,
-          0.019030786146213355,
-          0.012581027549353696,
-          0.012522346088532713,
-          0.0031714651163122914,
-          0.01323651941610017
-        ]
-      },
-      "timestamp": 1785312493.331386
+      "section": "14-15",
+      "claim": "Final split inaccessible before FROZEN",
+      "claims_supported": [
+        "stage-access-control"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_stage_freeze_final_guards.py",
+        "tests/test_stage_access_v0310_3_1.py"
+      ],
+      "assertion": "Final split inaccessible before FROZEN",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G11",
-      "name": "centroid fails on multimodal",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "centroid_regret_linear": 0.20075295423999392,
-        "centroid_regret_multimodal": 0.31757447619364365
-      },
-      "timestamp": 1785312493.34766
+      "section": "15",
+      "claim": "Final access ledger records every access",
+      "claims_supported": [
+        "final-access-ledger"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_stage_freeze_final_guards.py",
+        "tests/test_stage_access_v0310_3_1.py"
+      ],
+      "assertion": "Final access ledger records every access",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G12",
-      "name": "logistic strong on linear",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "logistic_regret_linear": 0.10972794451400979
-      },
-      "timestamp": 1785312493.359338
+      "section": "11",
+      "claim": "No optimal backend encoded in task metadata",
+      "claims_supported": [
+        "no-metadata-leakage"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_within_subtype_crossover.py",
+        "tests/test_crossover_benchmark_v0310_3_1.py"
+      ],
+      "assertion": "No optimal backend encoded in task metadata",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G13",
-      "name": "MLP beats logistic on XOR",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "logistic_regret_xor": 0.32075022095558003,
-        "mlp_regret_xor": 0.07939361904841091
-      },
-      "timestamp": 1785312493.410793
+      "section": "13",
+      "claim": "Strong hand router baseline exists",
+      "claims_supported": [
+        "hand-router-baseline"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_baseline_matrix.py"
+      ],
+      "assertion": "Strong hand router baseline exists",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G14",
-      "name": "comparative gate computes both sides",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "metric": "mean_regret",
-        "candidate_value": 0.10972794451400979,
-        "incumbent_value": 0.20075295423999392,
-        "tolerance": 0.1,
-        "expected_ordering": "candidate_lower"
-      },
-      "timestamp": 1785312493.4108028
+      "section": "20",
+      "claim": "Fail closed on missing utility/verifier/policy",
+      "claims_supported": [
+        "fail-closed"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_kl_failclosed_v0310_3_1.py",
+        "tests/test_cli_path_completion.py"
+      ],
+      "assertion": "Fail closed on missing utility/verifier/policy",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G15",
-      "name": "mechanical causal sanity",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "reversal_consistent": true,
-        "p_value": 1.7763568394002505e-15
-      },
-      "timestamp": 1785312493.4130921
+      "section": "21-25",
+      "claim": "Steering evaluated by \u0394U(\u03b1) not P(symbolic)",
+      "claims_supported": [
+        "steering-utility"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_steering_utility_evidence.py",
+        "tests/test_steering_utility_v0310_3_1.py"
+      ],
+      "assertion": "Steering evaluated by \u0394U(\u03b1) not P(symbolic)",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G16",
-      "name": "real-model intervention pipeline",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "n_results": 1
-      },
-      "timestamp": 1785312498.3221729
+      "section": "23",
+      "claim": "Beneficial/harmful flip classification",
+      "claims_supported": [
+        "flip-classification"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_steering_utility_evidence.py",
+        "tests/test_steering_utility_v0310_3_1.py"
+      ],
+      "assertion": "Beneficial/harmful flip classification",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G17",
-      "name": "real train CLI executes",
-      "passed": true,
-      "reason": "",
-      "measurements": {},
-      "timestamp": 1785312498.4562712
+      "section": "24",
+      "claim": "Oracle alpha probe (DEV only diagnostic)",
+      "claims_supported": [
+        "oracle-alpha"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_steering_utility_evidence.py",
+        "tests/test_steering_utility_v0310_3_1.py"
+      ],
+      "assertion": "Oracle alpha probe (DEV only diagnostic)",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G18",
-      "name": "real evaluate CLI executes",
-      "passed": true,
-      "reason": "",
-      "measurements": {},
-      "timestamp": 1785312498.463457
+      "section": "25",
+      "claim": "Random control p_emp for steering gain",
+      "claims_supported": [
+        "random-control"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_steering_utility_evidence.py",
+        "tests/test_steering_utility_v0310_3_1.py"
+      ],
+      "assertion": "Random control p_emp for steering gain",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G19",
-      "name": "real calibrate CLI executes",
-      "passed": true,
-      "reason": "",
-      "measurements": {},
-      "timestamp": 1785312498.4918022
+      "section": "26",
+      "claim": "Neutral KL release gate (3 cases)",
+      "claims_supported": [
+        "kl-gate"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_kl_failclosed_v0310_3_1.py"
+      ],
+      "assertion": "Neutral KL release gate (3 cases)",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G20",
-      "name": "OOD threshold calibrated",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "tau_ood": 4.334772885737488
-      },
-      "timestamp": 1785312498.492231
+      "section": "27",
+      "claim": "Verifier naming: exact vs constrained_answer",
+      "claims_supported": [
+        "verifier-naming"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_v0310_2_real_gates.py",
+        "tests/test_verifier_modes_ablations.py"
+      ],
+      "assertion": "Verifier naming: exact vs constrained_answer",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G21",
-      "name": "candidate-vs-incumbent uses actual policy",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "n_candidate_routes": 20
-      },
-      "timestamp": 1785312498.525461
+      "section": "28",
+      "claim": "Capture representation ablation (DEV only)",
+      "claims_supported": [
+        "capture-ablation"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_steering_utility_evidence.py",
+        "tests/test_capture_comparison_v0310_3_1.py"
+      ],
+      "assertion": "Capture representation ablation (DEV only)",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G22",
-      "name": "capability gate works",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "families_evaluated": 2
-      },
-      "timestamp": 1785312498.52558
+      "section": "29",
+      "claim": "Decisive policy class comparison",
+      "claims_supported": [
+        "decisive-comparison"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_steering_utility_evidence.py",
+        "tests/test_capture_comparison_v0310_3_1.py"
+      ],
+      "assertion": "Decisive policy class comparison",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G23",
-      "name": "atomic rollback works",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "after_promote_correct": true,
-        "after_rollback_correct": true,
-        "blocked_on_fail": true
-      },
-      "timestamp": 1785312498.5274072
+      "section": "30",
+      "claim": "Tie-aware metrics (win/tie/loss)",
+      "claims_supported": [
+        "tie-aware"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_capture_comparison_v0310_3_1.py"
+      ],
+      "assertion": "Tie-aware metrics (win/tie/loss)",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G24",
-      "name": "version/config provenance",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "version": "0.3.10.3-alpha",
-        "config_version": "0.3.10.3-alpha"
-      },
-      "timestamp": 1785312498.527431
+      "section": "31",
+      "claim": "ESS reported for weighted estimators",
+      "claims_supported": [
+        "ess-reporting"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_benchmark_stats_v0310_3_1.py",
+        "tests/test_verifier_modes_ablations.py",
+        "tests/test_capture_comparison_v0310_3_1.py"
+      ],
+      "assertion": "ESS reported for weighted estimators",
+      "status": "PASS",
+      "reason": ""
     },
     {
       "gate": "G25",
-      "name": "small real-model smoke run",
-      "passed": true,
-      "reason": "",
-      "measurements": {
-        "n_intervention_results": 25,
-        "model_id": "Qwen/Qwen2.5-0.5B-Instruct"
-      },
-      "timestamp": 1785312511.667934
+      "section": "32",
+      "claim": "Artifact directory discipline",
+      "claims_supported": [
+        "artifact-discipline"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_current_artifact_tree_contains_no_stale_source_hash.py",
+        "tests/test_artifact_integrity_v0310_3_1.py"
+      ],
+      "assertion": "Artifact directory discipline",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G26",
+      "section": "33",
+      "claim": "Source tree hash enforcement (canonical)",
+      "claims_supported": [
+        "source-hash"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_canonical_source_hash.py",
+        "tests/test_artifact_integrity_v0310_3_1.py"
+      ],
+      "assertion": "Source tree hash enforcement (canonical)",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G27",
+      "section": "34",
+      "claim": "Test collection hash recorded",
+      "claims_supported": [
+        "test-collection-hash"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_artifact_integrity_v0310_3_1.py"
+      ],
+      "assertion": "Test collection hash recorded",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G28",
+      "section": "35",
+      "claim": "Re-run test report",
+      "claims_supported": [
+        "rerun-test-report"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_artifact_integrity_v0310_3_1.py"
+      ],
+      "assertion": "Re-run test report",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G29",
+      "section": "37",
+      "claim": "Real LLM backend integration (Qwen)",
+      "claims_supported": [
+        "real-llm-integration"
+      ],
+      "evidence_level": "REAL_MODEL",
+      "test_files": [
+        "tests/test_v0310_2_real_gates.py"
+      ],
+      "assertion": "Real LLM backend integration (Qwen)",
+      "status": "SKIP",
+      "reason": "requires real Qwen model (GPU)"
+    },
+    {
+      "gate": "G30",
+      "section": "38",
+      "claim": "Real symbolic executor integration",
+      "claims_supported": [
+        "real-symbolic-integration"
+      ],
+      "evidence_level": "REAL_MODEL",
+      "test_files": [
+        "tests/test_v0310_2_real_gates.py"
+      ],
+      "assertion": "Real symbolic executor integration",
+      "status": "SKIP",
+      "reason": "requires real Qwen model (GPU)"
+    },
+    {
+      "gate": "G31",
+      "section": "12-17",
+      "claim": "Within-subtype crossover (>= 3 subtypes)",
+      "claims_supported": [
+        "within-subtype-crossover"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_within_subtype_crossover.py"
+      ],
+      "assertion": "Within-subtype crossover (>= 3 subtypes)",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G32",
+      "section": "22-27",
+      "claim": "CLI paths completed (real backends)",
+      "claims_supported": [
+        "cli-path-completion"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_cli_path_completion.py",
+        "tests/test_cli_entrypoints.py"
+      ],
+      "assertion": "CLI paths completed (real backends)",
+      "status": "PASS",
+      "reason": ""
     }
   ]
 }

@@ -43,7 +43,8 @@ def test_every_claim_has_at_least_one_gate():
 def test_get_gate_by_id():
     g = get_gate("G9")
     assert g.gate_id == "G9"
-    assert "crossover" in g.description.lower()
+    # v0.3.10.3.2: G9 is now "Linguistic template split disjointness"
+    assert "template" in g.description.lower() or "disjoint" in g.description.lower()
 
 
 def test_get_gate_unknown_raises():
@@ -68,6 +69,7 @@ def test_gate_test_files_exist():
 
 
 def test_g32_all_gates_pass_is_self_referential():
-    """G32 depends on G1-G31 all passing. Its test file is this file."""
+    """v0.3.10.3.2: G32 is now 'CLI paths completed'. The all-gates-pass
+    check is distributed across the gate registry itself."""
     g32 = get_gate("G32")
-    assert "G1-G31" in g32.description or "All" in g32.description
+    assert "cli" in g32.description.lower() or "path" in g32.description.lower()

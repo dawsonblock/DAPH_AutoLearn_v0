@@ -508,14 +508,14 @@ def run_all_gates() -> dict:
     # Summary.
     n_pass = sum(1 for g in gates if g["passed"])
     n_total = len(gates)
-    # v0.3.10.3 — bind artifact to current source-tree hash.
+    # v0.3.10.3.2 — bind artifact to current source-tree hash (canonical).
     try:
-        from daph_learning.policy.provenance import source_tree_sha256
-        src_hash = source_tree_sha256()
+        from daph_learning.provenance import compute_source_tree_sha256
+        src_hash = compute_source_tree_sha256(REPO)
     except Exception:
         src_hash = "unknown"
     return {
-        "release": "0.3.10.3.1-alpha",
+        "release": "0.3.10.3.2-alpha",
         "timestamp": time.time(),
         "source_tree_sha256": src_hash,
         "n_gates": n_total,
@@ -536,10 +536,10 @@ def run_experiment_results() -> dict:
         make_environment, benchmark_execute_fn, benchmark_utility,
         benchmark_oracle_utility,
     )
-    # v0.3.10.3 — bind artifact to current source-tree hash.
+    # v0.3.10.3.2 — bind artifact to current source-tree hash (canonical).
     try:
-        from daph_learning.policy.provenance import source_tree_sha256
-        exp_src_hash = source_tree_sha256()
+        from daph_learning.provenance import compute_source_tree_sha256
+        exp_src_hash = compute_source_tree_sha256(REPO)
     except Exception:
         exp_src_hash = "unknown"
 
@@ -593,7 +593,7 @@ def run_experiment_results() -> dict:
             matrix[env]["weighted"] = _eval("logistic", env, weight_mode="clipped_gap")
 
     return {
-        "release": "0.3.10.3.1-alpha",
+        "release": "0.3.10.3.2-alpha",
         "timestamp": time.time(),
         "source_tree_sha256": exp_src_hash,
         "synthetic_result_matrix": matrix,
@@ -601,7 +601,7 @@ def run_experiment_results() -> dict:
 
 
 def main() -> int:
-    print("Running v0.3.10.3.1-alpha release gates...")
+    print("Running v0.3.10.3.2-alpha release gates...")
     gates = run_all_gates()
     out_gates = REPO / "release_gates.json"
     with open(out_gates, "w") as f:

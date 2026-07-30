@@ -1,4 +1,4 @@
-"""v0.3.10.3.1-alpha — capture representation ablation (Section 28).
+"""v0.3.10.3.2-alpha — capture representation ablation (Section 28).
 
 The capture location (which residual-stream layer we read activations
 from) is a hyperparameter chosen on DEV, never on FINAL. This module

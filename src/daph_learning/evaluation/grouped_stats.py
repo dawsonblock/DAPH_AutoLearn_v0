@@ -1,4 +1,4 @@
-"""v0.3.10.3.1-alpha — group-aware statistics (Sections 9, 31).
+"""v0.3.10.3.2-alpha — group-aware statistics (Sections 9, 31).
 
 Even with no exact duplicates, tasks may share templates or latent
 generators. Standard bootstrap that resamples individual tasks

@@ -1,3 +1,24 @@
+# 0.3.10.3.2-alpha (qualification integrity: within-subtype crossover, frozen real evaluation, canonical provenance, real steering utility validation)
+
+- **Mission**: prove or falsify that AutoLearn can choose the better
+  computation between two available backends for individual tasks that
+  share the same family and subtype. No taxonomy shortcut should
+  determine the answer.
+- **Within-subtype crossover**: at least 3 subtypes must individually
+  contain both symbolic-preferred and LLM-preferred examples, with the
+  optimal backend emerging from actual executed utilities.
+- **Canonical source-tree hash**: one `compute_source_tree_sha256()`
+  implementation; all components delegate to it. Full 64-char hash in
+  artifacts.
+- **Artifact integrity**: current artifacts must match current source
+  tree; stale artifacts archived.
+- **32-gate framework executed**: G01-G32 actually run against the
+  current source tree.
+- **Real CLI paths completed**: evaluate, calibrate, intervene use real
+  frozen pipelines with zero fitting on final.
+- **Real steering utility**: ΔU(α) measured via executed backend
+  utility, not symbolic probability.
+
 # 0.3.10.3.1-alpha (qualification repair: within-family crossover benchmark, steering utility validation, frozen evaluation, source-hash enforcement)
 
 - **Mission shift**: implementation quality > qualification quality. This

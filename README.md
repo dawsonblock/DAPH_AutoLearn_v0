@@ -1,4 +1,4 @@
-# DAPH AutoLearn v0.3.10.3.1-alpha
+# DAPH AutoLearn v0.3.10.3.2-alpha
 
 <div align="center">
 
@@ -617,6 +617,29 @@ test-set tuning, and leaky splits. **Its reported z-score is not a licensed
 result.**
 
 ## Changelog
+
+### v0.3.10.3.2-alpha
+
+- **Qualification integrity release** (not architecture expansion). Mission:
+  prove or falsify that AutoLearn can choose the better computation between
+  two available backends for individual tasks that share the same family and
+  subtype. See `CHANGELOG_V0_3_10_3_2.md`.
+- **Within-subtype crossover** (Sections 12-17): at least 3 subtypes must
+  individually contain both symbolic-preferred and LLM-preferred examples,
+  with the optimal backend emerging from actual executed utilities — not
+  taxonomy classification.
+- **Canonical source-tree hash** (Section 2): one
+  `compute_source_tree_sha256()` implementation; all components delegate to
+  it. Full 64-char SHA-256 in artifacts.
+- **Artifact integrity** (Sections 3-4): current artifacts must match current
+  source tree; stale artifacts archived to `artifacts/archive/`.
+- **32-gate framework executed** (Sections 48-50): G01-G32 actually run
+  against the current source tree.
+- **Real CLI paths completed** (Sections 22-27): evaluate, calibrate,
+  intervene use real frozen pipelines with zero fitting on final.
+- **Real steering utility** (Sections 28-31): `ΔU(α)` measured via executed
+  backend utility, not symbolic probability. Beneficial/harmful flip
+  analysis; matched random controls.
 
 ### v0.3.10.3.1-alpha
 
