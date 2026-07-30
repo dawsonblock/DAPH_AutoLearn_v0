@@ -119,7 +119,7 @@ def capture_task_representation(
         h = hidden[0].mean(dim=0)  # mean over sequence
     else:
         raise ValueError(f"unknown capture location {cfg.location!r}")
-    return h.cpu().numpy().astype(np.float32)
+    return h.float().cpu().numpy().astype(np.float32)
 
 
 # ------------------------------------------------------------------
