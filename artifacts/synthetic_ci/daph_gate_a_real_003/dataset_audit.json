@@ -1,0 +1,72 @@
+{
+  "valid": true,
+  "errors": [],
+  "warnings": [
+    "crossover_distribution not provided; crossover checks skipped"
+  ],
+  "n_tasks": 4480,
+  "n_splits": 4,
+  "n_groups": {
+    "train": 280,
+    "development": 112,
+    "calibration": 84,
+    "final": 84
+  },
+  "exact_duplicates": [],
+  "normalized_duplicates": [],
+  "cross_split_group_leaks": [],
+  "template_family_leaks": [],
+  "near_duplicates": [],
+  "per_subtype_counts": {
+    "A": {
+      "train": 264,
+      "development": 120,
+      "calibration": 104,
+      "final": 72
+    },
+    "H": {
+      "train": 256,
+      "development": 88,
+      "calibration": 96,
+      "final": 120
+    },
+    "D": {
+      "train": 280,
+      "development": 120,
+      "calibration": 56,
+      "final": 104
+    },
+    "G": {
+      "train": 288,
+      "development": 112,
+      "calibration": 96,
+      "final": 64
+    },
+    "C": {
+      "train": 272,
+      "development": 144,
+      "calibration": 80,
+      "final": 64
+    },
+    "B": {
+      "train": 296,
+      "development": 96,
+      "calibration": 96,
+      "final": 72
+    },
+    "E": {
+      "train": 304,
+      "development": 96,
+      "calibration": 80,
+      "final": 80
+    },
+    "F": {
+      "train": 280,
+      "development": 120,
+      "calibration": 64,
+      "final": 96
+    }
+  },
+  "crossover_subtypes": [],
+  "decisive_fraction": 0.0
+}
