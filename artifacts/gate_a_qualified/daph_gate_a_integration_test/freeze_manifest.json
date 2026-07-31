@@ -1,0 +1,21 @@
+{
+  "experiment_id": "daph_gate_a_integration_test",
+  "release_version": "0.3.10.4-alpha",
+  "source_tree_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "config_sha256": "1e95de8b3d12642c901b7a9ae2c90d5fc2533a24a3fbc352083ceb66b282785a",
+  "train_dataset_sha256": "44d7bead7a573022e62fda0c117c1f442f3ddd073ea3d187a930140fc716d5f7",
+  "development_dataset_sha256": "9e2a8425c9ef78f45c1b34a2683df0c2fd9571d16c7d4a801429e8f8cab21274",
+  "calibration_dataset_sha256": "61daa4b9ac220a1c1ad85c71ec4fabba379a1c31ef89184a52da67c6099687b7",
+  "final_dataset_sha256": "f070fef3bce7b0a90612c4ead119b660a0c1509ef9d1790c385c06ec046fd9ac",
+  "utility_config_sha256": "9c2c7dd74ca8db552d40c28916f59461e1ad4f4e383a29dafb476c91851bee63",
+  "model_id": "mock-llm",
+  "model_revision": "",
+  "tokenizer_id": "mock-llm",
+  "tokenizer_revision": "",
+  "representation_config_sha256": "9446e7180a6e1a5f225789ee3c2de51e403592564eba707a87aaad0ff5decc6b",
+  "policy_sha256": "90d222959f931d4cc9b33f9a089fad12f8486961775472458a2493a30346a74c",
+  "calibration_sha256": "740fe79bf82cc708ce0690a3237baf7ebd482f1d903332a6377ff183d27986fe",
+  "gate_criteria_sha256": "1e95de8b3d12642c901b7a9ae2c90d5fc2533a24a3fbc352083ceb66b282785a",
+  "frozen_at": 1785480730.5786922,
+  "stage": "frozen"
+}
