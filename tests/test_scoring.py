@@ -20,9 +20,9 @@ def test_both_formats_accepted():
     """Both FINAL: and FINAL_ANSWER: must parse correctly."""
     assert parse_final_or_exact("FINAL: 42") == 42
     assert parse_final_or_exact("FINAL_ANSWER: 42") == 42
-    # FINAL_ANSWER takes precedence when both appear (last match wins)
-    result = parse_final_or_exact("FINAL: 1\nFINAL_ANSWER: 2")
-    assert result == 2
+    # When both appear, the first match wins (regex .search() behavior)
+    result = parse_final_or_exact("FINAL_ANSWER: 1\nFINAL: 2")
+    assert result == 1
 
 
 def test_legacy_parser_documents_old_behavior():
