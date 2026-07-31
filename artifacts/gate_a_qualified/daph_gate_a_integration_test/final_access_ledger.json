@@ -1,12 +1,10 @@
 {
   "max_accesses": 1,
-  "n_accesses": 1,
-  "records": [
-    {
-      "command": "run_gate_a_staged.py --stage final",
-      "reason": "final evaluation",
-      "source_hash": "afa4ae3ce855f2e15cb8ddd5c94c1e61e6ad2c05a9a2869d048d503dca8661c0",
-      "timestamp": 1785538191.915461
-    }
-  ]
+  "release_version": "0.3.10.4-alpha",
+  "source_hash": "afa4ae3ce855f2e15cb8ddd5c94c1e61e6ad2c05a9a2869d048d503dca8661c0",
+  "config_hash": "1e95de8b3d12642c901b7a9ae2c90d5fc2533a24a3fbc352083ceb66b282785a",
+  "policy_hash": "",
+  "calibration_hash": "",
+  "n_accesses": 0,
+  "records": []
 }
