@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "daph-autolearn"
-version = "0.3.10.4-alpha"
-description = "DAPH AutoLearn v0.3.10.4-alpha: Gate A scientific-integrity repair, canonical provenance, artifact validation, eval-free symbolic execution, canonical FINAL_ANSWER verifier, legacy archival"
+version = "0.3.10.5-alpha"
+description = "DAPH AutoLearn v0.3.10.5-alpha: Gate A statistical correctness repair, frozen-policy evaluation, artifact requalification"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "packaging>=23"]

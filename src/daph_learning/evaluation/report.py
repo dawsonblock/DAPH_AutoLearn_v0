@@ -1,4 +1,4 @@
-"""Section 19 — Gate A report generator (v0.3.10.4-alpha).
+"""Section 19 — Gate A report generator (v0.3.10.5-alpha).
 
 One generator that reads ONLY validated artifacts and emits the full
 required output set. ``GATE_A_RESULTS.md`` is generated from
@@ -157,7 +157,7 @@ def evaluate_gates(
                float(gates.get("require_lcb_vs_sham_above", 0.0)),
                Comparator.GT)
         _check("minimum_oracle_gap_capture",
-               stats.get("oracle_gap_capture", 0.0),
+               stats.get("oracle_gap_capture") if stats.get("oracle_gap_capture") is not None else 0.0,
                float(gates.get("minimum_oracle_gap_capture", 0.0)),
                Comparator.GTE)  # >= threshold (not strict >)
         _check("minimum_positive_group_fraction",

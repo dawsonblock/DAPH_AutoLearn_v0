@@ -1,4 +1,4 @@
-__version__ = "0.3.10.4-alpha"
+__version__ = "0.3.10.5-alpha"
 
 # Section 2: experiment identity. The current source tree targets a NEW,
 # frozen, auditable Gate A experiment. The earlier real-model run is

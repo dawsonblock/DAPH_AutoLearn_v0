@@ -1,4 +1,4 @@
-"""v0.3.10.4-alpha — canonical provenance: source-tree hash + deterministic
+"""v0.3.10.5-alpha — canonical provenance: source-tree hash + deterministic
 seed derivation (Sections 2, 9).
 
 This module provides the ONE canonical implementation of:

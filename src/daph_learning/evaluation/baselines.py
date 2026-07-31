@@ -1,4 +1,4 @@
-"""Section 13 — surface and structured-feature baselines (v0.3.10.4-alpha).
+"""Section 13 — surface and structured-feature baselines (v0.3.10.5-alpha).
 
 Implements the 10 required baselines so the report can answer: does
 hidden-state routing beat subtype-only / TF-IDF / structured features

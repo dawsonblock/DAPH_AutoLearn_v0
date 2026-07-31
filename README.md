@@ -1,10 +1,10 @@
-# DAPH AutoLearn v0.3.10.4-alpha
+# DAPH AutoLearn v0.3.10.5-alpha
 
 <div align="center">
 
 **Counterfactual compute-selection learning for auditable LLM tool-routing research.**
 
-`v0.3.10.4-alpha` · Python ≥ 3.10 · MIT-style research software
+`v0.3.10.5-alpha` · Python ≥ 3.10 · MIT-style research software
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Version](https://img.shields.io/badge/version-0.3.10.4--alpha-orange.svg)](./CHANGELOG.md)
@@ -627,14 +627,23 @@ result.**
 
 ## Changelog
 
-### v0.3.10.4-alpha
+### v0.3.10.5-alpha
 
-- **Gate A scientific-integrity repair (Priority 0)** — not an architecture
-  expansion. Eliminates the ambiguity where reports, manifests, and
-  experiment artifacts did not describe the same repository state.
-- Canonical `compute_canonical_source_hash()` with explicit globs and
-  normalized line endings; CLI `python -m daph_learning.provenance source-hash`.
-- Old failed real-model Gate A run archived as
+- **Gate A statistical correctness repair** — the prior Gate A PASS
+  (daph_gate_a_real_002) is **INVALIDATED**. Primary CIs were placeholders,
+  P1-minus-sham used the wrong interval, and P1 utility was computed from
+  soft probabilities rather than hard routing actions.
+- **Hard routing**: P1 utility uses selected actions, not probability-weighted
+  surrogates.
+- **Real group bootstrap**: 20,000 iterations with group-weighted estimand.
+- **P1-minus-sham**: Nested bootstrap of the actual difference distribution.
+- **Frozen policy evaluation**: Final stage loads, hashes, and executes the
+  frozen policy artifact — no retraining.
+- **Operational calibration**: Frozen thresholds applied to raw probabilities.
+- **Precondition gates**: Checked before statistical gates (NOT_EVALUABLE).
+- **Prediction artifacts**: final_predictions, final_task_metrics, sham_predictions.
+- **Independent validator**: Recomputes all metrics from task-level records.
+- **Portable pointer**: Relative paths only, no machine-local paths.
   `daph_gate_a_real_001_failed` under `artifacts/legacy/` with
   `LEGACY_NOTICE.md`; new experiment ID `daph_gate_a_real_002`.
 - `eval()` removed from symbolic execution paths; bounded AST evaluator
