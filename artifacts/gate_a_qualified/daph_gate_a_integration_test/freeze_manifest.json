@@ -1,7 +1,7 @@
 {
   "experiment_id": "daph_gate_a_integration_test",
   "release_version": "0.3.10.4-alpha",
-  "source_tree_sha256": "afa4ae3ce855f2e15cb8ddd5c94c1e61e6ad2c05a9a2869d048d503dca8661c0",
+  "source_tree_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
   "config_sha256": "1e95de8b3d12642c901b7a9ae2c90d5fc2533a24a3fbc352083ceb66b282785a",
   "train_dataset_sha256": "a4aee52088296711bb4466958afe663b4e1ed8e3e0a2a03e187a1fce362c8752",
   "development_dataset_sha256": "459149396c4b3163f667777a6e7e0460f4addb3b0c731f1d6b72bccb4f83cba7",
@@ -13,9 +13,9 @@
   "tokenizer_id": "mock-llm",
   "tokenizer_revision": "",
   "representation_config_sha256": "9446e7180a6e1a5f225789ee3c2de51e403592564eba707a87aaad0ff5decc6b",
-  "policy_sha256": "c8942b2539946fa86b11d9ac06eada46ae9a0703071a15721a12b6bd79f26219",
-  "calibration_sha256": "30cb6d3d1111bae46589860df118f8ac51e6592cc1c6f0fd1458bee6c13b7440",
+  "policy_sha256": "5750ca30e0112ce1ecdf843ec9e300181dccae5e18fbf39a83d5b813b23d6f98",
+  "calibration_sha256": "c21f2e0ce60f2c608c1938cb3296ac746a74299480b82e2dd7d053bd82664a50",
   "gate_criteria_sha256": "1e95de8b3d12642c901b7a9ae2c90d5fc2533a24a3fbc352083ceb66b282785a",
-  "frozen_at": 1785538191.08515,
+  "frozen_at": 1785538324.92392,
   "stage": "frozen"
 }

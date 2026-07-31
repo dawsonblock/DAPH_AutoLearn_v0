@@ -280,7 +280,7 @@
   "baselines": {},
   "utility_protocol": "gate_a_accuracy_primary",
   "utility_config_sha256": "9c2c7dd74ca8db552d40c28916f59461e1ad4f4e383a29dafb476c91851bee63",
-  "policy_hash": "c8942b2539946fa86b11d9ac06eada46ae9a0703071a15721a12b6bd79f26219",
+  "policy_hash": "074ae368a9698d09819661764dd22e355b9756b5003ec6d48f4a2470caaf57c5",
   "calibration_hash": "",
   "representation_hash": "9446e7180a6e1a5f225789ee3c2de51e403592564eba707a87aaad0ff5decc6b"
 }
