@@ -170,6 +170,8 @@ def test_synthetic_artifacts_cannot_be_gate_a_qualified():
         # If it contains synthetic evidence it must not be valid.
         for jf in bundle.rglob("*.json"):
             data = json.loads(jf.read_text())
+            if not isinstance(data, dict):
+                continue
             if str(data.get("evidence_level", "")).upper() in {
                     "SYNTHETIC", "SYNTHETIC_CI", "SIMULATED"}:
                 assert not r.valid, (

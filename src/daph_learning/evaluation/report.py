@@ -128,16 +128,23 @@ def generate_gate_a_results_md(
         "",
         f"- Estimand: {stats.get('primary_endpoint', {}).get('estimand', 'N/A')}",
         f"- Point estimate: {stats.get('primary_endpoint', {}).get('point_estimate', 'N/A')}",
-        f"- 95% CI: [{stats.get('primary_endpoint', {}).get('ci_low', 'N/A')}, "
+        f"- 95% CI ({stats.get('primary_endpoint', {}).get('estimand', 'N/A')}): "
+        f"[{stats.get('primary_endpoint', {}).get('ci_low', 'N/A')}, "
         f"{stats.get('primary_endpoint', {}).get('ci_high', 'N/A')}]",
-        f"- CI label: {stats.get('primary_endpoint', {}).get('estimand', 'N/A')}",
+        f"- CI label: {stats.get('primary_endpoint', {}).get('ci_label', stats.get('primary_endpoint', {}).get('estimand', 'N/A'))}",
+        f"- Utility protocol: {stats.get('utility_protocol', 'N/A')}",
         "",
         "## Sham Control",
         "",
         f"- P1 utility: {stats.get('sham', {}).get('p1_utility', 'N/A')}",
         f"- Mean sham utility: {stats.get('sham', {}).get('mean_sham_utility', 'N/A')}",
         f"- P1 minus sham (mean): {stats.get('sham', {}).get('p1_minus_sham_mean', 'N/A')}",
+        f"- P1 minus sham 95% CI: "
+        f"[{stats.get('sham', {}).get('p1_minus_sham_ci_low', 'N/A')}, "
+        f"{stats.get('sham', {}).get('p1_minus_sham_ci_high', 'N/A')}]",
         f"- P1 percentile vs sham: {stats.get('sham', {}).get('p1_percentile_vs_sham', 'N/A')}%",
+        f"- Sham seeds: {stats.get('sham', {}).get('n_seeds', 'N/A')}",
+        f"- Training spec hash: `{stats.get('sham', {}).get('training_spec_hash', 'N/A')}`",
         "",
         "## Dataset",
         "",

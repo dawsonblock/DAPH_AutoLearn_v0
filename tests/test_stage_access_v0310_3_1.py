@@ -13,6 +13,27 @@ from daph_learning.policy.stage import (
 )
 
 
+def _complete_freeze_kwargs(**overrides):
+    """Return kwargs that satisfy FreezeManifest.assert_complete()."""
+    base = dict(
+        experiment_id="test_exp",
+        source_hash="src",
+        config_hash="cfg",
+        train_dataset_hash="t",
+        dev_dataset_hash="d",
+        cal_dataset_hash="c",
+        final_dataset_hash="f",
+        utility_config_hash="u",
+        model_id="test-model",
+        representation_hash="r",
+        policy_hash="p",
+        calibration_hash="cal",
+        gate_criteria_hash="g",
+    )
+    base.update(overrides)
+    return base
+
+
 def test_stage_enum_values():
     assert ExperimentStage.TRAIN.value == "train"
     assert ExperimentStage.FROZEN.value == "frozen"
@@ -40,7 +61,7 @@ def test_final_inaccessible_at_calibration():
 
 def test_final_accessible_after_freeze():
     guard = StageGuard(stage=ExperimentStage.TRAIN)
-    guard.freeze()
+    guard.freeze(**_complete_freeze_kwargs())
     guard.assert_can_access_split("final")  # no raise
 
 
@@ -66,7 +87,7 @@ def test_final_access_ledger_exhausts_after_one():
 def test_no_hyperparameter_updates_after_final_access():
     """Section 15: after final access, no further final evaluations."""
     guard = StageGuard()
-    guard.freeze()
+    guard.freeze(**_complete_freeze_kwargs())
     guard.request_final_access(command="eval", reason="final")
     assert guard.ledger.exhausted
     with pytest.raises(FinalAccessError):

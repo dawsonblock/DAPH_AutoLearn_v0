@@ -7,6 +7,7 @@ import pytest
 
 from daph_learning.policy.targets import (
     TargetMode,
+    TrainingTargets,
     build_uncertainty_aware_targets,
     estimate_sigma,
 )
@@ -36,47 +37,71 @@ def test_estimate_sigma_single_replicate():
 def test_signal_to_noise_targets():
     delta_u = np.array([1.0, 0.01, -0.5])
     sigma = np.array([0.1, 0.5, 0.2])
-    targets, mask, weights = build_uncertainty_aware_targets(
+    result = build_uncertainty_aware_targets(
         delta_u, sigma, mode=TargetMode.SIGNAL_TO_NOISE,
         temperature=1.0, w_max=1.0)
-    assert targets.shape == (3,)
-    assert mask.all()  # all valid
+    assert isinstance(result, TrainingTargets)
+    assert result.targets.shape == (3,)
+    assert result.mask.all()  # all valid
     # High SNR example (|ΔU|=1.0, σ=0.1) → weight = min(1, 10) = 1.0
-    assert weights[0] == pytest.approx(1.0)
+    assert result.weights[0] == pytest.approx(1.0)
     # Low SNR example (|ΔU|=0.01, σ=0.5) → weight = min(1, 0.02) = 0.02
-    assert weights[1] < 0.1
+    assert result.weights[1] < 0.1
+    assert result.mode == TargetMode.SIGNAL_TO_NOISE
 
 
 def test_signal_to_noise_downweights_uncertain():
     """Examples with high uncertainty relative to gap get low weight."""
     delta_u = np.array([0.5, 0.5])
     sigma = np.array([0.01, 1.0])  # second example very uncertain
-    _, _, weights = build_uncertainty_aware_targets(
+    result = build_uncertainty_aware_targets(
         delta_u, sigma, mode=TargetMode.SIGNAL_TO_NOISE)
-    assert weights[0] > weights[1]  # certain example weighted higher
+    assert result.weights[0] > result.weights[1]
 
 
 def test_hard_gap_mode():
     delta_u = np.array([0.5, 0.01, -0.5])
-    targets, mask = build_uncertainty_aware_targets(
+    result = build_uncertainty_aware_targets(
         delta_u, np.ones(3), mode=TargetMode.HARD_GAP,
         gap_threshold=0.02)
-    assert targets[0] == 1.0  # ΔU > gap
-    assert targets[2] == 0.0  # ΔU < -gap
-    assert not mask[1]  # |ΔU| <= gap → masked
+    assert isinstance(result, TrainingTargets)
+    assert result.targets[0] == 1.0  # ΔU > gap
+    assert result.targets[2] == 0.0  # ΔU < -gap
+    assert not result.mask[1]  # |ΔU| <= gap → masked
+    # Weights are all 1.0 for hard_gap mode.
+    assert np.all(result.weights == 1.0)
+    assert result.mode == TargetMode.HARD_GAP
 
 
 def test_soft_temperature_mode():
     delta_u = np.array([1.0, -1.0])
-    targets, mask = build_uncertainty_aware_targets(
+    result = build_uncertainty_aware_targets(
         delta_u, np.ones(2), mode=TargetMode.SOFT_TEMPERATURE,
         temperature=2.0)
-    assert mask.all()
-    assert 0.5 < targets[0] < 1.0  # sigmoid(0.5)
-    assert 0.0 < targets[1] < 0.5  # sigmoid(-0.5)
+    assert isinstance(result, TrainingTargets)
+    assert result.mask.all()
+    assert 0.5 < result.targets[0] < 1.0  # sigmoid(0.5)
+    assert 0.0 < result.targets[1] < 0.5  # sigmoid(-0.5)
+    assert np.all(result.weights == 1.0)
+    assert result.mode == TargetMode.SOFT_TEMPERATURE
 
 
 def test_unknown_mode_raises():
     with pytest.raises(ValueError):
         build_uncertainty_aware_targets(
             np.array([1.0]), np.array([0.1]), mode="bogus")
+
+
+def test_consistent_return_type_all_modes():
+    """All modes return TrainingTargets — no tuple-length branching."""
+    delta_u = np.array([0.5, -0.5, 0.01])
+    sigma = np.array([0.1, 0.1, 0.1])
+    for mode in (TargetMode.SIGNAL_TO_NOISE, TargetMode.HARD_GAP,
+                 TargetMode.SOFT_TEMPERATURE):
+        result = build_uncertainty_aware_targets(
+            delta_u, sigma, mode=mode, gap_threshold=0.02, temperature=1.0)
+        assert isinstance(result, TrainingTargets)
+        assert result.targets.shape == (3,)
+        assert result.mask.shape == (3,)
+        assert result.weights.shape == (3,)
+        assert result.utility_gaps.shape == (3,)
