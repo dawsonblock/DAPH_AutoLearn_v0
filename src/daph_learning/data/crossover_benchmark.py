@@ -48,7 +48,7 @@ GENERATOR_VERSION = "v0.3.10.3.2-crossover"
 FAMILY_ID = "structured_math"
 
 # Subtypes A-F. Each is a member of the SAME family.
-SUBTYPES: tuple[str, ...] = ("A", "B", "C", "D", "E", "F")
+SUBTYPES: tuple[str, ...] = ("A", "B", "C", "D", "E", "F", "G", "H")
 
 # Subtype descriptions (for documentation / provenance only; never used
 # as a routing feature or label).
@@ -59,6 +59,8 @@ SUBTYPE_DESCRIPTIONS: dict[str, str] = {
     "D": "structured modular arithmetic",
     "E": "comparison / relation problem",
     "F": "multi-step natural-language arithmetic",
+    "G": "unit conversion + arithmetic",
+    "H": "number theory (GCD/LCM)",
 }
 
 # Split licensing by template slot (disjoint from the v0.3.8 generator).
@@ -421,6 +423,30 @@ def _gen_b(rng: random.Random, slot: int) -> dict[str, Any]:
             (f"A gardener planted {a} rows of flowers with {b} flowers "
              f"in each row. How many flowers were planted? "
              f"Return the integer."),
+            (f"A library has {a} display cases, each showing {b} rare "
+             f"coins. What is the total number of coins on display? "
+             f"Return the integer."),
+            (f"A farm has {a} chicken coops, each containing {b} hens. "
+             f"How many hens are on the farm in total? "
+             f"Return the integer."),
+            (f"In a parking lot, {a} vans each have {b} seats. What is "
+             f"the total seating capacity across all vans? "
+             f"Return the integer."),
+            (f"A stamp collection has {a} albums, each with {b} stamps. "
+             f"How many stamps are in the collection altogether? "
+             f"Return the integer."),
+            (f"A choir has {a} sections, each with {b} singers. What is "
+             f"the total number of singers in the choir? "
+             f"Return the integer."),
+            (f"A warehouse stores {a} pallets, each holding {b} boxes. "
+             f"What is the total number of boxes in the warehouse? "
+             f"Return the integer."),
+            (f"A beekeeper has {a} hives, each producing {b} jars of "
+             f"honey. How many jars of honey are produced in total? "
+             f"Return the integer."),
+            (f"A bookshop has {a} shelves, each with {b} dictionaries. "
+             f"How many dictionaries are in the shop in total? "
+             f"Return the integer."),
         )
         spec = rng.choice(scenarios)
         spec = _B_WRAPPERS[slot % len(_B_WRAPPERS)].format(body=spec)
@@ -615,8 +641,106 @@ def _gen_f(rng: random.Random, slot: int) -> dict[str, Any]:
     }
 
 
+def _gen_g(rng: random.Random, slot: int) -> dict[str, Any]:
+    """G. Unit conversion + arithmetic. Two variants:
+    - Parseable variant (70%): structured unit conversion with large values.
+      Symbolic parser handles conversion + arithmetic. LLM errs on large
+      multi-step conversions.
+    - Unparseable variant (30%): natural-language unit conversion with small
+      values. LLM understands semantics, symbolic parser can't match phrasing.
+    """
+    # Unit conversion factors.
+    units = (
+        ("meters", "cm", 100),
+        ("km", "m", 1000),
+        ("kg", "g", 1000),
+        ("hours", "minutes", 60),
+        ("L", "mL", 1000),
+    )
+    if rng.random() < 0.7:
+        # Parseable variant — symbolic wins (large values, structured).
+        unit_from, unit_to, factor = rng.choice(units)
+        value = rng.randint(1000, 99999)
+        addend = rng.randint(100, 9999)
+        converted = value * factor
+        expected = converted + addend
+        body = f"Convert {value} {unit_from} to {unit_to}, then add {addend} {unit_to}."
+        spec = _EXACT_WRAPPERS[slot % len(_EXACT_WRAPPERS)].format(body=body)
+        return {
+            "capability_ids": ["integer_arithmetic"],
+            "inputs": {"a": converted, "b": addend, "op": "+"},
+            "specification": spec,
+            "expected": expected,
+        }
+    else:
+        # Unparseable variant — LLM wins (small values, semantic phrasing).
+        unit_from, unit_to, factor = rng.choice(units)
+        value = rng.randint(2, 50)
+        addend = rng.randint(1, 100)
+        converted = value * factor
+        expected = converted + addend
+        spec = (f"A runner goes {value} {unit_from}. Express this in {unit_to}, "
+                f"then add {addend} more {unit_to}. What is the total in "
+                f"{unit_to}? Return the integer.")
+        spec = _EXACT_WRAPPERS[slot % len(_EXACT_WRAPPERS)].format(body=spec)
+        return {
+            "capability_ids": [],
+            "inputs": {},
+            "specification": spec,
+            "expected": expected,
+        }
+
+
+def _gen_h(rng: random.Random, slot: int) -> dict[str, Any]:
+    """H. Number theory (GCD/LCM). Two variants:
+    - Structured variant (70%): large values, GCD/LCM computation.
+      Symbolic backend excels. LLM errs on large GCD/LCM.
+    - NL variant (30%): small values, natural-language phrasing.
+      LLM can reason about small GCD/LCM, symbolic parser can't match.
+    """
+    import math
+    if rng.random() < 0.7:
+        # Structured variant — symbolic wins (large values).
+        a = rng.randint(10_000, 99_999)
+        b = rng.randint(10_000, 99_999)
+        op = rng.choice(["gcd", "lcm"])
+        if op == "gcd":
+            expected = math.gcd(a, b)
+            body = f"gcd({a}, {b})"
+        else:
+            expected = a * b // math.gcd(a, b)
+            body = f"lcm({a}, {b})"
+        return {
+            "capability_ids": ["integer_arithmetic"],
+            "inputs": {"a": a, "b": b, "op": op},
+            "specification": _exact_prompt(body, slot),
+            "expected": expected,
+        }
+    else:
+        # NL variant — LLM wins (small values, semantic phrasing).
+        a = rng.randint(2, 50)
+        b = rng.randint(2, 50)
+        op = rng.choice(["gcd", "lcm"])
+        if op == "gcd":
+            expected = math.gcd(a, b)
+            spec = (f"What is the greatest common divisor of {a} and {b}? "
+                    f"Return the integer.")
+        else:
+            expected = a * b // math.gcd(a, b)
+            spec = (f"What is the least common multiple of {a} and {b}? "
+                    f"Return the integer.")
+        spec = _EXACT_WRAPPERS[slot % len(_EXACT_WRAPPERS)].format(body=spec)
+        return {
+            "capability_ids": [],
+            "inputs": {},
+            "specification": spec,
+            "expected": expected,
+        }
+
+
 _GENERATORS = {"A": _gen_a, "B": _gen_b, "C": _gen_c,
-               "D": _gen_d, "E": _gen_e, "F": _gen_f}
+               "D": _gen_d, "E": _gen_e, "F": _gen_f,
+               "G": _gen_g, "H": _gen_h}
 
 
 def generate_crossover_task(

@@ -100,6 +100,18 @@ def _recompute_expected(task: dict[str, Any]) -> int | None:
     m = re.search(r'(\d+)\s+rows.*?(\d+)\s+flowers.*?each', spec)
     if m:
         return int(m.group(1)) * int(m.group(2))
+    # B unparseable: generic "{a} ... each with/holding {b} ..."
+    m = re.search(r'(\d+)\s+\w+.*?each\s+\w+.*?(\d+)\s+', spec)
+    if m:
+        return int(m.group(1)) * int(m.group(2))
+    # B unparseable: "{a} ... each containing {b} ..."
+    m = re.search(r'(\d+)\s+\w+.*?each\s+\w+\s+(\d+)\s+', spec)
+    if m:
+        return int(m.group(1)) * int(m.group(2))
+    # B unparseable: "each with {b} ..." after "{a} ..."
+    m = re.search(r'(\d+)\s+\w+.*?,\s*each\s+\w+\s+(\d+)\s', spec)
+    if m:
+        return int(m.group(1)) * int(m.group(2))
 
     # Subtype A/D: "{a} mod {modulus}"
     m = re.search(r'(\d+)\s+mod\s+(\d+)', spec)
@@ -128,6 +140,46 @@ def _recompute_expected(task: dict[str, Any]) -> int | None:
     m = re.search(r'had\s+(\d+)\s+marbles.*?lost\s+(\d+)', spec)
     if m:
         return int(m.group(1)) - int(m.group(2))
+
+    # Subtype G: unit conversion + arithmetic
+    # "Convert {value} {unit_from} to {unit_to}, then add {addend} {unit_to}."
+    # The converted value is already in the structured inputs, but for
+    # test recompute we parse from spec.
+    unit_factors = {"cm": 100, "m": 1000, "g": 1000, "minutes": 60, "mL": 1000}
+    m = re.search(r'Convert\s+(\d+)\s+(\w+)\s+to\s+(\w+).*?add\s+(\d+)', spec)
+    if m:
+        value = int(m.group(1))
+        unit_to = m.group(3)
+        addend = int(m.group(4))
+        factor = unit_factors.get(unit_to, 1)
+        return value * factor + addend
+    # G unparseable: "A runner goes {value} {unit_from}. Express this in {unit_to}..."
+    m = re.search(r'goes\s+(\d+)\s+(\w+).*?in\s+(\w+).*?add\s+(\d+)', spec)
+    if m:
+        value = int(m.group(1))
+        unit_to = m.group(3)
+        addend = int(m.group(4))
+        factor = unit_factors.get(unit_to, 1)
+        return value * factor + addend
+
+    # Subtype H: gcd/lcm
+    import math
+    m = re.search(r'gcd\((\d+),\s*(\d+)\)', spec)
+    if m:
+        return math.gcd(int(m.group(1)), int(m.group(2)))
+    m = re.search(r'lcm\((\d+),\s*(\d+)\)', spec)
+    if m:
+        a, b = int(m.group(1)), int(m.group(2))
+        return a * b // math.gcd(a, b) if a and b else 0
+    # H unparseable: "greatest common divisor of {a} and {b}"
+    m = re.search(r'greatest common divisor of\s+(\d+)\s+and\s+(\d+)', spec)
+    if m:
+        return math.gcd(int(m.group(1)), int(m.group(2)))
+    # H unparseable: "least common multiple of {a} and {b}"
+    m = re.search(r'least common multiple of\s+(\d+)\s+and\s+(\d+)', spec)
+    if m:
+        a, b = int(m.group(1)), int(m.group(2))
+        return a * b // math.gcd(a, b) if a and b else 0
 
     return None
 
