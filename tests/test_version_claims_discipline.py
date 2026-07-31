@@ -216,7 +216,7 @@ def test_no_stale_version_references_in_readme():
 
 def test_version_consistency():
     """Section 1 / G1: every active version surface must agree on
-    0.3.10.4-alpha. Covers pyproject, __version__, ExperimentConfig
+    0.3.10.5-alpha. Covers pyproject, __version__, ExperimentConfig
     default, ProvenanceRecord default, CLI --version, README header,
     and CLAIMS header. No active-root reference to 0.3.10, 0.3.10.1,
     0.3.10.2, 0.3.10.3, or 0.3.10.3.1 may remain in the
@@ -225,7 +225,7 @@ def test_version_consistency():
     from daph_learning.policy.provenance import ProvenanceRecord
 
     init_v = _init_version()
-    expected = "0.3.10.4-alpha"
+    expected = "0.3.10.5-alpha"
     assert init_v == expected, f"__version__ is {init_v!r}, expected {expected!r}"
     assert _pyproject_version() == expected
     assert _readme_header_version() == expected

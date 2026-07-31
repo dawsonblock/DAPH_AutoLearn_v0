@@ -1,4 +1,4 @@
-"""Section 9 — group-first crossover benchmark generator (v0.3.10.4-alpha).
+"""Section 9 — group-first crossover benchmark generator (v0.3.10.5-alpha).
 
 The existing :mod:`crossover_benchmark` module uses 8 template slots and
 groups by ``family_id:subtype`` (6 groups). Section 9 requires 60–80

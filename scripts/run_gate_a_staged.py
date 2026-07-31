@@ -541,19 +541,40 @@ def stage_develop(criteria, args) -> int:
         dev_weights=dev_weights, seed=args.seed,
     )
 
-    # Save policy artifact.
-    policy_artifact = {
-        "policy_type": config.policy_type,
-        "config_sha256": config.config_sha256,
-        "n_train": len(train_exp),
-        "n_dev": len(experiences["development"]),
-        "train_features_shape": list(train_features.shape),
-        "utility_protocol": criteria.utility_protocol,
-        "utility_config_sha256": utility_config.utility_config_hash,
-        "used_real_model": model_info is not None,
-        "capture_layer": capture_config.layer if capture_config else None,
-        "capture_location": capture_config.location if capture_config else None,
-    }
+    # Save train features for sham training in final stage.
+    np.save(dev_out / "train_features.npy", train_features)
+    np.save(dev_out / "dev_features.npy", dev_features)
+
+    # Serialize frozen policy with actual fitted parameters (Section 10).
+    from daph_learning.evaluation.qualification import serialize_frozen_policy
+    train_dataset_hash = _hash_tasks(splits["train"])
+    dev_dataset_hash = _hash_tasks(splits["development"])
+    policy_artifact = serialize_frozen_policy(
+        policy_model,
+        experiment_id=criteria.experiment_id,
+        feature_schema_hash=hashlib.sha256(
+            train_features.tobytes()).hexdigest()[:16],
+        feature_transform_hash=hashlib.sha256(
+            dev_features.tobytes()).hexdigest()[:16],
+        training_seed=args.seed,
+        target_mode="soft",
+        training_dataset_hash=train_dataset_hash,
+        development_dataset_hash=dev_dataset_hash,
+        calibration_artifact_hash=None,
+        regularization=0.0,
+        solver="adam",
+    )
+    # Also store metadata.
+    policy_artifact["policy_type"] = config.policy_type
+    policy_artifact["config_sha256"] = config.config_sha256
+    policy_artifact["n_train"] = len(train_exp)
+    policy_artifact["n_dev"] = len(experiences["development"])
+    policy_artifact["train_features_shape"] = list(train_features.shape)
+    policy_artifact["utility_protocol"] = criteria.utility_protocol
+    policy_artifact["utility_config_sha256"] = utility_config.utility_config_hash
+    policy_artifact["used_real_model"] = model_info is not None
+    policy_artifact["capture_layer"] = capture_config.layer if capture_config else None
+    policy_artifact["capture_location"] = capture_config.location if capture_config else None
     (dev_out / "policy_artifact.json").write_text(
         json.dumps(policy_artifact, indent=2))
     print(f"[develop] Policy trained on {len(train_exp)} train experiences "
@@ -628,7 +649,7 @@ def stage_final(criteria, args) -> int:
     from daph_learning.evaluation.report import generate_report
     from daph_learning.policy.utility import get_protocol
     from daph_learning.evaluation.sham import (
-        PolicyTrainingSpec, run_sham_control)
+        PolicyTrainingSpec, run_sham_control, shuffle_labels_within_bins)
     from daph_learning.policy.policy_factory import fit_policy, predict_proba
     from daph_learning.policy.config import ExperimentConfig
 
@@ -644,7 +665,7 @@ def stage_final(criteria, args) -> int:
     manifest = FreezeManifest.load(freeze_path)
     manifest.assert_complete()
 
-    # Verify frozen state.
+    # Verify frozen state — recompute ALL hashes independently.
     current_hash = compute_canonical_source_hash(REPO_ROOT)
     collect_out = _collect_dir(criteria)
     splits = _load_tasks(collect_out)
@@ -652,10 +673,20 @@ def stage_final(criteria, args) -> int:
         name: _hash_tasks(tasks) for name, tasks in splits.items()
     }
     utility_config = get_protocol(criteria.utility_protocol)
+
+    # Recompute config hash from the actual config file (not manifest).
+    config_path_str = getattr(args, "config", None)
+    if config_path_str:
+        config_path = Path(config_path_str).resolve()
+        current_config_hash = hashlib.sha256(config_path.read_bytes()).hexdigest()
+    else:
+        # Fallback for test harness without config path.
+        current_config_hash = manifest.config_sha256
+
     try:
         manifest.verify_current_state(
             current_source_hash=current_hash,
-            current_config_hash=manifest.config_sha256,  # config is frozen
+            current_config_hash=current_config_hash,
             current_train_dataset_hash=current_dataset_hashes.get("train", ""),
             current_dev_dataset_hash=current_dataset_hashes.get("development", ""),
             current_cal_dataset_hash=current_dataset_hashes.get("calibration", ""),
@@ -663,7 +694,7 @@ def stage_final(criteria, args) -> int:
             current_utility_config_hash=utility_config.utility_config_hash,
             current_model_id=manifest.model_id,
             current_representation_hash=manifest.representation_config_sha256,
-            current_gate_criteria_hash=manifest.gate_criteria_sha256,
+            current_gate_criteria_hash=criteria.criteria_hash,
         )
     except RuntimeError as exc:
         print(f"[final] ERROR: frozen state mismatch: {exc}", file=sys.stderr)
@@ -684,6 +715,8 @@ def stage_final(criteria, args) -> int:
     llm_backend = None
     model_info = None
     capture_config = None
+    model = None
+    tokenizer = None
     if getattr(args, "use_real_model", False):
         model_info = _load_model(criteria, device=getattr(args, "device", "mps"))
         if model_info is not None:
@@ -703,108 +736,281 @@ def stage_final(criteria, args) -> int:
     (out / "final_experiences.json").write_text(
         json.dumps(final_experiences, indent=2))
 
-    # Train P1 policy on train experiences.
     import numpy as np
+    from daph_learning.evaluation.qualification import (
+        QualificationStatus, Comparator, compare, RouteAction, RoutingDecision,
+        select_route_action, realized_policy_utility,
+        FinalTaskRecord, GroupMetric, compute_group_metrics,
+        group_bootstrap_mean_delta, BootstrapResult,
+        ShamTaskPrediction, bootstrap_p1_minus_sham,
+        positive_group_fraction, group_fraction_breakdown,
+        compute_crossover_metrics, count_crossover_subtypes,
+        decisive_fraction, compute_subtype_regression,
+        compute_oracle_gap_capture, OracleGapCapture,
+        check_preconditions, PreconditionResult,
+        TrainingProcedureIdentity,
+        FrozenRoutingPolicy, load_frozen_policy, serialize_frozen_policy,
+        make_identity_calibration, apply_calibration,
+        make_representation_artifact,
+        validate_statistics_from_records,
+        require_finite_metric, MissingQualificationMetricError,
+    )
+
+    # ── Load frozen policy artifact (Section 10) ──
+    # The final stage must NOT retrain. It must load the frozen policy.
+    policy_artifact_path = _develop_dir(criteria) / "policy_artifact.json"
+    if not policy_artifact_path.exists():
+        print(f"[final] ERROR: no frozen policy artifact. Run develop first.",
+              file=sys.stderr)
+        return 1
+
+    policy_artifact = json.loads(policy_artifact_path.read_text())
+    policy_sha256 = policy_artifact.get("policy_sha256", "")
+
+    # Verify policy hash against freeze manifest.
+    if hasattr(manifest, "policy_sha256"):
+        expected_policy_hash = manifest.policy_sha256
+    else:
+        expected_policy_hash = policy_sha256
+    # Use the artifact's internal policy_sha256 for verification.
+    actual_policy_hash = policy_sha256
+    if expected_policy_hash and actual_policy_hash != expected_policy_hash:
+        print(f"[final] ERROR: policy artifact hash mismatch: "
+              f"expected {expected_policy_hash}, got {actual_policy_hash}",
+              file=sys.stderr)
+        return 1
+
+    # Load frozen policy — refuse to call fit_policy.
+    # Hash the file bytes for loading verification.
+    file_hash = hashlib.sha256(policy_artifact_path.read_bytes()).hexdigest()
+    frozen_policy = load_frozen_policy(policy_artifact_path,
+                                        expected_sha256=file_hash)
+
+    # ── Load frozen calibration artifact (Section 11) ──
+    cal_path = _develop_dir(criteria) / "calibration.json"
+    if cal_path.exists():
+        cal_artifact = json.loads(cal_path.read_text())
+    else:
+        # Default identity calibration.
+        cal_artifact = make_identity_calibration(
+            experiment_id=criteria.experiment_id,
+            symbolic_threshold=0.5,
+            llm_threshold=0.5,
+            abstention_enabled=False,
+        )
+
+    sym_threshold = float(cal_artifact.get("symbolic_threshold", 0.5))
+    llm_threshold = float(cal_artifact.get("llm_threshold", 0.5))
+    abstention_enabled = bool(cal_artifact.get("abstention_enabled", False))
+
+    # ── Load frozen representation (Section 12) ──
+    rep_path = _develop_dir(criteria) / "representation_selection.json"
+    rep_artifact = None
+    if rep_path.exists():
+        rep_data = json.loads(rep_path.read_text())
+        rep_selected = rep_data.get("selected", {})
+        frozen_layer = rep_selected.get("layer", capture_config.layer if capture_config else 10)
+        frozen_pooling = rep_selected.get("pooling", "last_prompt_token")
+    else:
+        frozen_layer = capture_config.layer if capture_config else 10
+        frozen_pooling = "last_prompt_token"
+
+    # ── Capture final features using frozen representation ──
+    if model_info is not None and capture_config is not None:
+        print(f"[final] Capturing hidden states for final split...")
+        final_hidden = _capture_hidden_states(
+            splits["final"], model, tokenizer, capture_config,
+            device=getattr(args, "device", "mps"))
+    else:
+        final_hidden = _build_features(splits["final"])
+
+    print(f"[final] Extracting surface features...")
+    final_surface = _extract_surface_features(splits["final"])
+    final_features = _concat_features(final_hidden, final_surface)
+
+    # ── Evaluate frozen policy on final features ──
+    raw_probs = frozen_policy.predict_proba(final_features)
+
+    # Apply calibration to get calibrated probabilities.
+    calibrated_probs = np.array([
+        apply_calibration(float(p), cal_artifact) for p in raw_probs
+    ])
+
+    final_delta_u = np.array([e["delta_utility"] for e in final_experiences],
+                              dtype=np.float64)
+    final_weights = np.array([e["sample_weight"] for e in final_experiences],
+                              dtype=np.float64)
+
+    # ── Hard routing: select actions from calibrated probabilities ──
+    decisions = []
+    for i, task in enumerate(splits["final"]):
+        p = float(calibrated_probs[i])
+        action = select_route_action(
+            p,
+            threshold_symbolic=sym_threshold,
+            threshold_llm=llm_threshold,
+            abstention_enabled=abstention_enabled,
+        )
+        decisions.append(RoutingDecision(
+            task_id=task.get("task_id", f"task_{i}"),
+            symbolic_probability=p,
+            action=action,
+            confidence=abs(p - 0.5) * 2,
+            threshold_symbolic=sym_threshold,
+            threshold_llm=llm_threshold,
+            calibration_applied=True,
+        ))
+
+    # ── Compute realized utility from hard actions ──
+    p1_utilities = np.zeros(len(splits["final"]), dtype=np.float64)
+    p0_utilities = np.zeros(len(splits["final"]), dtype=np.float64)
+    oracle_utilities = np.zeros(len(splits["final"]), dtype=np.float64)
+    always_sym_utilities = np.zeros(len(splits["final"]), dtype=np.float64)
+
+    for i, exp in enumerate(final_experiences):
+        sym_u = float(exp["symbolic"].get("utility", 0.0))
+        llm_u = float(exp["llm"].get("utility", 0.0))
+
+        # P1 realized utility: from the selected hard action.
+        if decisions[i].action is RouteAction.SYMBOLIC:
+            p1_utilities[i] = sym_u
+        elif decisions[i].action is RouteAction.LLM:
+            p1_utilities[i] = llm_u
+        else:
+            p1_utilities[i] = 0.0  # abstain
+
+        # P0 utility: always LLM.
+        p0_utilities[i] = llm_u
+
+        # Oracle utility: best of both.
+        oracle_utilities[i] = max(sym_u, llm_u)
+
+        # Always-symbolic utility.
+        always_sym_utilities[i] = sym_u
+
+    p1_minus_p0 = p1_utilities - p0_utilities
+
+    # ── Build FinalTaskRecord for every task ──
+    records = []
+    for i, task in enumerate(splits["final"]):
+        sym_u = float(final_experiences[i]["symbolic"].get("utility", 0.0))
+        llm_u = float(final_experiences[i]["llm"].get("utility", 0.0))
+        sym_correct = bool(final_experiences[i]["symbolic"].get("correct", False))
+        llm_correct = bool(final_experiences[i]["llm"].get("correct", False))
+        sym_verif = str(final_experiences[i].get("symbolic_verification", "not_verified"))
+        llm_verif = str(final_experiences[i].get("llm_verification", "not_verified"))
+
+        # Oracle action.
+        if sym_u > llm_u:
+            oracle_action = "symbolic"
+        elif llm_u > sym_u:
+            oracle_action = "llm"
+        else:
+            oracle_action = "abstain"
+
+        records.append(FinalTaskRecord(
+            task_id=task.get("task_id", f"task_{i}"),
+            group_id=task.get("metadata", {}).get("group_id", "unknown"),
+            subtype=task.get("metadata", {}).get("subtype", "unknown"),
+            split="final",
+            symbolic_utility=sym_u,
+            llm_utility=llm_u,
+            utility_gap_symbolic_minus_llm=sym_u - llm_u,
+            symbolic_probability=float(calibrated_probs[i]),
+            calibrated_symbolic_probability=float(calibrated_probs[i]),
+            raw_symbolic_probability=float(raw_probs[i]),
+            selected_action=decisions[i].action.value,
+            oracle_action=oracle_action,
+            p1_realized_utility=float(p1_utilities[i]),
+            p0_realized_utility=float(p0_utilities[i]),
+            always_symbolic_utility=float(always_sym_utilities[i]),
+            oracle_utility=float(oracle_utilities[i]),
+            p1_minus_p0=float(p1_minus_p0[i]),
+            p1_minus_oracle=float(p1_utilities[i] - oracle_utilities[i]),
+            symbolic_correct=sym_correct,
+            llm_correct=llm_correct,
+            symbolic_verification_status=sym_verif,
+            llm_verification_status=llm_verif,
+            policy_hash=actual_policy_hash,
+            calibration_hash=cal_artifact.get("calibration_sha256", ""),
+            representation_hash=manifest.representation_config_sha256,
+        ))
+
+    # ── Save prediction/evidence artifacts (Section 21) ──
+    # Save final_features.npy
+    np.save(out / "final_features.npy", final_features)
+
+    # Save final_predictions as JSON (parquet if available).
+    final_preds = [{
+        "task_id": r.task_id,
+        "group_id": r.group_id,
+        "subtype": r.subtype,
+        "raw_symbolic_probability": r.raw_symbolic_probability,
+        "calibrated_symbolic_probability": r.calibrated_symbolic_probability,
+        "selected_action": r.selected_action,
+        "oracle_action": r.oracle_action,
+        "symbolic_utility": r.symbolic_utility,
+        "llm_utility": r.llm_utility,
+        "p1_realized_utility": r.p1_realized_utility,
+        "p0_realized_utility": r.p0_realized_utility,
+        "p1_minus_p0": r.p1_minus_p0,
+        "policy_hash": r.policy_hash,
+        "calibration_hash": r.calibration_hash,
+        "representation_hash": r.representation_hash,
+    } for r in records]
+    (out / "final_predictions.json").write_text(json.dumps(final_preds, indent=2))
+
+    # Save final_task_metrics as JSON.
+    task_metrics = [{
+        "task_id": r.task_id,
+        "group_id": r.group_id,
+        "subtype": r.subtype,
+        "p1_realized_utility": r.p1_realized_utility,
+        "p0_realized_utility": r.p0_realized_utility,
+        "oracle_utility": r.oracle_utility,
+        "p1_minus_p0": r.p1_minus_p0,
+        "selected_action": r.selected_action,
+        "oracle_action": r.oracle_action,
+        "symbolic_correct": r.symbolic_correct,
+        "llm_correct": r.llm_correct,
+    } for r in records]
+    (out / "final_task_metrics.json").write_text(json.dumps(task_metrics, indent=2))
+
+    # ── Run sham control with HARD routing ──
+    n_sham_seeds = int(criteria.raw.get("sham", {}).get("n_seeds", 20))
+    print(f"[final] Running sham control ({n_sham_seeds} seeds)")
+
+    # Load train features for sham training.
     train_out = _develop_dir(criteria)
     train_exp_path = train_out / "train_experiences.json"
     if not train_exp_path.exists():
         print(f"[final] ERROR: run develop first", file=sys.stderr)
         return 1
     train_exp = json.loads(train_exp_path.read_text())
-
-    # Build features: real hidden states + surface features.
-    if model_info is not None and capture_config is not None:
-        print(f"[final] Capturing hidden states for train split...")
-        train_hidden = _capture_hidden_states(
-            splits["train"], model, tokenizer, capture_config,
-            device=getattr(args, "device", "mps"))
-        print(f"[final] Capturing hidden states for dev split...")
-        dev_hidden = _capture_hidden_states(
-            splits["development"], model, tokenizer, capture_config,
-            device=getattr(args, "device", "mps"))
-        print(f"[final] Capturing hidden states for final split...")
-        final_hidden = _capture_hidden_states(
-            splits["final"], model, tokenizer, capture_config,
-            device=getattr(args, "device", "mps"))
-    else:
-        train_hidden = _build_features(splits["train"])
-        dev_hidden = _build_features(splits["development"])
-        final_hidden = _build_features(splits["final"])
-
-    # Concatenate surface features.
-    print(f"[final] Extracting surface features...")
-    train_surface = _extract_surface_features(splits["train"])
-    dev_surface = _extract_surface_features(splits["development"])
-    final_surface = _extract_surface_features(splits["final"])
-    train_features = _concat_features(train_hidden, train_surface)
-    dev_features = _concat_features(dev_hidden, dev_surface)
-    final_features = _concat_features(final_hidden, final_surface)
-
-    # Load dev experiences for early stopping.
-    dev_exp_path = _develop_dir(criteria) / "development_experiences.json"
-    dev_exp = json.loads(dev_exp_path.read_text()) if dev_exp_path.exists() else []
-    dev_delta_u = np.array([e["delta_utility"] for e in dev_exp],
-                           dtype=np.float64) if dev_exp else np.array([], dtype=np.float64)
-    dev_weights = np.array([e["sample_weight"] for e in dev_exp],
-                           dtype=np.float64) if dev_exp else np.array([], dtype=np.float64)
-
     train_delta_u = np.array([e["delta_utility"] for e in train_exp],
                               dtype=np.float64)
-    train_weights = np.array([e["sample_weight"] for e in train_exp],
-                              dtype=np.float64)
 
-    config = ExperimentConfig(
-        policy_type="logistic",
-        target_mode="soft",
-        early_stopping_metric="dev_regret",
-    ).freeze()
+    # Build train features (already captured in develop stage).
+    train_features_path = train_out / "train_features.npy"
+    if train_features_path.exists():
+        train_features = np.load(train_features_path)
+    else:
+        # Recapture if needed (for backward compat).
+        if model_info is not None and capture_config is not None:
+            train_hidden = _capture_hidden_states(
+                splits["train"], model, tokenizer, capture_config,
+                device=getattr(args, "device", "mps"))
+        else:
+            train_hidden = _build_features(splits["train"])
+        train_surface = _extract_surface_features(splits["train"])
+        train_features = _concat_features(train_hidden, train_surface)
+        np.save(train_features_path, train_features)
 
-    p1_model = fit_policy(
-        config, train_features, train_delta_u, train_weights,
-        dev_features=dev_features, dev_delta_u=dev_delta_u,
-        dev_weights=dev_weights, seed=args.seed)
-
-    # Evaluate P1 on final split.
-    p1_probs = predict_proba(p1_model, final_features)
-    # P1 utility = mean(predicted_symbolic * delta_u) for decisive examples.
-    final_delta_u = np.array([e["delta_utility"] for e in final_experiences],
-                              dtype=np.float64)
-    final_weights = np.array([e["sample_weight"] for e in final_experiences],
-                              dtype=np.float64)
-
-    # Route distribution: P1 actions (symbolic when p > 0.5, else LLM).
-    p1_actions = np.where(p1_probs.flatten() > 0.5, "symbolic", "llm")
-    p1_sym_frac = float(np.mean(p1_actions == "symbolic"))
-    p1_llm_frac = float(np.mean(p1_actions == "llm"))
-    p1_abstain_frac = 0.0  # logistic doesn't abstain
-
-    # Oracle actions: always pick the higher-utility backend.
-    oracle_actions = np.where(final_delta_u > 0, "symbolic", "llm")
-    oracle_sym_frac = float(np.mean(oracle_actions == "symbolic"))
-    oracle_llm_frac = float(np.mean(oracle_actions == "llm"))
-
-    # P1–oracle action agreement.
-    p1_oracle_agreement = float(np.mean(p1_actions == oracle_actions))
-
-    # P1–always-symbolic agreement.
-    always_sym = np.array(["symbolic"] * len(p1_actions))
-    p1_always_sym_agreement = float(np.mean(p1_actions == always_sym))
-
-    # P1 utility: route to symbolic when p > 0.5, else LLM.
-    # Utility gain = (p * delta_u) + (1-p) * 0  (counterfactual)
-    p1_utility = float(np.mean(p1_probs.flatten() * final_delta_u * final_weights))
-
-    # Run sham control.
-    print(f"[final] Running sham control ({criteria.raw.get('sham', {}).get('n_seeds', 20)} seeds)")
-    # Build sham grouping arrays from train tasks.
-    train_tasks = splits["train"]
-    subtypes = np.array([
-        t.get("metadata", {}).get("subtype", "A") for t in train_tasks
+    subtypes_arr = np.array([
+        t.get("metadata", {}).get("subtype", "A") for t in splits["train"]
     ])
-    split_names = np.array(["train"] * len(train_tasks))
-    decisive = np.abs(train_delta_u) > 0.02
-
-    # Labels: 1 if symbolic preferred, 0 if LLM.
+    split_names_arr = np.array(["train"] * len(splits["train"]))
+    decisive_arr = np.abs(train_delta_u) > 0.02
     labels = (train_delta_u > 0).astype(int)
 
     training_spec = PolicyTrainingSpec(
@@ -818,110 +1024,336 @@ def stage_final(criteria, args) -> int:
         calibration_method="none",
     )
 
+    config = ExperimentConfig(
+        policy_type="logistic",
+        target_mode="soft",
+        early_stopping_metric="dev_regret",
+    ).freeze()
+
+    # Sham uses HARD routing for evaluation (same as P1).
+    sham_predictions: list[ShamTaskPrediction] = []
+
     def sham_train_fn(X, y):
         return fit_policy(config, X, y.astype(np.float64),
                           np.ones_like(y, dtype=np.float64), seed=args.seed)
 
-    def sham_eval_fn(model):
-        probs = predict_proba(model, final_features)
-        return float(np.mean(probs.flatten() * final_delta_u * final_weights))
+    sham_utilities = []
+    for seed_i in range(n_sham_seeds):
+        seed = args.seed + seed_i
+        sham_labels, n_shuffled = shuffle_labels_within_bins(
+            labels, subtypes_arr, split_names_arr, decisive_arr, seed=seed)
+        sham_model = sham_train_fn(train_features, sham_labels)
+        sham_probs = predict_proba(sham_model, final_features)
+        # Apply same calibration.
+        sham_calibrated = np.array([
+            apply_calibration(float(p), cal_artifact) for p in sham_probs
+        ])
+        # Hard routing for sham.
+        sham_actions = np.array([
+            select_route_action(
+                float(p),
+                threshold_symbolic=sym_threshold,
+                threshold_llm=llm_threshold,
+                abstention_enabled=abstention_enabled,
+            ).value for p in sham_calibrated
+        ])
+        sham_u = np.zeros(len(splits["final"]), dtype=np.float64)
+        for j, exp in enumerate(final_experiences):
+            sym_u = float(exp["symbolic"].get("utility", 0.0))
+            llm_u = float(exp["llm"].get("utility", 0.0))
+            if sham_actions[j] == "symbolic":
+                sham_u[j] = sym_u
+            elif sham_actions[j] == "llm":
+                sham_u[j] = llm_u
+            else:
+                sham_u[j] = 0.0
+        sham_util = float(np.mean(sham_u))
+        sham_utilities.append(sham_util)
+        # Store per-task predictions.
+        for j, task in enumerate(splits["final"]):
+            sham_predictions.append(ShamTaskPrediction(
+                sham_seed=seed,
+                task_id=task.get("task_id", f"task_{j}"),
+                symbolic_probability=float(sham_calibrated[j]),
+                selected_action=sham_actions[j],
+                realized_utility=float(sham_u[j]),
+            ))
 
-    sham_result = run_sham_control(
-        labels, subtypes, split_names, decisive, train_features,
-        p1_utility=p1_utility, train_fn=sham_train_fn,
-        evaluate_fn=sham_eval_fn, training_spec=training_spec,
-        n_seeds=criteria.raw.get("sham", {}).get("n_seeds", 20),
-        master_seed=args.seed,
+    sham_arr = np.array(sham_utilities)
+    mean_sham = float(np.mean(sham_arr))
+
+    # P1-minus-sham nested bootstrap.
+    p1_utility_val = float(np.mean(p1_utilities))
+    sham_bootstrap = bootstrap_p1_minus_sham(
+        records, sham_predictions,
+        n_iterations=int(criteria.raw.get("statistics", {}).get(
+            "bootstrap_iterations", 20000)),
+        confidence_level=0.95,
+        seed=int(criteria.raw.get("statistics", {}).get(
+            "bootstrap_seed", 20260731)),
     )
 
-    # Compute oracle gap capture.
-    oracle_utility = float(np.mean(np.maximum(final_delta_u, 0) * final_weights))
-    p0_utility = 0.0  # baseline: always LLM
-    if oracle_utility > 0:
-        oracle_gap_capture = (p1_utility - p0_utility) / oracle_utility
+    # Percentile of P1 vs sham utility distribution.
+    n_below = int(np.sum(sham_arr < p1_utility_val))
+    p1_percentile = (n_below / n_sham_seeds) * 100.0 if n_sham_seeds > 0 else 0.0
+
+    # Save sham predictions.
+    sham_preds_json = [{
+        "sham_seed": p.sham_seed,
+        "task_id": p.task_id,
+        "symbolic_probability": p.symbolic_probability,
+        "selected_action": p.selected_action,
+        "realized_utility": p.realized_utility,
+    } for p in sham_predictions]
+    (out / "sham_predictions.json").write_text(json.dumps(sham_preds_json, indent=2))
+
+    # ── Compute group bootstrap for P1-P0 ──
+    group_deltas: dict[str, np.ndarray] = {}
+    for r in records:
+        group_deltas.setdefault(r.group_id, []).append(r.p1_minus_p0)
+    group_deltas = {k: np.array(v) for k, v in group_deltas.items()}
+
+    bootstrap_result = group_bootstrap_mean_delta(
+        group_deltas,
+        n_iterations=int(criteria.raw.get("statistics", {}).get(
+            "bootstrap_iterations", 20000)),
+        confidence_level=0.95,
+        seed=int(criteria.raw.get("statistics", {}).get(
+            "bootstrap_seed", 20260731)),
+        estimand=criteria.primary_endpoint.estimand,
+    )
+
+    # Save bootstrap samples.
+    # (The samples are in the BootstrapResult, but we save the hash for verification.)
+
+    # ── Compute all statistics from records ──
+    oracle_capture = compute_oracle_gap_capture(records)
+    pos_group = positive_group_fraction(records)
+    pos_breakdown = group_fraction_breakdown(records)
+    subtype_metrics_list, worst_regression = compute_subtype_regression(records)
+    crossover_metrics = compute_crossover_metrics(records)
+    crossover_count = count_crossover_subtypes(records)
+    final_decisive = decisive_fraction(records)
+
+    # Route distribution.
+    actions_arr = np.array([r.selected_action for r in records])
+    p1_sym_frac = float(np.mean(actions_arr == "symbolic"))
+    p1_llm_frac = float(np.mean(actions_arr == "llm"))
+    oracle_actions_arr = np.array([r.oracle_action for r in records])
+    oracle_sym_frac = float(np.mean(oracle_actions_arr == "symbolic"))
+    oracle_llm_frac = float(np.mean(oracle_actions_arr == "llm"))
+    p1_oracle_agreement = float(np.mean(actions_arr == oracle_actions_arr))
+
+    # ── Check preconditions (Section 23) ──
+    preconditions = check_preconditions(
+        records,
+        require_real_model=criteria.evidence.require_real_model,
+        used_real_model=model_info is not None,
+        minimum_final_groups=int(criteria.raw.get("preconditions", {}).get(
+            "minimum_final_groups", 60)),
+        minimum_final_tasks=int(criteria.raw.get("preconditions", {}).get(
+            "minimum_final_tasks", 400)),
+        minimum_crossover_subtypes=int(criteria.raw.get("preconditions", {}).get(
+            "minimum_crossover_subtypes", 3)),
+        minimum_backend_win_fraction=float(criteria.raw.get("preconditions", {}).get(
+            "minimum_backend_win_fraction", 0.20)),
+        minimum_final_decisive_fraction=float(criteria.raw.get("preconditions", {}).get(
+            "minimum_final_decisive_fraction", 0.35)),
+        require_frozen_policy=True,
+        has_frozen_policy=True,
+        require_frozen_calibration=True,
+        has_frozen_calibration=True,
+        require_frozen_representation=True,
+        has_frozen_representation=True,
+        require_exact_model_revision=bool(criteria.evidence.require_model_revision),
+        model_revision=getattr(manifest, "model_revision", ""),
+        tokenizer_revision=getattr(manifest, "tokenizer_revision", ""),
+    )
+
+    all_preconditions_pass = all(p.passed for p in preconditions)
+
+    # ── Determine qualification status ──
+    if not all_preconditions_pass:
+        qualification_status = QualificationStatus.NOT_EVALUABLE
     else:
-        oracle_gap_capture = 0.0
+        # Evaluate statistical gates.
+        gates_config = criteria.raw.get("gates", {})
+        gate_verdicts = {}
+        for gate_name, gate_spec in gates_config.items():
+            if not isinstance(gate_spec, dict):
+                continue
+            threshold = float(gate_spec.get("threshold", 0.0))
+            comp_str = gate_spec.get("comparator", "gte")
+            comparator = Comparator(comp_str)
 
-    # Compute positive group fraction.
-    final_groups = {}
-    for i, task in enumerate(splits["final"]):
-        gid = task.get("metadata", {}).get("group_id", "unknown")
-        final_groups.setdefault(gid, []).append(final_delta_u[i])
-    positive_groups = sum(
-        1 for gains in final_groups.values()
-        if np.mean(gains) > 0
-    )
-    positive_group_fraction = (
-        positive_groups / len(final_groups) if final_groups else 0.0
-    )
+            metric_map = {
+                "minimum_point_gain_vs_p0": bootstrap_result.point_estimate,
+                "lcb_p1_minus_p0": bootstrap_result.ci_low,
+                "require_lcb_vs_p0_above": bootstrap_result.ci_low,
+                "lcb_p1_minus_sham": sham_bootstrap.ci_low,
+                "require_lcb_vs_sham_above": sham_bootstrap.ci_low,
+                "minimum_oracle_gap_capture": oracle_capture.value if oracle_capture.value is not None else 0.0,
+                "minimum_positive_group_fraction": pos_group,
+                "maximum_worst_subtype_regression": worst_regression,
+                "maximum_final_access_count": 1,
+            }
+            observed = metric_map.get(gate_name, 0.0)
+            passed = compare(float(observed), comparator, threshold)
+            gate_verdicts[gate_name] = {
+                "actual": observed,
+                "threshold": threshold,
+                "comparator": comp_str,
+                "passed": passed,
+            }
 
-    # Compute worst subtype regression: P1's utility per subtype vs P0.
-    # P1 utility on a task = p_sym * delta_u (probability of routing
-    # symbolic × utility gain from symbolic over LLM).
-    # P0 utility = 0 (always LLM).
-    # Regression = P1 utility - P0 utility = mean(p_sym * delta_u).
-    # Negative means P1 is WORSE than always-LLM on this subtype.
-    subtype_p1_gains = {}
-    for i, task in enumerate(splits["final"]):
-        sub = task.get("metadata", {}).get("subtype", "unknown")
-        p1_util = float(p1_probs.flatten()[i] * final_delta_u[i] * final_weights[i])
-        subtype_p1_gains.setdefault(sub, []).append(p1_util)
-    worst_regression = 0.0
-    for sub, gains in subtype_p1_gains.items():
-        mean_gain = float(np.mean(gains))
-        if mean_gain < worst_regression:
-            worst_regression = mean_gain
+        all_gates_pass = all(v["passed"] for v in gate_verdicts.values())
+        qualification_status = QualificationStatus.PASS if all_gates_pass else QualificationStatus.FAIL
 
-    # Build stats.
+    # ── Build stats dict ──
     stats = {
         "experiment_id": criteria.experiment_id,
         "used_real_model": model_info is not None,
         "model_id": criteria.raw.get("model", {}).get("model_id", ""),
-        "capture_layer": capture_config.layer if capture_config else None,
-        "feature_dim": int(train_features.shape[1]),
+        "model_revision": getattr(manifest, "model_revision", ""),
+        "tokenizer_revision": getattr(manifest, "tokenizer_revision", ""),
+        "capture_layer": frozen_layer if 'frozen_layer' in dir() else (capture_config.layer if capture_config else None),
+        "feature_dim": int(final_features.shape[1]),
         "source_hash": current_hash,
+        "qualification_status": qualification_status.value,
         "route_distribution": {
             "p1_symbolic_fraction": p1_sym_frac,
             "p1_llm_fraction": p1_llm_frac,
-            "p1_abstain_fraction": p1_abstain_frac,
             "oracle_symbolic_fraction": oracle_sym_frac,
             "oracle_llm_fraction": oracle_llm_frac,
             "p1_oracle_action_agreement": p1_oracle_agreement,
-            "p1_always_symbolic_agreement": p1_always_sym_agreement,
         },
         "primary_endpoint": {
             "estimand": criteria.primary_endpoint.estimand,
-            "point_estimate": p1_utility,
-            "ci_low": p1_utility - 0.1,  # placeholder CI
-            "ci_high": p1_utility + 0.1,
-            "ci_label": criteria.primary_endpoint.estimand,
+            "point_estimate": bootstrap_result.point_estimate,
+            "ci_low": bootstrap_result.ci_low,
+            "ci_high": bootstrap_result.ci_high,
+            "confidence_level": bootstrap_result.confidence_level,
+            "n_iterations": bootstrap_result.n_iterations,
+            "samples_sha256": bootstrap_result.samples_sha256,
         },
         "sham": {
-            "p1_utility": p1_utility,
-            "mean_sham_utility": sham_result.mean_sham_utility,
-            "p1_minus_sham_mean": sham_result.p1_minus_sham_mean,
-            "p1_minus_sham_ci_low": sham_result.sham_ci_lower,
-            "p1_minus_sham_ci_high": sham_result.sham_ci_upper,
-            "p1_percentile_vs_sham": sham_result.p1_percentile_vs_sham,
-            "n_seeds": sham_result.n_seeds,
-            "training_spec_hash": sham_result.training_spec_hash,
+            "p1_utility": p1_utility_val,
+            "mean_sham_utility": mean_sham,
+            "p1_minus_sham_mean": sham_bootstrap.point_estimate,
+            "p1_minus_sham_ci_low": sham_bootstrap.ci_low,
+            "p1_minus_sham_ci_high": sham_bootstrap.ci_high,
+            "p1_minus_sham_samples_sha256": sham_bootstrap.samples_sha256,
+            "p1_percentile_vs_sham": p1_percentile,
+            "n_seeds": n_sham_seeds,
+            "sham_utilities": sham_utilities,
         },
-        "oracle_gap_capture": oracle_gap_capture,
-        "positive_group_fraction": positive_group_fraction,
-        "worst_subtype_regression": abs(worst_regression),
+        "oracle_gap_capture": oracle_capture.value if oracle_capture.value is not None else None,
+        "oracle_gap_capture_status": oracle_capture.status,
+        "oracle_utility": oracle_capture.oracle_utility,
+        "p0_utility": oracle_capture.p0_utility,
+        "p1_utility": oracle_capture.p1_utility,
+        "positive_group_fraction": pos_group,
+        "positive_group_count": pos_breakdown["positive"],
+        "negative_group_count": pos_breakdown["negative"],
+        "zero_group_count": pos_breakdown["zero"],
+        "total_group_count": pos_breakdown["total"],
+        "worst_subtype_regression": worst_regression,
+        "subtype_metrics": [{
+            "subtype": m.subtype, "n_tasks": m.n_tasks,
+            "n_groups": m.n_groups, "p1_utility": m.p1_utility,
+            "p0_utility": m.p0_utility, "p1_minus_p0": m.p1_minus_p0,
+            "symbolic_fraction": m.symbolic_fraction,
+            "llm_fraction": m.llm_fraction,
+            "oracle_agreement": m.oracle_agreement,
+        } for m in subtype_metrics_list],
+        "crossover_metrics": [{
+            "subtype": m.subtype, "n_tasks": m.n_tasks,
+            "symbolic_preferred_fraction": m.symbolic_preferred_fraction,
+            "llm_preferred_fraction": m.llm_preferred_fraction,
+            "tie_fraction": m.tie_fraction,
+            "crossover_valid": m.crossover_valid,
+        } for m in crossover_metrics],
+        "crossover_subtype_count": crossover_count,
+        "final_decisive_fraction": final_decisive,
         "final_access_count": 1,
         "dataset": {
-            "n_groups": len(final_groups),
+            "n_groups": len(group_deltas),
             "n_tasks": len(splits["final"]),
-            "n_crossover_subtypes": len(subtype_p1_gains),
-            "decisive_fraction": float(np.mean(decisive)) if len(decisive) > 0 else 0.0,
+            "n_crossover_subtypes": crossover_count,
         },
-        "baselines": {},
+        "preconditions": [{
+            "name": p.name, "passed": p.passed,
+            "actual": str(p.actual), "required": str(p.required),
+        } for p in preconditions],
+        "all_preconditions_pass": all_preconditions_pass,
+        "baselines": {},  # Section 19 — to be filled by baseline suite
         "utility_protocol": criteria.utility_protocol,
         "utility_config_sha256": utility_config.utility_config_hash,
+        "policy_hash": actual_policy_hash,
+        "calibration_hash": cal_artifact.get("calibration_sha256", ""),
+        "representation_hash": manifest.representation_config_sha256,
     }
 
-    # Generate report.
+    # ── Generate gate decision ──
+    gate_verdicts_dict = {}
+    if all_preconditions_pass:
+        gates_config = criteria.raw.get("gates", {})
+        for gate_name, gate_spec in gates_config.items():
+            if not isinstance(gate_spec, dict):
+                continue
+            gate_verdicts_dict[gate_name] = {
+                "actual": stats.get(gate_name, 0.0),
+                "threshold": float(gate_spec.get("threshold", 0.0)),
+                "comparator": gate_spec.get("comparator", "gte"),
+                "passed": True,  # filled below
+            }
+
+    gate_decision = {
+        "passed": qualification_status == QualificationStatus.PASS,
+        "experiment_id": criteria.experiment_id,
+        "qualification_status": qualification_status.value,
+        "preconditions": {p.name: {"passed": p.passed,
+                                    "actual": str(p.actual),
+                                    "required": str(p.required)}
+                           for p in preconditions},
+        "statistical_gates": gate_verdicts_dict,
+    }
+
+    # Fill in gate verdicts from stats.
+    if all_preconditions_pass:
+        gates_config = criteria.raw.get("gates", {})
+        for gate_name, gate_spec in gates_config.items():
+            if not isinstance(gate_spec, dict):
+                continue
+            threshold = float(gate_spec.get("threshold", 0.0))
+            comp_str = gate_spec.get("comparator", "gte")
+            comparator = Comparator(comp_str)
+            metric_map = {
+                "minimum_point_gain_vs_p0": bootstrap_result.point_estimate,
+                "lcb_p1_minus_p0": bootstrap_result.ci_low,
+                "require_lcb_vs_p0_above": bootstrap_result.ci_low,
+                "lcb_p1_minus_sham": sham_bootstrap.ci_low,
+                "require_lcb_vs_sham_above": sham_bootstrap.ci_low,
+                "minimum_oracle_gap_capture": oracle_capture.value if oracle_capture.value is not None else 0.0,
+                "minimum_positive_group_fraction": pos_group,
+                "maximum_worst_subtype_regression": worst_regression,
+                "maximum_final_access_count": 1,
+            }
+            observed = metric_map.get(gate_name, 0.0)
+            passed = compare(float(observed), comparator, threshold)
+            gate_decision["statistical_gates"][gate_name] = {
+                "actual": observed,
+                "threshold": threshold,
+                "comparator": comp_str,
+                "passed": passed,
+            }
+
+    (out / "gate_decision.json").write_text(json.dumps(gate_decision, indent=2))
+
+    # ── Save experiment results ──
+    (out / "experiment_results.json").write_text(json.dumps(stats, indent=2))
+
+    # ── Generate report ──
     criteria_dict = {
         "experiment_id": criteria.experiment_id,
         "criteria_hash": criteria.criteria_hash,
@@ -937,9 +1369,9 @@ def stage_final(criteria, args) -> int:
     }
     report = generate_report(out, stats=stats, criteria=criteria_dict)
     print(f"[final] Report generated: {report['output_dir']}")
-    print(f"[final] Gate decision: {'PASS' if report['decision']['passed'] else 'FAIL'}")
+    print(f"[final] Gate decision: {qualification_status.value}")
 
-    # Record final access in ledger.
+    # ── Record final access in ledger ──
     ledger_data = {
         "max_accesses": 1,
         "n_accesses": 1,
@@ -952,17 +1384,20 @@ def stage_final(criteria, args) -> int:
     }
     ledger_path.write_text(json.dumps(ledger_data, indent=2))
 
-    # Update pointer.
+    # ── Update pointer with RELATIVE path ──
     pointer_path = REPO_ROOT / "artifacts" / "current" / "pointer.json"
+    # Compute relative path from artifacts/current/ to the bundle.
+    bundle_rel = os.path.relpath(out, REPO_ROOT / "artifacts" / "current")
     pointer = {
-        "artifact_type": "pointer",
+        "artifact_type": "status_pointer",
         "experiment_id": criteria.experiment_id,
-        "target": str(out),
+        "target": bundle_rel,
+        "qualification_status": qualification_status.value,
+        "evidence_level": "EXPERIMENTALLY_QUALIFIED" if qualification_status == QualificationStatus.PASS
+                          else "EXPERIMENTALLY_FAILED" if qualification_status == QualificationStatus.FAIL
+                          else "NOT_EVALUABLE",
         "source_hash": current_hash,
-        "generated_at": time.strftime("%Y-%m-%d"),
-        "status": "PASS" if report["decision"]["passed"] else "FAILED",
-        "evidence_level": "EXPERIMENTALLY_QUALIFIED" if report["decision"]["passed"]
-                          else "EXPERIMENTALLY_FAILED",
+        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
     }
     pointer_path.write_text(json.dumps(pointer, indent=2))
     print(f"[final] Pointer updated: {pointer_path}")

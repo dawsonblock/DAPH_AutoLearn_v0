@@ -1,4 +1,4 @@
-"""Section 12 — representation-selection protocol (v0.3.10.4-alpha).
+"""Section 12 — representation-selection protocol (v0.3.10.5-alpha).
 
 Development-only study over candidate layers and pooling methods.
 Selects on a frozen development metric; records every candidate result;

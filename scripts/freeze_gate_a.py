@@ -77,9 +77,13 @@ def main() -> int:
     policy_hash = ""
     if policy_artifact_path.exists():
         policy_artifact = json.loads(policy_artifact_path.read_text())
-        policy_hash = hashlib.sha256(
-            json.dumps(policy_artifact, sort_keys=True).encode()
-        ).hexdigest()
+        # Use the policy_sha256 from the artifact if present (v0.3.10.5+).
+        # Otherwise fall back to hashing the full artifact JSON.
+        policy_hash = policy_artifact.get("policy_sha256", "")
+        if not policy_hash:
+            policy_hash = hashlib.sha256(
+                json.dumps(policy_artifact, sort_keys=True).encode()
+            ).hexdigest()
 
     # Load calibration artifact.
     if "smoke" in criteria.experiment_id:

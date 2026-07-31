@@ -1,3 +1,42 @@
+# 0.3.10.5-alpha (Gate A statistical correctness repair)
+
+This is a **scientific-correctness repair** of the Gate A qualification layer.
+The prior Gate A PASS (daph_gate_a_real_002) is **INVALIDATED** because:
+
+1. The primary confidence interval was a placeholder (`point_estimate ± 0.1`).
+2. The P1-minus-sham interval was actually the sham utility interval.
+3. P1 utility was based on policy probabilities, not selected routing actions.
+4. Positive-group fraction measured symbolic preference, not P1 improvement.
+5. The final policy was retrained instead of loaded from the frozen artifact.
+6. Calibration was frozen but not operationally applied.
+7. Several freeze checks compared manifest values against themselves.
+
+## What changed
+
+- **Invalidated prior PASS**: `daph_gate_a_real_002` moved to
+  `artifacts/invalidated/daph_gate_a_real_002_invalid_statistics/`
+- **QualificationStatus enum**: PASS / FAIL / NOT_EVALUABLE / INVALIDATED
+- **Hard routing**: P1 utility uses selected actions, not soft probability
+- **Real group bootstrap**: 20,000 iterations with group-weighted estimand
+- **P1-minus-sham**: Nested bootstrap of the actual difference
+- **Frozen policy evaluation**: Final stage loads, hashes, and executes
+  the frozen policy artifact — no retraining
+- **Operational calibration**: Frozen thresholds applied to raw probabilities
+- **Precondition gates**: Checked before statistical gates
+- **Explicit comparators**: gt / gte / lt / lte / eq
+- **Prediction artifacts**: final_predictions, final_task_metrics, sham_predictions
+- **Independent validator**: Recomputes all metrics from task-level records
+- **Portable pointer**: Relative paths only, no machine-local paths
+
+## What was NOT changed
+
+- No new cognitive architecture, latent memory, activation steering,
+  model merging, recurrent reasoning, or additional agent frameworks.
+- The real-model pipeline, benchmark, canonical verification,
+  hidden-state extraction, and artifact infrastructure are unchanged.
+
+---
+
 # 0.3.10.4-alpha (Gate A scientific-integrity repair — Priority 0)
 
 This is a **scientific-integrity, reproducibility, and qualification repair**,

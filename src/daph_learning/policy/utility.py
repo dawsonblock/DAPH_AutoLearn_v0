@@ -1,4 +1,4 @@
-"""v0.3.10.4-alpha — canonical backend utility function (Section 3, 8).
+"""v0.3.10.5-alpha — canonical backend utility function (Section 3, 8).
 
 This is the ONE place where ``U_b`` is computed from a
 :class:`~daph_learning.policy.types.BackendOutcome` and a

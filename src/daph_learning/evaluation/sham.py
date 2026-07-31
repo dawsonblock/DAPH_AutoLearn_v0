@@ -1,4 +1,4 @@
-"""Section 15 — multi-seed sham control (v0.3.10.4-alpha).
+"""Section 15 — multi-seed sham control (v0.3.10.5-alpha).
 
 Primary sham: shuffle target labels within ``subtype × split ×
 decisive/nondecisive`` bins, preserving class balance and subtype
