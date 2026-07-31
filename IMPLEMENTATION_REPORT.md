@@ -1,4 +1,4 @@
-# Implementation Report — DAPH AutoLearn v0.3.10.4-alpha
+# Implementation Report — DAPH AutoLearn v0.3.10.5-alpha
 
 ## Gate A Scientific-Integrity Repair — Priority 0+1 (Sections 1–19)
 
@@ -105,7 +105,7 @@ endings, deterministic ordering, and the exclusions in
 
 | File | Change |
 |------|--------|
-| `README.md` | Header version bumped; added Gate A status banner (`NOT YET REQUALIFIED`); added `v0.3.10.4-alpha` changelog entry. |
+| `README.md` | Header version bumped; added Gate A status banner (`NOT YET REQUALIFIED`); added `v0.3.10.5-alpha` changelog entry. |
 | `CLAIMS.md` | Header bumped; added evidence-level discipline (IMPLEMENTED/UNIT_TESTED/SYNTHETIC_VALIDATED/REAL_MODEL_SMOKE/EXPERIMENTALLY_FAILED/EXPERIMENTALLY_QUALIFIED); added "Gate A status: NOT YET REQUALIFIED" section; updated test count to 1048. |
 | `CHANGELOG.md` | Prepended full `0.3.10.4-alpha` entry documenting stale-artifact discovery, source-hash mismatch, old failed run archival, new experiment identity, verifier hardening, eval removal, artifact layout, validator, and CI gates. |
 

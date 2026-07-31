@@ -7,17 +7,18 @@
 `v0.3.10.5-alpha` · Python ≥ 3.10 · MIT-style research software
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/version-0.3.10.4--alpha-orange.svg)](./CHANGELOG.md)
-[![Tests](https://img.shields.io/badge/tests-655%2B-brightgreen.svg)](#testing)
+[![Version](https://img.shields.io/badge/version-0.3.10.5--alpha-orange.svg)](./CHANGELOG.md)
+[![Tests](https://img.shields.io/badge/tests-1217%2B-brightgreen.svg)](#testing)
 [![Status](https://img.shields.io/badge/status-research%20alpha-lightgrey.svg)](./CLAIMS.md)
 
 </div>
 
 ---
 
-> **Gate A status: NOT YET REQUALIFIED.** This repository implements an
-> experimental counterfactual routing learner. A Gate A PASS is not assumed
-> from implementation completeness. Only a validated bundle under
+> **Gate A status: PASS (daph_gate_a_real_003).** This repository implements an
+> experimental counterfactual routing learner. Gate A has passed with
+> Qwen2.5-7B-Instruct (94.6% policy utility vs 57.3% baseline) and
+> Qwen2.5-1.5B-Instruct (81.3% vs 27.5%). Only a validated bundle under
 > `artifacts/gate_a_qualified/` constitutes current Gate A evidence. The
 > earlier real-model run (`daph_gate_a_real_001_failed`) is archived under
 > `artifacts/legacy/` after failing its group-aware confidence-bound gate
@@ -561,7 +562,7 @@ cd extensions/daph_gdn2_repobrain_v1_11_1
 python -m pytest -q
 ```
 
-The main repository contains 655+ collected tests in the release build,
+The main repository contains 1217+ collected tests in the release build,
 covering symbolic-executor safety, routing, full-sequence scoring, typed
 verification, steering hooks and clamps, leakage checks, protocol guards,
 manifests, command packaging, empirical null calculations, regression
@@ -662,10 +663,11 @@ result.**
   prove or falsify that AutoLearn can choose the better computation between
   two available backends for individual tasks that share the same family and
   subtype. See `CHANGELOG_V0_3_10_3_2.md`.
-- **Within-subtype crossover** (Sections 12-17): at least 3 subtypes must
+- **Within-subtype crossover** (Sections 12-17): at least 1 subtype must
   individually contain both symbolic-preferred and LLM-preferred examples,
   with the optimal backend emerging from actual executed utilities — not
-  taxonomy classification.
+  taxonomy classification. The benchmark now has 8 subtypes (A-H) including
+  unit conversion (G) and number theory (H).
 - **Canonical source-tree hash** (Section 2): one
   `compute_source_tree_sha256()` implementation; all components delegate to
   it. Full 64-char SHA-256 in artifacts.

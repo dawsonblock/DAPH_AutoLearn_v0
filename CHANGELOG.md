@@ -1,3 +1,36 @@
+# 0.3.10.6-alpha (Prompt interface fix + 1.5B experiment)
+
+## What changed
+
+- **Prompt interface fix**: Created shared `build_llm_prompt()` in
+  `real_backends.py` as the single source of truth for LLM prompt
+  construction. All scripts now use this function instead of
+  constructing prompts independently.
+- **Fixed FINAL: → FINAL_ANSWER: format**: 5 files were using the wrong
+  `FINAL:` format instead of the canonical `FINAL_ANSWER:` format expected
+  by the verifier. This was the root cause of 0% LLM accuracy in the
+  original 1.5B run.
+- **Backward-compatible parser**: `parse_final_or_exact()` now accepts
+  both `FINAL:` and `FINAL_ANSWER:` formats for backward compatibility.
+- **New subtypes G and H**: Added unit conversion (G) and number
+  theory/GCD-LCM (H) subtypes to the crossover benchmark, bringing the
+  total from 6 to 8 subtypes. Group count increased from 420 to 560.
+- **1.5B experiment (daph_gate_a_real_004_1b5)**: Confirmed that the
+  prompt interface was the bottleneck, not model size. The 1.5B model
+  passes Gate A with 27.5% LLM accuracy (up from 0%) and 81.3% policy
+  utility. See `PROMPT_INTERFACE_FINDINGS.md`.
+- **New tests**: Added `test_prompt_interface.py` with 13 tests
+  verifying the FINAL_ANSWER format interface.
+
+## Gate A results
+
+| Model | P1 | P0 | Gain | Oracle capture | Verdict |
+|-------|-----|-----|------|----------------|---------|
+| Qwen2.5-7B-Instruct | 0.946 | 0.573 | 0.374 | 1.000 | PASS |
+| Qwen2.5-1.5B-Instruct | 0.813 | 0.275 | 0.537 | 0.997 | PASS |
+
+---
+
 # 0.3.10.5-alpha (Gate A statistical correctness repair)
 
 This is a **scientific-correctness repair** of the Gate A qualification layer.

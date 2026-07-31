@@ -264,3 +264,50 @@ def test_subtype_f_percentage_is_exact():
         assert (total * loss_pct) % 100 == 0, (
             f"F task has truncating percentage: {total}*{loss_pct}%100="
             f"{(total * loss_pct) % 100} != 0 (Section 8)")
+
+
+def test_subtype_g_unit_conversion_is_exact():
+    """Subtype G: unit conversion must produce correct integer results."""
+    tasks = generate_crossover_split(
+        split="train", n_per_subtype=50, seed=77)
+    g_tasks = [t for t in tasks if t["metadata"]["subtype"] == "G"]
+    assert len(g_tasks) >= 10
+    for t in g_tasks:
+        recomputed = _recompute_expected(t)
+        assert recomputed is not None, (
+            f"could not recompute G task: {t['specification']!r}")
+        assert recomputed == t["expected"], (
+            f"G task mismatch: recomputed={recomputed} != "
+            f"stored={t['expected']}")
+
+
+def test_subtype_h_gcd_lcm_is_valid():
+    """Subtype H: GCD/LCM must produce correct integer results."""
+    import math
+    tasks = generate_crossover_split(
+        split="train", n_per_subtype=50, seed=88)
+    h_tasks = [t for t in tasks if t["metadata"]["subtype"] == "H"]
+    assert len(h_tasks) >= 10
+    for t in h_tasks:
+        recomputed = _recompute_expected(t)
+        assert recomputed is not None, (
+            f"could not recompute H task: {t['specification']!r}")
+        assert recomputed == t["expected"], (
+            f"H task mismatch: recomputed={recomputed} != "
+            f"stored={t['expected']}")
+        # Verify GCD/LCM is positive
+        assert recomputed > 0, (
+            f"H task has non-positive result: {recomputed}")
+
+
+def test_subtype_h_structured_inputs_present():
+    """Subtype H structured variant must have capability_ids and inputs."""
+    tasks = generate_crossover_split(
+        split="train", n_per_subtype=50, seed=99)
+    h_tasks = [t for t in tasks if t["metadata"]["subtype"] == "H"]
+    structured = [t for t in h_tasks if t.get("capability_ids")]
+    assert len(structured) > 0, "H should have some structured tasks"
+    for t in structured:
+        assert "integer_arithmetic" in t["capability_ids"]
+        assert {"a", "b", "op"} <= set(t.get("inputs", {}).keys())
+        assert t["inputs"]["op"] in ("gcd", "lcm")

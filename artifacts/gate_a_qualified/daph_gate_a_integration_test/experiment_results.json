@@ -6,7 +6,7 @@
   "tokenizer_revision": "",
   "capture_layer": 23,
   "feature_dim": 36,
-  "source_hash": "afa4ae3ce855f2e15cb8ddd5c94c1e61e6ad2c05a9a2869d048d503dca8661c0",
+  "source_hash": "7a8678f591fadc5aee1253b4c77180506522b8136dfd46f593ec4fa0081bec15",
   "qualification_status": "NOT_EVALUABLE",
   "route_distribution": {
     "p1_symbolic_fraction": 0.6577380952380952,
@@ -280,7 +280,7 @@
   "baselines": {},
   "utility_protocol": "gate_a_accuracy_primary",
   "utility_config_sha256": "9c2c7dd74ca8db552d40c28916f59461e1ad4f4e383a29dafb476c91851bee63",
-  "policy_hash": "074ae368a9698d09819661764dd22e355b9756b5003ec6d48f4a2470caaf57c5",
+  "policy_hash": "e53724048606a328be5f51aabbc18ef1bf6d22568b7eb4ceb069c1674592bb79",
   "calibration_hash": "",
   "representation_hash": "9446e7180a6e1a5f225789ee3c2de51e403592564eba707a87aaad0ff5decc6b"
 }

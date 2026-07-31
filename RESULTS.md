@@ -1,4 +1,4 @@
-# Results — DAPH AutoLearn v0.3.10.4-alpha Gate A Integrity Repair
+# Results — DAPH AutoLearn v0.3.10.5-alpha Gate A Integrity Repair
 
 ## Overview
 
@@ -10,10 +10,11 @@ timing, representation selection, baselines, uncertainty targets, sham
 control, final-access state machine, group-aware statistics, gate
 criteria, report generator, staged CLI).
 
-The release does **not** claim Gate A passed. The current pointer
-declares `NOT_YET_REQUALIFIED`. A full real-model Gate A run has not
-been executed; only a minimal real-model smoke was run on a cached
-0.5B model. The infrastructure for the full run is complete.
+**Gate A has PASSED.** The current pointer declares
+`EXPERIMENTALLY_QUALIFIED` for `daph_gate_a_real_003` (Qwen2.5-7B-Instruct).
+A second PASS was achieved with `daph_gate_a_real_004_1b5`
+(Qwen2.5-1.5B-Instruct). See `GATE_A_RESULTS_003.md` and
+`PROMPT_INTERFACE_FINDINGS.md` for details.
 
 ---
 
@@ -21,9 +22,9 @@ been executed; only a minimal real-model smoke was run on a cached
 
 | Metric | Value |
 |--------|-------|
-| Total collected tests | 1167 |
-| Passed | 1163 |
-| Skipped | 4 |
+| Total collected tests | 1217 |
+| Passed | 1214 |
+| Skipped | 3 |
 | Failed | 0 |
 | Errors | 0 |
 | Exit code | 0 |

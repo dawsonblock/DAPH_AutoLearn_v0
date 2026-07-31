@@ -1,4 +1,4 @@
-# Integration Report — Gate A Vertical Integration (v0.3.10.4-alpha)
+# Integration Report — Gate A Vertical Integration (v0.3.10.5-alpha)
 
 **Branch:** `gate-a-experiment`
 **Commit:** `fa86172` — Wire canonical verification + real staged pipeline into Gate A

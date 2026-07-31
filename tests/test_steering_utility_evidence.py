@@ -36,7 +36,8 @@ def _make_steering_setup(tasks, cfg=None):
         symbolic, negative toward LLM."""
         subtype = task.get("metadata", {}).get("subtype", "")
         # Base probability depends on subtype.
-        base_p = {"A": 0.6, "B": 0.4, "C": 0.3, "D": 0.7, "E": 0.5, "F": 0.4}
+        base_p = {"A": 0.6, "B": 0.4, "C": 0.3, "D": 0.7, "E": 0.5,
+                  "F": 0.4, "G": 0.5, "H": 0.6}
         p = base_p.get(subtype, 0.5) + alpha * 0.3
         return float(np.clip(p, 0.0, 1.0))
 
@@ -175,7 +176,8 @@ def test_capture_ablation_selects_best_layer():
     def policy_proba_fn(task, layer):
         """Simulate different routing quality per layer."""
         subtype = task.get("metadata", {}).get("subtype", "")
-        base = {"A": 0.6, "B": 0.4, "C": 0.3, "D": 0.7, "E": 0.5, "F": 0.4}.get(subtype, 0.5)
+        base = {"A": 0.6, "B": 0.4, "C": 0.3, "D": 0.7, "E": 0.5,
+                "F": 0.4, "G": 0.5, "H": 0.6}.get(subtype, 0.5)
         # Layer 5 is best (highest utility), layer 1 is worst.
         layer_effect = {1: -0.2, 3: 0.0, 5: 0.15, 7: 0.05}.get(layer, 0.0)
         return float(np.clip(base + layer_effect, 0.0, 1.0))
