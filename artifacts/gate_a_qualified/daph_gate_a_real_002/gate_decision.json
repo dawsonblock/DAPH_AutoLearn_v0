@@ -1,42 +1,42 @@
 {
   "passed": true,
-  "experiment_id": "daph_gate_a_integration_test",
-  "criteria_hash": "1e95de8b3d12642c901b7a9ae2c90d5fc2533a24a3fbc352083ceb66b282785a",
+  "experiment_id": "daph_gate_a_real_002",
+  "criteria_hash": "8d1ce37900fdfb4852454b36cc3efb2b51c6d4b6f1e8d02a6e983b315e66227c",
   "overall_status": "PASS",
   "gate_verdicts": {
     "minimum_point_gain_vs_p0": {
-      "actual": 0.06267058167710864,
-      "threshold": 0.0,
+      "actual": 0.42744826671899666,
+      "threshold": 0.02,
       "comparator": "gt",
       "passed": true
     },
     "require_lcb_vs_p0_above": {
-      "actual": -0.03732941832289137,
-      "threshold": -1.0,
+      "actual": 0.32744826671899663,
+      "threshold": 0.0,
       "comparator": "gt",
       "passed": true
     },
     "require_lcb_vs_sham_above": {
-      "actual": -0.027731801982796324,
-      "threshold": -1.0,
+      "actual": 0.3527448622435649,
+      "threshold": 0.0,
       "comparator": "gt",
       "passed": true
     },
     "minimum_oracle_gap_capture": {
-      "actual": 0.17691685222403267,
-      "threshold": 0.0,
+      "actual": 0.6225264263694861,
+      "threshold": 0.5,
       "comparator": "gte",
       "passed": true
     },
     "minimum_positive_group_fraction": {
-      "actual": 0.5396825396825397,
-      "threshold": 0.0,
+      "actual": 0.9206349206349206,
+      "threshold": 0.6,
       "comparator": "gt",
       "passed": true
     },
     "maximum_worst_subtype_regression": {
-      "actual": 0.09232457137826375,
-      "threshold": 1.0,
+      "actual": 0.0,
+      "threshold": 0.03,
       "comparator": "lte",
       "passed": true
     },

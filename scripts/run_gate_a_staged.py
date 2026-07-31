@@ -204,43 +204,51 @@ def _batched_llm_generate(tasks, model, tokenizer, device="mps", batch_size=16,
     """Run LLM generation on a batch of tasks for speed.
 
     Returns list of (generated_text, latency) tuples.
+    Uses left-padding for decoder-only models.
     """
     import torch
     import time as _time
 
-    results = []
-    for i in range(0, len(tasks), batch_size):
-        batch = tasks[i:i + batch_size]
-        prompts = []
-        for task in batch:
-            prompt = str(task.get("prompt", task.get("specification", "")))
-            try:
-                messages = [{"role": "user", "content": prompt}]
-                formatted = tokenizer.apply_chat_template(
-                    messages, tokenize=False, add_generation_prompt=True)
-            except (AttributeError, TypeError, ValueError):
-                formatted = prompt
-            prompts.append(formatted)
+    # Set left-padding for decoder-only model generation.
+    original_padding_side = getattr(tokenizer, "padding_side", "right")
+    tokenizer.padding_side = "left"
 
-        inputs = tokenizer(prompts, return_tensors="pt", padding=True,
-                           truncation=True, max_length=512).to(device)
-        t0 = _time.time()
-        with torch.no_grad():
-            output_ids = model.generate(
-                **inputs,
-                max_new_tokens=max_new_tokens,
-                do_sample=False,
-                temperature=1.0,
-                top_p=1.0,
-                pad_token_id=tokenizer.eos_token_id,
-            )
-        latency = _time.time() - t0
-        n_prompt = inputs["input_ids"].shape[1]
-        for j in range(len(batch)):
-            gen_ids = output_ids[j, n_prompt:]
-            text = tokenizer.decode(gen_ids, skip_special_tokens=True).strip()
-            results.append((text, latency / len(batch)))
-    return results
+    try:
+        results = []
+        for i in range(0, len(tasks), batch_size):
+            batch = tasks[i:i + batch_size]
+            prompts = []
+            for task in batch:
+                prompt = str(task.get("prompt", task.get("specification", "")))
+                try:
+                    messages = [{"role": "user", "content": prompt}]
+                    formatted = tokenizer.apply_chat_template(
+                        messages, tokenize=False, add_generation_prompt=True)
+                except (AttributeError, TypeError, ValueError):
+                    formatted = prompt
+                prompts.append(formatted)
+
+            inputs = tokenizer(prompts, return_tensors="pt", padding=True,
+                               truncation=True, max_length=512).to(device)
+            t0 = _time.time()
+            with torch.no_grad():
+                output_ids = model.generate(
+                    **inputs,
+                    max_new_tokens=max_new_tokens,
+                    do_sample=False,
+                    temperature=1.0,
+                    top_p=1.0,
+                    pad_token_id=tokenizer.eos_token_id,
+                )
+            latency = _time.time() - t0
+            n_prompt = inputs["input_ids"].shape[1]
+            for j in range(len(batch)):
+                gen_ids = output_ids[j, n_prompt:]
+                text = tokenizer.decode(gen_ids, skip_special_tokens=True).strip()
+                results.append((text, latency / len(batch)))
+        return results
+    finally:
+        tokenizer.padding_side = original_padding_side
 
 
 def _execute_split(

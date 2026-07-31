@@ -1,0 +1,15 @@
+{
+  "policy_type": "logistic",
+  "config_sha256": "083572b863c2ba4097879536a065ad9f9f073d8758b852c5e5cfcb4be0bab966",
+  "n_train": 1680,
+  "n_dev": 672,
+  "train_features_shape": [
+    1680,
+    1540
+  ],
+  "utility_protocol": "gate_a_accuracy_primary",
+  "utility_config_sha256": "9c2c7dd74ca8db552d40c28916f59461e1ad4f4e383a29dafb476c91851bee63",
+  "used_real_model": true,
+  "capture_layer": 18,
+  "capture_location": "last_token"
+}

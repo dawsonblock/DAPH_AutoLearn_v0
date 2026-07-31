@@ -1,6 +1,6 @@
 # Gate A Results — daph_gate_a_integration_test
 
-**Generated:** 2026-07-31T03:12:07
+**Generated:** 2026-07-31T03:35:31
 **Criteria hash:** `1e95de8b3d12642c901b7a9ae2c90d5fc2533a24a3fbc352083ceb66b282785a`
 **Overall status:** PASS
 
@@ -21,8 +21,8 @@
 ## Primary Endpoint
 
 - Estimand: group_weighted
-- Point estimate: 0.06267058423513883
-- 95% CI (group_weighted): [-0.03732941576486118, 0.16267058423513883]
+- Point estimate: 0.06267058167710864
+- 95% CI (group_weighted): [-0.03732941832289137, 0.16267058167710863]
 - CI label: group_weighted
 - Utility protocol: gate_a_accuracy_primary
 
@@ -38,10 +38,10 @@
 
 ## Sham Control
 
-- P1 utility: 0.06267058423513883
-- Mean sham utility: -0.027077170362087538
-- P1 minus sham (mean): 0.08974775459722636
-- P1 minus sham 95% CI: [-0.02773180203544593, -0.02599861996543003]
+- P1 utility: 0.06267058167710864
+- Mean sham utility: -0.027077170309603067
+- P1 minus sham (mean): 0.0897477519867117
+- P1 minus sham 95% CI: [-0.027731801982796324, -0.025998619911601167]
 - P1 percentile vs sham: 100.0%
 - Sham seeds: 3
 - Training spec hash: `53daf959e10d2322597e3e966c06b3dfb25fdfa549cb32022a583e3119f9b49b`
@@ -59,7 +59,7 @@
 ## Final Access
 
 - Access count: 1
-- Source hash: `5eb23171748234addfc13b266830d4bd06fab2fc1848857adba946e195dd57ab`
+- Source hash: `bd073965319371bc76d65e851991dc1f332a79c23b9aa554b44f976723b57393`
 
 ---
 This report was generated from machine-readable artifacts. No numbers were manually typed.
