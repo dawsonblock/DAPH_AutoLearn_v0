@@ -1,0 +1,47 @@
+{
+  "experiment_id": "daph_gate_a_real_002",
+  "used_real_model": true,
+  "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+  "capture_layer": 18,
+  "feature_dim": 1536,
+  "source_hash": "38278f432dfb042733245876c98e2598ca7248695b54ad049b46f9c7b76be247",
+  "route_distribution": {
+    "p1_symbolic_fraction": 0.5476190476190477,
+    "p1_llm_fraction": 0.4523809523809524,
+    "p1_abstain_fraction": 0.0,
+    "oracle_symbolic_fraction": 0.6845238095238095,
+    "oracle_llm_fraction": 0.31547619047619047,
+    "p1_oracle_action_agreement": 0.8115079365079365,
+    "p1_always_symbolic_agreement": 0.5476190476190477
+  },
+  "primary_endpoint": {
+    "estimand": "group_weighted",
+    "point_estimate": 0.26772378593779006,
+    "ci_low": 0.16772378593779005,
+    "ci_high": 0.3677237859377901,
+    "ci_label": "group_weighted"
+  },
+  "sham": {
+    "p1_utility": 0.26772378593779006,
+    "mean_sham_utility": 0.24668489277412148,
+    "p1_minus_sham_mean": 0.02103889316366858,
+    "p1_minus_sham_ci_low": 0.24668489277412145,
+    "p1_minus_sham_ci_high": 0.24668489277412145,
+    "p1_percentile_vs_sham": 100.0,
+    "n_seeds": 20,
+    "training_spec_hash": "d4cf477cc2d038cc50872b689398392653290896d293569cd4fbcca133854af4"
+  },
+  "oracle_gap_capture": 0.42283980226979156,
+  "positive_group_fraction": 0.7777777777777778,
+  "worst_subtype_regression": 0.23078336933627724,
+  "final_access_count": 1,
+  "dataset": {
+    "n_groups": 63,
+    "n_tasks": 504,
+    "n_crossover_subtypes": 6,
+    "decisive_fraction": 0.9321428571428572
+  },
+  "baselines": {},
+  "utility_protocol": "gate_a_accuracy_primary",
+  "utility_config_sha256": "9c2c7dd74ca8db552d40c28916f59461e1ad4f4e383a29dafb476c91851bee63"
+}
