@@ -40,6 +40,14 @@ def test_integer_schema_uses_numeric_verifier():
     assert v.verify(task, "FINAL: 99").status is VerificationStatus.VERIFIED_INCORRECT
 
 
+def test_integer_schema_accepts_final_answer_format():
+    """The canonical FINAL_ANSWER: format must also be verified."""
+    task = {"task_id": "t1", "expected": 42, "output_schema": SCHEMA_INTEGER}
+    v = select_verifier_for_task(task)
+    assert v.verify(task, "FINAL_ANSWER: 42").status is VerificationStatus.VERIFIED_CORRECT
+    assert v.verify(task, "FINAL_ANSWER: 99").status is VerificationStatus.VERIFIED_INCORRECT
+
+
 def test_integer_schema_rejects_substring_match():
     task = {"task_id": "t1", "expected": 12, "output_schema": SCHEMA_INTEGER}
     v = select_verifier_for_task(task)

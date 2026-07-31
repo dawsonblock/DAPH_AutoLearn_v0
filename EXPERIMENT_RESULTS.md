@@ -1,4 +1,10 @@
-# Gate A Experiment Results — daph_gate_a_real_002
+> **ARCHIVED — INVALIDATED.** This document describes `daph_gate_a_real_002`,
+> which was invalidated due to placeholder confidence intervals, soft probability
+> utility, and sham interval bugs. The current PASS results are in
+> `GATE_A_RESULTS_003.md` (Qwen2.5-7B-Instruct) and `PROMPT_INTERFACE_FINDINGS.md`
+> (1.5B comparison). This file is retained for historical reference only.
+
+# Gate A Experiment Results — daph_gate_a_real_002 (INVALIDATED)
 
 **Date:** 2026-07-31
 **Release:** v0.3.10.4-alpha

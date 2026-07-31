@@ -73,6 +73,11 @@ def _hash_tasks(tasks: list[dict[str, Any]]) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
+def _get_batch_size(criteria) -> int:
+    """Get batch_size from config, defaulting to 64."""
+    return int(criteria.raw.get("model", {}).get("batch_size", 64))
+
+
 def _load_tasks(out_dir: Path) -> dict[str, list[dict[str, Any]]]:
     """Load the four split task files written by stage_collect."""
     splits = {}
@@ -333,7 +338,7 @@ def _smart_llm_generate(tasks, model, tokenizer, criteria, device="cuda",
         print(f"[llm] vLLM failed ({exc}), falling back to HF generate")
         return _batched_llm_generate(
             tasks, model, tokenizer,
-            device=device, batch_size=64,
+            device=device, batch_size=batch_size,
             max_new_tokens=max_new_tokens)
 
 
@@ -546,8 +551,7 @@ def stage_develop(criteria, args) -> int:
         if model_info is not None and model is not None:
             llm_results = _batched_llm_generate(
                 splits[split_name], model, tokenizer,
-                device=getattr(args, "device", "cuda"), batch_size=64,
-                max_new_tokens=int(criteria.raw.get("model", {}).get("max_new_tokens", 256)))
+                device=getattr(args, "device", "cuda"), batch_size=_get_batch_size(criteria),                max_new_tokens=int(criteria.raw.get("model", {}).get("max_new_tokens", 256)))
         experiences[split_name] = _execute_split(
             splits[split_name], utility_config,
             llm_backend=llm_backend, llm_results=llm_results)
@@ -699,7 +703,7 @@ def stage_calibrate(criteria, args) -> int:
     if model_info is not None and model is not None:
         cal_llm_results = _batched_llm_generate(
             splits["calibration"], model, tokenizer,
-            device=getattr(args, "device", "cuda"), batch_size=64,
+            device=getattr(args, "device", "cuda"), batch_size=_get_batch_size(criteria),
             max_new_tokens=int(criteria.raw.get("model", {}).get("max_new_tokens", 256)))
     cal_experiences = _execute_split(
         splits["calibration"], utility_config,
@@ -813,7 +817,7 @@ def stage_final(criteria, args) -> int:
     if model_info is not None and model is not None:
         final_llm_results = _batched_llm_generate(
             splits["final"], model, tokenizer,
-            device=getattr(args, "device", "cuda"), batch_size=64,
+            device=getattr(args, "device", "cuda"), batch_size=_get_batch_size(criteria),
             max_new_tokens=int(criteria.raw.get("model", {}).get("max_new_tokens", 256)))
     final_experiences = _execute_split(
         splits["final"], utility_config,

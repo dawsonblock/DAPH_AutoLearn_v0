@@ -1,13 +1,15 @@
-# Remaining Experiment Steps — DAPH AutoLearn v0.3.10.4-alpha
+> **COMPLETED.** Gate A has PASSED. This document is retained for historical
+> reference — it was the plan before the successful Gate A qualification.
+> The current results are in `GATE_A_RESULTS_003.md` and
+> `PROMPT_INTERFACE_FINDINGS.md`.
 
-This document states exactly what hardware, model download, runtime, and
-commands are needed to take the repository from its current state
-(`Gate A status: NOT YET_REQUALIFIED`, Priority 0 complete) through a full
-frozen real-model Gate A requalification for `daph_gate_a_real_002`.
+# Remaining Experiment Steps — DAPH AutoLearn v0.3.10.5-alpha (COMPLETED)
 
-It is the honest scope boundary: Priority 0 (Sections 1–7) is implemented
-and tested; Priority 1+ (Sections 8–27) is not yet implemented and is
-required before any Gate A claim can be made.
+This document described the steps needed to take the repository from its
+prior state (`Gate A status: NOT YET_REQUALIFIED`) through a full frozen
+real-model Gate A requalification. **All steps have been completed.**
+Gate A passed with both Qwen2.5-7B-Instruct (`daph_gate_a_real_003`)
+and Qwen2.5-1.5B-Instruct (`daph_gate_a_real_004_1b5`).
 
 ---
 
