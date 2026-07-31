@@ -64,6 +64,7 @@ class CentroidPolicy:
     n_llm_: int = 0
     weight_fallback: bool = False
     fallback_classes: tuple[str, ...] = ()
+    degenerate_train_data: bool = False
 
     def predict_proba(self, h: np.ndarray) -> np.ndarray:
         """Return ``P(S | h)`` for each row of ``h``.
@@ -158,18 +159,48 @@ class CentroidPolicy:
             raise ValueError("weights must be non-negative")
         sym_mask = du > gap_threshold
         llm_mask = du < -gap_threshold
-        # If either class is empty, fall back to a zero vector (predicts
-        # 0.5 everywhere). The caller should detect this via
-        # n_symbolic_ / n_llm_.
-        if sym_mask.sum() == 0 or llm_mask.sum() == 0:
+        # If one class is empty, the routing problem is degenerate: the
+        # optimal policy is a constant that always picks the non-empty
+        # class. We produce a constant policy (p=1.0 for symbolic,
+        # p=0.0 for LLM) rather than a meaningless 0.5. The caller
+        # should detect this via n_symbolic_ / n_llm_ and the
+        # degenerate_train_data flag.
+        if sym_mask.sum() == 0 and llm_mask.sum() == 0:
+            # Both classes empty (all ties) — truly no signal.
             self.vector = np.zeros(feats.shape[1], dtype=np.float32)
             self.threshold = 0.0
             self.temperature = 1.0
             self.n_train_ = feats.shape[0]
+            self.n_symbolic_ = 0
+            self.n_llm_ = 0
+            self.weight_fallback = False
+            self.fallback_classes = ()
+            self.degenerate_train_data = True
+            return self
+        if llm_mask.sum() == 0:
+            # All symbolic-preferred → constant p=1.0.
+            # Use a large positive bias so sigmoid → 1.0.
+            self.vector = np.zeros(feats.shape[1], dtype=np.float32)
+            self.threshold = -100.0  # sigmoid(100/1) ≈ 1.0
+            self.temperature = 1.0
+            self.n_train_ = feats.shape[0]
             self.n_symbolic_ = int(sym_mask.sum())
+            self.n_llm_ = 0
+            self.weight_fallback = False
+            self.fallback_classes = ()
+            self.degenerate_train_data = True
+            return self
+        if sym_mask.sum() == 0:
+            # All LLM-preferred → constant p=0.0.
+            self.vector = np.zeros(feats.shape[1], dtype=np.float32)
+            self.threshold = 100.0  # sigmoid(-100/1) ≈ 0.0
+            self.temperature = 1.0
+            self.n_train_ = feats.shape[0]
+            self.n_symbolic_ = 0
             self.n_llm_ = int(llm_mask.sum())
             self.weight_fallback = False
             self.fallback_classes = ()
+            self.degenerate_train_data = True
             return self
         sym_feats = feats[sym_mask]
         sym_w = w[sym_mask]

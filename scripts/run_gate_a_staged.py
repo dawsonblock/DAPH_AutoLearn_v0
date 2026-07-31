@@ -575,6 +575,25 @@ def stage_final(criteria, args) -> int:
                               dtype=np.float64)
     final_weights = np.array([e["sample_weight"] for e in final_experiences],
                               dtype=np.float64)
+
+    # Route distribution: P1 actions (symbolic when p > 0.5, else LLM).
+    p1_actions = np.where(p1_probs.flatten() > 0.5, "symbolic", "llm")
+    p1_sym_frac = float(np.mean(p1_actions == "symbolic"))
+    p1_llm_frac = float(np.mean(p1_actions == "llm"))
+    p1_abstain_frac = 0.0  # centroid doesn't abstain
+
+    # Oracle actions: always pick the higher-utility backend.
+    oracle_actions = np.where(final_delta_u > 0, "symbolic", "llm")
+    oracle_sym_frac = float(np.mean(oracle_actions == "symbolic"))
+    oracle_llm_frac = float(np.mean(oracle_actions == "llm"))
+
+    # P1–oracle action agreement.
+    p1_oracle_agreement = float(np.mean(p1_actions == oracle_actions))
+
+    # P1–always-symbolic agreement.
+    always_sym = np.array(["symbolic"] * len(p1_actions))
+    p1_always_sym_agreement = float(np.mean(p1_actions == always_sym))
+
     # P1 utility: route to symbolic when p > 0.5, else LLM.
     # Utility gain = (p * delta_u) + (1-p) * 0  (counterfactual)
     p1_utility = float(np.mean(p1_probs.flatten() * final_delta_u * final_weights))
@@ -659,6 +678,15 @@ def stage_final(criteria, args) -> int:
         "capture_layer": capture_config.layer if capture_config else None,
         "feature_dim": int(train_features.shape[1]),
         "source_hash": current_hash,
+        "route_distribution": {
+            "p1_symbolic_fraction": p1_sym_frac,
+            "p1_llm_fraction": p1_llm_frac,
+            "p1_abstain_fraction": p1_abstain_frac,
+            "oracle_symbolic_fraction": oracle_sym_frac,
+            "oracle_llm_fraction": oracle_llm_frac,
+            "p1_oracle_action_agreement": p1_oracle_agreement,
+            "p1_always_symbolic_agreement": p1_always_sym_agreement,
+        },
         "primary_endpoint": {
             "estimand": criteria.primary_endpoint.estimand,
             "point_estimate": p1_utility,

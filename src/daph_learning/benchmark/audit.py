@@ -152,7 +152,7 @@ def audit_dataset(
     min_crossover_subtypes: int = 3,
     min_backend_win_fraction: float = 0.20,
     min_decisive_fraction: float = 0.35,
-    near_duplicate_threshold: float = 0.97,
+    near_duplicate_threshold: float = 0.99,
     crossover_distribution: dict[str, Any] | None = None,
 ) -> DatasetAudit:
     """Section 10 — audit a dataset for leakage and quality.
