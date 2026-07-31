@@ -14,8 +14,8 @@
   "tokenizer_revision": "",
   "representation_config_sha256": "9446e7180a6e1a5f225789ee3c2de51e403592564eba707a87aaad0ff5decc6b",
   "policy_sha256": "7f78c6e88c47306c8ebf0bd40fedd1911462e449f305ec46caaec5b48010ac24",
-  "calibration_sha256": "8ee6ccb88a231e8895dbe62a96041f291199361c09fa98957c4df68d0cdd3422",
+  "calibration_sha256": "a9f25a81972f76a65a37c2345d83f2f1effb0e0c02c78ac4db230f6aaab0a8de",
   "gate_criteria_sha256": "1e95de8b3d12642c901b7a9ae2c90d5fc2533a24a3fbc352083ceb66b282785a",
-  "frozen_at": 1785489136.824615,
+  "frozen_at": 1785490540.465621,
   "stage": "frozen"
 }
