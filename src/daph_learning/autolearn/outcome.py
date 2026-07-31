@@ -60,7 +60,7 @@ class BackendExecutionRecord:
         Whether this backend was actually run. The protocol invariant is
         enforced on this field: an unexecuted backend can never be correct.
     output : Any | None
-        The backend's raw output (e.g. ``"FINAL: 42"`` or generated text).
+        The backend's raw output (e.g. ``"FINAL_ANSWER: 42"`` or generated text).
     verification : VerificationResult
         Independent verifier result. For an unexecuted backend this must be
         ``NOT_EXECUTED`` (never ``VERIFIED_CORRECT``).

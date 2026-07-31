@@ -215,17 +215,15 @@ def _batched_llm_generate(tasks, model, tokenizer, device="mps", batch_size=64,
     tokenizer.padding_side = "left"
 
     try:
-        # The FINAL_ANSWER suffix is required for the verifier to parse the output.
-        from daph_learning.execution.real_backends import _LLM_FINAL_ANSWER_SUFFIX
+        # Use the shared prompt builder to ensure FINAL_ANSWER format.
+        from daph_learning.execution.real_backends import build_llm_prompt
 
         results = []
         for i in range(0, len(tasks), batch_size):
             batch = tasks[i:i + batch_size]
             prompts = []
             for task in batch:
-                prompt = str(task.get("prompt", task.get("specification", "")))
-                # Append the FINAL_ANSWER format requirement.
-                prompt = prompt + _LLM_FINAL_ANSWER_SUFFIX
+                prompt = build_llm_prompt(task)
                 try:
                     messages = [{"role": "user", "content": prompt}]
                     formatted = tokenizer.apply_chat_template(
@@ -268,7 +266,7 @@ def _vllm_generate(tasks, model_id, max_new_tokens=256, revision=None):
     """
     global _VLLM_ENGINE
     import time as _time
-    from daph_learning.execution.real_backends import _LLM_FINAL_ANSWER_SUFFIX
+    from daph_learning.execution.real_backends import build_llm_prompt
 
     if _VLLM_ENGINE is None:
         from vllm import LLM
@@ -289,8 +287,7 @@ def _vllm_generate(tasks, model_id, max_new_tokens=256, revision=None):
     tokenizer = _VLLM_ENGINE.get_tokenizer()
     prompts = []
     for task in tasks:
-        prompt = str(task.get("prompt", task.get("specification", "")))
-        prompt = prompt + _LLM_FINAL_ANSWER_SUFFIX
+        prompt = build_llm_prompt(task)
         try:
             messages = [{"role": "user", "content": prompt}]
             formatted = tokenizer.apply_chat_template(

@@ -50,18 +50,22 @@ def _load_memory(path: Path | None) -> ProceduralMemory:
 
 
 def _build_prompt(task: dict[str, Any], procedures: list[Procedure]) -> str:
+    """Build the canonical LLM prompt with FINAL_ANSWER format.
+
+    Uses the shared ``build_llm_prompt`` from the core library to ensure
+    the FINAL_ANSWER suffix is present (Section 7 verifier requirement).
+    Procedural memory guidance is prepended to the task specification.
+    """
+    from daph_learning.execution.real_backends import build_llm_prompt
     guidance = ""
     if procedures:
         guidance = "\nVerified procedural memory:\n" + "\n".join(
             f"- {p.action}" for p in procedures
         )
-    return (
-        "Solve the following task:\n"
-        f"{task['specification']}"
-        f"{guidance}\n"
-        "Return the answer using exactly this final line format:\n"
-        "FINAL: <integer>\n"
-    )
+    augmented_task = dict(task)
+    spec = str(task.get("specification", ""))
+    augmented_task["specification"] = spec + guidance
+    return build_llm_prompt(augmented_task)
 
 
 def _load_tasks(path: Path) -> list[dict[str, Any]]:
@@ -757,7 +761,7 @@ def main() -> None:
                     reason_code=decision.reason_code,
                 )
                 result = execute_plan(plan)
-                outputs[index] = f"FINAL: {result.value}"
+                outputs[index] = f"FINAL_ANSWER: {result.value}"
                 meta["planner_source"] = plan.planner_source
                 meta["tool_success"] = result.verified
                 meta["symbolic_completed_at"] = time.perf_counter()
