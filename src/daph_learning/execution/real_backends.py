@@ -123,6 +123,31 @@ _LLM_FINAL_ANSWER_SUFFIX = (
 )
 
 
+def build_llm_prompt(task: Mapping[str, Any]) -> str:
+    """Construct the canonical LLM prompt for a task.
+
+    This is the single source of truth for LLM prompt construction.
+    All scripts and library code that send prompts to an LLM must use
+    this function to ensure the FINAL_ANSWER format suffix is present.
+
+    The canonical verifier (Section 7) requires ``FINAL_ANSWER: <integer>``
+    in the LLM output. Without this suffix, the LLM generates reasoning
+    but never produces a parseable answer, resulting in 0% accuracy.
+
+    Parameters
+    ----------
+    task : Mapping[str, Any]
+        A task dict with ``specification`` (or ``prompt``) field.
+
+    Returns
+    -------
+    str
+        The prompt text with the FINAL_ANSWER suffix appended.
+    """
+    prompt = str(task.get("prompt", task.get("specification", "")))
+    return prompt + _LLM_FINAL_ANSWER_SUFFIX
+
+
 def _wrap_symbolic_canonical(result_value: int | None,
                              raw_error: str | None) -> str:
     """Wrap a symbolic result as ``FINAL_ANSWER: <int>`` or return the
@@ -594,8 +619,7 @@ def execute_llm_canonical(
     """
     # Augment the prompt with the FINAL_ANSWER requirement.
     augmented_task = dict(task)
-    original_prompt = str(task.get("prompt", task.get("specification", "")))
-    augmented_task["prompt"] = original_prompt + _LLM_FINAL_ANSWER_SUFFIX
+    augmented_task["prompt"] = build_llm_prompt(task)
 
     outcome, generated_text = execute_llm_backend(
         augmented_task, model, tokenizer,
@@ -1536,6 +1560,7 @@ __all__ = [
     "LLMGenerationConfig",
     "VerificationResult",
     "assert_splits_disjoint",
+    "build_llm_prompt",
     "build_real_counterfactual_experience",
     "capture_task_representation",
     "execute_llm_backend",
