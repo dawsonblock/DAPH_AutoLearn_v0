@@ -8,7 +8,7 @@
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Version](https://img.shields.io/badge/version-0.3.10.5--alpha-orange.svg)](./CHANGELOG.md)
-[![Tests](https://img.shields.io/badge/tests-1217%2B-brightgreen.svg)](#testing)
+[![Tests](https://img.shields.io/badge/tests-1229%2B-brightgreen.svg)](#testing)
 [![Status](https://img.shields.io/badge/status-research%20alpha-lightgrey.svg)](./CLAIMS.md)
 
 </div>
@@ -562,7 +562,7 @@ cd extensions/daph_gdn2_repobrain_v1_11_1
 python -m pytest -q
 ```
 
-The main repository contains 1217+ collected tests in the release build,
+The main repository contains 1229+ collected tests in the release build,
 covering symbolic-executor safety, routing, full-sequence scoring, typed
 verification, steering hooks and clamps, leakage checks, protocol guards,
 manifests, command packaging, empirical null calculations, regression
