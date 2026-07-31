@@ -29,9 +29,19 @@ def _recompute_expected(task: dict[str, Any]) -> int | None:
     if m:
         a1, b1, a2, b2 = (int(m.group(i)) for i in range(1, 5))
         return max(a1 * b1, a2 * b2)
+    # E unparseable: "Compare these two products: {a1} times {b1} versus {a2} times {b2}. ..."
+    m = re.search(r'(\d+)\s+times\s+(\d+)\s+versus\s+(\d+)\s+times\s+(\d+)', spec)
+    if m:
+        a1, b1, a2, b2 = (int(m.group(i)) for i in range(1, 5))
+        return max(a1 * b1, a2 * b2)
 
     # Subtype F: "A tank has {total} L, loses {loss_pct}%, then gains {gain} L. ..."
     m = re.search(r'tank has\s+(\d+)\s+L,\s+loses\s+(\d+)%,\s+then gains\s+(\d+)\s+L', spec)
+    if m:
+        total, loss_pct, gain = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        return total - (total * loss_pct // 100) + gain
+    # F unparseable: "You start with {total} liters ... {loss_pct}% ... pours in {gain} more liters."
+    m = re.search(r'start with\s+(\d+)\s+liters.*?(\d+)%.*?pours in\s+(\d+)', spec)
     if m:
         total, loss_pct, gain = int(m.group(1)), int(m.group(2)), int(m.group(3))
         return total - (total * loss_pct // 100) + gain
@@ -52,14 +62,51 @@ def _recompute_expected(task: dict[str, Any]) -> int | None:
     m = re.search(r'half of\s+(\d+)\s+plus\s+(\d+)', spec)
     if m:
         return int(m.group(1)) // 2 + int(m.group(2))
+    # C unparseable: "Start with {x}, then take away {y} two times."
+    m = re.search(r'Start with\s+(\d+).*?take away\s+(\d+).*?two times', spec)
+    if m:
+        return int(m.group(1)) - 2 * int(m.group(2))
+    # C unparseable: "Begin at {x} and remove {y} exactly three times."
+    m = re.search(r'Begin at\s+(\d+).*?remove\s+(\d+).*?three times', spec)
+    if m:
+        return int(m.group(1)) - 3 * int(m.group(2))
+    # C unparseable: "Combine {x} and {y}, then multiply the sum by two."
+    m = re.search(r'Combine\s+(\d+)\s+and\s+(\d+).*?multiply.*?two', spec)
+    if m:
+        return 2 * (int(m.group(1)) + int(m.group(2)))
+    # C unparseable: "Divide {x} by two and then add {y}."
+    m = re.search(r'Divide\s+(\d+)\s+by two.*?add\s+(\d+)', spec)
+    if m:
+        return int(m.group(1)) // 2 + int(m.group(2))
 
     # Subtype B: "... {a} {noun} with {b} ... total?"
     m = re.search(r'(\d+)\s+\w+\s+with\s+(\d+)', spec)
     if m:
         return int(m.group(1)) * int(m.group(2))
+    # B unparseable: various phrasings with "each" and small numbers
+    # "There are {a} shelves ... each one holds {b} books"
+    m = re.search(r'(\d+)\s+shelves.*?each.*?holds\s+(\d+)', spec)
+    if m:
+        return int(m.group(1)) * int(m.group(2))
+    # "A baker made {a} batches ... {b} cookies in each batch"
+    m = re.search(r'(\d+)\s+batches.*?(\d+)\s+cookies.*?each', spec)
+    if m:
+        return int(m.group(1)) * int(m.group(2))
+    # "Each classroom has {a} desks ... {b} classrooms"
+    m = re.search(r'(\d+)\s+desks.*?(\d+)\s+classrooms', spec)
+    if m:
+        return int(m.group(1)) * int(m.group(2))
+    # "planted {a} rows ... {b} flowers in each row"
+    m = re.search(r'(\d+)\s+rows.*?(\d+)\s+flowers.*?each', spec)
+    if m:
+        return int(m.group(1)) * int(m.group(2))
 
     # Subtype A/D: "{a} mod {modulus}"
     m = re.search(r'(\d+)\s+mod\s+(\d+)', spec)
+    if m:
+        return int(m.group(1)) % int(m.group(2))
+    # D unparseable: "What is the remainder when you divide {a} by {modulus}?"
+    m = re.search(r'remainder when you divide\s+(\d+)\s+by\s+(\d+)', spec)
     if m:
         return int(m.group(1)) % int(m.group(2))
 
@@ -72,6 +119,15 @@ def _recompute_expected(task: dict[str, Any]) -> int | None:
             if op == '+': return a + b
             if op == '-': return a - b
             if op == '*': return a * b
+
+    # A NL variant: "If you have {a} apples and a friend gives you {b} more..."
+    m = re.search(r'have\s+(\d+)\s+apples.*?gives you\s+(\d+)\s+more', spec)
+    if m:
+        return int(m.group(1)) + int(m.group(2))
+    # A NL variant: "You had {a} marbles but lost {b} of them..."
+    m = re.search(r'had\s+(\d+)\s+marbles.*?lost\s+(\d+)', spec)
+    if m:
+        return int(m.group(1)) - int(m.group(2))
 
     return None
 
@@ -103,7 +159,10 @@ def test_subtype_e_no_equal_products():
     e_tasks = [t for t in tasks if t["metadata"]["subtype"] == "E"]
     for t in e_tasks:
         spec = t["specification"]
+        # Try both parseable and unparseable patterns.
         m = re.search(r'(\d+)\*(\d+)\s+or\s+(\d+)\*(\d+)', spec)
+        if not m:
+            m = re.search(r'(\d+)\s+times\s+(\d+)\s+versus\s+(\d+)\s+times\s+(\d+)', spec)
         assert m, f"could not parse E task: {spec!r}"
         a1, b1, a2, b2 = (int(m.group(i)) for i in range(1, 5))
         left, right = a1 * b1, a2 * b2
@@ -136,11 +195,19 @@ def test_subtype_f_percentage_is_exact():
     f_tasks = [t for t in tasks if t["metadata"]["subtype"] == "F"]
     for t in f_tasks:
         spec = t["specification"]
+        # Try parseable pattern: "loses {loss_pct}%"
         m = re.search(r'loses\s+(\d+)%', spec)
+        if not m:
+            # Try unparseable pattern: "{loss_pct}% of it evaporates"
+            m = re.search(r'(\d+)%\s+of it evaporates', spec)
         assert m, f"could not parse percentage in: {spec!r}"
         loss_pct = int(m.group(1))
+        # Try parseable: "tank has {total} L"
         m2 = re.search(r'tank has\s+(\d+)\s+L', spec)
-        assert m2
+        if not m2:
+            # Try unparseable: "start with {total} liters"
+            m2 = re.search(r'start with\s+(\d+)\s+liters', spec)
+        assert m2, f"could not parse total in: {spec!r}"
         total = int(m2.group(1))
         assert (total * loss_pct) % 100 == 0, (
             f"F task has truncating percentage: {total}*{loss_pct}%100="
