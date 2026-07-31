@@ -46,6 +46,99 @@ import numpy as np
 from ..policy.types import BackendOutcome, CounterfactualExperience, Route
 from ..policy.config import ExperimentConfig
 from ..policy.utility import backend_utility as _utility
+from ..policy.utility import compute_utility, UtilityConfig
+
+
+# ------------------------------------------------------------------
+# Section 7/12: BackendExecution — structured boundary result
+# ------------------------------------------------------------------
+
+class BackendName(str, Enum):
+    """Identifies which backend produced an execution result."""
+    SYMBOLIC = "symbolic"
+    LLM = "llm"
+
+
+class ExecutionStatus(str, Enum):
+    """Closed enum for backend execution status."""
+    SUCCESS = "SUCCESS"
+    UNSUPPORTED = "UNSUPPORTED"
+    EXECUTION_ERROR = "EXECUTION_ERROR"
+    TIMEOUT = "TIMEOUT"
+    PARSE_ERROR = "PARSE_ERROR"
+
+
+@dataclass(frozen=True)
+class BackendExecution:
+    """Section 7/12 — structured backend execution result.
+
+    Normalizes backend output at the boundary so both symbolic and LLM
+    paths pass through the SAME canonical verifier. The
+    ``canonical_answer`` field is the integer extracted from the
+    ``FINAL_ANSWER:`` field (or None if absent/malformed).
+
+    Attributes
+    ----------
+    backend : BackendName
+    raw_output : str
+        The raw output text from the backend.
+    canonical_answer : int | None
+        The integer parsed from the ``FINAL_ANSWER:`` field, or None.
+    latency_ms : float
+        Wall-clock latency in milliseconds.
+    execution_status : ExecutionStatus
+    metadata : Mapping[str, Any]
+        Provenance: model_id, generation_config_hash, etc.
+    """
+    backend: BackendName
+    raw_output: str
+    canonical_answer: int | None
+    latency_ms: float
+    execution_status: ExecutionStatus
+    metadata: Mapping[str, Any]
+
+    @property
+    def canonical_output(self) -> str:
+        """The canonical ``FINAL_ANSWER: <int>`` string, or raw error output."""
+        if self.canonical_answer is not None:
+            return f"FINAL_ANSWER: {self.canonical_answer}"
+        return self.raw_output
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "backend": self.backend.value,
+            "raw_output": self.raw_output,
+            "canonical_answer": self.canonical_answer,
+            "latency_ms": self.latency_ms,
+            "execution_status": self.execution_status.value,
+            "metadata": dict(self.metadata),
+            "canonical_output": self.canonical_output,
+        }
+
+
+# The canonical LLM prompt suffix that requires FINAL_ANSWER format.
+_LLM_FINAL_ANSWER_SUFFIX = (
+    "\n\nYour response must end with exactly one line in this format:\n"
+    "FINAL_ANSWER: <integer>"
+)
+
+
+def _wrap_symbolic_canonical(result_value: int | None,
+                             raw_error: str | None) -> str:
+    """Wrap a symbolic result as ``FINAL_ANSWER: <int>`` or return the
+    raw error output."""
+    if result_value is not None:
+        return f"FINAL_ANSWER: {result_value}"
+    return raw_error or ""
+
+
+def _parse_canonical_answer(text: str | None) -> int | None:
+    """Extract the canonical integer from a FINAL_ANSWER field."""
+    from ..evaluation.canonical_verifier import parse_canonical_integer_answer
+    if text is None:
+        return None
+    parsed = parse_canonical_integer_answer(str(text))
+    return parsed.value if parsed.status == "VALID" else None
 
 
 # ------------------------------------------------------------------
@@ -426,6 +519,252 @@ def execute_llm_backend(
         verifier_confidence=0.0,  # set by verifier
         failure_reason=None,
     ), generated_text
+
+
+# ------------------------------------------------------------------
+# Section 7/12: canonical execution wrappers
+# ------------------------------------------------------------------
+
+def execute_symbolic_canonical(
+    task: Mapping[str, Any],
+) -> BackendExecution:
+    """Execute the symbolic backend and return a :class:`BackendExecution`.
+
+    The symbolic backend's bare integer output is wrapped as
+    ``FINAL_ANSWER: <int>`` at the boundary so it passes through the
+    same canonical verifier as the LLM backend.
+    """
+    outcome, output_text = execute_symbolic_backend(task)
+    latency_ms = outcome.latency_sec * 1000.0
+
+    if not outcome.available:
+        return BackendExecution(
+            backend=BackendName.SYMBOLIC,
+            raw_output="",
+            canonical_answer=None,
+            latency_ms=latency_ms,
+            execution_status=ExecutionStatus.UNSUPPORTED,
+            metadata={"failure_reason": outcome.failure_reason},
+        )
+    if not outcome.execution_success:
+        return BackendExecution(
+            backend=BackendName.SYMBOLIC,
+            raw_output="",
+            canonical_answer=None,
+            latency_ms=latency_ms,
+            execution_status=ExecutionStatus.EXECUTION_ERROR,
+            metadata={"failure_reason": outcome.failure_reason},
+        )
+    # Success — wrap the integer as FINAL_ANSWER.
+    try:
+        result_int = int(output_text) if output_text is not None else None
+    except (ValueError, TypeError):
+        result_int = None
+        return BackendExecution(
+            backend=BackendName.SYMBOLIC,
+            raw_output=str(output_text or ""),
+            canonical_answer=None,
+            latency_ms=latency_ms,
+            execution_status=ExecutionStatus.PARSE_ERROR,
+            metadata={"failure_reason": f"non-integer output: {output_text!r}"},
+        )
+    return BackendExecution(
+        backend=BackendName.SYMBOLIC,
+        raw_output=_wrap_symbolic_canonical(result_int, None),
+        canonical_answer=result_int,
+        latency_ms=latency_ms,
+        execution_status=ExecutionStatus.SUCCESS,
+        metadata={},
+    )
+
+
+def execute_llm_canonical(
+    task: Mapping[str, Any],
+    model,
+    tokenizer,
+    *,
+    generation_config: LLMGenerationConfig | None = None,
+    device: str = "cpu",
+) -> BackendExecution:
+    """Execute the LLM backend and return a :class:`BackendExecution`.
+
+    The LLM prompt is augmented with a suffix requiring
+    ``FINAL_ANSWER: <integer>``. The canonical answer is extracted from
+    the generated text using the canonical parser.
+    """
+    # Augment the prompt with the FINAL_ANSWER requirement.
+    augmented_task = dict(task)
+    original_prompt = str(task.get("prompt", task.get("specification", "")))
+    augmented_task["prompt"] = original_prompt + _LLM_FINAL_ANSWER_SUFFIX
+
+    outcome, generated_text = execute_llm_backend(
+        augmented_task, model, tokenizer,
+        generation_config=generation_config, device=device)
+    latency_ms = outcome.latency_sec * 1000.0
+
+    if not outcome.execution_success:
+        return BackendExecution(
+            backend=BackendName.LLM,
+            raw_output=str(generated_text or ""),
+            canonical_answer=None,
+            latency_ms=latency_ms,
+            execution_status=ExecutionStatus.EXECUTION_ERROR,
+            metadata={"failure_reason": outcome.failure_reason},
+        )
+    # Extract canonical answer from the generated text.
+    canonical_answer = _parse_canonical_answer(generated_text)
+    return BackendExecution(
+        backend=BackendName.LLM,
+        raw_output=str(generated_text or ""),
+        canonical_answer=canonical_answer,
+        latency_ms=latency_ms,
+        execution_status=ExecutionStatus.SUCCESS,
+        metadata={
+            "model_id": getattr(model, "name_or_path", "unknown"),
+            "generation_config_hash": (
+                generation_config.config_hash if generation_config else ""
+            ),
+        },
+    )
+
+
+def verify_backend_execution(
+    task: Mapping[str, Any],
+    execution: BackendExecution,
+) -> VerificationStatus:
+    """Verify a :class:`BackendExecution` using the canonical verifier.
+
+    Both symbolic and LLM executions pass through the SAME verifier.
+    """
+    from ..evaluation.canonical_verifier import (
+        CanonicalIntegerVerifier, VerificationStatus as VStatus)
+    verifier = CanonicalIntegerVerifier()
+    if execution.execution_status == ExecutionStatus.UNSUPPORTED:
+        return VStatus.UNVERIFIABLE
+    if execution.execution_status == ExecutionStatus.TIMEOUT:
+        return VStatus.TIMEOUT
+    if execution.execution_status in (ExecutionStatus.EXECUTION_ERROR,
+                                       ExecutionStatus.PARSE_ERROR):
+        return VStatus.EXECUTION_ERROR
+    return verifier.verify(
+        task, execution.canonical_output,
+        execution_succeeded=(execution.execution_status == ExecutionStatus.SUCCESS),
+    )
+
+
+def execution_to_outcome(
+    task: Mapping[str, Any],
+    execution: BackendExecution,
+    verification_status: VerificationStatus,
+) -> BackendOutcome:
+    """Convert a :class:`BackendExecution` + verification status to a
+    :class:`BackendOutcome`, routing utility through ``compute_utility``.
+    """
+    from ..evaluation.canonical_verifier import VerificationStatus as VStatus
+    tid = str(task.get("task_id", ""))
+    backend_str = execution.backend.value
+
+    if verification_status == VStatus.CORRECT:
+        correct = True
+        quality = 1.0
+        verifier_confidence = 1.0
+        verifier_status = "verified_correct"
+    elif verification_status == VStatus.INCORRECT:
+        correct = False
+        quality = 0.0
+        verifier_confidence = 1.0
+        verifier_status = "verified_incorrect"
+    elif verification_status == VStatus.UNVERIFIABLE:
+        correct = False
+        quality = 0.0
+        verifier_confidence = 0.0
+        verifier_status = "verifier_unsupported"
+    elif verification_status == VStatus.EXECUTION_ERROR:
+        correct = False
+        quality = 0.0
+        verifier_confidence = 1.0
+        verifier_status = "not_verified"
+    elif verification_status == VStatus.TIMEOUT:
+        correct = False
+        quality = 0.0
+        verifier_confidence = 1.0
+        verifier_status = "not_verified"
+    else:
+        correct = False
+        quality = 0.0
+        verifier_confidence = 0.0
+        verifier_status = "not_verified"
+
+    exec_success = execution.execution_status == ExecutionStatus.SUCCESS
+    available = execution.execution_status != ExecutionStatus.UNSUPPORTED
+    output_hash = hashlib.sha256(
+        execution.canonical_output.encode()).hexdigest()[:16]
+
+    return BackendOutcome(
+        task_id=tid,
+        backend=backend_str,
+        available=available,
+        executed=True,
+        execution_success=exec_success,
+        output_text=execution.canonical_output,
+        output_hash=output_hash,
+        verifier_status=verifier_status,
+        correct=correct,
+        quality=quality,
+        latency_sec=execution.latency_ms / 1000.0,
+        normalized_cost=0.05 if backend_str == "symbolic" else 0.20,
+        risk=0.0,
+        verifier_confidence=verifier_confidence,
+        failure_reason=execution.metadata.get("failure_reason"),
+    )
+
+
+def build_canonical_counterfactual_experience(
+    task: Mapping[str, Any],
+    symbolic_execution: BackendExecution,
+    llm_execution: BackendExecution,
+    utility_config: UtilityConfig,
+) -> tuple[CounterfactualExperience, VerificationStatus, VerificationStatus]:
+    """Build a counterfactual experience from canonical executions.
+
+    Both executions are verified through the same canonical verifier,
+    utilities are computed via :func:`compute_utility`, and the
+    experience is constructed with the frozen :class:`UtilityConfig`.
+    """
+    from ..evaluation.canonical_verifier import VerificationStatus as VStatus
+    tid = str(task.get("task_id", ""))
+
+    sym_status = verify_backend_execution(task, symbolic_execution)
+    llm_status = verify_backend_execution(task, llm_execution)
+
+    sym_outcome = execution_to_outcome(task, symbolic_execution, sym_status)
+    llm_outcome = execution_to_outcome(task, llm_execution, llm_status)
+
+    u_sym = compute_utility(sym_outcome, utility_config)
+    u_llm = compute_utility(llm_outcome, utility_config)
+    delta_u = u_sym - u_llm
+
+    # Determine preferred action using a configurable abstention band.
+    abstention_band = 0.02
+    if delta_u > abstention_band:
+        preferred = Route.SYMBOLIC
+    elif delta_u < -abstention_band:
+        preferred = Route.LLM
+    else:
+        preferred = Route.ABSTAIN
+
+    # Sample weight: |delta_u| clipped to [0, 1].
+    weight = min(1.0, abs(delta_u))
+
+    experience = CounterfactualExperience(
+        task_id=tid,
+        symbolic=sym_outcome,
+        llm=llm_outcome,
+        delta_utility=delta_u,
+        preferred_action=preferred,
+        sample_weight=weight,
+    )
+    return experience, sym_status, llm_status
 
 
 # ------------------------------------------------------------------
@@ -895,6 +1234,67 @@ def build_real_counterfactual_experience(
         sample_weight=weight,
     )
     return experience, sym_verified, llm_verified
+
+
+# ------------------------------------------------------------------
+# Section 21: mock LLM backend for deterministic testing
+# ------------------------------------------------------------------
+
+class MockLLMBackend:
+    """Deterministic mock LLM backend for integration tests.
+
+    Computes the correct answer for arithmetic tasks and emits it in
+    canonical ``FINAL_ANSWER: <int>`` format. For unsupported tasks,
+    emits a wrong answer. This allows end-to-end pipeline testing
+    without a real model.
+    """
+
+    def __init__(self, *, accuracy: float = 1.0, seed: int = 42):
+        self.accuracy = accuracy
+        self._rng = np.random.default_rng(seed)
+        self.name_or_path = "mock-llm"
+
+    def execute(self, task: Mapping[str, Any]) -> BackendExecution:
+        """Execute the mock LLM on a task."""
+        import time as _time
+        t0 = _time.time()
+        expected = task.get("expected")
+        prompt = str(task.get("prompt", task.get("specification", "")))
+
+        # Determine if this is an arithmetic task.
+        inputs = task.get("inputs", {})
+        caps = set(task.get("capability_ids", []))
+        is_arithmetic = bool(caps & {"integer_arithmetic",
+                                      "modular_multiplication"})
+
+        if is_arithmetic and expected is not None and self._rng.random() < self.accuracy:
+            # Correct answer.
+            answer = int(expected)
+            raw = f"The answer is {answer}.\nFINAL_ANSWER: {answer}"
+            status = ExecutionStatus.SUCCESS
+            canonical = answer
+        elif expected is not None and self._rng.random() < self.accuracy * 0.5:
+            # Partially correct for NL tasks.
+            answer = int(expected)
+            raw = f"FINAL_ANSWER: {answer}"
+            status = ExecutionStatus.SUCCESS
+            canonical = answer
+        else:
+            # Wrong answer.
+            wrong = int(expected) + int(self._rng.integers(1, 10)) if expected is not None else 0
+            raw = f"FINAL_ANSWER: {wrong}"
+            status = ExecutionStatus.SUCCESS
+            canonical = wrong
+
+        latency_ms = (_time.time() - t0) * 1000.0 + float(self._rng.uniform(1, 5))
+        return BackendExecution(
+            backend=BackendName.LLM,
+            raw_output=raw,
+            canonical_answer=canonical,
+            latency_ms=latency_ms,
+            execution_status=status,
+            metadata={"model_id": "mock-llm", "accuracy": self.accuracy},
+        )
 
 
 # ------------------------------------------------------------------

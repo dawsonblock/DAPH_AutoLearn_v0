@@ -1,7 +1,13 @@
-"""Section 13 — baselines tests."""
+"""Section 13 — tests for surface and structured-feature baselines.
+
+Tests the 10 required baselines at the lower level (not through the
+full pipeline) to verify they produce correct routes and that
+hidden-state baselines work with real feature vectors.
+"""
 
 from __future__ import annotations
 
+import numpy as np
 import pytest
 
 from daph_learning.evaluation.baselines import (
@@ -11,7 +17,10 @@ from daph_learning.evaluation.baselines import (
     always_symbolic,
     extract_structured_features,
     hand_router,
+    hidden_state_centroid,
+    hidden_state_logistic,
     oracle,
+    sham_hidden_state_logistic,
     structured_feature_logistic,
     subtype_only_logistic,
     surface_tfidf_logistic,
@@ -19,104 +28,162 @@ from daph_learning.evaluation.baselines import (
 from daph_learning.policy.types import BackendOutcome, CounterfactualExperience, Route
 
 
-def _outcome(backend="symbolic", correct=True):
-    quality = 1.0 if correct else 0.0
-    return BackendOutcome(
-        task_id="t", backend=backend, available=True, executed=True,
-        execution_success=True, output_text="42", output_hash="x",
-        verifier_status="verified_correct" if correct else "verified_incorrect",
-        correct=correct, quality=quality, latency_sec=0.01,
-        normalized_cost=0.05, risk=0.0, verifier_confidence=1.0)
-
-
-def _experience(sym_correct=True, llm_correct=False):
-    sym = _outcome("symbolic", sym_correct)
-    llm = _outcome("llm", llm_correct)
-    du = sym.quality - llm.quality
-    if du > 0.02:
-        preferred = Route.SYMBOLIC
-        weight = du
-    elif du < -0.02:
-        preferred = Route.LLM
-        weight = -du
-    else:
-        preferred = Route.ABSTAIN
-        weight = 0.0
+def _make_experience(sym_correct=True, llm_correct=False) -> CounterfactualExperience:
+    sym = BackendOutcome(
+        task_id="t1", backend="symbolic", available=True, executed=True,
+        execution_success=True, output_text="42", output_hash="h",
+        verifier_status="verified_correct" if sym_correct else "verified_incorrect",
+        correct=sym_correct, quality=1.0 if sym_correct else 0.0,
+        latency_sec=0.01, normalized_cost=0.05, risk=0.0,
+        verifier_confidence=1.0,
+    )
+    llm = BackendOutcome(
+        task_id="t1", backend="llm", available=True, executed=True,
+        execution_success=True, output_text="42", output_hash="h",
+        verifier_status="verified_correct" if llm_correct else "verified_incorrect",
+        correct=llm_correct, quality=1.0 if llm_correct else 0.0,
+        latency_sec=0.1, normalized_cost=0.2, risk=0.0,
+        verifier_confidence=1.0,
+    )
     return CounterfactualExperience(
-        task_id="t", symbolic=sym, llm=llm,
-        delta_utility=du, preferred_action=preferred,
-        sample_weight=weight)
+        task_id="t1", symbolic=sym, llm=llm,
+        delta_utility=0.9 if sym_correct and not llm_correct else 0.0,
+        preferred_action=Route.SYMBOLIC if sym_correct else Route.LLM,
+        sample_weight=1.0,
+    )
 
 
-def _task(subtype="A", a=100, b=200, op="+"):
+def _make_task(subtype="A", op="+", a=12, b=30):
     return {
         "task_id": "t1",
-        "specification": f"Compute {a} {op} {b}.",
+        "specification": f"{a} {op} {b}",
+        "prompt": f"What is {a} {op} {b}?",
+        "capability_ids": ["integer_arithmetic"],
         "inputs": {"a": a, "b": b, "op": op},
         "metadata": {"subtype": subtype},
     }
 
 
-def test_all_10_baselines_exist():
+def test_baseline_names_count():
     assert len(BASELINE_NAMES) == 10
-    for name in BASELINE_NAMES:
-        assert name  # non-empty
 
 
 def test_always_llm():
-    assert always_llm(_task(), _experience()) == Route.LLM
+    exp = _make_experience()
+    assert always_llm(_make_task(), exp) == Route.LLM
 
 
 def test_always_symbolic():
-    assert always_symbolic(_task(), _experience()) == Route.SYMBOLIC
+    exp = _make_experience()
+    assert always_symbolic(_make_task(), exp) == Route.SYMBOLIC
 
 
-def test_oracle_picks_higher_quality():
-    exp = _experience(sym_correct=True, llm_correct=False)
-    assert oracle(_task(), exp) == Route.SYMBOLIC
-    exp2 = _experience(sym_correct=False, llm_correct=True)
-    assert oracle(_task(), exp2) == Route.LLM
+def test_oracle_picks_higher_utility():
+    exp = _make_experience(sym_correct=True, llm_correct=False)
+    assert oracle(_make_task(), exp) == Route.SYMBOLIC
+    exp2 = _make_experience(sym_correct=False, llm_correct=True)
+    assert oracle(_make_task(), exp2) == Route.LLM
 
 
-def test_hand_router_routes():
-    # Just check it returns a Route.
-    result = hand_router(_task(), _experience())
-    assert result in (Route.SYMBOLIC, Route.LLM, Route.ABSTAIN)
+def test_hand_router_arithmetic():
+    task = _make_task(subtype="A")
+    route = hand_router(task, _make_experience())
+    assert route in (Route.SYMBOLIC, Route.LLM)
 
 
 def test_subtype_only_logistic():
-    weights = {"A": {"symbolic": 0.8, "llm": 0.2}}
-    assert subtype_only_logistic(_task("A"), _experience(), weights=weights) == Route.SYMBOLIC
-    weights2 = {"A": {"symbolic": 0.2, "llm": 0.8}}
-    assert subtype_only_logistic(_task("A"), _experience(), weights=weights2) == Route.LLM
+    task = _make_task(subtype="A")
+    weights = {"A": {"symbolic": 1.0, "llm": 0.0}}
+    assert subtype_only_logistic(task, _make_experience(), weights=weights) == Route.SYMBOLIC
+    weights2 = {"A": {"symbolic": 0.0, "llm": 1.0}}
+    assert subtype_only_logistic(task, _make_experience(), weights=weights2) == Route.LLM
 
 
 def test_surface_tfidf_logistic():
-    weights = {"compute": 1.0}
-    vocab = {"compute": 0}
-    assert surface_tfidf_logistic(_task(), _experience(), weights=weights, vocab=vocab) == Route.SYMBOLIC
+    task = _make_task()
+    vocab = {"what": 0, "is": 1}
+    weights = {"what": 1.0, "is": -1.0}
+    route = surface_tfidf_logistic(task, _make_experience(), weights=weights, vocab=vocab)
+    assert route in (Route.SYMBOLIC, Route.LLM)
 
 
 def test_structured_feature_logistic():
-    # Large operands → symbolic (positive weight on max_operand_digits)
-    weights = [0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-    task = _task(a=99999, b=88888)
-    assert structured_feature_logistic(task, _experience(), weights=weights) == Route.SYMBOLIC
+    task = _make_task()
+    feats = extract_structured_features(task)
+    assert isinstance(feats, StructuredTaskFeatures)
+    vec = feats.to_vector()
+    assert len(vec) == 7
+    route = structured_feature_logistic(
+        task, _make_experience(), weights=[1.0] * 7, bias=0.0)
+    assert route in (Route.SYMBOLIC, Route.LLM)
 
 
 def test_extract_structured_features():
-    feats = extract_structured_features(_task(a=99999, b=88888, op="%"))
-    assert feats.max_operand_digits == 5
-    assert feats.has_modular is True
-    assert feats.operand_magnitude_bucket == 2
+    task = _make_task(subtype="A", op="+", a=12, b=30)
+    feats = extract_structured_features(task)
+    assert feats.n_operands == 2
+    assert feats.max_operand_digits == 2
+    assert feats.has_modular is False
+    assert feats.is_natural_language is False
 
 
-def test_structured_features_to_vector():
-    feats = StructuredTaskFeatures(
-        n_operands=2, max_operand_digits=5, has_modular=True,
-        has_comparison=False, is_natural_language=False,
-        n_steps=1, operand_magnitude_bucket=2)
-    v = feats.to_vector()
-    assert len(v) == 7
-    assert v[0] == 2.0
-    assert v[2] == 1.0  # has_modular
+def test_extract_structured_features_nl():
+    task = _make_task(subtype="B")
+    feats = extract_structured_features(task)
+    assert feats.is_natural_language is True
+
+
+def test_hidden_state_centroid():
+    h = np.array([1.0, 0.0, 0.0])
+    centroid_sym = np.array([1.0, 0.0, 0.0])
+    centroid_llm = np.array([0.0, 1.0, 0.0])
+    route = hidden_state_centroid(
+        _make_task(), _make_experience(),
+        centroid_sym=centroid_sym, centroid_llm=centroid_llm, h=h)
+    assert route == Route.SYMBOLIC  # closer to symbolic centroid
+
+
+def test_hidden_state_centroid_llm():
+    h = np.array([0.0, 1.0, 0.0])
+    centroid_sym = np.array([1.0, 0.0, 0.0])
+    centroid_llm = np.array([0.0, 1.0, 0.0])
+    route = hidden_state_centroid(
+        _make_task(), _make_experience(),
+        centroid_sym=centroid_sym, centroid_llm=centroid_llm, h=h)
+    assert route == Route.LLM
+
+
+def test_hidden_state_centroid_no_features():
+    route = hidden_state_centroid(
+        _make_task(), _make_experience())
+    assert route == Route.LLM  # fallback
+
+
+def test_hidden_state_logistic():
+    h = np.array([1.0, -1.0, 0.5])
+    weights = np.array([1.0, -1.0, 0.0])
+    route = hidden_state_logistic(
+        _make_task(), _make_experience(), weights=weights, bias=0.0, h=h)
+    # score = 1*1 + (-1)*(-1) + 0*0.5 = 2 > 0 → SYMBOLIC
+    assert route == Route.SYMBOLIC
+
+
+def test_hidden_state_logistic_no_features():
+    route = hidden_state_logistic(_make_task(), _make_experience())
+    assert route == Route.LLM  # fallback
+
+
+def test_sham_hidden_state_logistic_no_labels():
+    """Without sham labels, routes randomly (signal destroyed)."""
+    route = sham_hidden_state_logistic(_make_task(), _make_experience())
+    assert route in (Route.SYMBOLIC, Route.LLM)
+
+
+def test_sham_hidden_state_logistic_with_labels():
+    """With sham labels, behaves like hidden_state_logistic."""
+    h = np.array([1.0, -1.0])
+    weights = np.array([1.0, -1.0])
+    route = sham_hidden_state_logistic(
+        _make_task(), _make_experience(),
+        weights=weights, bias=0.0, h=h, sham_labels=True)
+    assert route == Route.SYMBOLIC

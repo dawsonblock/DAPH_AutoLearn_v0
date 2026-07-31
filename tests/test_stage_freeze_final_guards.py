@@ -19,6 +19,27 @@ from daph_learning.policy.stage import (
 )
 
 
+def _complete_freeze_kwargs(**overrides):
+    """Return kwargs that satisfy FreezeManifest.assert_complete()."""
+    base = dict(
+        experiment_id="test_exp",
+        source_hash="a" * 64,
+        config_hash="b" * 64,
+        train_dataset_hash="t",
+        dev_dataset_hash="d",
+        cal_dataset_hash="c",
+        final_dataset_hash="f",
+        utility_config_hash="u",
+        model_id="test-model",
+        representation_hash="r",
+        policy_hash="p",
+        calibration_hash="cal",
+        gate_criteria_hash="g",
+    )
+    base.update(overrides)
+    return base
+
+
 def test_final_cannot_be_accessed_before_freeze():
     """Section 14: the final split cannot be accessed before FROZEN."""
     guard = StageGuard(stage=ExperimentStage.TRAIN)
@@ -29,7 +50,7 @@ def test_final_cannot_be_accessed_before_freeze():
 def test_final_can_be_accessed_after_freeze():
     """Section 14: the final split can be accessed after FROZEN."""
     guard = StageGuard(stage=ExperimentStage.TRAIN)
-    guard.freeze()
+    guard.freeze(**_complete_freeze_kwargs())
     guard.assert_can_access_split("final")  # should not raise
 
 
@@ -45,18 +66,20 @@ def test_freeze_manifest_records_state():
     """Section 33: the freeze manifest records the exact state at
     freeze time."""
     guard = StageGuard(stage=ExperimentStage.TRAIN)
-    manifest = guard.freeze(
-        source_hash="a" * 64,
-        config_hash="b" * 64,
+    manifest = guard.freeze(**_complete_freeze_kwargs(
         policy_hash="c" * 64,
         calibration_hash="d" * 64,
-    )
+    ))
     assert manifest.source_tree_sha256 == "a" * 64
     assert manifest.config_sha256 == "b" * 64
     assert manifest.policy_sha256 == "c" * 64
     assert manifest.calibration_sha256 == "d" * 64
     assert manifest.stage == "frozen"
     assert manifest.frozen_at > 0
+    assert manifest.train_dataset_sha256 == "t"
+    assert manifest.utility_config_sha256 == "u"
+    assert manifest.model_id == "test-model"
+    assert manifest.gate_criteria_sha256 == "g"
 
 
 def test_freeze_manifest_verifies_matching_state():
@@ -100,14 +123,19 @@ def test_stage_guard_verify_frozen_state():
     """Section 33: the stage guard verifies frozen state before final
     evaluation."""
     guard = StageGuard(stage=ExperimentStage.TRAIN)
-    guard.freeze(
-        source_hash="a" * 64,
-        config_hash="b" * 64,
-    )
+    guard.freeze(**_complete_freeze_kwargs())
     # Should not raise.
     guard.verify_frozen_state(
         current_source_hash="a" * 64,
         current_config_hash="b" * 64,
+        current_train_dataset_hash="t",
+        current_dev_dataset_hash="d",
+        current_cal_dataset_hash="c",
+        current_final_dataset_hash="f",
+        current_utility_config_hash="u",
+        current_model_id="test-model",
+        current_representation_hash="r",
+        current_gate_criteria_hash="g",
     )
     # Should raise on mismatch.
     with pytest.raises(RuntimeError, match="source_tree_sha256"):
@@ -142,9 +170,19 @@ def test_ledger_records_final_access():
 def test_freeze_manifest_save_load_roundtrip(tmp_path):
     """Section 33: freeze manifest can be saved and loaded."""
     manifest = FreezeManifest(
+        experiment_id="exp",
         source_tree_sha256="a" * 64,
         config_sha256="b" * 64,
         policy_sha256="c" * 64,
+        train_dataset_sha256="t",
+        development_dataset_sha256="d",
+        calibration_dataset_sha256="c",
+        final_dataset_sha256="f",
+        utility_config_sha256="u",
+        model_id="m",
+        representation_config_sha256="r",
+        calibration_sha256="cal",
+        gate_criteria_sha256="g",
     )
     path = tmp_path / "freeze_manifest.json"
     manifest.save(path)
@@ -152,6 +190,67 @@ def test_freeze_manifest_save_load_roundtrip(tmp_path):
     assert loaded.source_tree_sha256 == "a" * 64
     assert loaded.config_sha256 == "b" * 64
     assert loaded.policy_sha256 == "c" * 64
+    assert loaded.train_dataset_sha256 == "t"
+    assert loaded.utility_config_sha256 == "u"
+    assert loaded.model_id == "m"
+    assert loaded.gate_criteria_sha256 == "g"
+
+
+def test_freeze_manifest_assert_complete():
+    """Section 33: assert_complete raises when required fields are empty."""
+    manifest = FreezeManifest(
+        experiment_id="exp",
+        source_tree_sha256="a",
+        config_sha256="b",
+        train_dataset_sha256="t",
+        development_dataset_sha256="d",
+        calibration_dataset_sha256="c",
+        final_dataset_sha256="f",
+        utility_config_sha256="u",
+        model_id="m",
+        representation_config_sha256="r",
+        policy_sha256="p",
+        calibration_sha256="cal",
+        gate_criteria_sha256="g",
+    )
+    manifest.assert_complete()  # should not raise
+
+    incomplete = FreezeManifest(experiment_id="exp")
+    with pytest.raises(RuntimeError, match="incomplete"):
+        incomplete.assert_complete()
+
+
+def test_freeze_manifest_verifies_all_fields():
+    """Section 33: verify_current_state checks all identity-bearing fields."""
+    manifest = FreezeManifest(
+        experiment_id="exp",
+        source_tree_sha256="a",
+        config_sha256="b",
+        train_dataset_sha256="t",
+        development_dataset_sha256="d",
+        calibration_dataset_sha256="c",
+        final_dataset_sha256="f",
+        utility_config_sha256="u",
+        model_id="m",
+        representation_config_sha256="r",
+        policy_sha256="p",
+        calibration_sha256="cal",
+        gate_criteria_sha256="g",
+    )
+    # All match.
+    assert manifest.verify_current_state(
+        current_source_hash="a", current_config_hash="b",
+        current_train_dataset_hash="t", current_dev_dataset_hash="d",
+        current_cal_dataset_hash="c", current_final_dataset_hash="f",
+        current_utility_config_hash="u", current_model_id="m",
+        current_representation_hash="r", current_gate_criteria_hash="g",
+    )
+    # Model mismatch.
+    with pytest.raises(RuntimeError, match="model_id"):
+        manifest.verify_current_state(current_model_id="wrong")
+    # Dataset mismatch.
+    with pytest.raises(RuntimeError, match="train_dataset_sha256"):
+        manifest.verify_current_state(current_train_dataset_hash="wrong")
 
 
 def test_train_dev_calibration_accessible_at_any_stage():

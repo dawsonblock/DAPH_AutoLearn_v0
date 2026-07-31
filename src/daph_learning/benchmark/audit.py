@@ -316,6 +316,128 @@ def assert_dataset_clean(audit: DatasetAudit) -> None:
         raise DatasetAuditError(audit.errors)
 
 
+# ------------------------------------------------------------------
+# Section 10: two-phase audit — empirical crossover after execution
+# ------------------------------------------------------------------
+
+@dataclass
+class EmpiricalCrossoverAudit:
+    """Section 10 — empirical crossover audit (post-execution).
+
+    Computed AFTER both backends execute and the verifier runs. This
+    audit checks that the EMPIRICAL crossover distribution meets the
+    gate criteria, not just the structural distribution.
+    """
+    valid: bool = True
+    errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    n_tasks: int = 0
+    n_decisive: int = 0
+    decisive_fraction: float = 0.0
+    crossover_subtypes: list[str] = field(default_factory=list)
+    per_subtype_summary: dict[str, dict[str, Any]] = field(default_factory=dict)
+    backend_win_fraction: dict[str, float] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "valid": self.valid,
+            "errors": list(self.errors),
+            "warnings": list(self.warnings),
+            "n_tasks": self.n_tasks,
+            "n_decisive": self.n_decisive,
+            "decisive_fraction": self.decisive_fraction,
+            "crossover_subtypes": list(self.crossover_subtypes),
+            "per_subtype_summary": dict(self.per_subtype_summary),
+            "backend_win_fraction": dict(self.backend_win_fraction),
+        }
+
+
+def audit_empirical_crossover(
+    experiences: list[dict[str, Any]],
+    *,
+    min_crossover_subtypes: int = 3,
+    min_backend_win_fraction: float = 0.20,
+    min_decisive_fraction: float = 0.35,
+    decisive_threshold: float = 0.02,
+) -> EmpiricalCrossoverAudit:
+    """Section 10 — audit EMPIRICAL crossover after backend execution.
+
+    Parameters
+    ----------
+    experiences : list of experience dicts
+        Each must have ``delta_utility``, ``preferred_action``, and
+        task metadata with ``subtype``.
+    min_crossover_subtypes : int
+        Minimum subtypes with within-subtype crossover (both backends
+        win at least ``min_backend_win_fraction``).
+    min_backend_win_fraction : float
+        Minimum win fraction for the minority backend.
+    min_decisive_fraction : float
+        Minimum fraction of tasks with |ΔU| > decisive_threshold.
+    decisive_threshold : float
+        Threshold for a task to be "decisive".
+    """
+    audit = EmpiricalCrossoverAudit()
+    audit.n_tasks = len(experiences)
+
+    if not experiences:
+        audit.errors.append("no experiences to audit")
+        audit.valid = False
+        return audit
+
+    # Compute decisive fraction.
+    delta_us = [abs(float(e.get("delta_utility", 0.0))) for e in experiences]
+    audit.n_decisive = sum(1 for d in delta_us if d > decisive_threshold)
+    audit.decisive_fraction = audit.n_decisive / audit.n_tasks
+    if audit.decisive_fraction < min_decisive_fraction:
+        audit.errors.append(
+            f"empirical decisive fraction {audit.decisive_fraction:.2f} < "
+            f"minimum {min_decisive_fraction}")
+
+    # Per-subtype crossover.
+    subtype_results: dict[str, dict[str, int]] = {}
+    for e in experiences:
+        # Subtype is in the task metadata, but experiences may not carry it.
+        # Try to extract from the experience or skip.
+        subtype = e.get("subtype", e.get("metadata", {}).get("subtype", "?"))
+        preferred = e.get("preferred_action", "abstain")
+        subtype_results.setdefault(subtype, {"symbolic": 0, "llm": 0, "abstain": 0})
+        if preferred in subtype_results[subtype]:
+            subtype_results[subtype][preferred] += 1
+
+    crossover_subtypes = []
+    for subtype, counts in subtype_results.items():
+        total = sum(counts.values())
+        if total == 0:
+            continue
+        p_sym = counts["symbolic"] / total
+        p_llm = counts["llm"] / total
+        minority = min(p_sym, p_llm)
+        audit.per_subtype_summary[subtype] = {
+            "n": total,
+            "p_symbolic": p_sym,
+            "p_llm": p_llm,
+            "minority_win_fraction": minority,
+            "has_crossover": minority >= min_backend_win_fraction,
+        }
+        audit.backend_win_fraction[subtype] = minority
+        if minority >= min_backend_win_fraction:
+            crossover_subtypes.append(subtype)
+        else:
+            audit.warnings.append(
+                f"subtype {subtype!r} minority win fraction {minority:.2f} < "
+                f"minimum {min_backend_win_fraction}")
+
+    audit.crossover_subtypes = sorted(crossover_subtypes)
+    if len(crossover_subtypes) < min_crossover_subtypes:
+        audit.errors.append(
+            f"only {len(crossover_subtypes)} empirical crossover subtypes, "
+            f"minimum required is {min_crossover_subtypes}")
+
+    audit.valid = len(audit.errors) == 0
+    return audit
+
+
 class DatasetAuditError(Exception):
     """Raised when a dataset audit fails (Section 10)."""
 
@@ -329,6 +451,8 @@ class DatasetAuditError(Exception):
 __all__ = [
     "DatasetAudit",
     "DatasetAuditError",
+    "EmpiricalCrossoverAudit",
     "assert_dataset_clean",
     "audit_dataset",
+    "audit_empirical_crossover",
 ]

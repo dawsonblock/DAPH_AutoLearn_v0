@@ -34,7 +34,9 @@ the same device/dtype, suitable for direct use in
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from enum import Enum
+from typing import Any
 
 import numpy as np
 
@@ -230,21 +232,23 @@ def build_uncertainty_aware_targets(
     gap_threshold: float = 0.0,
     w_max: float = 1.0,
     epsilon: float = 1e-6,
-):
+) -> "TrainingTargets":
     """Section 14 — build uncertainty-aware training targets.
+
+    Always returns a :class:`TrainingTargets` dataclass with consistent
+    fields regardless of mode. Callers never branch on tuple length.
 
     For SIGNAL_TO_NOISE mode::
 
         w_i = min(w_max, |ΔU_i| / (σ_i + ε))
         q_i = sigmoid(ΔU_i / τ) * w_i  (soft)
-        y_i = (ΔU_i > gap) * w_i       (hard)
 
-    The reliability weight ``w_i`` down-weights examples with high
-    uncertainty relative to their gap.
+    For HARD_GAP / SOFT_TEMPERATURE modes, weights are all 1.0.
 
     Returns
     -------
-    targets, valid_mask, weights : same type as delta_u
+    TrainingTargets
+        targets, mask, weights, utility_gaps, mode
     """
     if isinstance(mode, str):
         mode = TargetMode.from_str(mode)
@@ -257,29 +261,76 @@ def build_uncertainty_aware_targets(
                 max=w_max)
             targets = torch.sigmoid(delta_u / temperature) * w
             valid_mask = torch.ones_like(delta_u, dtype=torch.bool)
-            return targets, valid_mask, w
+            gaps = delta_u
+            return TrainingTargets(
+                targets=targets, mask=valid_mask, weights=w,
+                utility_gaps=gaps, mode=mode)
         du = np.asarray(delta_u, dtype=np.float64)
         sig = np.asarray(sigma, dtype=np.float64)
         w = np.clip(np.abs(du) / (sig + epsilon), 0.0, w_max)
         targets = (1.0 / (1.0 + np.exp(-du / temperature))) * w
         valid_mask = np.ones(du.shape, dtype=np.bool_)
-        return targets, valid_mask, w
+        gaps = du
+        return TrainingTargets(
+            targets=targets, mask=valid_mask, weights=w,
+            utility_gaps=gaps, mode=mode)
 
     if mode == TargetMode.HARD_GAP:
-        # Same as HARD but with explicit frozen gap threshold.
-        return build_preference_targets(
+        t, m = build_preference_targets(
             delta_u, TargetMode.HARD, temperature, gap_threshold)
+        if is_torch:
+            w = torch.ones_like(t, dtype=t.dtype)
+            gaps = delta_u
+        else:
+            w = np.ones_like(t, dtype=np.float64)
+            gaps = np.asarray(delta_u, dtype=np.float64)
+        return TrainingTargets(
+            targets=t, mask=m, weights=w,
+            utility_gaps=gaps, mode=mode)
 
     if mode == TargetMode.SOFT_TEMPERATURE:
-        # Same as SOFT but with explicit frozen temperature.
-        return build_preference_targets(
+        t, m = build_preference_targets(
             delta_u, TargetMode.SOFT, temperature, gap_threshold)
+        if is_torch:
+            w = torch.ones_like(t, dtype=t.dtype)
+            gaps = delta_u
+        else:
+            w = np.ones_like(t, dtype=np.float64)
+            gaps = np.asarray(delta_u, dtype=np.float64)
+        return TrainingTargets(
+            targets=t, mask=m, weights=w,
+            utility_gaps=gaps, mode=mode)
 
     raise ValueError(f"Unsupported uncertainty-aware mode: {mode}")
 
 
+@dataclass(frozen=True)
+class TrainingTargets:
+    """Section 14 — consistent return type for all target modes.
+
+    Attributes
+    ----------
+    targets : np.ndarray | torch.Tensor
+        Training target values (soft or hard).
+    mask : np.ndarray | torch.Tensor
+        Boolean validity mask (True = contribute to loss).
+    weights : np.ndarray | torch.Tensor
+        Per-example reliability weights (1.0 for modes without weighting).
+    utility_gaps : np.ndarray | torch.Tensor
+        The original ΔU values.
+    mode : TargetMode
+        The target mode used to construct these targets.
+    """
+    targets: Any
+    mask: Any
+    weights: Any
+    utility_gaps: Any
+    mode: TargetMode
+
+
 __all__ = [
     "TargetMode",
+    "TrainingTargets",
     "build_preference_targets",
     "build_uncertainty_aware_targets",
     "estimate_sigma",
