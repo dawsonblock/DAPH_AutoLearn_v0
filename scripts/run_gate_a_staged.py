@@ -137,7 +137,7 @@ def _load_model(criteria, device: str = "mps"):
 class _RealLLMBackend:
     """Wraps a loaded HF model to produce BackendExecution results."""
 
-    def __init__(self, model, tokenizer, capture_config, device="mps"):
+    def __init__(self, model, tokenizer, capture_config, device="cuda"):
         self.model = model
         self.tokenizer = tokenizer
         self.capture_config = capture_config
@@ -157,7 +157,7 @@ class _RealLLMBackend:
             generation_config=gen_cfg, device=self.device)
 
 
-def _capture_hidden_states(tasks, model, tokenizer, capture_config, device="mps",
+def _capture_hidden_states(tasks, model, tokenizer, capture_config, device="cuda",
                            batch_size: int = 16):
     """Capture hidden states for a list of tasks using the loaded model.
 
@@ -205,7 +205,7 @@ def _capture_hidden_states(tasks, model, tokenizer, capture_config, device="mps"
     return np.array(features, dtype=np.float32)
 
 
-def _batched_llm_generate(tasks, model, tokenizer, device="mps", batch_size=64,
+def _batched_llm_generate(tasks, model, tokenizer, device="cuda", batch_size=64,
                           max_new_tokens=256):
     """Run LLM generation on a batch of tasks for speed.
 

@@ -406,7 +406,7 @@ def run_all_gates() -> dict:
         # Check that at least some routes come from the policy (not hardcoded).
         g21_pass = len(candidate_routes) == len(acts_g21) and all(
             r in ("symbolic", "llm", "abstain") for r in candidate_routes)
-    except Exception:
+    except (KeyError, ValueError, TypeError, IndexError):
         g21_pass = False
     gates.append(_gate_result("G21", "candidate-vs-incumbent uses actual policy", g21_pass,
         measurements={"n_candidate_routes": len(candidate_routes) if "candidate_routes" in dir() else 0}))
@@ -512,7 +512,7 @@ def run_all_gates() -> dict:
     try:
         from daph_learning.provenance import compute_source_tree_sha256
         src_hash = compute_source_tree_sha256(REPO)
-    except Exception:
+    except (ImportError, OSError, RuntimeError):
         src_hash = "unknown"
     return {
         "release": "0.3.10.3.2-alpha",
@@ -540,7 +540,7 @@ def run_experiment_results() -> dict:
     try:
         from daph_learning.provenance import compute_source_tree_sha256
         exp_src_hash = compute_source_tree_sha256(REPO)
-    except Exception:
+    except (ImportError, OSError, RuntimeError):
         exp_src_hash = "unknown"
 
     def _eval(ptype, env, weight_mode="clipped_gap", seed=0):

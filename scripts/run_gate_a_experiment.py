@@ -156,7 +156,7 @@ def main() -> int:
         from huggingface_hub import model_info
         info = model_info(model_id)
         model_revision = info.sha
-    except Exception:
+    except (ImportError, OSError, RuntimeError):
         model_revision = "unknown"
     print(f"Model revision: {model_revision}")
 

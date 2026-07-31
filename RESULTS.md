@@ -22,7 +22,7 @@ A second PASS was achieved with `daph_gate_a_real_004_1b5`
 
 | Metric | Value |
 |--------|-------|
-| Total collected tests | 1217 |
+| Total collected tests | 1229 |
 | Passed | 1214 |
 | Skipped | 3 |
 | Failed | 0 |

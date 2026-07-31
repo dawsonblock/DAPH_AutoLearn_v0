@@ -166,7 +166,7 @@ def main() -> int:
     try:
         from daph_learning.provenance import compute_source_tree_sha256
         src_hash = compute_source_tree_sha256(REPO)
-    except Exception:
+    except (ImportError, OSError, RuntimeError):
         src_hash = "unknown"
     out_path = REPO / "artifacts" / "smoke_real_model_result.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)

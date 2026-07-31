@@ -113,3 +113,48 @@ class TestSymbolicOutputFormat:
         """Symbolic errors should return the raw error, not FINAL_ANSWER."""
         from daph_learning.execution.real_backends import _wrap_symbolic_canonical
         assert _wrap_symbolic_canonical(None, "overflow") == "overflow"
+
+
+class TestBuildLlmPromptEdgeCases:
+    """Edge case tests for build_llm_prompt()."""
+
+    def test_empty_string_specification(self):
+        """Empty specification should produce just the suffix."""
+        task = {"specification": ""}
+        prompt = build_llm_prompt(task)
+        assert prompt == _LLM_FINAL_ANSWER_SUFFIX
+
+    def test_specification_with_newlines(self):
+        """Multi-line specifications should work correctly."""
+        task = {"specification": "Line 1\nLine 2\nLine 3"}
+        prompt = build_llm_prompt(task)
+        assert "Line 1\nLine 2\nLine 3" in prompt
+        assert prompt.endswith("FINAL_ANSWER: <integer>")
+
+    def test_unicode_characters(self):
+        """Unicode in specification should be preserved."""
+        task = {"specification": "Compute π × 2²"}
+        prompt = build_llm_prompt(task)
+        assert "Compute π × 2²" in prompt
+
+    def test_idempotent_on_rebuild(self):
+        """Building the prompt from the same task twice should give the same result."""
+        task = {"specification": "Compute 2 + 3."}
+        prompt1 = build_llm_prompt(task)
+        prompt2 = build_llm_prompt(task)
+        assert prompt1 == prompt2
+
+    def test_prompt_field_empty_string(self):
+        """Empty prompt field should fall back to specification."""
+        task = {"specification": "Compute 2 + 3.", "prompt": ""}
+        prompt = build_llm_prompt(task)
+        # str("") is "", so prompt field is used (empty), suffix appended
+        assert prompt == "" + _LLM_FINAL_ANSWER_SUFFIX
+
+    def test_long_specification(self):
+        """Very long specifications should not be truncated."""
+        long_spec = "Compute " + "1 + " * 1000 + "1."
+        task = {"specification": long_spec}
+        prompt = build_llm_prompt(task)
+        assert long_spec in prompt
+        assert prompt.endswith("FINAL_ANSWER: <integer>")
