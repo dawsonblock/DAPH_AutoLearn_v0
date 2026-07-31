@@ -1,9 +1,1 @@
-{
-  "artifact_type": "pointer",
-  "experiment_id": "daph_gate_a_integration_test",
-  "target": "/Users/dawsonblock/Downloads/DAPH_AutoLearn_v0_3_8_protocol_repair/artifacts/gate_a_qualified/daph_gate_a_integration_test",
-  "source_hash": "73706bbc115291a1966b3caf02c0ebd98ea23b21671e0aa8f18cba2ecb062e23",
-  "generated_at": "2026-07-31",
-  "status": "PASS",
-  "evidence_level": "EXPERIMENTALLY_QUALIFIED"
-}
+{"artifact_type":"pointer","experiment_id":"daph_gate_a_real_002","target":null,"source_hash":"","generated_at":"","status":"NOT_YET_REQUALIFIED","evidence_level":"PENDING"}

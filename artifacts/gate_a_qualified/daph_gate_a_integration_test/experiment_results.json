@@ -4,7 +4,7 @@
   "model_id": "mock-llm",
   "capture_layer": null,
   "feature_dim": 36,
-  "source_hash": "73706bbc115291a1966b3caf02c0ebd98ea23b21671e0aa8f18cba2ecb062e23",
+  "source_hash": "5eb23171748234addfc13b266830d4bd06fab2fc1848857adba946e195dd57ab",
   "route_distribution": {
     "p1_symbolic_fraction": 0.6349206349206349,
     "p1_llm_fraction": 0.36507936507936506,
@@ -16,24 +16,24 @@
   },
   "primary_endpoint": {
     "estimand": "group_weighted",
-    "point_estimate": 0.06267058702488193,
-    "ci_low": -0.037329412975118076,
-    "ci_high": 0.16267058702488194,
+    "point_estimate": 0.06267058423513883,
+    "ci_low": -0.03732941576486118,
+    "ci_high": 0.16267058423513883,
     "ci_label": "group_weighted"
   },
   "sham": {
-    "p1_utility": 0.06267058702488193,
-    "mean_sham_utility": -0.02707717095712182,
-    "p1_minus_sham_mean": 0.08974775798200375,
-    "p1_minus_sham_ci_low": -0.027731802631323174,
-    "p1_minus_sham_ci_high": -0.025998620559128202,
+    "p1_utility": 0.06267058423513883,
+    "mean_sham_utility": -0.027077170362087538,
+    "p1_minus_sham_mean": 0.08974775459722636,
+    "p1_minus_sham_ci_low": -0.02773180203544593,
+    "p1_minus_sham_ci_high": -0.02599861996543003,
     "p1_percentile_vs_sham": 100.0,
     "n_seeds": 3,
     "training_spec_hash": "53daf959e10d2322597e3e966c06b3dfb25fdfa549cb32022a583e3119f9b49b"
   },
-  "oracle_gap_capture": 0.17691686781904287,
+  "oracle_gap_capture": 0.17691685950321603,
   "positive_group_fraction": 0.5396825396825397,
-  "worst_subtype_regression": 0.3716233717340391,
+  "worst_subtype_regression": 0.09232456368234129,
   "final_access_count": 1,
   "dataset": {
     "n_groups": 63,

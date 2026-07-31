@@ -151,23 +151,96 @@ class _RealLLMBackend:
             generation_config=gen_cfg, device=self.device)
 
 
-def _capture_hidden_states(tasks, model, tokenizer, capture_config, device="mps"):
+def _capture_hidden_states(tasks, model, tokenizer, capture_config, device="mps",
+                           batch_size: int = 16):
     """Capture hidden states for a list of tasks using the loaded model.
 
     Returns a numpy array of shape (n_tasks, hidden_dim).
+    Processes in batches for speed.
     """
     import numpy as np
-    from daph_learning.execution.real_backends import capture_task_representation
+    import torch
+    from daph_learning.execution.real_backends import CaptureConfig
 
+    cfg = capture_config or CaptureConfig()
     features = []
-    for i, task in enumerate(tasks):
-        h = capture_task_representation(
-            task, model, tokenizer,
-            config=capture_config, device=device)
-        features.append(h)
-        if (i + 1) % 50 == 0:
-            print(f"    ... captured {i + 1}/{len(tasks)} hidden states")
+    for i in range(0, len(tasks), batch_size):
+        batch = tasks[i:i + batch_size]
+        prompts = [str(t.get("prompt", t.get("specification", ""))) for t in batch]
+        # Tokenize with padding to max length in batch
+        inputs = tokenizer(prompts, return_tensors="pt", padding=True,
+                           truncation=True, max_length=512).to(device)
+        with torch.no_grad():
+            outputs = model(**inputs, output_hidden_states=True)
+        hidden = outputs.hidden_states[cfg.layer]  # [batch, seq, dim]
+        for j in range(len(batch)):
+            if cfg.location == "last_token":
+                # Find the last non-padding token
+                attn = inputs.attention_mask[j]
+                last_idx = int(attn.sum().item()) - 1
+                h = hidden[j, last_idx, :]
+            elif cfg.location == "anchor":
+                seq_len = hidden.shape[1]
+                idx = min(1, seq_len - 1)
+                h = hidden[j, idx, :]
+            elif cfg.location == "last_prompt_token":
+                attn = inputs.attention_mask[j]
+                last_idx = int(attn.sum().item()) - 1
+                h = hidden[j, last_idx, :]
+            elif cfg.location == "mean":
+                attn = inputs.attention_mask[j].float().unsqueeze(-1)
+                h = (hidden[j] * attn).sum(0) / attn.sum().clamp(min=1)
+            else:
+                h = hidden[j, -1, :]
+            features.append(h.cpu().numpy().astype(np.float32))
+        if (i + batch_size) % 50 == 0 or i + batch_size >= len(tasks):
+            done = min(i + batch_size, len(tasks))
+            print(f"    ... captured {done}/{len(tasks)} hidden states")
     return np.array(features, dtype=np.float32)
+
+
+def _batched_llm_generate(tasks, model, tokenizer, device="mps", batch_size=16,
+                          max_new_tokens=32):
+    """Run LLM generation on a batch of tasks for speed.
+
+    Returns list of (generated_text, latency) tuples.
+    """
+    import torch
+    import time as _time
+
+    results = []
+    for i in range(0, len(tasks), batch_size):
+        batch = tasks[i:i + batch_size]
+        prompts = []
+        for task in batch:
+            prompt = str(task.get("prompt", task.get("specification", "")))
+            try:
+                messages = [{"role": "user", "content": prompt}]
+                formatted = tokenizer.apply_chat_template(
+                    messages, tokenize=False, add_generation_prompt=True)
+            except (AttributeError, TypeError, ValueError):
+                formatted = prompt
+            prompts.append(formatted)
+
+        inputs = tokenizer(prompts, return_tensors="pt", padding=True,
+                           truncation=True, max_length=512).to(device)
+        t0 = _time.time()
+        with torch.no_grad():
+            output_ids = model.generate(
+                **inputs,
+                max_new_tokens=max_new_tokens,
+                do_sample=False,
+                temperature=1.0,
+                top_p=1.0,
+                pad_token_id=tokenizer.eos_token_id,
+            )
+        latency = _time.time() - t0
+        n_prompt = inputs["input_ids"].shape[1]
+        for j in range(len(batch)):
+            gen_ids = output_ids[j, n_prompt:]
+            text = tokenizer.decode(gen_ids, skip_special_tokens=True).strip()
+            results.append((text, latency / len(batch)))
+    return results
 
 
 def _execute_split(
@@ -177,6 +250,7 @@ def _execute_split(
     llm_backend=None,
     capture_fn=None,
     progress: bool = True,
+    llm_results: list | None = None,
 ) -> list[dict[str, Any]]:
     """Execute both backends on every task in a split and build
     counterfactual experiences using the canonical verifier.
@@ -189,20 +263,36 @@ def _execute_split(
         If None, uses MockLLMBackend (deterministic, for testing).
     capture_fn : callable(task) -> np.ndarray, or None
         If None, uses a deterministic hash-based feature vector.
+    llm_results : list of (text, latency) tuples, or None
+        Pre-computed batched LLM results. If provided, used instead of
+        calling llm_backend.execute() one at a time.
     """
     import numpy as np
     from daph_learning.execution.real_backends import (
         execute_symbolic_canonical, MockLLMBackend,
         build_canonical_counterfactual_experience,
+        BackendExecution, BackendName, ExecutionStatus,
     )
 
-    if llm_backend is None:
+    if llm_backend is None and llm_results is None:
         llm_backend = MockLLMBackend(accuracy=0.7, seed=42)
 
     experiences = []
     for i, task in enumerate(tasks):
         sym_exec = execute_symbolic_canonical(task)
-        llm_exec = llm_backend.execute(task)
+        if llm_results is not None:
+            # Build LLM execution result from pre-computed batched output.
+            gen_text, latency = llm_results[i]
+            llm_exec = BackendExecution(
+                backend=BackendName.LLM,
+                raw_output=gen_text,
+                canonical_answer=None,
+                latency_ms=latency * 1000.0,
+                execution_status=ExecutionStatus.SUCCESS,
+                metadata={"batched": True},
+            )
+        else:
+            llm_exec = llm_backend.execute(task)
         experience, sym_status, llm_status = (
             build_canonical_counterfactual_experience(
                 task, sym_exec, llm_exec, utility_config))
@@ -357,8 +447,15 @@ def stage_develop(criteria, args) -> int:
     for split_name in ("train", "development"):
         print(f"[develop] Executing {split_name} split "
               f"({len(splits[split_name])} tasks)")
+        # Use batched LLM inference for speed.
+        llm_results = None
+        if model_info is not None and model is not None:
+            llm_results = _batched_llm_generate(
+                splits[split_name], model, tokenizer,
+                device=getattr(args, "device", "mps"), batch_size=16)
         experiences[split_name] = _execute_split(
-            splits[split_name], utility_config, llm_backend=llm_backend)
+            splits[split_name], utility_config,
+            llm_backend=llm_backend, llm_results=llm_results)
 
     # Save experiences.
     dev_out = _develop_dir(criteria)
@@ -469,6 +566,9 @@ def stage_calibrate(criteria, args) -> int:
 
     # Load real model if requested.
     llm_backend = None
+    model_info = None
+    model = None
+    tokenizer = None
     if getattr(args, "use_real_model", False):
         model_info = _load_model(criteria, device=getattr(args, "device", "mps"))
         if model_info is not None:
@@ -478,8 +578,15 @@ def stage_calibrate(criteria, args) -> int:
 
     print(f"[calibrate] Executing calibration split "
           f"({len(splits['calibration'])} tasks)")
+    # Use batched LLM inference for speed.
+    cal_llm_results = None
+    if model_info is not None and model is not None:
+        cal_llm_results = _batched_llm_generate(
+            splits["calibration"], model, tokenizer,
+            device=getattr(args, "device", "mps"), batch_size=16)
     cal_experiences = _execute_split(
-        splits["calibration"], utility_config, llm_backend=llm_backend)
+        splits["calibration"], utility_config,
+        llm_backend=llm_backend, llm_results=cal_llm_results)
 
     cal_out = _develop_dir(criteria)
     cal_out.mkdir(parents=True, exist_ok=True)
@@ -576,8 +683,15 @@ def stage_final(criteria, args) -> int:
             llm_backend = _RealLLMBackend(model, tokenizer, capture_config,
                                           device=getattr(args, "device", "mps"))
 
+    # Use batched LLM inference for speed.
+    final_llm_results = None
+    if model_info is not None and model is not None:
+        final_llm_results = _batched_llm_generate(
+            splits["final"], model, tokenizer,
+            device=getattr(args, "device", "mps"), batch_size=16)
     final_experiences = _execute_split(
-        splits["final"], utility_config, llm_backend=llm_backend)
+        splits["final"], utility_config,
+        llm_backend=llm_backend, llm_results=final_llm_results)
     (out / "final_experiences.json").write_text(
         json.dumps(final_experiences, indent=2))
 
@@ -733,13 +847,19 @@ def stage_final(criteria, args) -> int:
         positive_groups / len(final_groups) if final_groups else 0.0
     )
 
-    # Compute worst subtype regression.
-    subtype_gains = {}
+    # Compute worst subtype regression: P1's utility per subtype vs P0.
+    # P1 utility on a task = p_sym * delta_u (probability of routing
+    # symbolic × utility gain from symbolic over LLM).
+    # P0 utility = 0 (always LLM).
+    # Regression = P1 utility - P0 utility = mean(p_sym * delta_u).
+    # Negative means P1 is WORSE than always-LLM on this subtype.
+    subtype_p1_gains = {}
     for i, task in enumerate(splits["final"]):
         sub = task.get("metadata", {}).get("subtype", "unknown")
-        subtype_gains.setdefault(sub, []).append(final_delta_u[i])
+        p1_util = float(p1_probs.flatten()[i] * final_delta_u[i] * final_weights[i])
+        subtype_p1_gains.setdefault(sub, []).append(p1_util)
     worst_regression = 0.0
-    for sub, gains in subtype_gains.items():
+    for sub, gains in subtype_p1_gains.items():
         mean_gain = float(np.mean(gains))
         if mean_gain < worst_regression:
             worst_regression = mean_gain
@@ -785,7 +905,7 @@ def stage_final(criteria, args) -> int:
         "dataset": {
             "n_groups": len(final_groups),
             "n_tasks": len(splits["final"]),
-            "n_crossover_subtypes": len(subtype_gains),
+            "n_crossover_subtypes": len(subtype_p1_gains),
             "decisive_fraction": float(np.mean(decisive)) if len(decisive) > 0 else 0.0,
         },
         "baselines": {},
