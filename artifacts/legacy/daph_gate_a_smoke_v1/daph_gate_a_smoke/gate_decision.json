@@ -1,0 +1,49 @@
+{
+  "passed": true,
+  "experiment_id": "daph_gate_a_smoke",
+  "criteria_hash": "614ab07d44b7f8a377a0dfe2b09acf34a02c220496520582820f73e3325c1d7c",
+  "gate_verdicts": {
+    "minimum_point_gain_vs_p0": {
+      "actual": 0.5015756143944131,
+      "threshold": 0.0,
+      "direction": "above",
+      "passed": true
+    },
+    "require_lcb_vs_p0_above": {
+      "actual": 0.40157561439441314,
+      "threshold": -1.0,
+      "direction": "above",
+      "passed": true
+    },
+    "require_lcb_vs_sham_above": {
+      "actual": 0.5015756143944131,
+      "threshold": -1.0,
+      "direction": "above",
+      "passed": true
+    },
+    "minimum_oracle_gap_capture": {
+      "actual": 0.5,
+      "threshold": 0.0,
+      "direction": "above",
+      "passed": true
+    },
+    "minimum_positive_group_fraction": {
+      "actual": 1.0,
+      "threshold": 0.0,
+      "direction": "above",
+      "passed": true
+    },
+    "maximum_worst_subtype_regression": {
+      "actual": 0.0,
+      "threshold": 1.0,
+      "direction": "at_most",
+      "passed": true
+    },
+    "maximum_final_access_count": {
+      "actual": 1.0,
+      "threshold": 1.0,
+      "direction": "at_most",
+      "passed": true
+    }
+  }
+}

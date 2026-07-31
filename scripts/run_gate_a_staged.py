@@ -91,6 +91,85 @@ def _get_utility_config(criteria):
     return get_protocol(criteria.utility_protocol)
 
 
+def _load_model(criteria, device: str = "mps"):
+    """Load the Hugging Face model + tokenizer specified in the criteria.
+
+    Returns (model, tokenizer, model_id, capture_config) or None if the
+    model cannot be loaded.
+    """
+    model_info = criteria.raw.get("model", {})
+    model_id = model_info.get("model_id", "")
+    if not model_id:
+        return None
+
+    import torch
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+
+    dtype = torch.float16
+    if model_info.get("dtype") == "float32":
+        dtype = torch.float32
+
+    print(f"[model] Loading {model_id} on {device} ({dtype})...")
+    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id, torch_dtype=dtype, trust_remote_code=True)
+    model.to(device)
+    model.eval()
+
+    # Determine the number of layers for representation selection.
+    n_layers = model.config.num_hidden_layers
+    print(f"[model] Loaded. {n_layers} hidden layers.")
+
+    # Capture config: use a layer at ~2/3 depth (good empirical default).
+    capture_layer = min(int(n_layers * 2 / 3), n_layers - 1)
+    from daph_learning.execution.real_backends import CaptureConfig
+    capture_config = CaptureConfig(layer=capture_layer, location="last_token")
+    print(f"[model] Capture layer={capture_layer}, location=last_token")
+
+    return model, tokenizer, model_id, capture_config
+
+
+class _RealLLMBackend:
+    """Wraps a loaded HF model to produce BackendExecution results."""
+
+    def __init__(self, model, tokenizer, capture_config, device="mps"):
+        self.model = model
+        self.tokenizer = tokenizer
+        self.capture_config = capture_config
+        self.device = device
+        self.name_or_path = getattr(model, "name_or_path", "unknown")
+
+    def execute(self, task):
+        from daph_learning.execution.real_backends import (
+            execute_llm_canonical, LLMGenerationConfig,
+        )
+        model_info = {}
+        gen_cfg = LLMGenerationConfig(
+            max_new_tokens=48, do_sample=False, seed=0)
+        return execute_llm_canonical(
+            task, self.model, self.tokenizer,
+            generation_config=gen_cfg, device=self.device)
+
+
+def _capture_hidden_states(tasks, model, tokenizer, capture_config, device="mps"):
+    """Capture hidden states for a list of tasks using the loaded model.
+
+    Returns a numpy array of shape (n_tasks, hidden_dim).
+    """
+    import numpy as np
+    from daph_learning.execution.real_backends import capture_task_representation
+
+    features = []
+    for i, task in enumerate(tasks):
+        h = capture_task_representation(
+            task, model, tokenizer,
+            config=capture_config, device=device)
+        features.append(h)
+        if (i + 1) % 50 == 0:
+            print(f"    ... captured {i + 1}/{len(tasks)} hidden states")
+    return np.array(features, dtype=np.float32)
+
+
 def _execute_split(
     tasks: list[dict[str, Any]],
     utility_config,
@@ -220,13 +299,24 @@ def stage_develop(criteria, args) -> int:
     splits = _load_tasks(out)
     utility_config = _get_utility_config(criteria)
 
+    # Load real model if requested.
+    llm_backend = None
+    capture_config = None
+    model_info = None
+    if getattr(args, "use_real_model", False):
+        model_info = _load_model(criteria, device=getattr(args, "device", "mps"))
+        if model_info is not None:
+            model, tokenizer, model_id, capture_config = model_info
+            llm_backend = _RealLLMBackend(model, tokenizer, capture_config,
+                                          device=getattr(args, "device", "mps"))
+
     # Execute both backends on train and development splits.
     experiences = {}
     for split_name in ("train", "development"):
         print(f"[develop] Executing {split_name} split "
               f"({len(splits[split_name])} tasks)")
         experiences[split_name] = _execute_split(
-            splits[split_name], utility_config)
+            splits[split_name], utility_config, llm_backend=llm_backend)
 
     # Save experiences.
     dev_out = _develop_dir(criteria)
@@ -235,8 +325,11 @@ def stage_develop(criteria, args) -> int:
         (dev_out / f"{split_name}_experiences.json").write_text(
             json.dumps(exp, indent=2))
 
-    # Representation selection (deterministic default for now).
-    n_layers = args.n_layers or 24
+    # Representation selection.
+    if model_info is not None:
+        n_layers = model.config.num_hidden_layers
+    else:
+        n_layers = args.n_layers or 24
     candidates = all_candidates(n_layers)
     results = []
     for c in candidates:
@@ -252,19 +345,29 @@ def stage_develop(criteria, args) -> int:
     print(f"[develop] Selected: layer={sel.selected.layer}, "
           f"pooling={sel.selected.pooling}")
 
-    # Train policy on train experiences.
+    # Build features: real hidden states if model loaded, else hash-based.
     import numpy as np
     from daph_learning.policy.policy_factory import fit_policy, predict_proba
     from daph_learning.policy.config import ExperimentConfig
 
     train_exp = experiences["train"]
-    train_features = _build_features(splits["train"])
+    if model_info is not None and capture_config is not None:
+        print(f"[develop] Capturing hidden states for train split...")
+        train_features = _capture_hidden_states(
+            splits["train"], model, tokenizer, capture_config,
+            device=getattr(args, "device", "mps"))
+        print(f"[develop] Capturing hidden states for dev split...")
+        dev_features = _capture_hidden_states(
+            splits["development"], model, tokenizer, capture_config,
+            device=getattr(args, "device", "mps"))
+    else:
+        train_features = _build_features(splits["train"])
+        dev_features = _build_features(splits["development"])
+
     train_delta_u = np.array([e["delta_utility"] for e in train_exp],
                               dtype=np.float64)
     train_weights = np.array([e["sample_weight"] for e in train_exp],
                               dtype=np.float64)
-
-    dev_features = _build_features(splits["development"])
     dev_delta_u = np.array([e["delta_utility"] for e in experiences["development"]],
                             dtype=np.float64)
     dev_weights = np.array([e["sample_weight"] for e in experiences["development"]],
@@ -276,7 +379,7 @@ def stage_develop(criteria, args) -> int:
         early_stopping_metric="dev_regret",
     ).freeze()
 
-    model = fit_policy(
+    policy_model = fit_policy(
         config, train_features, train_delta_u, train_weights,
         dev_features=dev_features, dev_delta_u=dev_delta_u,
         dev_weights=dev_weights, seed=args.seed,
@@ -291,10 +394,14 @@ def stage_develop(criteria, args) -> int:
         "train_features_shape": list(train_features.shape),
         "utility_protocol": criteria.utility_protocol,
         "utility_config_sha256": utility_config.utility_config_hash,
+        "used_real_model": model_info is not None,
+        "capture_layer": capture_config.layer if capture_config else None,
+        "capture_location": capture_config.location if capture_config else None,
     }
     (dev_out / "policy_artifact.json").write_text(
         json.dumps(policy_artifact, indent=2))
-    print(f"[develop] Policy trained on {len(train_exp)} train experiences")
+    print(f"[develop] Policy trained on {len(train_exp)} train experiences "
+          f"(features: {train_features.shape})")
     print(f"[develop] Written to {dev_out}")
     return 0
 
@@ -309,10 +416,19 @@ def stage_calibrate(criteria, args) -> int:
     splits = _load_tasks(out)
     utility_config = _get_utility_config(criteria)
 
+    # Load real model if requested.
+    llm_backend = None
+    if getattr(args, "use_real_model", False):
+        model_info = _load_model(criteria, device=getattr(args, "device", "mps"))
+        if model_info is not None:
+            model, tokenizer, model_id, capture_config = model_info
+            llm_backend = _RealLLMBackend(model, tokenizer, capture_config,
+                                          device=getattr(args, "device", "mps"))
+
     print(f"[calibrate] Executing calibration split "
           f"({len(splits['calibration'])} tasks)")
     cal_experiences = _execute_split(
-        splits["calibration"], utility_config)
+        splits["calibration"], utility_config, llm_backend=llm_backend)
 
     cal_out = _develop_dir(criteria)
     cal_out.mkdir(parents=True, exist_ok=True)
@@ -397,7 +513,20 @@ def stage_final(criteria, args) -> int:
 
     # Execute final split.
     print(f"[final] Executing final split ({len(splits['final'])} tasks)")
-    final_experiences = _execute_split(splits["final"], utility_config)
+
+    # Load real model if requested.
+    llm_backend = None
+    model_info = None
+    capture_config = None
+    if getattr(args, "use_real_model", False):
+        model_info = _load_model(criteria, device=getattr(args, "device", "mps"))
+        if model_info is not None:
+            model, tokenizer, model_id, capture_config = model_info
+            llm_backend = _RealLLMBackend(model, tokenizer, capture_config,
+                                          device=getattr(args, "device", "mps"))
+
+    final_experiences = _execute_split(
+        splits["final"], utility_config, llm_backend=llm_backend)
     (out / "final_experiences.json").write_text(
         json.dumps(final_experiences, indent=2))
 
@@ -410,7 +539,20 @@ def stage_final(criteria, args) -> int:
         return 1
     train_exp = json.loads(train_exp_path.read_text())
 
-    train_features = _build_features(splits["train"])
+    # Build features: real hidden states if model loaded, else hash-based.
+    if model_info is not None and capture_config is not None:
+        print(f"[final] Capturing hidden states for train split...")
+        train_features = _capture_hidden_states(
+            splits["train"], model, tokenizer, capture_config,
+            device=getattr(args, "device", "mps"))
+        print(f"[final] Capturing hidden states for final split...")
+        final_features = _capture_hidden_states(
+            splits["final"], model, tokenizer, capture_config,
+            device=getattr(args, "device", "mps"))
+    else:
+        train_features = _build_features(splits["train"])
+        final_features = _build_features(splits["final"])
+
     train_delta_u = np.array([e["delta_utility"] for e in train_exp],
                               dtype=np.float64)
     train_weights = np.array([e["sample_weight"] for e in train_exp],
@@ -427,7 +569,6 @@ def stage_final(criteria, args) -> int:
         seed=args.seed)
 
     # Evaluate P1 on final split.
-    final_features = _build_features(splits["final"])
     p1_probs = predict_proba(p1_model, final_features)
     # P1 utility = mean(predicted_symbolic * delta_u) for decisive examples.
     final_delta_u = np.array([e["delta_utility"] for e in final_experiences],
@@ -513,13 +654,17 @@ def stage_final(criteria, args) -> int:
     # Build stats.
     stats = {
         "experiment_id": criteria.experiment_id,
-        "used_real_model": True,
+        "used_real_model": model_info is not None,
+        "model_id": criteria.raw.get("model", {}).get("model_id", ""),
+        "capture_layer": capture_config.layer if capture_config else None,
+        "feature_dim": int(train_features.shape[1]),
         "source_hash": current_hash,
         "primary_endpoint": {
             "estimand": criteria.primary_endpoint.estimand,
             "point_estimate": p1_utility,
             "ci_low": p1_utility - 0.1,  # placeholder CI
             "ci_high": p1_utility + 0.1,
+            "ci_label": criteria.primary_endpoint.estimand,
         },
         "sham": {
             "p1_utility": p1_utility,
@@ -605,6 +750,10 @@ def main() -> int:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--n-per-group", type=int, default=8)
     parser.add_argument("--n-layers", type=int, default=None)
+    parser.add_argument("--use-real-model", action="store_true",
+                        help="Load and run the real Hugging Face model")
+    parser.add_argument("--device", default="mps",
+                        help="Device for model inference (mps/cuda/cpu)")
     args = parser.parse_args()
 
     criteria = _load_config(args.config)

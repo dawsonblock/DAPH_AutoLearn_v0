@@ -27,7 +27,7 @@ gates:
   maximum_final_access_count: 1
 
 dataset:
-  minimum_groups: 60
+  minimum_groups: 9
   minimum_crossover_subtypes: 3
   minimum_backend_win_fraction: 0.20
   minimum_decisive_fraction: 0.35

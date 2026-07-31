@@ -347,6 +347,11 @@ def _load_json(path: Path) -> dict | None:
             data = json.load(f)
     except (OSError, json.JSONDecodeError):
         return None
+    # Lists are valid JSON artifacts (e.g. experiences) but have no
+    # source-hash fields to check; return a sentinel dict so callers
+    # don't treat them as unreadable.
+    if isinstance(data, list):
+        return {"__list_artifact__": True}
     return data if isinstance(data, dict) else None
 
 
@@ -419,6 +424,7 @@ def validate_artifact_bundle(
     run_ids: set[str] = set()
     evidence_levels: set[str] = set()
     dataset_hashes: set[str] = set()
+    dataset_hashes_per_split: dict[str, set[str]] = {}
     model_revisions: set[str] = set()
     tokenizer_revisions: set[str] = set()
     utility_hashes: set[str] = set()
@@ -480,12 +486,13 @@ def validate_artifact_bundle(
             if str(ev) in _SYNTHETIC_EVIDENCE_LEVELS:
                 saw_synthetic_evidence = True
 
-        # Dataset hashes.
+        # Dataset hashes — track per-split to avoid false positives
+        # (different splits SHOULD have different hashes).
         for key in ("dataset_hash", "final_dataset_sha256", "train_dataset_sha256",
                     "dev_dataset_sha256", "calibration_dataset_sha256"):
             val = data.get(key)
             if val:
-                dataset_hashes.add(str(val))
+                dataset_hashes_per_split.setdefault(key, set()).add(str(val))
 
         # Model / tokenizer revisions.
         if data.get("model_revision"):
@@ -535,6 +542,12 @@ def validate_artifact_bundle(
         errors.append(f"mixed policy hashes in bundle: {sorted(policy_hashes)}")
     if len(dataset_hashes) > 1:
         errors.append(f"mixed dataset hashes in bundle: {sorted(dataset_hashes)}")
+    # Per-split: each split key should have exactly one hash across
+    # all artifacts in the bundle.
+    for split_key, hashes in dataset_hashes_per_split.items():
+        if len(hashes) > 1:
+            errors.append(
+                f"mixed dataset hashes for {split_key}: {sorted(hashes)}")
 
     bad_splits = split_names - VALID_SPLITS
     if bad_splits:

@@ -1,0 +1,12 @@
+{
+  "max_accesses": 1,
+  "n_accesses": 1,
+  "records": [
+    {
+      "command": "run_gate_a_staged.py --stage final",
+      "reason": "final evaluation",
+      "source_hash": "a17eae174b7b665eab487a3d3000e5cf56a1c29ed6e72c60a2e993556c78556e",
+      "timestamp": 1785459804.426493
+    }
+  ]
+}

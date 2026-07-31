@@ -1,0 +1,854 @@
+[
+  {
+    "task_id": "calibration_D_g57_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 512713,
+      "b": 6899,
+      "op": "%"
+    },
+    "specification": "Please compute 512713 mod 6899. Reply with the exact integer only.",
+    "expected": 2187,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 638866626,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_09",
+      "linguistic_template_id": "ling:9647e2a88ad9c779",
+      "group_id": "structured_math:D:group_57",
+      "group_index": 57,
+      "template_family": "structured_math:D:family_09",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "calibration_D_g57_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 353662,
+      "b": 644,
+      "op": "%"
+    },
+    "specification": "Please compute 353662 mod 644. Reply with the exact integer only.",
+    "expected": 106,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 952382070,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_09",
+      "linguistic_template_id": "ling:9647e2a88ad9c779",
+      "group_id": "structured_math:D:group_57",
+      "group_index": 57,
+      "template_family": "structured_math:D:family_09",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "calibration_D_g57_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 332589,
+      "b": 1234,
+      "op": "%"
+    },
+    "specification": "Please compute 332589 mod 1234. Reply with the exact integer only.",
+    "expected": 643,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 85005258,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_09",
+      "linguistic_template_id": "ling:9647e2a88ad9c779",
+      "group_id": "structured_math:D:group_57",
+      "group_index": 57,
+      "template_family": "structured_math:D:family_09",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "calibration_D_g57_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 936936,
+      "b": 4786,
+      "op": "%"
+    },
+    "specification": "Please compute 936936 mod 4786. Reply with the exact integer only.",
+    "expected": 3666,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 2082570111,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_09",
+      "linguistic_template_id": "ling:9647e2a88ad9c779",
+      "group_id": "structured_math:D:group_57",
+      "group_index": 57,
+      "template_family": "structured_math:D:family_09",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "calibration_C_g02_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Question: Take 42 and subtract three times 15.",
+    "expected": -3,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 255892209,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_00",
+      "linguistic_template_id": "ling:56d27e828686b7a7",
+      "group_id": "structured_math:C:group_02",
+      "group_index": 2,
+      "template_family": "structured_math:C:family_00",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "calibration_C_g02_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Question: Add 4964 and 192, then double the result.",
+    "expected": 10312,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 998832939,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_00",
+      "linguistic_template_id": "ling:aba1b39ff0e8380f",
+      "group_id": "structured_math:C:group_02",
+      "group_index": 2,
+      "template_family": "structured_math:C:family_00",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "calibration_C_g02_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Question: What is half of 5386 plus 486?",
+    "expected": 3179,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 793842757,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_00",
+      "linguistic_template_id": "ling:abdd4803206d52c9",
+      "group_id": "structured_math:C:group_02",
+      "group_index": 2,
+      "template_family": "structured_math:C:family_00",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "calibration_C_g02_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Question: What is half of 56 plus 3?",
+    "expected": 31,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1660707464,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_00",
+      "linguistic_template_id": "ling:abdd4803206d52c9",
+      "group_id": "structured_math:C:group_02",
+      "group_index": 2,
+      "template_family": "structured_math:C:family_00",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "calibration_D_g27_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 146,
+      "b": 20,
+      "op": "%"
+    },
+    "specification": "Calibration wording \u2014 Compute 146 mod 20. Return the integer result only.",
+    "expected": 6,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 340442828,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_04",
+      "linguistic_template_id": "ling:aaa7b8edc1de7301",
+      "group_id": "structured_math:D:group_27",
+      "group_index": 27,
+      "template_family": "structured_math:D:family_04",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "calibration_D_g27_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 855,
+      "b": 5,
+      "op": "%"
+    },
+    "specification": "Calibration wording \u2014 Compute 855 mod 5. Return the integer result only.",
+    "expected": 0,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 451476271,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_04",
+      "linguistic_template_id": "ling:aaa7b8edc1de7301",
+      "group_id": "structured_math:D:group_27",
+      "group_index": 27,
+      "template_family": "structured_math:D:family_04",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "calibration_D_g27_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 115933,
+      "b": 1656,
+      "op": "%"
+    },
+    "specification": "Calibration wording \u2014 Compute 115933 mod 1656. Return the integer result only.",
+    "expected": 13,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1394628040,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_04",
+      "linguistic_template_id": "ling:aaa7b8edc1de7301",
+      "group_id": "structured_math:D:group_27",
+      "group_index": 27,
+      "template_family": "structured_math:D:family_04",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "calibration_D_g27_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 209,
+      "b": 39,
+      "op": "%"
+    },
+    "specification": "Calibration wording \u2014 Compute 209 mod 39. Return the integer result only.",
+    "expected": 14,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 809803921,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_04",
+      "linguistic_template_id": "ling:aaa7b8edc1de7301",
+      "group_id": "structured_math:D:group_27",
+      "group_index": 27,
+      "template_family": "structured_math:D:family_04",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "calibration_B_g37_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final site B \u2014 A facility has 2392 boxes with 290 items per box. How many items total?.",
+    "expected": 693680,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 783149662,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_06",
+      "linguistic_template_id": "ling:faa164ea81c15960",
+      "group_id": "structured_math:B:group_37",
+      "group_index": 37,
+      "template_family": "structured_math:B:family_06",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "calibration_B_g37_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final site B \u2014 A facility has 46 boxes with 21 items per box. How many items total?.",
+    "expected": 966,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 357553120,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_06",
+      "linguistic_template_id": "ling:faa164ea81c15960",
+      "group_id": "structured_math:B:group_37",
+      "group_index": 37,
+      "template_family": "structured_math:B:family_06",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "calibration_B_g37_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final site B \u2014 A facility has 3408 pallets with 486 kilograms each. What is the total mass?.",
+    "expected": 1656288,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 519785907,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_06",
+      "linguistic_template_id": "ling:dbd403a112a2e9df",
+      "group_id": "structured_math:B:group_37",
+      "group_index": 37,
+      "template_family": "structured_math:B:family_06",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "calibration_B_g37_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final site B \u2014 A facility has 4 rows with 48 seats per row. How many seats total?.",
+    "expected": 192,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1172284810,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_06",
+      "linguistic_template_id": "ling:1a46c165fbae2299",
+      "group_id": "structured_math:B:group_37",
+      "group_index": 37,
+      "template_family": "structured_math:B:family_06",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "calibration_F_g05_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A tank has 526085 L, loses 40%, then gains 318 L. How many litres remain? Return the integer.",
+    "expected": 315969,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1708795569,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_00",
+      "linguistic_template_id": "ling:03f76b325cd93d6f",
+      "group_id": "structured_math:F:group_05",
+      "group_index": 5,
+      "template_family": "structured_math:F:family_00",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "calibration_F_g05_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A tank has 135 L, loses 40%, then gains 9 L. How many litres remain? Return the integer.",
+    "expected": 90,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1126608709,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_00",
+      "linguistic_template_id": "ling:03f76b325cd93d6f",
+      "group_id": "structured_math:F:group_05",
+      "group_index": 5,
+      "template_family": "structured_math:F:family_00",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "calibration_F_g05_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A tank has 470 L, loses 10%, then gains 2 L. How many litres remain? Return the integer.",
+    "expected": 425,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 356239147,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_00",
+      "linguistic_template_id": "ling:03f76b325cd93d6f",
+      "group_id": "structured_math:F:group_05",
+      "group_index": 5,
+      "template_family": "structured_math:F:family_00",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "calibration_F_g05_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A tank has 400 L, loses 11%, then gains 9 L. How many litres remain? Return the integer.",
+    "expected": 365,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 37583456,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_00",
+      "linguistic_template_id": "ling:03f76b325cd93d6f",
+      "group_id": "structured_math:F:group_05",
+      "group_index": 5,
+      "template_family": "structured_math:F:family_00",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "calibration_E_g34_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final comparison A: Which is larger: 26*21 or 48*44? Reply with the larger product as an integer.",
+    "expected": 2112,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 396649061,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_05",
+      "linguistic_template_id": "ling:0ec020a7555b2783",
+      "group_id": "structured_math:E:group_34",
+      "group_index": 34,
+      "template_family": "structured_math:E:family_05",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "calibration_E_g34_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final comparison A: Which is larger: 32*24 or 29*34? Reply with the larger product as an integer.",
+    "expected": 986,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 348402091,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_05",
+      "linguistic_template_id": "ling:0ec020a7555b2783",
+      "group_id": "structured_math:E:group_34",
+      "group_index": 34,
+      "template_family": "structured_math:E:family_05",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "calibration_E_g34_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final comparison A: Which is larger: 15*31 or 6*3? Reply with the larger product as an integer.",
+    "expected": 465,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1423787588,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_05",
+      "linguistic_template_id": "ling:0ec020a7555b2783",
+      "group_id": "structured_math:E:group_34",
+      "group_index": 34,
+      "template_family": "structured_math:E:family_05",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "calibration_E_g34_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final comparison A: Which is larger: 317*849 or 647*938? Reply with the larger product as an integer.",
+    "expected": 606886,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 302852050,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_05",
+      "linguistic_template_id": "ling:0ec020a7555b2783",
+      "group_id": "structured_math:E:group_34",
+      "group_index": 34,
+      "template_family": "structured_math:E:family_05",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "calibration_D_g51_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 160,
+      "b": 41,
+      "op": "%"
+    },
+    "specification": "Compute 160 mod 41. Return only the integer.",
+    "expected": 37,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 639484858,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_08",
+      "linguistic_template_id": "ling:831b9946df35c058",
+      "group_id": "structured_math:D:group_51",
+      "group_index": 51,
+      "template_family": "structured_math:D:family_08",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "calibration_D_g51_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 185712,
+      "b": 1429,
+      "op": "%"
+    },
+    "specification": "Compute 185712 mod 1429. Return only the integer.",
+    "expected": 1371,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 2039183814,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_08",
+      "linguistic_template_id": "ling:831b9946df35c058",
+      "group_id": "structured_math:D:group_51",
+      "group_index": 51,
+      "template_family": "structured_math:D:family_08",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "calibration_D_g51_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 20,
+      "b": 41,
+      "op": "%"
+    },
+    "specification": "Compute 20 mod 41. Return only the integer.",
+    "expected": 20,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 65322251,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_08",
+      "linguistic_template_id": "ling:831b9946df35c058",
+      "group_id": "structured_math:D:group_51",
+      "group_index": 51,
+      "template_family": "structured_math:D:family_08",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "calibration_D_g51_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 542800,
+      "b": 6888,
+      "op": "%"
+    },
+    "specification": "Compute 542800 mod 6888. Return only the integer.",
+    "expected": 5536,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1130278384,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_08",
+      "linguistic_template_id": "ling:831b9946df35c058",
+      "group_id": "structured_math:D:group_51",
+      "group_index": 51,
+      "template_family": "structured_math:D:family_08",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "calibration_B_g43_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final site C \u2014 A depot stores 10 pallets with 10 kilograms each. What is the total mass?.",
+    "expected": 100,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1120815710,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_07",
+      "linguistic_template_id": "ling:2f7236be6241cf17",
+      "group_id": "structured_math:B:group_43",
+      "group_index": 43,
+      "template_family": "structured_math:B:family_07",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "calibration_B_g43_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final site C \u2014 A depot stores 34 boxes with 22 items per box. How many items total?.",
+    "expected": 748,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 362157365,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_07",
+      "linguistic_template_id": "ling:bb0d3622ac5652c6",
+      "group_id": "structured_math:B:group_43",
+      "group_index": 43,
+      "template_family": "structured_math:B:family_07",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "calibration_B_g43_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final site C \u2014 A depot stores 17 boxes with 50 items per box. How many items total?.",
+    "expected": 850,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 141901456,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_07",
+      "linguistic_template_id": "ling:bb0d3622ac5652c6",
+      "group_id": "structured_math:B:group_43",
+      "group_index": 43,
+      "template_family": "structured_math:B:family_07",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "calibration_B_g43_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final site C \u2014 A depot stores 3305 boxes with 321 items per box. How many items total?.",
+    "expected": 1060905,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1189471933,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_07",
+      "linguistic_template_id": "ling:bb0d3622ac5652c6",
+      "group_id": "structured_math:B:group_43",
+      "group_index": 43,
+      "template_family": "structured_math:B:family_07",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "calibration_A_g06_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 69262,
+      "b": 65785,
+      "op": "*"
+    },
+    "specification": "Please compute 69262 * 65785. Reply with the exact integer only.",
+    "expected": 4556400670,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 784909480,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_01",
+      "linguistic_template_id": "ling:af75f7134af966e9",
+      "group_id": "structured_math:A:group_06",
+      "group_index": 6,
+      "template_family": "structured_math:A:family_01",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "calibration_A_g06_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 74149,
+      "b": 57346,
+      "op": "*"
+    },
+    "specification": "Please compute 74149 * 57346. Reply with the exact integer only.",
+    "expected": 4252148554,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 311009589,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_01",
+      "linguistic_template_id": "ling:af75f7134af966e9",
+      "group_id": "structured_math:A:group_06",
+      "group_index": 6,
+      "template_family": "structured_math:A:family_01",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "calibration_A_g06_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 20,
+      "b": 38,
+      "op": "*"
+    },
+    "specification": "Please compute 20 * 38. Reply with the exact integer only.",
+    "expected": 760,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 66344172,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_01",
+      "linguistic_template_id": "ling:af75f7134af966e9",
+      "group_id": "structured_math:A:group_06",
+      "group_index": 6,
+      "template_family": "structured_math:A:family_01",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "calibration_A_g06_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 83395,
+      "b": 94473,
+      "op": "+"
+    },
+    "specification": "Please compute 83395 + 94473. Reply with the exact integer only.",
+    "expected": 177868,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 157449737,
+      "split": "calibration",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_01",
+      "linguistic_template_id": "ling:bb625ef116cf753c",
+      "group_id": "structured_math:A:group_06",
+      "group_index": 6,
+      "template_family": "structured_math:A:family_01",
+      "instance_id": 3
+    }
+  }
+]
