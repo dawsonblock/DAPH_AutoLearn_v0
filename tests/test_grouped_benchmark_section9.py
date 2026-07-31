@@ -17,8 +17,8 @@ from daph_learning.data.grouped_benchmark import (
 from daph_learning.data.crossover_benchmark import FORBIDDEN_METADATA_FIELDS
 
 
-def test_total_groups_is_420():
-    assert N_GROUPS_TOTAL == 420
+def test_total_groups_is_560():
+    assert N_GROUPS_TOTAL == 560
 
 
 def test_group_assignment_covers_all_groups():
@@ -26,7 +26,7 @@ def test_group_assignment_covers_all_groups():
     all_idx = set()
     for gs in a.values():
         all_idx.update(gs)
-    assert all_idx == set(range(420))
+    assert all_idx == set(range(560))
 
 
 def test_no_group_in_multiple_splits():
@@ -40,19 +40,19 @@ def test_no_group_in_multiple_splits():
 
 def test_split_proportions():
     a = group_assignments()
-    assert len(a["train"]) == 210
-    assert len(a["development"]) == 84
-    assert len(a["calibration"]) == 63
-    assert len(a["final"]) == 63
+    assert len(a["train"]) == 280
+    assert len(a["development"]) == 112
+    assert len(a["calibration"]) == 84
+    assert len(a["final"]) == 84
 
 
 def test_generate_all_splits():
     splits = generate_all_grouped_splits(n_per_group=4)
     counts = count_groups(splits)
-    assert counts["train"] == 210
-    assert counts["development"] == 84
-    assert counts["calibration"] == 63
-    assert counts["final"] == 63
+    assert counts["train"] == 280
+    assert counts["development"] == 112
+    assert counts["calibration"] == 84
+    assert counts["final"] == 84
 
 
 def test_no_group_crosses_splits():

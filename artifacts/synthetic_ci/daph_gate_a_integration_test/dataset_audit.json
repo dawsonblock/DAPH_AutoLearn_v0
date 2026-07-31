@@ -4,13 +4,13 @@
   "warnings": [
     "crossover_distribution not provided; crossover checks skipped"
   ],
-  "n_tasks": 1680,
+  "n_tasks": 2240,
   "n_splits": 4,
   "n_groups": {
-    "train": 210,
-    "development": 84,
-    "calibration": 63,
-    "final": 63
+    "train": 280,
+    "development": 112,
+    "calibration": 84,
+    "final": 84
   },
   "exact_duplicates": [],
   "normalized_duplicates": [],
@@ -18,41 +18,53 @@
   "template_family_leaks": [],
   "near_duplicates": [],
   "per_subtype_counts": {
-    "F": {
-      "train": 140,
-      "development": 52,
-      "calibration": 44,
-      "final": 44
-    },
-    "C": {
+    "A": {
       "train": 132,
-      "development": 68,
-      "calibration": 36,
-      "final": 44
-    },
-    "E": {
-      "train": 140,
-      "development": 52,
-      "calibration": 44,
-      "final": 44
-    },
-    "B": {
-      "train": 132,
-      "development": 68,
-      "calibration": 44,
+      "development": 60,
+      "calibration": 52,
       "final": 36
     },
+    "H": {
+      "train": 128,
+      "development": 44,
+      "calibration": 48,
+      "final": 60
+    },
     "D": {
-      "train": 144,
-      "development": 40,
-      "calibration": 44,
+      "train": 140,
+      "development": 60,
+      "calibration": 28,
       "final": 52
     },
-    "A": {
-      "train": 152,
+    "G": {
+      "train": 144,
       "development": 56,
+      "calibration": 48,
+      "final": 32
+    },
+    "C": {
+      "train": 136,
+      "development": 72,
       "calibration": 40,
       "final": 32
+    },
+    "B": {
+      "train": 148,
+      "development": 48,
+      "calibration": 48,
+      "final": 36
+    },
+    "E": {
+      "train": 152,
+      "development": 48,
+      "calibration": 40,
+      "final": 40
+    },
+    "F": {
+      "train": 140,
+      "development": 60,
+      "calibration": 32,
+      "final": 48
     }
   },
   "crossover_subtypes": [],

@@ -145,7 +145,8 @@ class _RealLLMBackend:
         )
         model_info = {}
         gen_cfg = LLMGenerationConfig(
-            max_new_tokens=48, do_sample=False, seed=0)
+            max_new_tokens=int(criteria.raw.get("model", {}).get("max_new_tokens", 256)),
+            do_sample=False, seed=0)
         return execute_llm_canonical(
             task, self.model, self.tokenizer,
             generation_config=gen_cfg, device=self.device)
@@ -199,8 +200,8 @@ def _capture_hidden_states(tasks, model, tokenizer, capture_config, device="mps"
     return np.array(features, dtype=np.float32)
 
 
-def _batched_llm_generate(tasks, model, tokenizer, device="mps", batch_size=16,
-                          max_new_tokens=32):
+def _batched_llm_generate(tasks, model, tokenizer, device="mps", batch_size=64,
+                          max_new_tokens=256):
     """Run LLM generation on a batch of tasks for speed.
 
     Returns list of (generated_text, latency) tuples.
@@ -214,12 +215,17 @@ def _batched_llm_generate(tasks, model, tokenizer, device="mps", batch_size=16,
     tokenizer.padding_side = "left"
 
     try:
+        # The FINAL_ANSWER suffix is required for the verifier to parse the output.
+        from daph_learning.execution.real_backends import _LLM_FINAL_ANSWER_SUFFIX
+
         results = []
         for i in range(0, len(tasks), batch_size):
             batch = tasks[i:i + batch_size]
             prompts = []
             for task in batch:
                 prompt = str(task.get("prompt", task.get("specification", "")))
+                # Append the FINAL_ANSWER format requirement.
+                prompt = prompt + _LLM_FINAL_ANSWER_SUFFIX
                 try:
                     messages = [{"role": "user", "content": prompt}]
                     formatted = tokenizer.apply_chat_template(
@@ -249,6 +255,89 @@ def _batched_llm_generate(tasks, model, tokenizer, device="mps", batch_size=16,
         return results
     finally:
         tokenizer.padding_side = original_padding_side
+
+
+# Global vLLM engine (initialized once, reused across stages).
+_VLLM_ENGINE = None
+
+
+def _vllm_generate(tasks, model_id, max_new_tokens=256, revision=None):
+    """Use vLLM for fast batched generation. 5-10x faster than HF generate.
+
+    Returns list of (generated_text, latency) tuples.
+    """
+    global _VLLM_ENGINE
+    import time as _time
+    from daph_learning.execution.real_backends import _LLM_FINAL_ANSWER_SUFFIX
+
+    if _VLLM_ENGINE is None:
+        from vllm import LLM
+        print(f"[vllm] Loading {model_id}...")
+        _VLLM_ENGINE = LLM(
+            model=model_id,
+            revision=revision,
+            dtype="float16",
+            gpu_memory_utilization=0.85,
+            max_model_len=1024,
+            enforce_eager=False,
+        )
+        print(f"[vllm] Engine loaded.")
+
+    from vllm import SamplingParams
+
+    # Build prompts with FINAL_ANSWER suffix.
+    tokenizer = _VLLM_ENGINE.get_tokenizer()
+    prompts = []
+    for task in tasks:
+        prompt = str(task.get("prompt", task.get("specification", "")))
+        prompt = prompt + _LLM_FINAL_ANSWER_SUFFIX
+        try:
+            messages = [{"role": "user", "content": prompt}]
+            formatted = tokenizer.apply_chat_template(
+                messages, tokenize=False, add_generation_prompt=True)
+        except (AttributeError, TypeError, ValueError):
+            formatted = prompt
+        prompts.append(formatted)
+
+    sampling = SamplingParams(
+        max_tokens=max_new_tokens,
+        temperature=0.0,
+        top_p=1.0,
+    )
+
+    t0 = _time.time()
+    outputs = _VLLM_ENGINE.generate(prompts, sampling)
+    total_latency = _time.time() - t0
+
+    results = []
+    for output in outputs:
+        text = output.outputs[0].text.strip()
+        results.append((text, total_latency / len(tasks)))
+    return results
+
+
+def _smart_llm_generate(tasks, model, tokenizer, criteria, device="cuda",
+                        max_new_tokens=256):
+    """Try vLLM first, fall back to HF generate.
+
+    Uses vLLM if the model_id is available and vLLM is installed.
+    Otherwise falls back to _batched_llm_generate with the HF model.
+    """
+    model_id = criteria.raw.get("model", {}).get("model_id", "")
+    revision = criteria.raw.get("model", {}).get("revision")
+    if revision == "main":
+        revision = None
+
+    try:
+        return _vllm_generate(tasks, model_id,
+                              max_new_tokens=max_new_tokens,
+                              revision=revision)
+    except Exception as exc:
+        print(f"[llm] vLLM failed ({exc}), falling back to HF generate")
+        return _batched_llm_generate(
+            tasks, model, tokenizer,
+            device=device, batch_size=64,
+            max_new_tokens=max_new_tokens)
 
 
 def _execute_split(
@@ -460,7 +549,8 @@ def stage_develop(criteria, args) -> int:
         if model_info is not None and model is not None:
             llm_results = _batched_llm_generate(
                 splits[split_name], model, tokenizer,
-                device=getattr(args, "device", "mps"), batch_size=16)
+                device=getattr(args, "device", "cuda"), batch_size=64,
+                max_new_tokens=int(criteria.raw.get("model", {}).get("max_new_tokens", 256)))
         experiences[split_name] = _execute_split(
             splits[split_name], utility_config,
             llm_backend=llm_backend, llm_results=llm_results)
@@ -612,7 +702,8 @@ def stage_calibrate(criteria, args) -> int:
     if model_info is not None and model is not None:
         cal_llm_results = _batched_llm_generate(
             splits["calibration"], model, tokenizer,
-            device=getattr(args, "device", "mps"), batch_size=16)
+            device=getattr(args, "device", "cuda"), batch_size=64,
+            max_new_tokens=int(criteria.raw.get("model", {}).get("max_new_tokens", 256)))
     cal_experiences = _execute_split(
         splits["calibration"], utility_config,
         llm_backend=llm_backend, llm_results=cal_llm_results)
@@ -674,14 +765,10 @@ def stage_final(criteria, args) -> int:
     }
     utility_config = get_protocol(criteria.utility_protocol)
 
-    # Recompute config hash from the actual config file (not manifest).
-    config_path_str = getattr(args, "config", None)
-    if config_path_str:
-        config_path = Path(config_path_str).resolve()
-        current_config_hash = hashlib.sha256(config_path.read_bytes()).hexdigest()
-    else:
-        # Fallback for test harness without config path.
-        current_config_hash = manifest.config_sha256
+    # Recompute config hash — must match what freeze_gate_a.py used.
+    # freeze_gate_a.py uses criteria.criteria_hash (the canonical JSON hash
+    # of the criteria payload), NOT the raw file hash.
+    current_config_hash = criteria.criteria_hash
 
     try:
         manifest.verify_current_state(
@@ -729,7 +816,8 @@ def stage_final(criteria, args) -> int:
     if model_info is not None and model is not None:
         final_llm_results = _batched_llm_generate(
             splits["final"], model, tokenizer,
-            device=getattr(args, "device", "mps"), batch_size=16)
+            device=getattr(args, "device", "cuda"), batch_size=64,
+            max_new_tokens=int(criteria.raw.get("model", {}).get("max_new_tokens", 256)))
     final_experiences = _execute_split(
         splits["final"], utility_config,
         llm_backend=llm_backend, llm_results=final_llm_results)
@@ -868,8 +956,8 @@ def stage_final(criteria, args) -> int:
     always_sym_utilities = np.zeros(len(splits["final"]), dtype=np.float64)
 
     for i, exp in enumerate(final_experiences):
-        sym_u = float(exp["symbolic"].get("utility", 0.0))
-        llm_u = float(exp["llm"].get("utility", 0.0))
+        sym_u = float(exp["symbolic"].get("quality", 0.0))
+        llm_u = float(exp["llm"].get("quality", 0.0))
 
         # P1 realized utility: from the selected hard action.
         if decisions[i].action is RouteAction.SYMBOLIC:
@@ -893,8 +981,8 @@ def stage_final(criteria, args) -> int:
     # ── Build FinalTaskRecord for every task ──
     records = []
     for i, task in enumerate(splits["final"]):
-        sym_u = float(final_experiences[i]["symbolic"].get("utility", 0.0))
-        llm_u = float(final_experiences[i]["llm"].get("utility", 0.0))
+        sym_u = float(final_experiences[i]["symbolic"].get("quality", 0.0))
+        llm_u = float(final_experiences[i]["llm"].get("quality", 0.0))
         sym_correct = bool(final_experiences[i]["symbolic"].get("correct", False))
         llm_correct = bool(final_experiences[i]["llm"].get("correct", False))
         sym_verif = str(final_experiences[i].get("symbolic_verification", "not_verified"))
@@ -1059,8 +1147,8 @@ def stage_final(criteria, args) -> int:
         ])
         sham_u = np.zeros(len(splits["final"]), dtype=np.float64)
         for j, exp in enumerate(final_experiences):
-            sym_u = float(exp["symbolic"].get("utility", 0.0))
-            llm_u = float(exp["llm"].get("utility", 0.0))
+            sym_u = float(exp["symbolic"].get("quality", 0.0))
+            llm_u = float(exp["llm"].get("quality", 0.0))
             if sham_actions[j] == "symbolic":
                 sham_u[j] = sym_u
             elif sham_actions[j] == "llm":
@@ -1389,7 +1477,7 @@ def stage_final(criteria, args) -> int:
     # Compute relative path from artifacts/current/ to the bundle.
     bundle_rel = os.path.relpath(out, REPO_ROOT / "artifacts" / "current")
     pointer = {
-        "artifact_type": "status_pointer",
+        "artifact_type": "pointer",
         "experiment_id": criteria.experiment_id,
         "target": bundle_rel,
         "qualification_status": qualification_status.value,

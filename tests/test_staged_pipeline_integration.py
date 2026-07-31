@@ -97,6 +97,12 @@ splits:
 @pytest.fixture
 def integration_workspace(tmp_path, monkeypatch):
     """Create a temporary workspace for the integration test."""
+    # Save the real pointer so we can restore it after the test.
+    real_pointer_path = REPO_ROOT / "artifacts" / "current" / "pointer.json"
+    real_pointer_content = None
+    if real_pointer_path.exists():
+        real_pointer_content = real_pointer_path.read_text()
+
     # Write the smoke config.
     config_path = tmp_path / "gate_a_integration.yaml"
     _write_smoke_config(config_path)
@@ -111,11 +117,17 @@ def integration_workspace(tmp_path, monkeypatch):
     monkeypatch.setattr(
         "scripts.freeze_gate_a.REPO_ROOT", tmp_path)
 
-    return {
+    yield {
         "config_path": config_path,
         "workspace": tmp_path,
         "artifacts_dir": artifacts_dir,
     }
+
+    # Restore the real pointer after the test.
+    if real_pointer_content is not None:
+        real_pointer_path.write_text(real_pointer_content)
+    elif real_pointer_path.exists():
+        real_pointer_path.unlink()
 
 
 def test_end_to_end_staged_pipeline(integration_workspace):

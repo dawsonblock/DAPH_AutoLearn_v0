@@ -119,7 +119,7 @@ _REQUIRED_KEYS = {
 _ALLOWED_KEYS = _REQUIRED_KEYS | {
     "release_version", "utility_protocol", "secondary_utility_protocol",
     "model", "representation", "targets", "sham", "splits",
-    "evidence_level",
+    "evidence_level", "statistics", "preconditions",
 }
 
 
@@ -158,14 +158,23 @@ def load_gate_criteria(path: str | Path) -> GateCriteria:
         raise ValueError("primary_endpoint.confidence_level must be in (0, 1)")
 
     g = raw["gates"]
+
+    def _gate_value(key: str, default_comparator: str = "gte") -> float:
+        """Extract gate threshold value, supporting both legacy (float)
+        and v0.3.10.5 (dict with threshold/comparator) formats."""
+        v = g[key]
+        if isinstance(v, dict):
+            return float(v.get("threshold", 0.0))
+        return float(v)
+
     gates = Gates(
-        minimum_point_gain_vs_p0=float(g["minimum_point_gain_vs_p0"]),
-        require_lcb_vs_p0_above=float(g["require_lcb_vs_p0_above"]),
-        require_lcb_vs_sham_above=float(g["require_lcb_vs_sham_above"]),
-        minimum_oracle_gap_capture=float(g["minimum_oracle_gap_capture"]),
-        maximum_worst_subtype_regression=float(g["maximum_worst_subtype_regression"]),
-        minimum_positive_group_fraction=float(g["minimum_positive_group_fraction"]),
-        maximum_final_access_count=int(g["maximum_final_access_count"]),
+        minimum_point_gain_vs_p0=_gate_value("minimum_point_gain_vs_p0"),
+        require_lcb_vs_p0_above=_gate_value("require_lcb_vs_p0_above"),
+        require_lcb_vs_sham_above=_gate_value("require_lcb_vs_sham_above"),
+        minimum_oracle_gap_capture=_gate_value("minimum_oracle_gap_capture"),
+        maximum_worst_subtype_regression=_gate_value("maximum_worst_subtype_regression"),
+        minimum_positive_group_fraction=_gate_value("minimum_positive_group_fraction"),
+        maximum_final_access_count=int(_gate_value("maximum_final_access_count")),
     )
 
     d = raw["dataset"]

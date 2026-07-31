@@ -193,6 +193,14 @@ def execute_integer_arithmetic(inputs: Mapping[str, Any]) -> int:
         if b == 0:
             raise ZeroDivisionError("floor division by zero")
         return _check_result(a // b)
+    if op == "gcd":
+        import math
+        return _check_result(math.gcd(a, b))
+    if op == "lcm":
+        import math
+        if a == 0 or b == 0:
+            return 0
+        return _check_result(a * b // math.gcd(a, b))
     raise UnsupportedOperationError(f"unsupported integer operation: {op!r}")
 
 
