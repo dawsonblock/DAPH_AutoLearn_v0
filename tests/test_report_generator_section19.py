@@ -35,6 +35,15 @@ def _stats(**overrides):
         "worst_subtype_regression": 0.01,
         "final_access_count": 1,
         "source_hash": "abc123",
+        "route_distribution": {
+            "p1_symbolic_fraction": 0.6,
+            "p1_llm_fraction": 0.4,
+            "p1_abstain_fraction": 0.0,
+            "oracle_symbolic_fraction": 0.6,
+            "oracle_llm_fraction": 0.4,
+            "p1_oracle_action_agreement": 0.8,
+            "p1_always_symbolic_agreement": 0.6,
+        },
         "dataset": {
             "n_groups": 60,
             "n_tasks": 480,
@@ -62,6 +71,9 @@ def _criteria(**overrides):
             "maximum_worst_subtype_regression": 0.03,
             "minimum_positive_group_fraction": 0.60,
             "maximum_final_access_count": 1,
+        },
+        "dataset": {
+            "minimum_groups": 60,
         },
     }
     base.update(overrides)

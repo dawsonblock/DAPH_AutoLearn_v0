@@ -39,14 +39,15 @@ from .integrity import normalize_prompt
 
 GENERATOR_VERSION = "v0.3.10.4-grouped"
 
-# 80 groups: 10 per subtype. Each group is a distinct template family
+# 420 groups: 70 per subtype. Each group is a distinct template family
 # within the structured_math family, identified by (subtype, group_idx).
-N_GROUPS_PER_SUBTYPE = 10
-N_GROUPS_TOTAL = N_GROUPS_PER_SUBTYPE * len(SUBTYPES)  # 60
+# 420 groups → 210 train / 84 dev / 63 cal / 63 final.
+# This gives the final split 63 independent groups for bootstrap,
+# satisfying the minimum_groups=60 requirement.
+N_GROUPS_PER_SUBTYPE = 70
+N_GROUPS_TOTAL = N_GROUPS_PER_SUBTYPE * len(SUBTYPES)  # 420
 
 # Group-first split assignment (Section 9.4).
-# 60 groups → 30 train / 12 dev / 9 cal / 9 final.
-# This gives the final split 9 independent groups for bootstrap.
 SPLIT_FRACTIONS = {"train": 0.50, "development": 0.20,
                    "calibration": 0.15, "final": 0.15}
 
@@ -129,15 +130,20 @@ def generate_grouped_crossover_split(
             global_seed = deterministic_seed(
                 split, subtype, str(gidx), str(i)) % (2**31)
             tid = f"{split}_{subtype}_g{gidx:02d}_{i:04d}"
-            # Use the existing subtype generator but override metadata.
-            body = _GENERATORS[subtype](rng, group_n % 8)
+            # Use a per-task RNG seeded from the global seed so that
+            # different groups produce different operands even with
+            # the same template slot.
+            task_rng = random.Random(global_seed)
+            body = _GENERATORS[subtype](task_rng, group_n)
             spec = str(body.get("specification", ""))
             prompt_hash = hashlib.sha256(
                 normalize_prompt(spec).encode("utf-8")).hexdigest()
             if prompt_hash in seen_prompts:
-                # Retry with extra entropy.
-                for _retry in range(20):
-                    body = _GENERATORS[subtype](rng, (group_n + _retry + 1) % 8)
+                # Retry with extra entropy from the task RNG.
+                for _retry in range(50):
+                    retry_seed = (global_seed + _retry * 7919) % (2**31)
+                    task_rng = random.Random(retry_seed)
+                    body = _GENERATORS[subtype](task_rng, (group_n + _retry + 1))
                     spec = str(body.get("specification", ""))
                     prompt_hash = hashlib.sha256(
                         normalize_prompt(spec).encode("utf-8")).hexdigest()

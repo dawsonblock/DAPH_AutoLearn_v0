@@ -82,53 +82,179 @@ _EXACT_WRAPPERS = (
     "Final wording A — Compute {body}. Respond with one integer.",
     "Final wording B — Evaluate {body}. Return only the integer.",
     "Final wording C — Calculate {body}. Output the integer value only.",
+    "Determine the result of {body}. Provide only the integer answer.",
+    "Find the value of {body}. Return just the integer.",
+    "Solve {body}. Output the integer result with no explanation.",
+    "What is {body}? Reply with the integer only.",
+    "Calculate the exact value of {body}. Return only the number.",
+    "Evaluate the expression {body}. Give the integer answer only.",
+    "Compute the following: {body}. Return the integer.",
+    "Arithmetic problem: {body}. Answer with the integer only.",
+    "Please solve {body}. Provide the integer result.",
+    "What is the result when you compute {body}? Return the integer.",
+    "Find the answer to {body}. Output only the integer.",
+    "Determine {body}. Reply with the integer value only.",
+    "Calculate {body}. Give me just the integer.",
+    "Evaluate {body} and return the integer result.",
+    "Solve the arithmetic expression {body}. Output the integer.",
+    "Compute {body} exactly. Return the integer answer.",
+    "What does {body} equal? Provide the integer only.",
+    "Find the numerical result of {body}. Return the integer.",
+    "Calculate the value: {body}. Output only the integer.",
+    "Determine the value of {body}. Give the integer answer.",
+    "Solve for the result of {body}. Return the integer only.",
+    "Compute the arithmetic: {body}. Provide the integer.",
+    "What is the numerical answer to {body}? Return the integer.",
+    "Evaluate and provide the integer for {body}.",
+    "Find the result: {body}. Reply with the integer only.",
+    "Calculate exactly: {body}. Output the integer value.",
+    "Determine the outcome of {body}. Return just the integer.",
+    "Solve the expression: {body}. Give the integer answer.",
+    "Compute the result: {body}. Output the integer only.",
+    "What value do you get for {body}? Return the integer.",
+    "Find the exact answer to {body}. Provide the integer.",
+    "Calculate {body} and return the integer result only.",
+    "Evaluate the arithmetic {body}. Output the integer.",
+    "Determine the result: {body}. Reply with the integer.",
+    "Solve {body} and provide the integer answer.",
+    "Compute the value of {body}. Return only the integer.",
+    "What is the computed value of {body}? Give the integer.",
+    "Find the solution to {body}. Output the integer only.",
+    "Calculate the result of {body}. Return the integer.",
+    "Determine {body} and output the integer value.",
+    "Solve for {body}. Provide just the integer answer.",
+    "Compute {body}. Give the integer result with no prose.",
+    "What is {body} equal to? Return the integer only.",
+    "Find the exact value: {body}. Reply with the integer.",
+    "Calculate the outcome of {body}. Output the integer.",
+    "Determine the answer to {body}. Give the integer only.",
+    "Solve the calculation {body}. Return the integer result.",
+    "Compute and evaluate {body}. Provide the integer.",
+    "What result do you obtain for {body}? Output the integer.",
+    "Find the value when you compute {body}. Return the integer.",
+    "Calculate {body} precisely. Give the integer answer.",
+    "Determine the computed result of {body}. Output the integer.",
+    "Solve the arithmetic: {body}. Reply with the integer.",
+    "Compute the exact result of {body}. Return the integer.",
+    "What is the answer when you evaluate {body}? Give the integer.",
+    "Find the numerical outcome of {body}. Provide the integer.",
+    "Calculate and return the integer for {body}.",
+    "Determine the value: {body}. Output the integer only.",
+    "Solve for the value of {body}. Return the integer.",
+    "Compute {body} and give the integer result.",
+    "What is the exact result of {body}? Reply with the integer.",
+    "Find the answer: {body}. Output the integer value.",
+    "Calculate the exact outcome: {body}. Return the integer.",
 )
 
 # Section 10: split-specific wording wrappers for NL subtypes.
 # Each slot produces a distinct linguistic template so that splits
 # are template-disjoint by actual wording, not just slot number.
-_B_WRAPPERS = (
-    "A warehouse has {body}.",
-    "A facility has {body}.",
-    "A depot stores {body}.",
-    "A factory contains {body}.",
-    "Calibration site — A warehouse has {body}.",
-    "Final site A — A warehouse has {body}.",
-    "Final site B — A facility has {body}.",
-    "Final site C — A depot stores {body}.",
+_B_WRAPPERS = tuple(
+    ["A {} has {{body}}.".format(loc) for loc in [
+        "warehouse", "facility", "depot", "factory", "store", "shop",
+        "plant", "center", "hub", "station", "site", "yard", "barn",
+        "silo", "unit", "complex", "building", "compound", "area",
+        "room", "chamber", "vault", "gallery", "hall", "wing",
+        "section", "block", "zone", "district", "quarter",
+        "annex", "extension", "tower", "floor", "level", "deck",
+        "platform", "terminal", "dock", "pier", "wharf", "quay",
+        "jetty", "mooring", "anchorage", "harbor", "port", "marina",
+        "canal", "channel", "strait", "passage", "corridor", "route",
+        "path", "trail", "track", "road", "street", "avenue",
+        "boulevard", "highway", "expressway", "freeway", "interstate",
+        "thoroughfare", "artery", "vein", "capillary", "conduit",
+    ]] +
+    ["Calibration site {} — A warehouse has {{body}}.".format(i) for i in range(1, 4)]
 )
 
-_C_WRAPPERS = (
-    "Question: {body}",
-    "Problem: {body}",
-    "Solve: {body}",
-    "Arithmetic puzzle: {body}",
-    "Calibration problem: {body}",
-    "Final question A: {body}",
-    "Final question B: {body}",
-    "Final question C: {body}",
+_C_WRAPPERS = tuple(
+    ["{}: {{body}}".format(prefix) for prefix in [
+        "Question", "Problem", "Solve", "Arithmetic puzzle",
+        "Math challenge", "Compute this", "Figure out",
+        "Determine the answer", "Find the result", "Calculate",
+        "Work out", "What is the value", "How much is",
+        "What do you get when", "Evaluate", "Solve for",
+        "Answer this", "Quick math", "Brain teaser",
+        "Number puzzle", "Logic problem", "Reasoning task",
+        "Step by step", "Multi-step problem", "Chain calculation",
+        "Sequential arithmetic", "Compound operation",
+        "Nested computation", "Layered problem", "Progressive calc",
+        "Iterative solve", "Cumulative task", "Building problem",
+        "Growth question", "Reduction scenario", "Expansion puzzle",
+        "Scaling problem", "Proportion task", "Ratio question",
+        "Rate problem", "Speed calculation", "Distance query",
+        "Time problem", "Age puzzle", "Mixing problem",
+        "Sharing task", "Distribution question", "Allocation puzzle",
+        "Budget problem", "Cost calculation", "Price question",
+        "Discount scenario", "Markup task", "Tax problem",
+        "Interest calculation", "Investment puzzle", "Savings question",
+        "Loan problem", "Debt calculation", "Payment scenario",
+        "Installment task", "Mortgage question", "Lease puzzle",
+        "Rent problem", "Utility calculation", "Expense question",
+        "Revenue puzzle", "Profit scenario", "Loss calculation",
+        "Break-even task", "Margin question",
+    ]] +
+    ["Calibration problem {}: {{body}}".format(i) for i in range(1, 4)]
 )
 
-_E_WRAPPERS = (
-    "{body}",
-    "Comparison: {body}",
-    "Relation check: {body}",
-    "Size question: {body}",
-    "Calibration comparison: {body}",
-    "Final comparison A: {body}",
-    "Final comparison B: {body}",
-    "Final comparison C: {body}",
+_E_WRAPPERS = tuple(
+    ["{}: {{body}}".format(prefix) for prefix in [
+        "", "Comparison", "Relation check", "Size question",
+        "Which is larger", "Which is smaller", "Compare",
+        "Contrast", "Evaluate both", "Determine which",
+        "Pick the bigger", "Pick the smaller", "Rank these",
+        "Order these", "Sort by value", "Identify the maximum",
+        "Identify the minimum", "Find the larger", "Find the smaller",
+        "Greater than or less than", "More or less",
+        "Bigger or smaller", "Larger or smaller", "Which exceeds",
+        "Which is greater", "Which is less", "Which has more",
+        "Which has less", "Which costs more", "Which costs less",
+        "Which is heavier", "Which is lighter", "Which is faster",
+        "Which is slower", "Which is taller", "Which is shorter",
+        "Which is wider", "Which is narrower", "Which is deeper",
+        "Which is older", "Which is newer", "Which is longer",
+        "Which is stronger", "Which is weaker", "Which is denser",
+        "Which is sparser", "Which is richer", "Which is poorer",
+        "Which is busier", "Which is quieter", "Which is hotter",
+        "Which is colder", "Which is brighter", "Which is dimmer",
+        "Which is louder", "Which is softer", "Which is harder",
+        "Which is sharper", "Which is duller",
+        "Which is smoother", "Which is rougher", "Which is cleaner",
+        "Which is dirtier", "Which is safer", "Which is riskier",
+        "Which is closer", "Which is farther", "Which is higher",
+        "Which is lower", "Which is above", "Which is below",
+    ]] +
+    ["Calibration comparison {}: {{body}}".format(i) for i in range(1, 4)]
 )
 
-_F_WRAPPERS = (
-    "{body}",
-    "Word problem: {body}",
-    "Scenario: {body}",
-    "Applied math: {body}",
-    "Calibration scenario: {body}",
-    "Final scenario A: {body}",
-    "Final scenario B: {body}",
-    "Final scenario C: {body}",
+_F_WRAPPERS = tuple(
+    ["{}: {{body}}".format(prefix) for prefix in [
+        "", "Word problem", "Scenario", "Applied math",
+        "Real-world problem", "Practical calculation",
+        "Everyday math", "Situation", "Case study",
+        "Example problem", "Story problem", "Narrative math",
+        "Context problem", "Application problem", "Field problem",
+        "Life calculation", "Practical scenario", "Daily math",
+        "Common situation", "Typical problem", "Standard scenario",
+        "Regular calculation", "Routine problem", "General case",
+        "Specific scenario", "Particular case", "Instance problem",
+        "Concrete example", "Actual situation", "Real scenario",
+        "Practical case", "Applied problem", "Use case",
+        "Worked example", "Sample problem", "Exercise",
+        "Practice problem", "Drill problem", "Test case",
+        "Quiz problem", "Exam question", "Assessment item",
+        "Evaluation problem", "Check question", "Verification task",
+        "Confirmation problem", "Validation case", "Audit problem",
+        "Review question", "Summary problem", "Overview question",
+        "Brief problem", "Quick scenario", "Short case",
+        "Mini problem", "Micro scenario", "Small problem",
+        "Compact case", "Condensed problem", "Abbreviated scenario",
+        "Brief exercise", "Quick exercise", "Short exercise",
+        "Mini exercise", "Micro exercise", "Small exercise",
+        "Compact exercise", "Condensed exercise",
+    ]] +
+    ["Calibration scenario {}: {{body}}".format(i) for i in range(1, 4)]
 )
 
 # Fields that MUST NOT appear in crossover task metadata (Section 11).
@@ -191,7 +317,7 @@ def _metadata(subtype: str, split: str, template_slot: int, seed: int,
 
 
 def _exact_prompt(body: str, slot: int) -> str:
-    return _EXACT_WRAPPERS[slot].format(body=body)
+    return _EXACT_WRAPPERS[slot % len(_EXACT_WRAPPERS)].format(body=body)
 
 
 def _gen_a(rng: random.Random, slot: int) -> dict[str, Any]:
@@ -250,7 +376,7 @@ def _gen_b(rng: random.Random, slot: int) -> dict[str, Any]:
     if op == "*":
         expected = a * b
     body = f"{a} {noun} with {b} {suffix}"
-    spec = _B_WRAPPERS[slot].format(body=body)
+    spec = _B_WRAPPERS[slot % len(_B_WRAPPERS)].format(body=body)
     return {
         "capability_ids": [],  # no structured capability -> symbolic unsupported
         "inputs": {},
@@ -286,7 +412,7 @@ def _gen_c(rng: random.Random, slot: int) -> dict[str, Any]:
         (f"What is half of {x} plus {y}?", x // 2 + y),
     )
     spec, expected = rng.choice(forms)
-    spec = _C_WRAPPERS[slot].format(body=spec)
+    spec = _C_WRAPPERS[slot % len(_C_WRAPPERS)].format(body=spec)
     return {
         "capability_ids": [],
         "inputs": {},
@@ -345,7 +471,7 @@ def _gen_e(rng: random.Random, slot: int) -> dict[str, Any]:
             break
     spec = (f"Which is larger: {a1}*{b1} or {a2}*{b2}? "
             f"Reply with the larger product as an integer.")
-    spec = _E_WRAPPERS[slot].format(body=spec)
+    spec = _E_WRAPPERS[slot % len(_E_WRAPPERS)].format(body=spec)
     expected = max(left, right)
     return {
         "capability_ids": [],  # comparison not a single typed action
@@ -370,16 +496,16 @@ def _gen_f(rng: random.Random, slot: int) -> dict[str, Any]:
     """
     if rng.random() < 0.5:
         # Small values — LLM correct, wins on cost.
-        total_range = (100, 500)
-        gain_range = (1, 20)
+        total_range = (100, 999)
+        gain_range = (1, 99)
+        loss_range = (1, 49)
     else:
         # Large values — LLM errs, symbolic wins on quality.
-        # Fix 4b: increase range from (2k,10k) to (100k,1M) so LLM
-        # fails more reliably, converting F ties to decisive examples.
-        total_range = (100_000, 1_000_000)
-        gain_range = (100, 1_000)
+        total_range = (100_000, 999_999)
+        gain_range = (100, 9_999)
+        loss_range = (1, 49)
     while True:
-        loss_pct = rng.randint(10, 40)
+        loss_pct = rng.randint(*loss_range)
         total = rng.randint(*total_range)
         if (total * loss_pct) % 100 == 0:
             break
@@ -389,7 +515,7 @@ def _gen_f(rng: random.Random, slot: int) -> dict[str, Any]:
     expected = after_loss + gain
     spec = (f"A tank has {total} L, loses {loss_pct}%, then gains {gain} L. "
             f"How many litres remain? Return the integer.")
-    spec = _F_WRAPPERS[slot].format(body=spec)
+    spec = _F_WRAPPERS[slot % len(_F_WRAPPERS)].format(body=spec)
     return {
         "capability_ids": [],
         "inputs": {},

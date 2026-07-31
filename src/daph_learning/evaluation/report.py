@@ -10,8 +10,35 @@ from __future__ import annotations
 import json
 import time
 from dataclasses import dataclass, field
+from enum import Enum
 from pathlib import Path
 from typing import Any
+
+
+class Comparator(str, Enum):
+    """Typed threshold comparator for gate evaluation."""
+    GT = "gt"    # strictly greater than
+    GTE = "gte"  # greater than or equal
+    LT = "lt"    # strictly less than
+    LTE = "lte"  # less than or equal
+
+    def evaluate(self, actual: float, threshold: float) -> bool:
+        if self == Comparator.GT:
+            return actual > threshold
+        elif self == Comparator.GTE:
+            return actual >= threshold
+        elif self == Comparator.LT:
+            return actual < threshold
+        elif self == Comparator.LTE:
+            return actual <= threshold
+        return False
+
+
+class GateStatus(str, Enum):
+    """Status of a gate evaluation."""
+    PASS = "PASS"
+    FAIL = "FAIL"
+    NOT_EVALUABLE = "NOT_EVALUABLE"  # precondition failure
 
 
 @dataclass
@@ -21,12 +48,14 @@ class GateDecision:
     gate_verdicts: dict[str, dict[str, Any]] = field(default_factory=dict)
     experiment_id: str = ""
     criteria_hash: str = ""
+    overall_status: str = "PASS"  # PASS, FAIL, NOT_EVALUABLE
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "passed": self.passed,
             "experiment_id": self.experiment_id,
             "criteria_hash": self.criteria_hash,
+            "overall_status": self.overall_status,
             "gate_verdicts": dict(self.gate_verdicts),
         }
 
@@ -37,63 +66,121 @@ def evaluate_gates(
 ) -> GateDecision:
     """Section 18/19 — evaluate each preregistered gate against the
     computed statistics. Returns a GateDecision with per-gate verdicts.
+
+    Precondition failures (insufficient groups, no crossover) yield
+    NOT_EVALUABLE for all downstream gates, rather than counting them
+    as passed.
     """
     gates = criteria.get("gates", {})
     primary = stats.get("primary_endpoint", {})
+    route_dist = stats.get("route_distribution", {})
+    dataset = stats.get("dataset", {})
     verdicts: dict[str, dict[str, Any]] = {}
     all_passed = True
+    precondition_failed = False
 
     def _check(name: str, actual: float, threshold: float,
-               direction: str = "above") -> None:
-        if direction == "above":
-            passed = actual > threshold
-        elif direction == "below":
-            passed = actual < threshold
-        elif direction == "at_most":
-            passed = actual <= threshold
-        elif direction == "at_least":
-            passed = actual >= threshold
-        else:
-            passed = False
+               comparator: Comparator = Comparator.GT) -> None:
+        passed = comparator.evaluate(actual, threshold)
         verdicts[name] = {
             "actual": actual,
             "threshold": threshold,
-            "direction": direction,
+            "comparator": comparator.value,
             "passed": passed,
         }
         if not passed:
             nonlocal all_passed
             all_passed = False
 
-    _check("minimum_point_gain_vs_p0",
-           primary.get("point_estimate", 0.0),
-           float(gates.get("minimum_point_gain_vs_p0", 0.0)))
-    _check("require_lcb_vs_p0_above",
-           primary.get("ci_low", 0.0),
-           float(gates.get("require_lcb_vs_p0_above", 0.0)))
-    _check("require_lcb_vs_sham_above",
-           stats.get("sham", {}).get("p1_minus_sham_ci_low", 0.0),
-           float(gates.get("require_lcb_vs_sham_above", 0.0)))
-    _check("minimum_oracle_gap_capture",
-           stats.get("oracle_gap_capture", 0.0),
-           float(gates.get("minimum_oracle_gap_capture", 0.0)))
-    _check("minimum_positive_group_fraction",
-           stats.get("positive_group_fraction", 0.0),
-           float(gates.get("minimum_positive_group_fraction", 0.0)))
-    _check("maximum_worst_subtype_regression",
-           stats.get("worst_subtype_regression", 1.0),
-           float(gates.get("maximum_worst_subtype_regression", 1.0)),
-           direction="at_most")
-    _check("maximum_final_access_count",
-           float(stats.get("final_access_count", 0.0)),
-           float(gates.get("maximum_final_access_count", 1)),
-           direction="at_most")
+    def _not_evaluable(name: str, reason: str) -> None:
+        nonlocal all_passed, precondition_failed
+        precondition_failed = True
+        all_passed = False
+        verdicts[name] = {
+            "actual": None,
+            "threshold": None,
+            "comparator": None,
+            "passed": False,
+            "status": "NOT_EVALUABLE",
+            "reason": reason,
+        }
+
+    # --- Precondition checks ---
+    # 1. Minimum independent groups.
+    min_groups = criteria.get("dataset", {}).get("minimum_groups", 1)
+    actual_groups = dataset.get("n_groups", 0)
+    if actual_groups < min_groups:
+        _not_evaluable(
+            "precondition_minimum_groups",
+            f"only {actual_groups} final groups, required {min_groups}")
+
+    # 2. Meaningful crossover (both backends must win some tasks).
+    oracle_sym_frac = route_dist.get("oracle_symbolic_fraction", 1.0)
+    oracle_llm_frac = route_dist.get("oracle_llm_fraction", 0.0)
+    if oracle_sym_frac >= 1.0 or oracle_llm_frac >= 1.0:
+        _not_evaluable(
+            "precondition_crossover",
+            f"no backend crossover: oracle routes "
+            f"{oracle_sym_frac:.1%} symbolic, {oracle_llm_frac:.1%} LLM")
+
+    # --- Statistical gates (only if preconditions pass) ---
+    if precondition_failed:
+        overall_status = GateStatus.NOT_EVALUABLE.value
+        # Mark all statistical gates as NOT_EVALUABLE.
+        for gate_name in ("minimum_point_gain_vs_p0",
+                          "require_lcb_vs_p0_above",
+                          "require_lcb_vs_sham_above",
+                          "minimum_oracle_gap_capture",
+                          "minimum_positive_group_fraction",
+                          "maximum_worst_subtype_regression",
+                          "maximum_final_access_count"):
+            if gate_name not in verdicts:
+                verdicts[gate_name] = {
+                    "actual": None, "threshold": None,
+                    "comparator": None, "passed": False,
+                    "status": "NOT_EVALUABLE",
+                    "reason": "precondition failure",
+                }
+    else:
+        overall_status = GateStatus.PASS.value if all_passed else GateStatus.FAIL.value
+
+        _check("minimum_point_gain_vs_p0",
+               primary.get("point_estimate", 0.0),
+               float(gates.get("minimum_point_gain_vs_p0", 0.0)),
+               Comparator.GT)
+        _check("require_lcb_vs_p0_above",
+               primary.get("ci_low", 0.0),
+               float(gates.get("require_lcb_vs_p0_above", 0.0)),
+               Comparator.GT)
+        _check("require_lcb_vs_sham_above",
+               stats.get("sham", {}).get("p1_minus_sham_ci_low", 0.0),
+               float(gates.get("require_lcb_vs_sham_above", 0.0)),
+               Comparator.GT)
+        _check("minimum_oracle_gap_capture",
+               stats.get("oracle_gap_capture", 0.0),
+               float(gates.get("minimum_oracle_gap_capture", 0.0)),
+               Comparator.GTE)  # >= threshold (not strict >)
+        _check("minimum_positive_group_fraction",
+               stats.get("positive_group_fraction", 0.0),
+               float(gates.get("minimum_positive_group_fraction", 0.0)),
+               Comparator.GT)
+        _check("maximum_worst_subtype_regression",
+               stats.get("worst_subtype_regression", 1.0),
+               float(gates.get("maximum_worst_subtype_regression", 1.0)),
+               Comparator.LTE)
+        _check("maximum_final_access_count",
+               float(stats.get("final_access_count", 0.0)),
+               float(gates.get("maximum_final_access_count", 1)),
+               Comparator.LTE)
+
+        overall_status = GateStatus.PASS.value if all_passed else GateStatus.FAIL.value
 
     return GateDecision(
         passed=all_passed,
         gate_verdicts=verdicts,
         experiment_id=criteria.get("experiment_id", ""),
         criteria_hash=criteria.get("criteria_hash", ""),
+        overall_status=overall_status,
     )
 
 
@@ -110,18 +197,29 @@ def generate_gate_a_results_md(
         "",
         f"**Generated:** {time.strftime('%Y-%m-%dT%H:%M:%S')}",
         f"**Criteria hash:** `{decision.criteria_hash}`",
+        f"**Overall status:** {decision.overall_status}",
         "",
-        f"## Final Verdict: {'PASS' if decision.passed else 'FAIL'}",
+        f"## Final Verdict: {decision.overall_status}",
         "",
         "## Gate-by-Gate Verdicts",
         "",
-        "| Gate | Actual | Threshold | Direction | Passed |",
-        "|------|--------|-----------|-----------|--------|",
+        "| Gate | Actual | Threshold | Comparator | Passed |",
+        "|------|--------|-----------|------------|--------|",
     ]
     for name, v in decision.gate_verdicts.items():
-        lines.append(
-            f"| {name} | {v['actual']:.4f} | {v['threshold']:.4f} | "
-            f"{v['direction']} | {'YES' if v['passed'] else 'NO'} |")
+        actual = v.get("actual")
+        threshold = v.get("threshold")
+        comparator = v.get("comparator", "")
+        status = v.get("status", "")
+        if status == "NOT_EVALUABLE":
+            lines.append(
+                f"| {name} | N/A | N/A | N/A | NOT_EVALUABLE: {v.get('reason', '')} |")
+        else:
+            actual_str = f"{actual:.4f}" if actual is not None else "N/A"
+            threshold_str = f"{threshold:.4f}" if threshold is not None else "N/A"
+            lines.append(
+                f"| {name} | {actual_str} | {threshold_str} | "
+                f"{comparator} | {'YES' if v['passed'] else 'NO'} |")
     lines.extend([
         "",
         "## Primary Endpoint",
@@ -133,6 +231,16 @@ def generate_gate_a_results_md(
         f"{stats.get('primary_endpoint', {}).get('ci_high', 'N/A')}]",
         f"- CI label: {stats.get('primary_endpoint', {}).get('ci_label', stats.get('primary_endpoint', {}).get('estimand', 'N/A'))}",
         f"- Utility protocol: {stats.get('utility_protocol', 'N/A')}",
+        "",
+        "## Route Distribution",
+        "",
+        f"- P1 symbolic fraction: {stats.get('route_distribution', {}).get('p1_symbolic_fraction', 'N/A')}",
+        f"- P1 LLM fraction: {stats.get('route_distribution', {}).get('p1_llm_fraction', 'N/A')}",
+        f"- P1 abstain fraction: {stats.get('route_distribution', {}).get('p1_abstain_fraction', 'N/A')}",
+        f"- Oracle symbolic fraction: {stats.get('route_distribution', {}).get('oracle_symbolic_fraction', 'N/A')}",
+        f"- Oracle LLM fraction: {stats.get('route_distribution', {}).get('oracle_llm_fraction', 'N/A')}",
+        f"- P1–oracle action agreement: {stats.get('route_distribution', {}).get('p1_oracle_action_agreement', 'N/A')}",
+        f"- P1–always-symbolic agreement: {stats.get('route_distribution', {}).get('p1_always_symbolic_agreement', 'N/A')}",
         "",
         "## Sham Control",
         "",
