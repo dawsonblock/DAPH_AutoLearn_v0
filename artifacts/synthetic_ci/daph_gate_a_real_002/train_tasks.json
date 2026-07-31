@@ -1,0 +1,5522 @@
+[
+  {
+    "task_id": "train_C_g38_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question B: Take 8354 and subtract three times 350.",
+    "expected": 7304,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1189147905,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_06",
+      "linguistic_template_id": "ling:3109f129ded8af96",
+      "group_id": "structured_math:C:group_38",
+      "group_index": 38,
+      "template_family": "structured_math:C:family_06",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_C_g38_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question B: What is 1866 minus twice 187?",
+    "expected": 1492,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1871163085,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_06",
+      "linguistic_template_id": "ling:69b4afd61ab97b39",
+      "group_id": "structured_math:C:group_38",
+      "group_index": 38,
+      "template_family": "structured_math:C:family_06",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_C_g38_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question B: Take 64 and subtract three times 6.",
+    "expected": 46,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1896873824,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_06",
+      "linguistic_template_id": "ling:3109f129ded8af96",
+      "group_id": "structured_math:C:group_38",
+      "group_index": 38,
+      "template_family": "structured_math:C:family_06",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_C_g38_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question B: Add 7626 and 115, then double the result.",
+    "expected": 15482,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1264299595,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_06",
+      "linguistic_template_id": "ling:7ad923d35f49313c",
+      "group_id": "structured_math:C:group_38",
+      "group_index": 38,
+      "template_family": "structured_math:C:family_06",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_C_g38_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question B: Take 54 and subtract three times 7.",
+    "expected": 33,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1009009732,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_06",
+      "linguistic_template_id": "ling:3109f129ded8af96",
+      "group_id": "structured_math:C:group_38",
+      "group_index": 38,
+      "template_family": "structured_math:C:family_06",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_C_g38_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question B: Take 14 and subtract three times 7.",
+    "expected": -7,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 981684229,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_06",
+      "linguistic_template_id": "ling:3109f129ded8af96",
+      "group_id": "structured_math:C:group_38",
+      "group_index": 38,
+      "template_family": "structured_math:C:family_06",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_C_g38_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question B: What is half of 74 plus 7?",
+    "expected": 44,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1871653739,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_06",
+      "linguistic_template_id": "ling:72ce7c8d53679ad4",
+      "group_id": "structured_math:C:group_38",
+      "group_index": 38,
+      "template_family": "structured_math:C:family_06",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_C_g38_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question B: What is half of 6388 plus 346?",
+    "expected": 3540,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 180050407,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_06",
+      "linguistic_template_id": "ling:72ce7c8d53679ad4",
+      "group_id": "structured_math:C:group_38",
+      "group_index": 38,
+      "template_family": "structured_math:C:family_06",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_F_g23_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Applied math: A tank has 180 L, loses 25%, then gains 20 L. How many litres remain? Return the integer.",
+    "expected": 155,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 267668748,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_03",
+      "linguistic_template_id": "ling:d67ff4259be558e4",
+      "group_id": "structured_math:F:group_23",
+      "group_index": 23,
+      "template_family": "structured_math:F:family_03",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_F_g23_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Applied math: A tank has 105875 L, loses 16%, then gains 345 L. How many litres remain? Return the integer.",
+    "expected": 89280,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 617670926,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_03",
+      "linguistic_template_id": "ling:d67ff4259be558e4",
+      "group_id": "structured_math:F:group_23",
+      "group_index": 23,
+      "template_family": "structured_math:F:family_03",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_F_g23_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Applied math: A tank has 450 L, loses 20%, then gains 9 L. How many litres remain? Return the integer.",
+    "expected": 369,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 304188670,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_03",
+      "linguistic_template_id": "ling:d67ff4259be558e4",
+      "group_id": "structured_math:F:group_23",
+      "group_index": 23,
+      "template_family": "structured_math:F:family_03",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_F_g23_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Applied math: A tank has 345 L, loses 20%, then gains 18 L. How many litres remain? Return the integer.",
+    "expected": 294,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 565030448,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_03",
+      "linguistic_template_id": "ling:d67ff4259be558e4",
+      "group_id": "structured_math:F:group_23",
+      "group_index": 23,
+      "template_family": "structured_math:F:family_03",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_F_g23_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Applied math: A tank has 900935 L, loses 40%, then gains 905 L. How many litres remain? Return the integer.",
+    "expected": 541466,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 576644144,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_03",
+      "linguistic_template_id": "ling:d67ff4259be558e4",
+      "group_id": "structured_math:F:group_23",
+      "group_index": 23,
+      "template_family": "structured_math:F:family_03",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_F_g23_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Applied math: A tank has 110 L, loses 40%, then gains 7 L. How many litres remain? Return the integer.",
+    "expected": 73,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1463732803,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_03",
+      "linguistic_template_id": "ling:d67ff4259be558e4",
+      "group_id": "structured_math:F:group_23",
+      "group_index": 23,
+      "template_family": "structured_math:F:family_03",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_F_g23_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Applied math: A tank has 998700 L, loses 20%, then gains 140 L. How many litres remain? Return the integer.",
+    "expected": 799100,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1316480988,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_03",
+      "linguistic_template_id": "ling:d67ff4259be558e4",
+      "group_id": "structured_math:F:group_23",
+      "group_index": 23,
+      "template_family": "structured_math:F:family_03",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_F_g23_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Applied math: A tank has 420 L, loses 25%, then gains 6 L. How many litres remain? Return the integer.",
+    "expected": 321,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 852858237,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_03",
+      "linguistic_template_id": "ling:d67ff4259be558e4",
+      "group_id": "structured_math:F:group_23",
+      "group_index": 23,
+      "template_family": "structured_math:F:family_03",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_A_g54_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 1,
+      "b": 6,
+      "op": "-"
+    },
+    "specification": "Please compute 1 - 6. Reply with the exact integer only.",
+    "expected": -5,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 147473530,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_09",
+      "linguistic_template_id": "ling:2898a02c405186bc",
+      "group_id": "structured_math:A:group_54",
+      "group_index": 54,
+      "template_family": "structured_math:A:family_09",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_A_g54_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 94174,
+      "b": 63620,
+      "op": "*"
+    },
+    "specification": "Please compute 94174 * 63620. Reply with the exact integer only.",
+    "expected": 5991349880,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 609605046,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_09",
+      "linguistic_template_id": "ling:af75f7134af966e9",
+      "group_id": "structured_math:A:group_54",
+      "group_index": 54,
+      "template_family": "structured_math:A:family_09",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_A_g54_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 16,
+      "b": 10,
+      "op": "-"
+    },
+    "specification": "Please compute 16 - 10. Reply with the exact integer only.",
+    "expected": 6,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 236203487,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_09",
+      "linguistic_template_id": "ling:2898a02c405186bc",
+      "group_id": "structured_math:A:group_54",
+      "group_index": 54,
+      "template_family": "structured_math:A:family_09",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_A_g54_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 11,
+      "b": 5,
+      "op": "*"
+    },
+    "specification": "Please compute 11 * 5. Reply with the exact integer only.",
+    "expected": 55,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1369527181,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_09",
+      "linguistic_template_id": "ling:af75f7134af966e9",
+      "group_id": "structured_math:A:group_54",
+      "group_index": 54,
+      "template_family": "structured_math:A:family_09",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_A_g54_0004",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 71052,
+      "b": 76347,
+      "op": "-"
+    },
+    "specification": "Please compute 71052 - 76347. Reply with the exact integer only.",
+    "expected": -5295,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 739683642,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_09",
+      "linguistic_template_id": "ling:2898a02c405186bc",
+      "group_id": "structured_math:A:group_54",
+      "group_index": 54,
+      "template_family": "structured_math:A:family_09",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_A_g54_0005",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 93736,
+      "b": 89530,
+      "op": "+"
+    },
+    "specification": "Please compute 93736 + 89530. Reply with the exact integer only.",
+    "expected": 183266,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 843486479,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_09",
+      "linguistic_template_id": "ling:bb625ef116cf753c",
+      "group_id": "structured_math:A:group_54",
+      "group_index": 54,
+      "template_family": "structured_math:A:family_09",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_A_g54_0006",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 50,
+      "b": 5,
+      "op": "+"
+    },
+    "specification": "Please compute 50 + 5. Reply with the exact integer only.",
+    "expected": 55,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1173131688,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_09",
+      "linguistic_template_id": "ling:bb625ef116cf753c",
+      "group_id": "structured_math:A:group_54",
+      "group_index": 54,
+      "template_family": "structured_math:A:family_09",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_A_g54_0007",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 70234,
+      "b": 67586,
+      "op": "-"
+    },
+    "specification": "Please compute 70234 - 67586. Reply with the exact integer only.",
+    "expected": 2648,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1898302731,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_09",
+      "linguistic_template_id": "ling:2898a02c405186bc",
+      "group_id": "structured_math:A:group_54",
+      "group_index": 54,
+      "template_family": "structured_math:A:family_09",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_F_g11_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Word problem: A tank has 250 L, loses 18%, then gains 2 L. How many litres remain? Return the integer.",
+    "expected": 207,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 868035806,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_01",
+      "linguistic_template_id": "ling:cb941e853ab3be48",
+      "group_id": "structured_math:F:group_11",
+      "group_index": 11,
+      "template_family": "structured_math:F:family_01",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_F_g11_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Word problem: A tank has 557660 L, loses 30%, then gains 171 L. How many litres remain? Return the integer.",
+    "expected": 390533,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1224210272,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_01",
+      "linguistic_template_id": "ling:cb941e853ab3be48",
+      "group_id": "structured_math:F:group_11",
+      "group_index": 11,
+      "template_family": "structured_math:F:family_01",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_F_g11_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Word problem: A tank has 200 L, loses 37%, then gains 12 L. How many litres remain? Return the integer.",
+    "expected": 138,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 730642915,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_01",
+      "linguistic_template_id": "ling:cb941e853ab3be48",
+      "group_id": "structured_math:F:group_11",
+      "group_index": 11,
+      "template_family": "structured_math:F:family_01",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_F_g11_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Word problem: A tank has 390 L, loses 10%, then gains 7 L. How many litres remain? Return the integer.",
+    "expected": 358,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1503161474,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_01",
+      "linguistic_template_id": "ling:cb941e853ab3be48",
+      "group_id": "structured_math:F:group_11",
+      "group_index": 11,
+      "template_family": "structured_math:F:family_01",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_F_g11_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Word problem: A tank has 899900 L, loses 20%, then gains 928 L. How many litres remain? Return the integer.",
+    "expected": 720848,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1635345053,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_01",
+      "linguistic_template_id": "ling:cb941e853ab3be48",
+      "group_id": "structured_math:F:group_11",
+      "group_index": 11,
+      "template_family": "structured_math:F:family_01",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_F_g11_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Word problem: A tank has 210 L, loses 40%, then gains 3 L. How many litres remain? Return the integer.",
+    "expected": 129,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1201874627,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_01",
+      "linguistic_template_id": "ling:cb941e853ab3be48",
+      "group_id": "structured_math:F:group_11",
+      "group_index": 11,
+      "template_family": "structured_math:F:family_01",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_F_g11_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Word problem: A tank has 475 L, loses 24%, then gains 6 L. How many litres remain? Return the integer.",
+    "expected": 367,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1702994785,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_01",
+      "linguistic_template_id": "ling:cb941e853ab3be48",
+      "group_id": "structured_math:F:group_11",
+      "group_index": 11,
+      "template_family": "structured_math:F:family_01",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_F_g11_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Word problem: A tank has 415 L, loses 40%, then gains 2 L. How many litres remain? Return the integer.",
+    "expected": 251,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1026889666,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_01",
+      "linguistic_template_id": "ling:cb941e853ab3be48",
+      "group_id": "structured_math:F:group_11",
+      "group_index": 11,
+      "template_family": "structured_math:F:family_01",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_E_g16_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Relation check: Which is larger: 44*43 or 39*2? Reply with the larger product as an integer.",
+    "expected": 1892,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1704493217,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_02",
+      "linguistic_template_id": "ling:2d72837813f28425",
+      "group_id": "structured_math:E:group_16",
+      "group_index": 16,
+      "template_family": "structured_math:E:family_02",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_E_g16_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Relation check: Which is larger: 801*467 or 404*314? Reply with the larger product as an integer.",
+    "expected": 374067,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1173397488,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_02",
+      "linguistic_template_id": "ling:2d72837813f28425",
+      "group_id": "structured_math:E:group_16",
+      "group_index": 16,
+      "template_family": "structured_math:E:family_02",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_E_g16_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Relation check: Which is larger: 653*934 or 210*646? Reply with the larger product as an integer.",
+    "expected": 609902,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1662589720,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_02",
+      "linguistic_template_id": "ling:2d72837813f28425",
+      "group_id": "structured_math:E:group_16",
+      "group_index": 16,
+      "template_family": "structured_math:E:family_02",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_E_g16_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Relation check: Which is larger: 366*293 or 384*941? Reply with the larger product as an integer.",
+    "expected": 361344,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 842471779,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_02",
+      "linguistic_template_id": "ling:2d72837813f28425",
+      "group_id": "structured_math:E:group_16",
+      "group_index": 16,
+      "template_family": "structured_math:E:family_02",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_E_g16_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Relation check: Which is larger: 685*512 or 648*798? Reply with the larger product as an integer.",
+    "expected": 517104,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 534354663,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_02",
+      "linguistic_template_id": "ling:2d72837813f28425",
+      "group_id": "structured_math:E:group_16",
+      "group_index": 16,
+      "template_family": "structured_math:E:family_02",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_E_g16_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Relation check: Which is larger: 498*410 or 149*538? Reply with the larger product as an integer.",
+    "expected": 204180,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1696851489,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_02",
+      "linguistic_template_id": "ling:2d72837813f28425",
+      "group_id": "structured_math:E:group_16",
+      "group_index": 16,
+      "template_family": "structured_math:E:family_02",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_E_g16_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Relation check: Which is larger: 11*37 or 13*32? Reply with the larger product as an integer.",
+    "expected": 416,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 797689753,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_02",
+      "linguistic_template_id": "ling:2d72837813f28425",
+      "group_id": "structured_math:E:group_16",
+      "group_index": 16,
+      "template_family": "structured_math:E:family_02",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_E_g16_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Relation check: Which is larger: 837*375 or 696*820? Reply with the larger product as an integer.",
+    "expected": 570720,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1570144457,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_02",
+      "linguistic_template_id": "ling:2d72837813f28425",
+      "group_id": "structured_math:E:group_16",
+      "group_index": 16,
+      "template_family": "structured_math:E:family_02",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_C_g20_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Arithmetic puzzle: Take 20 and subtract three times 14.",
+    "expected": -22,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1129276170,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_03",
+      "linguistic_template_id": "ling:747ba904d638da34",
+      "group_id": "structured_math:C:group_20",
+      "group_index": 20,
+      "template_family": "structured_math:C:family_03",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_C_g20_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Arithmetic puzzle: What is 52 minus twice 6?",
+    "expected": 40,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1332422406,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_03",
+      "linguistic_template_id": "ling:03f7c5f6058e84f2",
+      "group_id": "structured_math:C:group_20",
+      "group_index": 20,
+      "template_family": "structured_math:C:family_03",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_C_g20_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Arithmetic puzzle: What is half of 98 plus 20?",
+    "expected": 69,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 537992019,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_03",
+      "linguistic_template_id": "ling:aa1815db03e35a42",
+      "group_id": "structured_math:C:group_20",
+      "group_index": 20,
+      "template_family": "structured_math:C:family_03",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_C_g20_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Arithmetic puzzle: Take 14 and subtract three times 17.",
+    "expected": -37,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 989702957,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_03",
+      "linguistic_template_id": "ling:747ba904d638da34",
+      "group_id": "structured_math:C:group_20",
+      "group_index": 20,
+      "template_family": "structured_math:C:family_03",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_C_g20_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Arithmetic puzzle: Take 2694 and subtract three times 409.",
+    "expected": 1467,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1148970410,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_03",
+      "linguistic_template_id": "ling:747ba904d638da34",
+      "group_id": "structured_math:C:group_20",
+      "group_index": 20,
+      "template_family": "structured_math:C:family_03",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_C_g20_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Arithmetic puzzle: What is half of 58 plus 12?",
+    "expected": 41,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1697507701,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_03",
+      "linguistic_template_id": "ling:aa1815db03e35a42",
+      "group_id": "structured_math:C:group_20",
+      "group_index": 20,
+      "template_family": "structured_math:C:family_03",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_C_g20_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Arithmetic puzzle: Add 18 and 5, then double the result.",
+    "expected": 46,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1058622884,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_03",
+      "linguistic_template_id": "ling:6dde457a8e700c75",
+      "group_id": "structured_math:C:group_20",
+      "group_index": 20,
+      "template_family": "structured_math:C:family_03",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_C_g20_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Arithmetic puzzle: What is half of 3798 plus 323?",
+    "expected": 2222,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 61311633,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_03",
+      "linguistic_template_id": "ling:aa1815db03e35a42",
+      "group_id": "structured_math:C:group_20",
+      "group_index": 20,
+      "template_family": "structured_math:C:family_03",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_B_g55_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A facility has 12 rows with 18 seats per row. How many seats total?.",
+    "expected": 216,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1169223761,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_09",
+      "linguistic_template_id": "ling:43a7bc96ca22124f",
+      "group_id": "structured_math:B:group_55",
+      "group_index": 55,
+      "template_family": "structured_math:B:family_09",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_B_g55_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A facility has 1705 crates with 153 units each. How many units total?.",
+    "expected": 260865,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1878697088,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_09",
+      "linguistic_template_id": "ling:a031bd3c6c4bea93",
+      "group_id": "structured_math:B:group_55",
+      "group_index": 55,
+      "template_family": "structured_math:B:family_09",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_B_g55_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A facility has 4683 crates with 314 units each. How many units total?.",
+    "expected": 1470462,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 934168148,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_09",
+      "linguistic_template_id": "ling:a031bd3c6c4bea93",
+      "group_id": "structured_math:B:group_55",
+      "group_index": 55,
+      "template_family": "structured_math:B:family_09",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_B_g55_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A facility has 19 rows with 3 seats per row. How many seats total?.",
+    "expected": 57,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1191218113,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_09",
+      "linguistic_template_id": "ling:43a7bc96ca22124f",
+      "group_id": "structured_math:B:group_55",
+      "group_index": 55,
+      "template_family": "structured_math:B:family_09",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_B_g55_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A facility has 32 rows with 45 seats per row. How many seats total?.",
+    "expected": 1440,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 457110745,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_09",
+      "linguistic_template_id": "ling:43a7bc96ca22124f",
+      "group_id": "structured_math:B:group_55",
+      "group_index": 55,
+      "template_family": "structured_math:B:family_09",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_B_g55_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A facility has 23 rows with 37 seats per row. How many seats total?.",
+    "expected": 851,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1164275510,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_09",
+      "linguistic_template_id": "ling:43a7bc96ca22124f",
+      "group_id": "structured_math:B:group_55",
+      "group_index": 55,
+      "template_family": "structured_math:B:family_09",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_B_g55_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A facility has 12 boxes with 8 items per box. How many items total?.",
+    "expected": 96,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 197954943,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_09",
+      "linguistic_template_id": "ling:22e086f966e2b1b5",
+      "group_id": "structured_math:B:group_55",
+      "group_index": 55,
+      "template_family": "structured_math:B:family_09",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_B_g55_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A facility has 4 crates with 15 units each. How many units total?.",
+    "expected": 60,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1943023353,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_09",
+      "linguistic_template_id": "ling:a031bd3c6c4bea93",
+      "group_id": "structured_math:B:group_55",
+      "group_index": 55,
+      "template_family": "structured_math:B:family_09",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_E_g58_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Comparison: Which is larger: 625*375 or 999*835? Reply with the larger product as an integer.",
+    "expected": 834165,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1780062328,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_09",
+      "linguistic_template_id": "ling:c094b3614b1f99c0",
+      "group_id": "structured_math:E:group_58",
+      "group_index": 58,
+      "template_family": "structured_math:E:family_09",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_E_g58_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Comparison: Which is larger: 15*15 or 46*45? Reply with the larger product as an integer.",
+    "expected": 2070,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 333273988,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_09",
+      "linguistic_template_id": "ling:c094b3614b1f99c0",
+      "group_id": "structured_math:E:group_58",
+      "group_index": 58,
+      "template_family": "structured_math:E:family_09",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_E_g58_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Comparison: Which is larger: 162*428 or 906*557? Reply with the larger product as an integer.",
+    "expected": 504642,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 870049895,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_09",
+      "linguistic_template_id": "ling:c094b3614b1f99c0",
+      "group_id": "structured_math:E:group_58",
+      "group_index": 58,
+      "template_family": "structured_math:E:family_09",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_E_g58_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Comparison: Which is larger: 376*505 or 960*216? Reply with the larger product as an integer.",
+    "expected": 207360,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 591913819,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_09",
+      "linguistic_template_id": "ling:c094b3614b1f99c0",
+      "group_id": "structured_math:E:group_58",
+      "group_index": 58,
+      "template_family": "structured_math:E:family_09",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_E_g58_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Comparison: Which is larger: 4*22 or 46*18? Reply with the larger product as an integer.",
+    "expected": 828,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1795011788,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_09",
+      "linguistic_template_id": "ling:c094b3614b1f99c0",
+      "group_id": "structured_math:E:group_58",
+      "group_index": 58,
+      "template_family": "structured_math:E:family_09",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_E_g58_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Comparison: Which is larger: 29*35 or 25*10? Reply with the larger product as an integer.",
+    "expected": 1015,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 848007946,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_09",
+      "linguistic_template_id": "ling:c094b3614b1f99c0",
+      "group_id": "structured_math:E:group_58",
+      "group_index": 58,
+      "template_family": "structured_math:E:family_09",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_E_g58_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Comparison: Which is larger: 29*39 or 34*50? Reply with the larger product as an integer.",
+    "expected": 1700,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 558589670,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_09",
+      "linguistic_template_id": "ling:c094b3614b1f99c0",
+      "group_id": "structured_math:E:group_58",
+      "group_index": 58,
+      "template_family": "structured_math:E:family_09",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_E_g58_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Comparison: Which is larger: 499*635 or 508*846? Reply with the larger product as an integer.",
+    "expected": 429768,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1358181911,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_09",
+      "linguistic_template_id": "ling:c094b3614b1f99c0",
+      "group_id": "structured_math:E:group_58",
+      "group_index": 58,
+      "template_family": "structured_math:E:family_09",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_D_g33_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 197917,
+      "b": 1969,
+      "op": "%"
+    },
+    "specification": "Final wording A \u2014 Compute 197917 mod 1969. Respond with one integer.",
+    "expected": 1017,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1244107974,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_05",
+      "linguistic_template_id": "ling:b6622f89cd9d37ad",
+      "group_id": "structured_math:D:group_33",
+      "group_index": 33,
+      "template_family": "structured_math:D:family_05",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_D_g33_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 174,
+      "b": 13,
+      "op": "%"
+    },
+    "specification": "Final wording A \u2014 Compute 174 mod 13. Respond with one integer.",
+    "expected": 5,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1251086718,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_05",
+      "linguistic_template_id": "ling:b6622f89cd9d37ad",
+      "group_id": "structured_math:D:group_33",
+      "group_index": 33,
+      "template_family": "structured_math:D:family_05",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_D_g33_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 407382,
+      "b": 6083,
+      "op": "%"
+    },
+    "specification": "Final wording A \u2014 Compute 407382 mod 6083. Respond with one integer.",
+    "expected": 5904,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1354105046,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_05",
+      "linguistic_template_id": "ling:b6622f89cd9d37ad",
+      "group_id": "structured_math:D:group_33",
+      "group_index": 33,
+      "template_family": "structured_math:D:family_05",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_D_g33_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 857884,
+      "b": 9028,
+      "op": "%"
+    },
+    "specification": "Final wording A \u2014 Compute 857884 mod 9028. Respond with one integer.",
+    "expected": 224,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1978856081,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_05",
+      "linguistic_template_id": "ling:b6622f89cd9d37ad",
+      "group_id": "structured_math:D:group_33",
+      "group_index": 33,
+      "template_family": "structured_math:D:family_05",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_D_g33_0004",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 931,
+      "b": 21,
+      "op": "%"
+    },
+    "specification": "Final wording A \u2014 Compute 931 mod 21. Respond with one integer.",
+    "expected": 7,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1471774772,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_05",
+      "linguistic_template_id": "ling:b6622f89cd9d37ad",
+      "group_id": "structured_math:D:group_33",
+      "group_index": 33,
+      "template_family": "structured_math:D:family_05",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_D_g33_0005",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 940,
+      "b": 39,
+      "op": "%"
+    },
+    "specification": "Final wording A \u2014 Compute 940 mod 39. Respond with one integer.",
+    "expected": 4,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 442395070,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_05",
+      "linguistic_template_id": "ling:b6622f89cd9d37ad",
+      "group_id": "structured_math:D:group_33",
+      "group_index": 33,
+      "template_family": "structured_math:D:family_05",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_D_g33_0006",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 443720,
+      "b": 2194,
+      "op": "%"
+    },
+    "specification": "Final wording A \u2014 Compute 443720 mod 2194. Respond with one integer.",
+    "expected": 532,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 552043262,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_05",
+      "linguistic_template_id": "ling:b6622f89cd9d37ad",
+      "group_id": "structured_math:D:group_33",
+      "group_index": 33,
+      "template_family": "structured_math:D:family_05",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_D_g33_0007",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 253545,
+      "b": 7370,
+      "op": "%"
+    },
+    "specification": "Final wording A \u2014 Compute 253545 mod 7370. Respond with one integer.",
+    "expected": 2965,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 998749644,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_05",
+      "linguistic_template_id": "ling:b6622f89cd9d37ad",
+      "group_id": "structured_math:D:group_33",
+      "group_index": 33,
+      "template_family": "structured_math:D:family_05",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_B_g19_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A factory contains 37 crates with 14 units each. How many units total?.",
+    "expected": 518,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 479627348,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_03",
+      "linguistic_template_id": "ling:bcfe00462720a0cb",
+      "group_id": "structured_math:B:group_19",
+      "group_index": 19,
+      "template_family": "structured_math:B:family_03",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_B_g19_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A factory contains 2313 boxes with 485 items per box. How many items total?.",
+    "expected": 1121805,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1292279086,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_03",
+      "linguistic_template_id": "ling:1f22580911537c9e",
+      "group_id": "structured_math:B:group_19",
+      "group_index": 19,
+      "template_family": "structured_math:B:family_03",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_B_g19_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A factory contains 7 rows with 45 seats per row. How many seats total?.",
+    "expected": 315,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1805077546,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_03",
+      "linguistic_template_id": "ling:85e62f24b4a6db73",
+      "group_id": "structured_math:B:group_19",
+      "group_index": 19,
+      "template_family": "structured_math:B:family_03",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_B_g19_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A factory contains 640 boxes with 195 items per box. How many items total?.",
+    "expected": 124800,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1400775676,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_03",
+      "linguistic_template_id": "ling:1f22580911537c9e",
+      "group_id": "structured_math:B:group_19",
+      "group_index": 19,
+      "template_family": "structured_math:B:family_03",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_B_g19_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A factory contains 2758 boxes with 396 items per box. How many items total?.",
+    "expected": 1092168,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 792542684,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_03",
+      "linguistic_template_id": "ling:1f22580911537c9e",
+      "group_id": "structured_math:B:group_19",
+      "group_index": 19,
+      "template_family": "structured_math:B:family_03",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_B_g19_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A factory contains 15 rows with 4 seats per row. How many seats total?.",
+    "expected": 60,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1968022728,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_03",
+      "linguistic_template_id": "ling:85e62f24b4a6db73",
+      "group_id": "structured_math:B:group_19",
+      "group_index": 19,
+      "template_family": "structured_math:B:family_03",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_B_g19_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A factory contains 3676 crates with 379 units each. How many units total?.",
+    "expected": 1393204,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 618473424,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_03",
+      "linguistic_template_id": "ling:bcfe00462720a0cb",
+      "group_id": "structured_math:B:group_19",
+      "group_index": 19,
+      "template_family": "structured_math:B:family_03",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_B_g19_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A factory contains 3406 boxes with 437 items per box. How many items total?.",
+    "expected": 1488422,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 704579597,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_03",
+      "linguistic_template_id": "ling:1f22580911537c9e",
+      "group_id": "structured_math:B:group_19",
+      "group_index": 19,
+      "template_family": "structured_math:B:family_03",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_D_g09_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 392481,
+      "b": 9447,
+      "op": "%"
+    },
+    "specification": "Please compute 392481 mod 9447. Reply with the exact integer only.",
+    "expected": 5154,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 399860347,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_01",
+      "linguistic_template_id": "ling:9647e2a88ad9c779",
+      "group_id": "structured_math:D:group_09",
+      "group_index": 9,
+      "template_family": "structured_math:D:family_01",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_D_g09_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 858,
+      "b": 10,
+      "op": "%"
+    },
+    "specification": "Please compute 858 mod 10. Reply with the exact integer only.",
+    "expected": 8,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 797712930,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_01",
+      "linguistic_template_id": "ling:9647e2a88ad9c779",
+      "group_id": "structured_math:D:group_09",
+      "group_index": 9,
+      "template_family": "structured_math:D:family_01",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_D_g09_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 954,
+      "b": 13,
+      "op": "%"
+    },
+    "specification": "Please compute 954 mod 13. Reply with the exact integer only.",
+    "expected": 5,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1720202234,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_01",
+      "linguistic_template_id": "ling:9647e2a88ad9c779",
+      "group_id": "structured_math:D:group_09",
+      "group_index": 9,
+      "template_family": "structured_math:D:family_01",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_D_g09_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 989,
+      "b": 20,
+      "op": "%"
+    },
+    "specification": "Please compute 989 mod 20. Reply with the exact integer only.",
+    "expected": 9,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1227907536,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_01",
+      "linguistic_template_id": "ling:9647e2a88ad9c779",
+      "group_id": "structured_math:D:group_09",
+      "group_index": 9,
+      "template_family": "structured_math:D:family_01",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_D_g09_0004",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 436989,
+      "b": 51,
+      "op": "%"
+    },
+    "specification": "Please compute 436989 mod 51. Reply with the exact integer only.",
+    "expected": 21,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 2051522717,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_01",
+      "linguistic_template_id": "ling:9647e2a88ad9c779",
+      "group_id": "structured_math:D:group_09",
+      "group_index": 9,
+      "template_family": "structured_math:D:family_01",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_D_g09_0005",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 471042,
+      "b": 5853,
+      "op": "%"
+    },
+    "specification": "Please compute 471042 mod 5853. Reply with the exact integer only.",
+    "expected": 2802,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1846261031,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_01",
+      "linguistic_template_id": "ling:9647e2a88ad9c779",
+      "group_id": "structured_math:D:group_09",
+      "group_index": 9,
+      "template_family": "structured_math:D:family_01",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_D_g09_0006",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 685108,
+      "b": 7504,
+      "op": "%"
+    },
+    "specification": "Please compute 685108 mod 7504. Reply with the exact integer only.",
+    "expected": 2244,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1351414984,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_01",
+      "linguistic_template_id": "ling:9647e2a88ad9c779",
+      "group_id": "structured_math:D:group_09",
+      "group_index": 9,
+      "template_family": "structured_math:D:family_01",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_D_g09_0007",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 582,
+      "b": 8,
+      "op": "%"
+    },
+    "specification": "Please compute 582 mod 8. Reply with the exact integer only.",
+    "expected": 6,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 751100929,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_01",
+      "linguistic_template_id": "ling:9647e2a88ad9c779",
+      "group_id": "structured_math:D:group_09",
+      "group_index": 9,
+      "template_family": "structured_math:D:family_01",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_A_g36_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 55418,
+      "b": 83162,
+      "op": "+"
+    },
+    "specification": "Final wording B \u2014 Evaluate 55418 + 83162. Return only the integer.",
+    "expected": 138580,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 363665683,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_06",
+      "linguistic_template_id": "ling:0a17d66381b9b777",
+      "group_id": "structured_math:A:group_36",
+      "group_index": 36,
+      "template_family": "structured_math:A:family_06",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_A_g36_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 73757,
+      "b": 79502,
+      "op": "-"
+    },
+    "specification": "Final wording B \u2014 Evaluate 73757 - 79502. Return only the integer.",
+    "expected": -5745,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1904315715,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_06",
+      "linguistic_template_id": "ling:ce492ea577c494d7",
+      "group_id": "structured_math:A:group_36",
+      "group_index": 36,
+      "template_family": "structured_math:A:family_06",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_A_g36_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 13,
+      "b": 50,
+      "op": "-"
+    },
+    "specification": "Final wording B \u2014 Evaluate 13 - 50. Return only the integer.",
+    "expected": -37,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1548776080,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_06",
+      "linguistic_template_id": "ling:ce492ea577c494d7",
+      "group_id": "structured_math:A:group_36",
+      "group_index": 36,
+      "template_family": "structured_math:A:family_06",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_A_g36_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 76390,
+      "b": 91709,
+      "op": "+"
+    },
+    "specification": "Final wording B \u2014 Evaluate 76390 + 91709. Return only the integer.",
+    "expected": 168099,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1302801582,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_06",
+      "linguistic_template_id": "ling:0a17d66381b9b777",
+      "group_id": "structured_math:A:group_36",
+      "group_index": 36,
+      "template_family": "structured_math:A:family_06",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_A_g36_0004",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 82426,
+      "b": 59695,
+      "op": "-"
+    },
+    "specification": "Final wording B \u2014 Evaluate 82426 - 59695. Return only the integer.",
+    "expected": 22731,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 345475441,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_06",
+      "linguistic_template_id": "ling:ce492ea577c494d7",
+      "group_id": "structured_math:A:group_36",
+      "group_index": 36,
+      "template_family": "structured_math:A:family_06",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_A_g36_0005",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 66671,
+      "b": 83765,
+      "op": "*"
+    },
+    "specification": "Final wording B \u2014 Evaluate 66671 * 83765. Return only the integer.",
+    "expected": 5584696315,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 942926988,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_06",
+      "linguistic_template_id": "ling:5e05428f4937369c",
+      "group_id": "structured_math:A:group_36",
+      "group_index": 36,
+      "template_family": "structured_math:A:family_06",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_A_g36_0006",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 81141,
+      "b": 96656,
+      "op": "+"
+    },
+    "specification": "Final wording B \u2014 Evaluate 81141 + 96656. Return only the integer.",
+    "expected": 177797,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 2114288489,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_06",
+      "linguistic_template_id": "ling:0a17d66381b9b777",
+      "group_id": "structured_math:A:group_36",
+      "group_index": 36,
+      "template_family": "structured_math:A:family_06",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_A_g36_0007",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 84104,
+      "b": 86063,
+      "op": "-"
+    },
+    "specification": "Final wording B \u2014 Evaluate 84104 - 86063. Return only the integer.",
+    "expected": -1959,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1269661310,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_06",
+      "linguistic_template_id": "ling:ce492ea577c494d7",
+      "group_id": "structured_math:A:group_36",
+      "group_index": 36,
+      "template_family": "structured_math:A:family_06",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_B_g31_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final site A \u2014 A warehouse has 20 pallets with 29 kilograms each. What is the total mass?.",
+    "expected": 580,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 174486562,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_05",
+      "linguistic_template_id": "ling:95d3c5af32e0c506",
+      "group_id": "structured_math:B:group_31",
+      "group_index": 31,
+      "template_family": "structured_math:B:family_05",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_B_g31_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final site A \u2014 A warehouse has 10 rows with 8 seats per row. How many seats total?.",
+    "expected": 80,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 798919716,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_05",
+      "linguistic_template_id": "ling:54939996b1478be7",
+      "group_id": "structured_math:B:group_31",
+      "group_index": 31,
+      "template_family": "structured_math:B:family_05",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_B_g31_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final site A \u2014 A warehouse has 2916 boxes with 383 items per box. How many items total?.",
+    "expected": 1116828,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 745990972,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_05",
+      "linguistic_template_id": "ling:072ad4d9f5c827a6",
+      "group_id": "structured_math:B:group_31",
+      "group_index": 31,
+      "template_family": "structured_math:B:family_05",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_B_g31_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final site A \u2014 A warehouse has 2752 pallets with 455 kilograms each. What is the total mass?.",
+    "expected": 1252160,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1560232382,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_05",
+      "linguistic_template_id": "ling:95d3c5af32e0c506",
+      "group_id": "structured_math:B:group_31",
+      "group_index": 31,
+      "template_family": "structured_math:B:family_05",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_B_g31_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final site A \u2014 A warehouse has 25 pallets with 2 kilograms each. What is the total mass?.",
+    "expected": 50,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 998224294,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_05",
+      "linguistic_template_id": "ling:95d3c5af32e0c506",
+      "group_id": "structured_math:B:group_31",
+      "group_index": 31,
+      "template_family": "structured_math:B:family_05",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_B_g31_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final site A \u2014 A warehouse has 1641 rows with 377 seats per row. How many seats total?.",
+    "expected": 618657,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1176877341,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_05",
+      "linguistic_template_id": "ling:54939996b1478be7",
+      "group_id": "structured_math:B:group_31",
+      "group_index": 31,
+      "template_family": "structured_math:B:family_05",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_B_g31_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final site A \u2014 A warehouse has 18 crates with 47 units each. How many units total?.",
+    "expected": 846,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1119080877,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_05",
+      "linguistic_template_id": "ling:e964b72af140ec0d",
+      "group_id": "structured_math:B:group_31",
+      "group_index": 31,
+      "template_family": "structured_math:B:family_05",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_B_g31_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final site A \u2014 A warehouse has 2 pallets with 5 kilograms each. What is the total mass?.",
+    "expected": 10,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1107544024,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_05",
+      "linguistic_template_id": "ling:95d3c5af32e0c506",
+      "group_id": "structured_math:B:group_31",
+      "group_index": 31,
+      "template_family": "structured_math:B:family_05",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_D_g45_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 532966,
+      "b": 2444,
+      "op": "%"
+    },
+    "specification": "Final wording C \u2014 Calculate 532966 mod 2444. Output the integer value only.",
+    "expected": 174,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 781230269,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_07",
+      "linguistic_template_id": "ling:61b0e5f8dcb013d9",
+      "group_id": "structured_math:D:group_45",
+      "group_index": 45,
+      "template_family": "structured_math:D:family_07",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_D_g45_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 513,
+      "b": 6,
+      "op": "%"
+    },
+    "specification": "Final wording C \u2014 Calculate 513 mod 6. Output the integer value only.",
+    "expected": 3,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1465667339,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_07",
+      "linguistic_template_id": "ling:61b0e5f8dcb013d9",
+      "group_id": "structured_math:D:group_45",
+      "group_index": 45,
+      "template_family": "structured_math:D:family_07",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_D_g45_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 994404,
+      "b": 9479,
+      "op": "%"
+    },
+    "specification": "Final wording C \u2014 Calculate 994404 mod 9479. Output the integer value only.",
+    "expected": 8588,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 156769169,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_07",
+      "linguistic_template_id": "ling:61b0e5f8dcb013d9",
+      "group_id": "structured_math:D:group_45",
+      "group_index": 45,
+      "template_family": "structured_math:D:family_07",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_D_g45_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 12,
+      "b": 25,
+      "op": "%"
+    },
+    "specification": "Final wording C \u2014 Calculate 12 mod 25. Output the integer value only.",
+    "expected": 12,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 472891793,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_07",
+      "linguistic_template_id": "ling:61b0e5f8dcb013d9",
+      "group_id": "structured_math:D:group_45",
+      "group_index": 45,
+      "template_family": "structured_math:D:family_07",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_D_g45_0004",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 883536,
+      "b": 2087,
+      "op": "%"
+    },
+    "specification": "Final wording C \u2014 Calculate 883536 mod 2087. Output the integer value only.",
+    "expected": 735,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1482178238,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_07",
+      "linguistic_template_id": "ling:61b0e5f8dcb013d9",
+      "group_id": "structured_math:D:group_45",
+      "group_index": 45,
+      "template_family": "structured_math:D:family_07",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_D_g45_0005",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 669,
+      "b": 18,
+      "op": "%"
+    },
+    "specification": "Final wording C \u2014 Calculate 669 mod 18. Output the integer value only.",
+    "expected": 3,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 875952602,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_07",
+      "linguistic_template_id": "ling:61b0e5f8dcb013d9",
+      "group_id": "structured_math:D:group_45",
+      "group_index": 45,
+      "template_family": "structured_math:D:family_07",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_D_g45_0006",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 794,
+      "b": 47,
+      "op": "%"
+    },
+    "specification": "Final wording C \u2014 Calculate 794 mod 47. Output the integer value only.",
+    "expected": 42,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1440480254,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_07",
+      "linguistic_template_id": "ling:61b0e5f8dcb013d9",
+      "group_id": "structured_math:D:group_45",
+      "group_index": 45,
+      "template_family": "structured_math:D:family_07",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_D_g45_0007",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 854,
+      "b": 27,
+      "op": "%"
+    },
+    "specification": "Final wording C \u2014 Calculate 854 mod 27. Output the integer value only.",
+    "expected": 17,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 334990054,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_07",
+      "linguistic_template_id": "ling:61b0e5f8dcb013d9",
+      "group_id": "structured_math:D:group_45",
+      "group_index": 45,
+      "template_family": "structured_math:D:family_07",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_A_g30_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 26,
+      "b": 25,
+      "op": "-"
+    },
+    "specification": "Final wording A \u2014 Compute 26 - 25. Respond with one integer.",
+    "expected": 1,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1531255823,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_05",
+      "linguistic_template_id": "ling:33cc8d1841c5d28a",
+      "group_id": "structured_math:A:group_30",
+      "group_index": 30,
+      "template_family": "structured_math:A:family_05",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_A_g30_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 16,
+      "b": 35,
+      "op": "-"
+    },
+    "specification": "Final wording A \u2014 Compute 16 - 35. Respond with one integer.",
+    "expected": -19,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 904438402,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_05",
+      "linguistic_template_id": "ling:33cc8d1841c5d28a",
+      "group_id": "structured_math:A:group_30",
+      "group_index": 30,
+      "template_family": "structured_math:A:family_05",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_A_g30_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 88125,
+      "b": 60189,
+      "op": "+"
+    },
+    "specification": "Final wording A \u2014 Compute 88125 + 60189. Respond with one integer.",
+    "expected": 148314,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1031875969,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_05",
+      "linguistic_template_id": "ling:013650f13269bab6",
+      "group_id": "structured_math:A:group_30",
+      "group_index": 30,
+      "template_family": "structured_math:A:family_05",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_A_g30_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 5,
+      "b": 18,
+      "op": "-"
+    },
+    "specification": "Final wording A \u2014 Compute 5 - 18. Respond with one integer.",
+    "expected": -13,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1809725235,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_05",
+      "linguistic_template_id": "ling:33cc8d1841c5d28a",
+      "group_id": "structured_math:A:group_30",
+      "group_index": 30,
+      "template_family": "structured_math:A:family_05",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_A_g30_0004",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 61392,
+      "b": 71375,
+      "op": "+"
+    },
+    "specification": "Final wording A \u2014 Compute 61392 + 71375. Respond with one integer.",
+    "expected": 132767,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 408014088,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_05",
+      "linguistic_template_id": "ling:013650f13269bab6",
+      "group_id": "structured_math:A:group_30",
+      "group_index": 30,
+      "template_family": "structured_math:A:family_05",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_A_g30_0005",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 72418,
+      "b": 63598,
+      "op": "+"
+    },
+    "specification": "Final wording A \u2014 Compute 72418 + 63598. Respond with one integer.",
+    "expected": 136016,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1977035544,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_05",
+      "linguistic_template_id": "ling:013650f13269bab6",
+      "group_id": "structured_math:A:group_30",
+      "group_index": 30,
+      "template_family": "structured_math:A:family_05",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_A_g30_0006",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 46,
+      "b": 14,
+      "op": "+"
+    },
+    "specification": "Final wording A \u2014 Compute 46 + 14. Respond with one integer.",
+    "expected": 60,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1693137777,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_05",
+      "linguistic_template_id": "ling:013650f13269bab6",
+      "group_id": "structured_math:A:group_30",
+      "group_index": 30,
+      "template_family": "structured_math:A:family_05",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_A_g30_0007",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 12,
+      "b": 29,
+      "op": "+"
+    },
+    "specification": "Final wording A \u2014 Compute 12 + 29. Respond with one integer.",
+    "expected": 41,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 836245545,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_05",
+      "linguistic_template_id": "ling:013650f13269bab6",
+      "group_id": "structured_math:A:group_30",
+      "group_index": 30,
+      "template_family": "structured_math:A:family_05",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_B_g49_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A warehouse has 3982 crates with 251 units each. How many units total?.",
+    "expected": 999482,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 875340019,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_08",
+      "linguistic_template_id": "ling:b2f1a004b2967610",
+      "group_id": "structured_math:B:group_49",
+      "group_index": 49,
+      "template_family": "structured_math:B:family_08",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_B_g49_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A warehouse has 3530 rows with 462 seats per row. How many seats total?.",
+    "expected": 1630860,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 781579010,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_08",
+      "linguistic_template_id": "ling:5a02cf810a90059d",
+      "group_id": "structured_math:B:group_49",
+      "group_index": 49,
+      "template_family": "structured_math:B:family_08",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_B_g49_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A warehouse has 610 rows with 495 seats per row. How many seats total?.",
+    "expected": 301950,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1907919783,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_08",
+      "linguistic_template_id": "ling:5a02cf810a90059d",
+      "group_id": "structured_math:B:group_49",
+      "group_index": 49,
+      "template_family": "structured_math:B:family_08",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_B_g49_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A warehouse has 22 pallets with 41 kilograms each. What is the total mass?.",
+    "expected": 902,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 469833406,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_08",
+      "linguistic_template_id": "ling:7b105f2d3dacc79c",
+      "group_id": "structured_math:B:group_49",
+      "group_index": 49,
+      "template_family": "structured_math:B:family_08",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_B_g49_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A warehouse has 2 pallets with 2 kilograms each. What is the total mass?.",
+    "expected": 4,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1470869707,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_08",
+      "linguistic_template_id": "ling:7b105f2d3dacc79c",
+      "group_id": "structured_math:B:group_49",
+      "group_index": 49,
+      "template_family": "structured_math:B:family_08",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_B_g49_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A warehouse has 26 pallets with 42 kilograms each. What is the total mass?.",
+    "expected": 1092,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1300287776,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_08",
+      "linguistic_template_id": "ling:7b105f2d3dacc79c",
+      "group_id": "structured_math:B:group_49",
+      "group_index": 49,
+      "template_family": "structured_math:B:family_08",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_B_g49_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A warehouse has 2282 rows with 387 seats per row. How many seats total?.",
+    "expected": 883134,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1465816907,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_08",
+      "linguistic_template_id": "ling:5a02cf810a90059d",
+      "group_id": "structured_math:B:group_49",
+      "group_index": 49,
+      "template_family": "structured_math:B:family_08",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_B_g49_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A warehouse has 22 boxes with 28 items per box. How many items total?.",
+    "expected": 616,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 983332885,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_08",
+      "linguistic_template_id": "ling:0ec0ddcded41ec34",
+      "group_id": "structured_math:B:group_49",
+      "group_index": 49,
+      "template_family": "structured_math:B:family_08",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_D_g03_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 936728,
+      "b": 8363,
+      "op": "%"
+    },
+    "specification": "Compute 936728 mod 8363. Return only the integer.",
+    "expected": 72,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 604409239,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_00",
+      "linguistic_template_id": "ling:831b9946df35c058",
+      "group_id": "structured_math:D:group_03",
+      "group_index": 3,
+      "template_family": "structured_math:D:family_00",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_D_g03_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 429401,
+      "b": 7950,
+      "op": "%"
+    },
+    "specification": "Compute 429401 mod 7950. Return only the integer.",
+    "expected": 101,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 322610623,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_00",
+      "linguistic_template_id": "ling:831b9946df35c058",
+      "group_id": "structured_math:D:group_03",
+      "group_index": 3,
+      "template_family": "structured_math:D:family_00",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_D_g03_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 80,
+      "b": 29,
+      "op": "%"
+    },
+    "specification": "Compute 80 mod 29. Return only the integer.",
+    "expected": 22,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1122690489,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_00",
+      "linguistic_template_id": "ling:831b9946df35c058",
+      "group_id": "structured_math:D:group_03",
+      "group_index": 3,
+      "template_family": "structured_math:D:family_00",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_D_g03_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 771396,
+      "b": 1072,
+      "op": "%"
+    },
+    "specification": "Compute 771396 mod 1072. Return only the integer.",
+    "expected": 628,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1325934423,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_00",
+      "linguistic_template_id": "ling:831b9946df35c058",
+      "group_id": "structured_math:D:group_03",
+      "group_index": 3,
+      "template_family": "structured_math:D:family_00",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_D_g03_0004",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 137,
+      "b": 45,
+      "op": "%"
+    },
+    "specification": "Compute 137 mod 45. Return only the integer.",
+    "expected": 2,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 894104370,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_00",
+      "linguistic_template_id": "ling:831b9946df35c058",
+      "group_id": "structured_math:D:group_03",
+      "group_index": 3,
+      "template_family": "structured_math:D:family_00",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_D_g03_0005",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 399542,
+      "b": 5433,
+      "op": "%"
+    },
+    "specification": "Compute 399542 mod 5433. Return only the integer.",
+    "expected": 2933,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1774817357,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_00",
+      "linguistic_template_id": "ling:831b9946df35c058",
+      "group_id": "structured_math:D:group_03",
+      "group_index": 3,
+      "template_family": "structured_math:D:family_00",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_D_g03_0006",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 401851,
+      "b": 4332,
+      "op": "%"
+    },
+    "specification": "Compute 401851 mod 4332. Return only the integer.",
+    "expected": 3307,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 414480098,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_00",
+      "linguistic_template_id": "ling:831b9946df35c058",
+      "group_id": "structured_math:D:group_03",
+      "group_index": 3,
+      "template_family": "structured_math:D:family_00",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_D_g03_0007",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 346,
+      "b": 42,
+      "op": "%"
+    },
+    "specification": "Compute 346 mod 42. Return only the integer.",
+    "expected": 10,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1788136767,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_00",
+      "linguistic_template_id": "ling:831b9946df35c058",
+      "group_id": "structured_math:D:group_03",
+      "group_index": 3,
+      "template_family": "structured_math:D:family_00",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_D_g21_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 532,
+      "b": 16,
+      "op": "%"
+    },
+    "specification": "Task: Compute 532 mod 16. Give no prose, only the integer.",
+    "expected": 4,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 928268475,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_03",
+      "linguistic_template_id": "ling:27a0a44760cf9094",
+      "group_id": "structured_math:D:group_21",
+      "group_index": 21,
+      "template_family": "structured_math:D:family_03",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_D_g21_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 924,
+      "b": 30,
+      "op": "%"
+    },
+    "specification": "Task: Compute 924 mod 30. Give no prose, only the integer.",
+    "expected": 24,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 2081624378,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_03",
+      "linguistic_template_id": "ling:27a0a44760cf9094",
+      "group_id": "structured_math:D:group_21",
+      "group_index": 21,
+      "template_family": "structured_math:D:family_03",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_D_g21_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 139613,
+      "b": 3575,
+      "op": "%"
+    },
+    "specification": "Task: Compute 139613 mod 3575. Give no prose, only the integer.",
+    "expected": 188,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 18190295,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_03",
+      "linguistic_template_id": "ling:27a0a44760cf9094",
+      "group_id": "structured_math:D:group_21",
+      "group_index": 21,
+      "template_family": "structured_math:D:family_03",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_D_g21_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 78,
+      "b": 26,
+      "op": "%"
+    },
+    "specification": "Task: Compute 78 mod 26. Give no prose, only the integer.",
+    "expected": 0,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1059579678,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_03",
+      "linguistic_template_id": "ling:27a0a44760cf9094",
+      "group_id": "structured_math:D:group_21",
+      "group_index": 21,
+      "template_family": "structured_math:D:family_03",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_D_g21_0004",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 457344,
+      "b": 8981,
+      "op": "%"
+    },
+    "specification": "Task: Compute 457344 mod 8981. Give no prose, only the integer.",
+    "expected": 8294,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1198523660,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_03",
+      "linguistic_template_id": "ling:27a0a44760cf9094",
+      "group_id": "structured_math:D:group_21",
+      "group_index": 21,
+      "template_family": "structured_math:D:family_03",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_D_g21_0005",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 382,
+      "b": 16,
+      "op": "%"
+    },
+    "specification": "Task: Compute 382 mod 16. Give no prose, only the integer.",
+    "expected": 14,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 609577566,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_03",
+      "linguistic_template_id": "ling:27a0a44760cf9094",
+      "group_id": "structured_math:D:group_21",
+      "group_index": 21,
+      "template_family": "structured_math:D:family_03",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_D_g21_0006",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 390897,
+      "b": 8273,
+      "op": "%"
+    },
+    "specification": "Task: Compute 390897 mod 8273. Give no prose, only the integer.",
+    "expected": 2066,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1194160258,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_03",
+      "linguistic_template_id": "ling:27a0a44760cf9094",
+      "group_id": "structured_math:D:group_21",
+      "group_index": 21,
+      "template_family": "structured_math:D:family_03",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_D_g21_0007",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 211,
+      "b": 41,
+      "op": "%"
+    },
+    "specification": "Task: Compute 211 mod 41. Give no prose, only the integer.",
+    "expected": 6,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 536412463,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_03",
+      "linguistic_template_id": "ling:27a0a44760cf9094",
+      "group_id": "structured_math:D:group_21",
+      "group_index": 21,
+      "template_family": "structured_math:D:family_03",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_C_g50_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Question: Add 7216 and 328, then double the result.",
+    "expected": 15088,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 2074859486,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_08",
+      "linguistic_template_id": "ling:aba1b39ff0e8380f",
+      "group_id": "structured_math:C:group_50",
+      "group_index": 50,
+      "template_family": "structured_math:C:family_08",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_C_g50_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Question: Add 6880 and 451, then double the result.",
+    "expected": 14662,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1534705520,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_08",
+      "linguistic_template_id": "ling:aba1b39ff0e8380f",
+      "group_id": "structured_math:C:group_50",
+      "group_index": 50,
+      "template_family": "structured_math:C:family_08",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_C_g50_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Question: Add 90 and 20, then double the result.",
+    "expected": 220,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 549016058,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_08",
+      "linguistic_template_id": "ling:aba1b39ff0e8380f",
+      "group_id": "structured_math:C:group_50",
+      "group_index": 50,
+      "template_family": "structured_math:C:family_08",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_C_g50_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Question: Add 80 and 6, then double the result.",
+    "expected": 172,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 466172471,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_08",
+      "linguistic_template_id": "ling:aba1b39ff0e8380f",
+      "group_id": "structured_math:C:group_50",
+      "group_index": 50,
+      "template_family": "structured_math:C:family_08",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_C_g50_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Question: What is half of 1070 plus 367?",
+    "expected": 902,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1067735702,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_08",
+      "linguistic_template_id": "ling:abdd4803206d52c9",
+      "group_id": "structured_math:C:group_50",
+      "group_index": 50,
+      "template_family": "structured_math:C:family_08",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_C_g50_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Question: Take 2246 and subtract three times 417.",
+    "expected": 995,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1064385830,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_08",
+      "linguistic_template_id": "ling:56d27e828686b7a7",
+      "group_id": "structured_math:C:group_50",
+      "group_index": 50,
+      "template_family": "structured_math:C:family_08",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_C_g50_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Question: Add 9910 and 259, then double the result.",
+    "expected": 20338,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 647435219,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_08",
+      "linguistic_template_id": "ling:aba1b39ff0e8380f",
+      "group_id": "structured_math:C:group_50",
+      "group_index": 50,
+      "template_family": "structured_math:C:family_08",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_C_g50_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Question: Add 1352 and 208, then double the result.",
+    "expected": 3120,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1944137460,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_08",
+      "linguistic_template_id": "ling:aba1b39ff0e8380f",
+      "group_id": "structured_math:C:group_50",
+      "group_index": 50,
+      "template_family": "structured_math:C:family_08",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_E_g04_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Which is larger: 35*26 or 42*41? Reply with the larger product as an integer.",
+    "expected": 1722,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 239966805,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_00",
+      "linguistic_template_id": "ling:ac63a91c3b2a3618",
+      "group_id": "structured_math:E:group_04",
+      "group_index": 4,
+      "template_family": "structured_math:E:family_00",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_E_g04_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Which is larger: 49*16 or 10*23? Reply with the larger product as an integer.",
+    "expected": 784,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 271871424,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_00",
+      "linguistic_template_id": "ling:ac63a91c3b2a3618",
+      "group_id": "structured_math:E:group_04",
+      "group_index": 4,
+      "template_family": "structured_math:E:family_00",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_E_g04_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Which is larger: 108*737 or 599*215? Reply with the larger product as an integer.",
+    "expected": 128785,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1547390261,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_00",
+      "linguistic_template_id": "ling:ac63a91c3b2a3618",
+      "group_id": "structured_math:E:group_04",
+      "group_index": 4,
+      "template_family": "structured_math:E:family_00",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_E_g04_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Which is larger: 23*2 or 43*37? Reply with the larger product as an integer.",
+    "expected": 1591,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1159864189,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_00",
+      "linguistic_template_id": "ling:ac63a91c3b2a3618",
+      "group_id": "structured_math:E:group_04",
+      "group_index": 4,
+      "template_family": "structured_math:E:family_00",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_E_g04_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Which is larger: 208*634 or 239*773? Reply with the larger product as an integer.",
+    "expected": 184747,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1298448671,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_00",
+      "linguistic_template_id": "ling:ac63a91c3b2a3618",
+      "group_id": "structured_math:E:group_04",
+      "group_index": 4,
+      "template_family": "structured_math:E:family_00",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_E_g04_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Which is larger: 429*162 or 637*407? Reply with the larger product as an integer.",
+    "expected": 259259,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 238880225,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_00",
+      "linguistic_template_id": "ling:ac63a91c3b2a3618",
+      "group_id": "structured_math:E:group_04",
+      "group_index": 4,
+      "template_family": "structured_math:E:family_00",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_E_g04_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Which is larger: 348*514 or 253*627? Reply with the larger product as an integer.",
+    "expected": 178872,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1050766799,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_00",
+      "linguistic_template_id": "ling:ac63a91c3b2a3618",
+      "group_id": "structured_math:E:group_04",
+      "group_index": 4,
+      "template_family": "structured_math:E:family_00",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_E_g04_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Which is larger: 34*7 or 2*20? Reply with the larger product as an integer.",
+    "expected": 238,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 2008635620,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_00",
+      "linguistic_template_id": "ling:ac63a91c3b2a3618",
+      "group_id": "structured_math:E:group_04",
+      "group_index": 4,
+      "template_family": "structured_math:E:family_00",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_F_g29_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration scenario: A tank has 759716 L, loses 25%, then gains 853 L. How many litres remain? Return the integer.",
+    "expected": 570640,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 698892780,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_04",
+      "linguistic_template_id": "ling:6914802c54342e8d",
+      "group_id": "structured_math:F:group_29",
+      "group_index": 29,
+      "template_family": "structured_math:F:family_04",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_F_g29_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration scenario: A tank has 330 L, loses 20%, then gains 6 L. How many litres remain? Return the integer.",
+    "expected": 270,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 484337182,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_04",
+      "linguistic_template_id": "ling:6914802c54342e8d",
+      "group_id": "structured_math:F:group_29",
+      "group_index": 29,
+      "template_family": "structured_math:F:family_04",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_F_g29_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration scenario: A tank has 412 L, loses 25%, then gains 17 L. How many litres remain? Return the integer.",
+    "expected": 326,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1846416285,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_04",
+      "linguistic_template_id": "ling:6914802c54342e8d",
+      "group_id": "structured_math:F:group_29",
+      "group_index": 29,
+      "template_family": "structured_math:F:family_04",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_F_g29_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration scenario: A tank has 138500 L, loses 33%, then gains 855 L. How many litres remain? Return the integer.",
+    "expected": 93650,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 364001378,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_04",
+      "linguistic_template_id": "ling:6914802c54342e8d",
+      "group_id": "structured_math:F:group_29",
+      "group_index": 29,
+      "template_family": "structured_math:F:family_04",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_F_g29_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration scenario: A tank has 315 L, loses 40%, then gains 6 L. How many litres remain? Return the integer.",
+    "expected": 195,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 27652940,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_04",
+      "linguistic_template_id": "ling:6914802c54342e8d",
+      "group_id": "structured_math:F:group_29",
+      "group_index": 29,
+      "template_family": "structured_math:F:family_04",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_F_g29_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration scenario: A tank has 183900 L, loses 28%, then gains 833 L. How many litres remain? Return the integer.",
+    "expected": 133241,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 2081881550,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_04",
+      "linguistic_template_id": "ling:6914802c54342e8d",
+      "group_id": "structured_math:F:group_29",
+      "group_index": 29,
+      "template_family": "structured_math:F:family_04",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_F_g29_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration scenario: A tank has 340760 L, loses 15%, then gains 131 L. How many litres remain? Return the integer.",
+    "expected": 289777,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1023081395,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_04",
+      "linguistic_template_id": "ling:6914802c54342e8d",
+      "group_id": "structured_math:F:group_29",
+      "group_index": 29,
+      "template_family": "structured_math:F:family_04",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_F_g29_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration scenario: A tank has 897000 L, loses 13%, then gains 509 L. How many litres remain? Return the integer.",
+    "expected": 780899,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1241283723,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_04",
+      "linguistic_template_id": "ling:6914802c54342e8d",
+      "group_id": "structured_math:F:group_29",
+      "group_index": 29,
+      "template_family": "structured_math:F:family_04",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_E_g10_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Comparison: Which is larger: 288*491 or 765*402? Reply with the larger product as an integer.",
+    "expected": 307530,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 500838961,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_01",
+      "linguistic_template_id": "ling:c094b3614b1f99c0",
+      "group_id": "structured_math:E:group_10",
+      "group_index": 10,
+      "template_family": "structured_math:E:family_01",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_E_g10_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Comparison: Which is larger: 236*371 or 271*327? Reply with the larger product as an integer.",
+    "expected": 88617,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 2099173325,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_01",
+      "linguistic_template_id": "ling:c094b3614b1f99c0",
+      "group_id": "structured_math:E:group_10",
+      "group_index": 10,
+      "template_family": "structured_math:E:family_01",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_E_g10_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Comparison: Which is larger: 128*287 or 146*246? Reply with the larger product as an integer.",
+    "expected": 36736,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 2001985376,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_01",
+      "linguistic_template_id": "ling:c094b3614b1f99c0",
+      "group_id": "structured_math:E:group_10",
+      "group_index": 10,
+      "template_family": "structured_math:E:family_01",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_E_g10_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Comparison: Which is larger: 40*25 or 44*49? Reply with the larger product as an integer.",
+    "expected": 2156,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1134640770,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_01",
+      "linguistic_template_id": "ling:c094b3614b1f99c0",
+      "group_id": "structured_math:E:group_10",
+      "group_index": 10,
+      "template_family": "structured_math:E:family_01",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_E_g10_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Comparison: Which is larger: 594*427 or 386*692? Reply with the larger product as an integer.",
+    "expected": 267112,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1139924614,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_01",
+      "linguistic_template_id": "ling:c094b3614b1f99c0",
+      "group_id": "structured_math:E:group_10",
+      "group_index": 10,
+      "template_family": "structured_math:E:family_01",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_E_g10_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Comparison: Which is larger: 17*38 or 44*49? Reply with the larger product as an integer.",
+    "expected": 2156,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 357914783,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_01",
+      "linguistic_template_id": "ling:c094b3614b1f99c0",
+      "group_id": "structured_math:E:group_10",
+      "group_index": 10,
+      "template_family": "structured_math:E:family_01",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_E_g10_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Comparison: Which is larger: 809*252 or 127*944? Reply with the larger product as an integer.",
+    "expected": 203868,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1701394561,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_01",
+      "linguistic_template_id": "ling:c094b3614b1f99c0",
+      "group_id": "structured_math:E:group_10",
+      "group_index": 10,
+      "template_family": "structured_math:E:family_01",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_E_g10_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Comparison: Which is larger: 49*14 or 48*29? Reply with the larger product as an integer.",
+    "expected": 1392,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1653245890,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_01",
+      "linguistic_template_id": "ling:c094b3614b1f99c0",
+      "group_id": "structured_math:E:group_10",
+      "group_index": 10,
+      "template_family": "structured_math:E:family_01",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_F_g59_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Word problem: A tank has 175 L, loses 28%, then gains 6 L. How many litres remain? Return the integer.",
+    "expected": 132,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 537891045,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_09",
+      "linguistic_template_id": "ling:cb941e853ab3be48",
+      "group_id": "structured_math:F:group_59",
+      "group_index": 59,
+      "template_family": "structured_math:F:family_09",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_F_g59_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Word problem: A tank has 113400 L, loses 29%, then gains 102 L. How many litres remain? Return the integer.",
+    "expected": 80616,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1797825831,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_09",
+      "linguistic_template_id": "ling:cb941e853ab3be48",
+      "group_id": "structured_math:F:group_59",
+      "group_index": 59,
+      "template_family": "structured_math:F:family_09",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_F_g59_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Word problem: A tank has 595180 L, loses 20%, then gains 771 L. How many litres remain? Return the integer.",
+    "expected": 476915,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 471112761,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_09",
+      "linguistic_template_id": "ling:cb941e853ab3be48",
+      "group_id": "structured_math:F:group_59",
+      "group_index": 59,
+      "template_family": "structured_math:F:family_09",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_F_g59_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Word problem: A tank has 500 L, loses 15%, then gains 18 L. How many litres remain? Return the integer.",
+    "expected": 443,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1240527015,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_09",
+      "linguistic_template_id": "ling:cb941e853ab3be48",
+      "group_id": "structured_math:F:group_59",
+      "group_index": 59,
+      "template_family": "structured_math:F:family_09",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_F_g59_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Word problem: A tank has 140 L, loses 10%, then gains 1 L. How many litres remain? Return the integer.",
+    "expected": 127,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1800522257,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_09",
+      "linguistic_template_id": "ling:cb941e853ab3be48",
+      "group_id": "structured_math:F:group_59",
+      "group_index": 59,
+      "template_family": "structured_math:F:family_09",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_F_g59_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Word problem: A tank has 100 L, loses 26%, then gains 2 L. How many litres remain? Return the integer.",
+    "expected": 76,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 782649899,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_09",
+      "linguistic_template_id": "ling:cb941e853ab3be48",
+      "group_id": "structured_math:F:group_59",
+      "group_index": 59,
+      "template_family": "structured_math:F:family_09",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_F_g59_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Word problem: A tank has 330 L, loses 20%, then gains 8 L. How many litres remain? Return the integer.",
+    "expected": 272,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 176502619,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_09",
+      "linguistic_template_id": "ling:cb941e853ab3be48",
+      "group_id": "structured_math:F:group_59",
+      "group_index": 59,
+      "template_family": "structured_math:F:family_09",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_F_g59_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Word problem: A tank has 541150 L, loses 20%, then gains 562 L. How many litres remain? Return the integer.",
+    "expected": 433482,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1288249193,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_09",
+      "linguistic_template_id": "ling:cb941e853ab3be48",
+      "group_id": "structured_math:F:group_59",
+      "group_index": 59,
+      "template_family": "structured_math:F:family_09",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_E_g22_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Size question: Which is larger: 253*828 or 434*222? Reply with the larger product as an integer.",
+    "expected": 209484,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 803759587,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_03",
+      "linguistic_template_id": "ling:29c0fa60f47e6ed1",
+      "group_id": "structured_math:E:group_22",
+      "group_index": 22,
+      "template_family": "structured_math:E:family_03",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_E_g22_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Size question: Which is larger: 994*725 or 778*152? Reply with the larger product as an integer.",
+    "expected": 720650,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 391546969,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_03",
+      "linguistic_template_id": "ling:29c0fa60f47e6ed1",
+      "group_id": "structured_math:E:group_22",
+      "group_index": 22,
+      "template_family": "structured_math:E:family_03",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_E_g22_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Size question: Which is larger: 13*12 or 42*15? Reply with the larger product as an integer.",
+    "expected": 630,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1214664640,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_03",
+      "linguistic_template_id": "ling:29c0fa60f47e6ed1",
+      "group_id": "structured_math:E:group_22",
+      "group_index": 22,
+      "template_family": "structured_math:E:family_03",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_E_g22_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Size question: Which is larger: 241*604 or 131*793? Reply with the larger product as an integer.",
+    "expected": 145564,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 624013110,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_03",
+      "linguistic_template_id": "ling:29c0fa60f47e6ed1",
+      "group_id": "structured_math:E:group_22",
+      "group_index": 22,
+      "template_family": "structured_math:E:family_03",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_E_g22_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Size question: Which is larger: 12*14 or 21*24? Reply with the larger product as an integer.",
+    "expected": 504,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 726806087,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_03",
+      "linguistic_template_id": "ling:29c0fa60f47e6ed1",
+      "group_id": "structured_math:E:group_22",
+      "group_index": 22,
+      "template_family": "structured_math:E:family_03",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_E_g22_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Size question: Which is larger: 7*2 or 36*20? Reply with the larger product as an integer.",
+    "expected": 720,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 788502323,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_03",
+      "linguistic_template_id": "ling:29c0fa60f47e6ed1",
+      "group_id": "structured_math:E:group_22",
+      "group_index": 22,
+      "template_family": "structured_math:E:family_03",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_E_g22_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Size question: Which is larger: 2*13 or 21*45? Reply with the larger product as an integer.",
+    "expected": 945,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1647727755,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_03",
+      "linguistic_template_id": "ling:29c0fa60f47e6ed1",
+      "group_id": "structured_math:E:group_22",
+      "group_index": 22,
+      "template_family": "structured_math:E:family_03",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_E_g22_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Size question: Which is larger: 42*44 or 3*12? Reply with the larger product as an integer.",
+    "expected": 1848,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1450696182,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_03",
+      "linguistic_template_id": "ling:29c0fa60f47e6ed1",
+      "group_id": "structured_math:E:group_22",
+      "group_index": 22,
+      "template_family": "structured_math:E:family_03",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_F_g41_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final scenario B: A tank has 217164 L, loses 25%, then gains 133 L. How many litres remain? Return the integer.",
+    "expected": 163006,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 203084824,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_06",
+      "linguistic_template_id": "ling:b50acc9e7bd876e1",
+      "group_id": "structured_math:F:group_41",
+      "group_index": 41,
+      "template_family": "structured_math:F:family_06",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_F_g41_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final scenario B: A tank has 272500 L, loses 31%, then gains 148 L. How many litres remain? Return the integer.",
+    "expected": 188173,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1423359412,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_06",
+      "linguistic_template_id": "ling:b50acc9e7bd876e1",
+      "group_id": "structured_math:F:group_41",
+      "group_index": 41,
+      "template_family": "structured_math:F:family_06",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_F_g41_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final scenario B: A tank has 150 L, loses 10%, then gains 14 L. How many litres remain? Return the integer.",
+    "expected": 149,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1787006434,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_06",
+      "linguistic_template_id": "ling:b50acc9e7bd876e1",
+      "group_id": "structured_math:F:group_41",
+      "group_index": 41,
+      "template_family": "structured_math:F:family_06",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_F_g41_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final scenario B: A tank has 301735 L, loses 40%, then gains 340 L. How many litres remain? Return the integer.",
+    "expected": 181381,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 520109726,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_06",
+      "linguistic_template_id": "ling:b50acc9e7bd876e1",
+      "group_id": "structured_math:F:group_41",
+      "group_index": 41,
+      "template_family": "structured_math:F:family_06",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_F_g41_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final scenario B: A tank has 645900 L, loses 35%, then gains 676 L. How many litres remain? Return the integer.",
+    "expected": 420511,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 905104954,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_06",
+      "linguistic_template_id": "ling:b50acc9e7bd876e1",
+      "group_id": "structured_math:F:group_41",
+      "group_index": 41,
+      "template_family": "structured_math:F:family_06",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_F_g41_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final scenario B: A tank has 136 L, loses 25%, then gains 17 L. How many litres remain? Return the integer.",
+    "expected": 119,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 2108873959,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_06",
+      "linguistic_template_id": "ling:b50acc9e7bd876e1",
+      "group_id": "structured_math:F:group_41",
+      "group_index": 41,
+      "template_family": "structured_math:F:family_06",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_F_g41_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final scenario B: A tank has 201950 L, loses 22%, then gains 864 L. How many litres remain? Return the integer.",
+    "expected": 158385,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1978386816,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_06",
+      "linguistic_template_id": "ling:b50acc9e7bd876e1",
+      "group_id": "structured_math:F:group_41",
+      "group_index": 41,
+      "template_family": "structured_math:F:family_06",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_F_g41_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final scenario B: A tank has 531400 L, loses 35%, then gains 290 L. How many litres remain? Return the integer.",
+    "expected": 345700,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1981704752,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_06",
+      "linguistic_template_id": "ling:b50acc9e7bd876e1",
+      "group_id": "structured_math:F:group_41",
+      "group_index": 41,
+      "template_family": "structured_math:F:family_06",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_A_g24_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 17,
+      "b": 49,
+      "op": "-"
+    },
+    "specification": "Calibration wording \u2014 Compute 17 - 49. Return the integer result only.",
+    "expected": -32,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1144624974,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_04",
+      "linguistic_template_id": "ling:f1ccc1d5de63be43",
+      "group_id": "structured_math:A:group_24",
+      "group_index": 24,
+      "template_family": "structured_math:A:family_04",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_A_g24_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 21,
+      "b": 25,
+      "op": "+"
+    },
+    "specification": "Calibration wording \u2014 Compute 21 + 25. Return the integer result only.",
+    "expected": 46,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1792625151,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_04",
+      "linguistic_template_id": "ling:ea5bc7f525a97f42",
+      "group_id": "structured_math:A:group_24",
+      "group_index": 24,
+      "template_family": "structured_math:A:family_04",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_A_g24_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 68024,
+      "b": 82410,
+      "op": "-"
+    },
+    "specification": "Calibration wording \u2014 Compute 68024 - 82410. Return the integer result only.",
+    "expected": -14386,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 537613092,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_04",
+      "linguistic_template_id": "ling:f1ccc1d5de63be43",
+      "group_id": "structured_math:A:group_24",
+      "group_index": 24,
+      "template_family": "structured_math:A:family_04",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_A_g24_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 92363,
+      "b": 52762,
+      "op": "*"
+    },
+    "specification": "Calibration wording \u2014 Compute 92363 * 52762. Return the integer result only.",
+    "expected": 4873256606,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1328769829,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_04",
+      "linguistic_template_id": "ling:1c3784272fb9a833",
+      "group_id": "structured_math:A:group_24",
+      "group_index": 24,
+      "template_family": "structured_math:A:family_04",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_A_g24_0004",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 23,
+      "b": 26,
+      "op": "+"
+    },
+    "specification": "Calibration wording \u2014 Compute 23 + 26. Return the integer result only.",
+    "expected": 49,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1847028254,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_04",
+      "linguistic_template_id": "ling:ea5bc7f525a97f42",
+      "group_id": "structured_math:A:group_24",
+      "group_index": 24,
+      "template_family": "structured_math:A:family_04",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_A_g24_0005",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 2,
+      "b": 24,
+      "op": "*"
+    },
+    "specification": "Calibration wording \u2014 Compute 2 * 24. Return the integer result only.",
+    "expected": 48,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1246637965,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_04",
+      "linguistic_template_id": "ling:1c3784272fb9a833",
+      "group_id": "structured_math:A:group_24",
+      "group_index": 24,
+      "template_family": "structured_math:A:family_04",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_A_g24_0006",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 44,
+      "b": 10,
+      "op": "-"
+    },
+    "specification": "Calibration wording \u2014 Compute 44 - 10. Return the integer result only.",
+    "expected": 34,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 86250893,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_04",
+      "linguistic_template_id": "ling:f1ccc1d5de63be43",
+      "group_id": "structured_math:A:group_24",
+      "group_index": 24,
+      "template_family": "structured_math:A:family_04",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_A_g24_0007",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 3,
+      "b": 6,
+      "op": "*"
+    },
+    "specification": "Calibration wording \u2014 Compute 3 * 6. Return the integer result only.",
+    "expected": 18,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1437928607,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_04",
+      "linguistic_template_id": "ling:1c3784272fb9a833",
+      "group_id": "structured_math:A:group_24",
+      "group_index": 24,
+      "template_family": "structured_math:A:family_04",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_A_g00_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 92331,
+      "b": 90518,
+      "op": "-"
+    },
+    "specification": "Compute 92331 - 90518. Return only the integer.",
+    "expected": 1813,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 34144813,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_00",
+      "linguistic_template_id": "ling:b0b46acb55462815",
+      "group_id": "structured_math:A:group_00",
+      "group_index": 0,
+      "template_family": "structured_math:A:family_00",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_A_g00_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 65798,
+      "b": 60592,
+      "op": "*"
+    },
+    "specification": "Compute 65798 * 60592. Return only the integer.",
+    "expected": 3986832416,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 511169806,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_00",
+      "linguistic_template_id": "ling:57f4da9dbfa04afc",
+      "group_id": "structured_math:A:group_00",
+      "group_index": 0,
+      "template_family": "structured_math:A:family_00",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_A_g00_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 78723,
+      "b": 97442,
+      "op": "+"
+    },
+    "specification": "Compute 78723 + 97442. Return only the integer.",
+    "expected": 176165,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 377142058,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_00",
+      "linguistic_template_id": "ling:a97404739edc189a",
+      "group_id": "structured_math:A:group_00",
+      "group_index": 0,
+      "template_family": "structured_math:A:family_00",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_A_g00_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 37,
+      "b": 38,
+      "op": "-"
+    },
+    "specification": "Compute 37 - 38. Return only the integer.",
+    "expected": -1,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1593608533,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_00",
+      "linguistic_template_id": "ling:b0b46acb55462815",
+      "group_id": "structured_math:A:group_00",
+      "group_index": 0,
+      "template_family": "structured_math:A:family_00",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_A_g00_0004",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 9,
+      "b": 11,
+      "op": "*"
+    },
+    "specification": "Compute 9 * 11. Return only the integer.",
+    "expected": 99,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1928471949,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_00",
+      "linguistic_template_id": "ling:57f4da9dbfa04afc",
+      "group_id": "structured_math:A:group_00",
+      "group_index": 0,
+      "template_family": "structured_math:A:family_00",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_A_g00_0005",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 48,
+      "b": 9,
+      "op": "-"
+    },
+    "specification": "Compute 48 - 9. Return only the integer.",
+    "expected": 39,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1102768151,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_00",
+      "linguistic_template_id": "ling:b0b46acb55462815",
+      "group_id": "structured_math:A:group_00",
+      "group_index": 0,
+      "template_family": "structured_math:A:family_00",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_A_g00_0006",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 32,
+      "b": 14,
+      "op": "+"
+    },
+    "specification": "Compute 32 + 14. Return only the integer.",
+    "expected": 46,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 472261020,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_00",
+      "linguistic_template_id": "ling:a97404739edc189a",
+      "group_id": "structured_math:A:group_00",
+      "group_index": 0,
+      "template_family": "structured_math:A:family_00",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_A_g00_0007",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 85519,
+      "b": 90846,
+      "op": "-"
+    },
+    "specification": "Compute 85519 - 90846. Return only the integer.",
+    "expected": -5327,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 530541533,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_00",
+      "linguistic_template_id": "ling:b0b46acb55462815",
+      "group_id": "structured_math:A:group_00",
+      "group_index": 0,
+      "template_family": "structured_math:A:family_00",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_C_g44_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question C: What is half of 9526 plus 414?",
+    "expected": 5177,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1462841175,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_07",
+      "linguistic_template_id": "ling:1888d9fbbb8f7594",
+      "group_id": "structured_math:C:group_44",
+      "group_index": 44,
+      "template_family": "structured_math:C:family_07",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_C_g44_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question C: Take 74 and subtract three times 17.",
+    "expected": 23,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 19097051,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_07",
+      "linguistic_template_id": "ling:6a7e4588d3f40c1a",
+      "group_id": "structured_math:C:group_44",
+      "group_index": 44,
+      "template_family": "structured_math:C:family_07",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_C_g44_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question C: What is half of 1062 plus 461?",
+    "expected": 992,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 2014339460,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_07",
+      "linguistic_template_id": "ling:1888d9fbbb8f7594",
+      "group_id": "structured_math:C:group_44",
+      "group_index": 44,
+      "template_family": "structured_math:C:family_07",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_C_g44_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question C: Take 8474 and subtract three times 386.",
+    "expected": 7316,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 2011296540,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_07",
+      "linguistic_template_id": "ling:6a7e4588d3f40c1a",
+      "group_id": "structured_math:C:group_44",
+      "group_index": 44,
+      "template_family": "structured_math:C:family_07",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_C_g44_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question C: What is half of 98 plus 14?",
+    "expected": 63,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1574157912,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_07",
+      "linguistic_template_id": "ling:1888d9fbbb8f7594",
+      "group_id": "structured_math:C:group_44",
+      "group_index": 44,
+      "template_family": "structured_math:C:family_07",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_C_g44_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question C: Take 5482 and subtract three times 246.",
+    "expected": 4744,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 430038453,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_07",
+      "linguistic_template_id": "ling:6a7e4588d3f40c1a",
+      "group_id": "structured_math:C:group_44",
+      "group_index": 44,
+      "template_family": "structured_math:C:family_07",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_C_g44_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question C: What is 30 minus twice 7?",
+    "expected": 16,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 232045865,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_07",
+      "linguistic_template_id": "ling:279fe7f3bb30a847",
+      "group_id": "structured_math:C:group_44",
+      "group_index": 44,
+      "template_family": "structured_math:C:family_07",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_C_g44_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question C: What is half of 6522 plus 437?",
+    "expected": 3698,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 960014880,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_07",
+      "linguistic_template_id": "ling:1888d9fbbb8f7594",
+      "group_id": "structured_math:C:group_44",
+      "group_index": 44,
+      "template_family": "structured_math:C:family_07",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_B_g25_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration site \u2014 A warehouse has 24 crates with 35 units each. How many units total?.",
+    "expected": 840,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 30344735,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_04",
+      "linguistic_template_id": "ling:6c91b072e7890ffd",
+      "group_id": "structured_math:B:group_25",
+      "group_index": 25,
+      "template_family": "structured_math:B:family_04",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_B_g25_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration site \u2014 A warehouse has 874 pallets with 348 kilograms each. What is the total mass?.",
+    "expected": 304152,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1103810164,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_04",
+      "linguistic_template_id": "ling:8dd2f2203fb06e51",
+      "group_id": "structured_math:B:group_25",
+      "group_index": 25,
+      "template_family": "structured_math:B:family_04",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_B_g25_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration site \u2014 A warehouse has 4995 crates with 217 units each. How many units total?.",
+    "expected": 1083915,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 226488299,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_04",
+      "linguistic_template_id": "ling:6c91b072e7890ffd",
+      "group_id": "structured_math:B:group_25",
+      "group_index": 25,
+      "template_family": "structured_math:B:family_04",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_B_g25_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration site \u2014 A warehouse has 3845 pallets with 226 kilograms each. What is the total mass?.",
+    "expected": 868970,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 334784054,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_04",
+      "linguistic_template_id": "ling:8dd2f2203fb06e51",
+      "group_id": "structured_math:B:group_25",
+      "group_index": 25,
+      "template_family": "structured_math:B:family_04",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_B_g25_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration site \u2014 A warehouse has 861 pallets with 248 kilograms each. What is the total mass?.",
+    "expected": 213528,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 657971970,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_04",
+      "linguistic_template_id": "ling:8dd2f2203fb06e51",
+      "group_id": "structured_math:B:group_25",
+      "group_index": 25,
+      "template_family": "structured_math:B:family_04",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_B_g25_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration site \u2014 A warehouse has 42 rows with 7 seats per row. How many seats total?.",
+    "expected": 294,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1277686252,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_04",
+      "linguistic_template_id": "ling:c09b8ac157883dfd",
+      "group_id": "structured_math:B:group_25",
+      "group_index": 25,
+      "template_family": "structured_math:B:family_04",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_B_g25_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration site \u2014 A warehouse has 14 rows with 13 seats per row. How many seats total?.",
+    "expected": 182,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 649524044,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_04",
+      "linguistic_template_id": "ling:c09b8ac157883dfd",
+      "group_id": "structured_math:B:group_25",
+      "group_index": 25,
+      "template_family": "structured_math:B:family_04",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_B_g25_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration site \u2014 A warehouse has 10 rows with 5 seats per row. How many seats total?.",
+    "expected": 50,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 628532209,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_04",
+      "linguistic_template_id": "ling:c09b8ac157883dfd",
+      "group_id": "structured_math:B:group_25",
+      "group_index": 25,
+      "template_family": "structured_math:B:family_04",
+      "instance_id": 7
+    }
+  },
+  {
+    "task_id": "train_E_g52_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Which is larger: 42*10 or 13*36? Reply with the larger product as an integer.",
+    "expected": 468,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 11306100,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_08",
+      "linguistic_template_id": "ling:ac63a91c3b2a3618",
+      "group_id": "structured_math:E:group_52",
+      "group_index": 52,
+      "template_family": "structured_math:E:family_08",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "train_E_g52_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Which is larger: 476*555 or 304*674? Reply with the larger product as an integer.",
+    "expected": 264180,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1482658031,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_08",
+      "linguistic_template_id": "ling:ac63a91c3b2a3618",
+      "group_id": "structured_math:E:group_52",
+      "group_index": 52,
+      "template_family": "structured_math:E:family_08",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "train_E_g52_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Which is larger: 173*474 or 686*182? Reply with the larger product as an integer.",
+    "expected": 124852,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 2034058309,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_08",
+      "linguistic_template_id": "ling:ac63a91c3b2a3618",
+      "group_id": "structured_math:E:group_52",
+      "group_index": 52,
+      "template_family": "structured_math:E:family_08",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "train_E_g52_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Which is larger: 398*538 or 632*890? Reply with the larger product as an integer.",
+    "expected": 562480,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 432738697,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_08",
+      "linguistic_template_id": "ling:ac63a91c3b2a3618",
+      "group_id": "structured_math:E:group_52",
+      "group_index": 52,
+      "template_family": "structured_math:E:family_08",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "train_E_g52_0004",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Which is larger: 465*572 or 588*750? Reply with the larger product as an integer.",
+    "expected": 441000,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 156216216,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_08",
+      "linguistic_template_id": "ling:ac63a91c3b2a3618",
+      "group_id": "structured_math:E:group_52",
+      "group_index": 52,
+      "template_family": "structured_math:E:family_08",
+      "instance_id": 4
+    }
+  },
+  {
+    "task_id": "train_E_g52_0005",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Which is larger: 43*50 or 36*50? Reply with the larger product as an integer.",
+    "expected": 2150,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1690375595,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_08",
+      "linguistic_template_id": "ling:ac63a91c3b2a3618",
+      "group_id": "structured_math:E:group_52",
+      "group_index": 52,
+      "template_family": "structured_math:E:family_08",
+      "instance_id": 5
+    }
+  },
+  {
+    "task_id": "train_E_g52_0006",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Which is larger: 447*467 or 592*654? Reply with the larger product as an integer.",
+    "expected": 387168,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 2025784200,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_08",
+      "linguistic_template_id": "ling:ac63a91c3b2a3618",
+      "group_id": "structured_math:E:group_52",
+      "group_index": 52,
+      "template_family": "structured_math:E:family_08",
+      "instance_id": 6
+    }
+  },
+  {
+    "task_id": "train_E_g52_0007",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Which is larger: 46*13 or 25*39? Reply with the larger product as an integer.",
+    "expected": 975,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 741505461,
+      "split": "train",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_08",
+      "linguistic_template_id": "ling:ac63a91c3b2a3618",
+      "group_id": "structured_math:E:group_52",
+      "group_index": 52,
+      "template_family": "structured_math:E:family_08",
+      "instance_id": 7
+    }
+  }
+]

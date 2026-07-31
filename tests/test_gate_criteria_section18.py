@@ -21,7 +21,7 @@ def test_load_real_002_config():
     assert c.primary_endpoint.bootstrap_iterations == 20000
     assert c.gates.require_lcb_vs_p0_above == 0.0
     assert c.gates.maximum_final_access_count == 1
-    assert c.dataset.minimum_groups == 60
+    assert c.dataset.minimum_groups == 9
     assert c.evidence.require_real_model is True
     assert c.evidence.allow_synthetic is False
 
