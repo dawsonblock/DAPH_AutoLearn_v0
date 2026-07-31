@@ -241,6 +241,48 @@ def _build_features(tasks: list[dict[str, Any]], dim: int = 32) -> "np.ndarray":
     return features
 
 
+def _extract_surface_features(tasks: list[dict[str, Any]]) -> "np.ndarray":
+    """Extract surface-level features from task PROMPTS ONLY.
+
+    These features must be derivable from reading the prompt text,
+    WITHOUT running either backend. They must not leak the symbolic
+    parser's output (e.g. capability_ids) or the LLM's output, since
+    that would bypass the scientific question of whether hidden states
+    contain routing signal.
+
+    Features (4):
+      0. max_operand_magnitude: log10 of the largest number in the prompt.
+         Large numbers → LLM arithmetic fails → symbolic-preferred.
+         Small numbers → LLM succeeds → LLM-preferred.
+      1. prompt_length_norm: normalized prompt length (chars / 500).
+         Longer prompts tend to be unparseable NL variants.
+      2. has_mod_keyword: 1.0 if "mod" or "remainder" in prompt, else 0.0.
+      3. has_percentage: 1.0 if "%" in prompt, else 0.0.
+    """
+    import numpy as np
+    import re
+    features = np.zeros((len(tasks), 4), dtype=np.float32)
+    for i, task in enumerate(tasks):
+        spec = str(task.get("specification", ""))
+        # Max operand magnitude — genuine prompt feature
+        numbers = [int(n) for n in re.findall(r'\d+', spec)]
+        max_num = max(numbers) if numbers else 0
+        features[i, 0] = min(np.log10(max(max_num, 1)) / 6.0, 1.0)  # normalize 0-1M
+        # Prompt length normalized
+        features[i, 1] = min(len(spec) / 500.0, 1.0)
+        # Has mod/remainder keyword
+        features[i, 2] = 1.0 if ("mod" in spec.lower() or "remainder" in spec.lower()) else 0.0
+        # Has percentage
+        features[i, 3] = 1.0 if "%" in spec else 0.0
+    return features
+
+
+def _concat_features(hidden: "np.ndarray", surface: "np.ndarray") -> "np.ndarray":
+    """Concatenate hidden states with surface features."""
+    import numpy as np
+    return np.concatenate([hidden, surface], axis=1)
+
+
 def stage_collect(criteria, args) -> int:
     """Stage 1: generate dataset + collect counterfactual experience."""
     from daph_learning.data.grouped_benchmark import generate_all_grouped_splits
@@ -345,7 +387,7 @@ def stage_develop(criteria, args) -> int:
     print(f"[develop] Selected: layer={sel.selected.layer}, "
           f"pooling={sel.selected.pooling}")
 
-    # Build features: real hidden states if model loaded, else hash-based.
+    # Build features: real hidden states + surface features.
     import numpy as np
     from daph_learning.policy.policy_factory import fit_policy, predict_proba
     from daph_learning.policy.config import ExperimentConfig
@@ -353,16 +395,25 @@ def stage_develop(criteria, args) -> int:
     train_exp = experiences["train"]
     if model_info is not None and capture_config is not None:
         print(f"[develop] Capturing hidden states for train split...")
-        train_features = _capture_hidden_states(
+        train_hidden = _capture_hidden_states(
             splits["train"], model, tokenizer, capture_config,
             device=getattr(args, "device", "mps"))
         print(f"[develop] Capturing hidden states for dev split...")
-        dev_features = _capture_hidden_states(
+        dev_hidden = _capture_hidden_states(
             splits["development"], model, tokenizer, capture_config,
             device=getattr(args, "device", "mps"))
     else:
-        train_features = _build_features(splits["train"])
-        dev_features = _build_features(splits["development"])
+        train_hidden = _build_features(splits["train"])
+        dev_hidden = _build_features(splits["development"])
+
+    # Concatenate surface features (operand magnitude, has_caps, etc.)
+    print(f"[develop] Extracting surface features...")
+    train_surface = _extract_surface_features(splits["train"])
+    dev_surface = _extract_surface_features(splits["development"])
+    train_features = _concat_features(train_hidden, train_surface)
+    dev_features = _concat_features(dev_hidden, dev_surface)
+    print(f"[develop] Feature dim: {train_features.shape[1]} "
+          f"(hidden={train_hidden.shape[1]} + surface={train_surface.shape[1]})")
 
     train_delta_u = np.array([e["delta_utility"] for e in train_exp],
                               dtype=np.float64)
@@ -374,8 +425,8 @@ def stage_develop(criteria, args) -> int:
                             dtype=np.float64)
 
     config = ExperimentConfig(
-        policy_type="centroid",  # deterministic, no torch needed
-        target_mode="signal_to_noise",
+        policy_type="logistic",
+        target_mode="soft",
         early_stopping_metric="dev_regret",
     ).freeze()
 
@@ -539,19 +590,41 @@ def stage_final(criteria, args) -> int:
         return 1
     train_exp = json.loads(train_exp_path.read_text())
 
-    # Build features: real hidden states if model loaded, else hash-based.
+    # Build features: real hidden states + surface features.
     if model_info is not None and capture_config is not None:
         print(f"[final] Capturing hidden states for train split...")
-        train_features = _capture_hidden_states(
+        train_hidden = _capture_hidden_states(
             splits["train"], model, tokenizer, capture_config,
             device=getattr(args, "device", "mps"))
+        print(f"[final] Capturing hidden states for dev split...")
+        dev_hidden = _capture_hidden_states(
+            splits["development"], model, tokenizer, capture_config,
+            device=getattr(args, "device", "mps"))
         print(f"[final] Capturing hidden states for final split...")
-        final_features = _capture_hidden_states(
+        final_hidden = _capture_hidden_states(
             splits["final"], model, tokenizer, capture_config,
             device=getattr(args, "device", "mps"))
     else:
-        train_features = _build_features(splits["train"])
-        final_features = _build_features(splits["final"])
+        train_hidden = _build_features(splits["train"])
+        dev_hidden = _build_features(splits["development"])
+        final_hidden = _build_features(splits["final"])
+
+    # Concatenate surface features.
+    print(f"[final] Extracting surface features...")
+    train_surface = _extract_surface_features(splits["train"])
+    dev_surface = _extract_surface_features(splits["development"])
+    final_surface = _extract_surface_features(splits["final"])
+    train_features = _concat_features(train_hidden, train_surface)
+    dev_features = _concat_features(dev_hidden, dev_surface)
+    final_features = _concat_features(final_hidden, final_surface)
+
+    # Load dev experiences for early stopping.
+    dev_exp_path = _develop_dir(criteria) / "development_experiences.json"
+    dev_exp = json.loads(dev_exp_path.read_text()) if dev_exp_path.exists() else []
+    dev_delta_u = np.array([e["delta_utility"] for e in dev_exp],
+                           dtype=np.float64) if dev_exp else np.array([], dtype=np.float64)
+    dev_weights = np.array([e["sample_weight"] for e in dev_exp],
+                           dtype=np.float64) if dev_exp else np.array([], dtype=np.float64)
 
     train_delta_u = np.array([e["delta_utility"] for e in train_exp],
                               dtype=np.float64)
@@ -559,14 +632,15 @@ def stage_final(criteria, args) -> int:
                               dtype=np.float64)
 
     config = ExperimentConfig(
-        policy_type="centroid",
-        target_mode="signal_to_noise",
+        policy_type="logistic",
+        target_mode="soft",
         early_stopping_metric="dev_regret",
     ).freeze()
 
     p1_model = fit_policy(
         config, train_features, train_delta_u, train_weights,
-        seed=args.seed)
+        dev_features=dev_features, dev_delta_u=dev_delta_u,
+        dev_weights=dev_weights, seed=args.seed)
 
     # Evaluate P1 on final split.
     p1_probs = predict_proba(p1_model, final_features)
@@ -580,7 +654,7 @@ def stage_final(criteria, args) -> int:
     p1_actions = np.where(p1_probs.flatten() > 0.5, "symbolic", "llm")
     p1_sym_frac = float(np.mean(p1_actions == "symbolic"))
     p1_llm_frac = float(np.mean(p1_actions == "llm"))
-    p1_abstain_frac = 0.0  # centroid doesn't abstain
+    p1_abstain_frac = 0.0  # logistic doesn't abstain
 
     # Oracle actions: always pick the higher-utility backend.
     oracle_actions = np.where(final_delta_u > 0, "symbolic", "llm")
@@ -614,11 +688,11 @@ def stage_final(criteria, args) -> int:
     training_spec = PolicyTrainingSpec(
         feature_schema_hash=hashlib.sha256(
             train_features.tobytes()).hexdigest()[:16],
-        policy_class="centroid",
+        policy_class="logistic",
         regularization=0.0,
-        optimizer="none",
+        optimizer="adam",
         seed=args.seed,
-        target_mode="signal_to_noise",
+        target_mode="soft",
         calibration_method="none",
     )
 
