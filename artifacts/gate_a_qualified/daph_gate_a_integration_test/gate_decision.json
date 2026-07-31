@@ -5,25 +5,25 @@
   "overall_status": "PASS",
   "gate_verdicts": {
     "minimum_point_gain_vs_p0": {
-      "actual": 0.06267058702488193,
+      "actual": 0.06267058423513883,
       "threshold": 0.0,
       "comparator": "gt",
       "passed": true
     },
     "require_lcb_vs_p0_above": {
-      "actual": -0.037329412975118076,
+      "actual": -0.03732941576486118,
       "threshold": -1.0,
       "comparator": "gt",
       "passed": true
     },
     "require_lcb_vs_sham_above": {
-      "actual": -0.027731802631323174,
+      "actual": -0.02773180203544593,
       "threshold": -1.0,
       "comparator": "gt",
       "passed": true
     },
     "minimum_oracle_gap_capture": {
-      "actual": 0.17691686781904287,
+      "actual": 0.17691685950321603,
       "threshold": 0.0,
       "comparator": "gte",
       "passed": true
@@ -35,7 +35,7 @@
       "passed": true
     },
     "maximum_worst_subtype_regression": {
-      "actual": 0.3716233717340391,
+      "actual": 0.09232456368234129,
       "threshold": 1.0,
       "comparator": "lte",
       "passed": true
