@@ -1,9 +1,9 @@
 {
   "artifact_type": "pointer",
-  "experiment_id": "daph_gate_a_integration_test",
-  "target": "/Users/dawsonblock/Downloads/DAPH_AutoLearn_v0_3_8_protocol_repair/artifacts/gate_a_qualified/daph_gate_a_integration_test",
-  "source_hash": "f76dbaf80b9b1eca20dd47286395e680237ae893a41f674ae7037154723cec38",
-  "generated_at": "2026-07-30",
-  "status": "FAILED",
-  "evidence_level": "EXPERIMENTALLY_FAILED"
+  "experiment_id": "daph_gate_a_real_002",
+  "target": null,
+  "source_hash": "",
+  "generated_at": "",
+  "status": "NOT_YET_REQUALIFIED",
+  "evidence_level": "PENDING"
 }

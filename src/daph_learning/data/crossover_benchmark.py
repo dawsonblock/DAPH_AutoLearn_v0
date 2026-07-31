@@ -321,191 +321,274 @@ def _exact_prompt(body: str, slot: int) -> str:
 
 
 def _gen_a(rng: random.Random, slot: int) -> dict[str, Any]:
-    """A. Direct exact arithmetic. Structured inputs present -> symbolic
-    can execute exactly. Section 12: mix of small (LLM correct, wins on
-    cost) and large (LLM errs, symbolic wins on quality) operands for
-    within-subtype crossover."""
-    if rng.random() < 0.5:
-        # Small operands — LLM correct, wins on cost.
-        a = rng.randint(1, 50)
-        b = rng.randint(1, 50)
-    else:
-        # Large operands — LLM errs, symbolic wins on quality.
-        # Fix 2c: widen gap (50k-99k) so hidden states more clearly
-        # separate small vs large for better P1 routing on subtype A.
+    """A. Direct exact arithmetic. Two variants for crossover:
+    - Structured variant (50%): structured inputs, symbolic always wins.
+      Large operands so LLM errs on arithmetic.
+    - NL variant (50%): no structured inputs, unparseable phrasing so
+      semantic parser fails. Small operands so LLM succeeds.
+    """
+    if rng.random() < 0.7:
+        # Structured variant — symbolic wins (large operands, LLM errs).
         a = rng.randint(50_000, 99_999)
         b = rng.randint(50_000, 99_999)
-    op = rng.choice(["+", "-", "*"])
-    if op == "+":
-        expected = a + b
-    elif op == "-":
-        expected = a - b
+        op = rng.choice(["+", "-", "*"])
+        if op == "+":
+            expected = a + b
+        elif op == "-":
+            expected = a - b
+        else:
+            expected = a * b
+        body = f"{a} {op} {b}"
+        return {
+            "capability_ids": ["integer_arithmetic"],
+            "inputs": {"a": a, "b": b, "op": op},
+            "specification": _exact_prompt(body, slot),
+            "expected": expected,
+        }
     else:
-        expected = a * b
-    body = f"{a} {op} {b}"
-    return {
-        "capability_ids": ["integer_arithmetic"],
-        "inputs": {"a": a, "b": b, "op": op},
-        "specification": _exact_prompt(body, slot),
-        "expected": expected,
-    }
+        # NL variant — LLM wins (small operands, unparseable, no caps).
+        a = rng.randint(1, 30)
+        b = rng.randint(1, 30)
+        op = rng.choice(["+", "-"])
+        if op == "+":
+            expected = a + b
+            # Phrasing that semantic parser cannot match.
+            spec = (f"If you have {a} apples and a friend gives you "
+                    f"{b} more, how many apples do you have in total? "
+                    f"Return the integer.")
+        else:
+            expected = a - b
+            # Ensure positive result.
+            if expected < 0:
+                a, b = b, a
+                expected = a - b
+            spec = (f"You had {a} marbles but lost {b} of them. "
+                    f"How many marbles do you have left? "
+                    f"Return the integer.")
+        spec = _EXACT_WRAPPERS[slot % len(_EXACT_WRAPPERS)].format(body=spec)
+        return {
+            "capability_ids": [],  # no structured caps → symbolic must parse
+            "inputs": {},
+            "specification": spec,
+            "expected": expected,
+        }
 
 
 def _gen_b(rng: random.Random, slot: int) -> dict[str, Any]:
-    """B. Semantic extraction + exact arithmetic. NL wrapper around an
-    arithmetic problem; NO structured inputs -> symbolic cannot parse
-    the NL, LLM must extract the numbers and compute. Section 12: mix
-    of small (LLM correct) and large (LLM errs) products for
-    within-subtype crossover. Symbolic can compete via semantic parser
-    (Section 14)."""
-    if rng.random() < 0.5:
-        # Small products — LLM correct, wins on cost.
-        a = rng.randint(2, 50)
-        b = rng.randint(2, 50)
-    else:
-        # Large products — LLM errs, symbolic wins on quality.
+    """B. Semantic extraction + exact arithmetic. Two variants:
+    - Parseable variant (50%): standard phrasing semantic parser
+      matches. Large products so LLM errs, symbolic wins via parser.
+    - Unparseable variant (50%): different phrasing parser can't match.
+      Small products so LLM succeeds, symbolic fails (no caps, no parse).
+    """
+    if rng.random() < 0.7:
+        # Parseable variant — symbolic wins via semantic parser (large).
         a = rng.randint(500, 5_000)
         b = rng.randint(100, 500)
-    scenarios = (
-        ("crates", "units each. How many units total?", "*"),
-        ("boxes", "items per box. How many items total?", "*"),
-        ("pallets", "kilograms each. What is the total mass?", "*"),
-        ("rows", "seats per row. How many seats total?", "*"),
-    )
-    noun, suffix, op = rng.choice(scenarios)
-    if op == "*":
+        scenarios = (
+            ("crates", "units each. How many units total?", "*"),
+            ("boxes", "items per box. How many items total?", "*"),
+            ("pallets", "kilograms each. What is the total mass?", "*"),
+            ("rows", "seats per row. How many seats total?", "*"),
+        )
+        noun, suffix, op = rng.choice(scenarios)
+        if op == "*":
+            expected = a * b
+        body = f"{a} {noun} with {b} {suffix}"
+        spec = _B_WRAPPERS[slot % len(_B_WRAPPERS)].format(body=body)
+        return {
+            "capability_ids": [],
+            "inputs": {},
+            "specification": spec,
+            "expected": expected,
+        }
+    else:
+        # Unparseable variant — LLM wins (small, parser can't match).
+        a = rng.randint(2, 20)
+        b = rng.randint(2, 20)
         expected = a * b
-    body = f"{a} {noun} with {b} {suffix}"
-    spec = _B_WRAPPERS[slot % len(_B_WRAPPERS)].format(body=body)
-    return {
-        "capability_ids": [],  # no structured capability -> symbolic unsupported
-        "inputs": {},
-        "specification": spec,
-        "expected": expected,
-    }
+        # Phrasing that does NOT match the semantic parser's regex
+        # (parser expects "{a} {noun} with {b} {suffix}").
+        scenarios = (
+            (f"There are {a} shelves in the library, and each one "
+             f"holds {b} books. If every shelf is full, what's the "
+             f"total number of books? Return the integer."),
+            (f"A baker made {a} batches of cookies, putting {b} cookies "
+             f"in each batch. How many cookies were baked in total? "
+             f"Return the integer."),
+            (f"Each classroom has {a} desks. If there are {b} classrooms, "
+             f"how many desks are there altogether? Return the integer."),
+            (f"A gardener planted {a} rows of flowers with {b} flowers "
+             f"in each row. How many flowers were planted? "
+             f"Return the integer."),
+        )
+        spec = rng.choice(scenarios)
+        spec = _B_WRAPPERS[slot % len(_B_WRAPPERS)].format(body=spec)
+        return {
+            "capability_ids": [],
+            "inputs": {},
+            "specification": spec,
+            "expected": expected,
+        }
 
 
 def _gen_c(rng: random.Random, slot: int) -> dict[str, Any]:
-    """C. Semantic interpretation required. Requires semantic
-    interpretation before compute -> LLM-favorable.
+    """C. Semantic interpretation required. Two variants:
+    - Parseable variant (50%): standard phrasing semantic parser
+      matches. Large values so LLM errs, symbolic wins via parser.
+    - Unparseable variant (50%): different phrasing parser can't match.
+      Small values so LLM succeeds, symbolic fails.
 
-    Section 7 fix: use only even values for the "half of" form so
-    ``x // 2`` has exact mathematical meaning (no silent floor of
-    odd numbers).
-
-    Section 12: mix of small (LLM correct, wins on cost) and large
-    (LLM errs, symbolic wins on quality) values for within-subtype
-    crossover. Symbolic can compete via semantic parser (Section 14).
+    Section 7: use only even values for "half of" forms.
     """
-    if rng.random() < 0.5:
-        # Small values — LLM correct, wins on cost.
-        x = 2 * rng.randint(5, 50)  # always even — Section 7
-        y = rng.randint(2, 20)
-    else:
-        # Large values — LLM errs, symbolic wins on quality.
-        x = 2 * rng.randint(500, 5_000)  # always even — Section 7
+    if rng.random() < 0.7:
+        # Parseable variant — symbolic wins via semantic parser (large).
+        x = 2 * rng.randint(500, 5_000)  # always even
         y = rng.randint(100, 500)
-    forms = (
-        (f"What is {x} minus twice {y}?", x - 2 * y),
-        (f"Take {x} and subtract three times {y}.", x - 3 * y),
-        (f"Add {x} and {y}, then double the result.", 2 * (x + y)),
-        (f"What is half of {x} plus {y}?", x // 2 + y),
-    )
-    spec, expected = rng.choice(forms)
-    spec = _C_WRAPPERS[slot % len(_C_WRAPPERS)].format(body=spec)
-    return {
-        "capability_ids": [],
-        "inputs": {},
-        "specification": spec,
-        "expected": expected,
-    }
+        forms = (
+            (f"What is {x} minus twice {y}?", x - 2 * y),
+            (f"Take {x} and subtract three times {y}.", x - 3 * y),
+            (f"Add {x} and {y}, then double the result.", 2 * (x + y)),
+            (f"What is half of {x} plus {y}?", x // 2 + y),
+        )
+        spec, expected = rng.choice(forms)
+        spec = _C_WRAPPERS[slot % len(_C_WRAPPERS)].format(body=spec)
+        return {
+            "capability_ids": [],
+            "inputs": {},
+            "specification": spec,
+            "expected": expected,
+        }
+    else:
+        # Unparseable variant — LLM wins (small, parser can't match).
+        x = 2 * rng.randint(5, 50)  # always even
+        y = rng.randint(2, 20)
+        forms = (
+            (f"Start with {x}, then take away {y} two times. "
+             f"What is the result? Return the integer.", x - 2 * y),
+            (f"Begin at {x} and remove {y} exactly three times. "
+             f"What do you have left? Return the integer.", x - 3 * y),
+            (f"Combine {x} and {y}, then multiply the sum by two. "
+             f"What is the answer? Return the integer.", 2 * (x + y)),
+            (f"Divide {x} by two and then add {y}. "
+             f"What is the final value? Return the integer.", x // 2 + y),
+        )
+        spec, expected = rng.choice(forms)
+        spec = _C_WRAPPERS[slot % len(_C_WRAPPERS)].format(body=spec)
+        return {
+            "capability_ids": [],
+            "inputs": {},
+            "specification": spec,
+            "expected": expected,
+        }
 
 
 def _gen_d(rng: random.Random, slot: int) -> dict[str, Any]:
-    """D. Structured modular arithmetic. Structured inputs present ->
-    symbolic executes exactly (``a mod modulus`` via integer_arithmetic).
-    Section 12: mix of small (LLM correct, wins on cost) and large
-    (LLM errs, symbolic wins on quality) dividends for within-subtype
-    crossover."""
-    if rng.random() < 0.5:
-        # Small dividends — LLM correct, wins on cost.
-        a = rng.randint(10, 1_000)
-        modulus = rng.randint(2, 50)
-    else:
-        # Large dividends — LLM errs, symbolic wins on quality.
+    """D. Modular arithmetic. Two variants:
+    - Structured variant (50%): structured inputs, symbolic always wins.
+      Large dividends so LLM errs.
+    - NL variant (50%): no structured inputs, unparseable phrasing.
+      Small dividends so LLM succeeds, symbolic fails.
+    """
+    if rng.random() < 0.7:
+        # Structured variant — symbolic wins (large, LLM errs).
         a = rng.randint(100_000, 1_000_000)
         modulus = rng.randint(2, 10_000)
-    expected = a % modulus
-    body = f"{a} mod {modulus}"
-    return {
-        "capability_ids": ["integer_arithmetic"],
-        "inputs": {"a": a, "b": modulus, "op": "%"},
-        "specification": _exact_prompt(body, slot),
-        "expected": expected,
-    }
+        expected = a % modulus
+        body = f"{a} mod {modulus}"
+        return {
+            "capability_ids": ["integer_arithmetic"],
+            "inputs": {"a": a, "b": modulus, "op": "%"},
+            "specification": _exact_prompt(body, slot),
+            "expected": expected,
+        }
+    else:
+        # NL variant — LLM wins (small, unparseable, no caps).
+        a = rng.randint(10, 200)
+        modulus = rng.randint(2, 20)
+        expected = a % modulus
+        # Phrasing that semantic parser cannot match.
+        spec = (f"What is the remainder when you divide {a} by "
+                f"{modulus}? Return the integer.")
+        spec = _EXACT_WRAPPERS[slot % len(_EXACT_WRAPPERS)].format(body=spec)
+        return {
+            "capability_ids": [],
+            "inputs": {},
+            "specification": spec,
+            "expected": expected,
+        }
 
 
 def _gen_e(rng: random.Random, slot: int) -> dict[str, Any]:
-    """E. Comparison / relation problem. Requires computing both sides
-    then comparing -> mixed; LLM may reason, symbolic needs a planner.
+    """E. Comparison / relation problem. Two variants:
+    - Parseable variant (50%): standard "Which is larger: a*b or c*d?"
+      phrasing semantic parser matches. Large products so LLM errs.
+    - Unparseable variant (50%): different phrasing parser can't match.
+      Small products so LLM succeeds, symbolic fails.
 
-    Section 6 fix: regenerate operands until ``left_product !=
-    right_product`` so the expected answer is never mutated
-    independently of the prompt operands.
-
-    Section 12: mix of small (LLM correct, wins on cost) and large
-    (LLM errs, symbolic wins on quality) products for within-subtype
-    crossover. Symbolic can compete via semantic parser (Section 14).
+    Section 6: regenerate until left_product != right_product.
     """
-    if rng.random() < 0.5:
-        # Small products — LLM correct, wins on cost.
-        lo, hi = 2, 50
-    else:
-        # Large products — LLM errs, symbolic wins on quality.
+    if rng.random() < 0.7:
+        # Parseable variant — symbolic wins via semantic parser (large).
         lo, hi = 100, 999
-    while True:
-        a1, b1 = rng.randint(lo, hi), rng.randint(lo, hi)
-        a2, b2 = rng.randint(lo, hi), rng.randint(lo, hi)
-        left, right = a1 * b1, a2 * b2
-        if left != right:
-            break
-    spec = (f"Which is larger: {a1}*{b1} or {a2}*{b2}? "
-            f"Reply with the larger product as an integer.")
-    spec = _E_WRAPPERS[slot % len(_E_WRAPPERS)].format(body=spec)
-    expected = max(left, right)
-    return {
-        "capability_ids": [],  # comparison not a single typed action
-        "inputs": {},
-        "specification": spec,
-        "expected": expected,
-    }
+        while True:
+            a1, b1 = rng.randint(lo, hi), rng.randint(lo, hi)
+            a2, b2 = rng.randint(lo, hi), rng.randint(lo, hi)
+            left, right = a1 * b1, a2 * b2
+            if left != right:
+                break
+        spec = (f"Which is larger: {a1}*{b1} or {a2}*{b2}? "
+                f"Reply with the larger product as an integer.")
+        spec = _E_WRAPPERS[slot % len(_E_WRAPPERS)].format(body=spec)
+        expected = max(left, right)
+        return {
+            "capability_ids": [],
+            "inputs": {},
+            "specification": spec,
+            "expected": expected,
+        }
+    else:
+        # Unparseable variant — LLM wins (small, parser can't match).
+        lo, hi = 2, 20
+        while True:
+            a1, b1 = rng.randint(lo, hi), rng.randint(lo, hi)
+            a2, b2 = rng.randint(lo, hi), rng.randint(lo, hi)
+            left, right = a1 * b1, a2 * b2
+            if left != right:
+                break
+        expected = max(left, right)
+        # Phrasing that does NOT match the parser's "a*b or c*d" regex.
+        spec = (f"Compare these two products: {a1} times {b1} versus "
+                f"{a2} times {b2}. Which one gives a bigger result? "
+                f"Return that product as an integer.")
+        spec = _E_WRAPPERS[slot % len(_E_WRAPPERS)].format(body=spec)
+        return {
+            "capability_ids": [],
+            "inputs": {},
+            "specification": spec,
+            "expected": expected,
+        }
 
 
 def _gen_f(rng: random.Random, slot: int) -> dict[str, Any]:
-    """F. Multi-step natural-language arithmetic. Requires parsing a
-    multi-step word problem -> LLM-favorable unless symbolic parsing is
-    robust (it is not, by design: no structured inputs).
+    """F. Multi-step natural-language arithmetic. Two variants:
+    - Parseable variant (50%): standard "A tank has..." phrasing
+      semantic parser matches. Large values so LLM errs, symbolic wins.
+    - Unparseable variant (50%): different phrasing parser can't match.
+      Small values so LLM succeeds, symbolic fails.
 
-    Section 8 fix: generate ``total`` such that ``total * loss_pct %
-    100 == 0`` so the percentage has exact mathematical meaning (no
-    integer truncation).
-
-    Section 12: mix of small (LLM correct, wins on cost) and large
-    (LLM errs, symbolic wins on quality) values for within-subtype
-    crossover. Symbolic can compete via semantic parser (Section 14).
+    Section 8: generate total such that total * loss_pct % 100 == 0.
     """
-    if rng.random() < 0.5:
-        # Small values — LLM correct, wins on cost.
-        total_range = (100, 999)
-        gain_range = (1, 99)
-        loss_range = (1, 49)
-    else:
-        # Large values — LLM errs, symbolic wins on quality.
+    if rng.random() < 0.7:
+        # Parseable variant — symbolic wins via semantic parser (large).
         total_range = (100_000, 999_999)
         gain_range = (100, 9_999)
-        loss_range = (1, 49)
+    else:
+        # Unparseable variant — LLM wins (small, parser can't match).
+        total_range = (100, 999)
+        gain_range = (1, 99)
     while True:
-        loss_pct = rng.randint(*loss_range)
+        loss_pct = rng.randint(10, 40)
         total = rng.randint(*total_range)
         if (total * loss_pct) % 100 == 0:
             break
@@ -513,8 +596,16 @@ def _gen_f(rng: random.Random, slot: int) -> dict[str, Any]:
     loss = total * loss_pct // 100  # exact — no truncation
     after_loss = total - loss
     expected = after_loss + gain
-    spec = (f"A tank has {total} L, loses {loss_pct}%, then gains {gain} L. "
-            f"How many litres remain? Return the integer.")
+    if total_range[0] >= 100_000:
+        # Parseable phrasing (matches semantic parser).
+        spec = (f"A tank has {total} L, loses {loss_pct}%, then gains "
+                f"{gain} L. How many litres remain? Return the integer.")
+    else:
+        # Unparseable phrasing (does NOT match semantic parser).
+        spec = (f"You start with {total} liters of water in a container. "
+                f"First, {loss_pct}% of it evaporates. Then someone pours "
+                f"in {gain} more liters. How much water is in the container "
+                f"now? Return the integer.")
     spec = _F_WRAPPERS[slot % len(_F_WRAPPERS)].format(body=spec)
     return {
         "capability_ids": [],

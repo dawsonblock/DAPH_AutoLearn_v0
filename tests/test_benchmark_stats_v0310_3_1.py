@@ -55,15 +55,16 @@ def test_hand_router_does_not_read_expected_or_label():
 def test_hand_router_on_crossover_split():
     tasks = generate_crossover_split(split="dev", n_per_subtype=5, seed=0)
     routes = hand_router_routes(tasks)
-    # v0.3.10.3.2: hand router now considers operand magnitude.
-    # Subtypes A, D have structured inputs -> symbolic.
-    # NL subtypes (B, C, E, F) -> symbolic if large operands, llm if small.
+    # v0.3.10.4: generators now produce both structured and NL variants.
+    # Structured variants (with capability_ids) -> symbolic.
+    # NL variants (no capability_ids) -> llm (no structured path).
     for t, r in zip(tasks, routes):
         st = t["metadata"]["subtype"]
-        if st in ("A", "D"):
-            assert r == "symbolic", f"{st} should be symbolic, got {r}"
+        caps = t.get("capability_ids", [])
+        if caps:
+            assert r == "symbolic", f"{st} with caps should be symbolic, got {r}"
         else:
-            # NL subtypes: route depends on operand magnitude
+            # NL variants: route depends on operand magnitude / heuristic
             assert r in ("symbolic", "llm"), f"{st} unexpected route {r}"
 
 
