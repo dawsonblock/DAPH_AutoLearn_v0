@@ -1,10 +1,9 @@
 {
   "artifact_type": "pointer",
-  "experiment_id": "daph_gate_a_real_002_invalid_statistics",
-  "target": "../invalidated/daph_gate_a_real_002_invalid_statistics",
-  "qualification_status": "INVALIDATED",
-  "evidence_level": "REAL_MODEL_EXPERIMENT",
-  "source_hash": "aacce4e6781088b372bd7a0de3b588e03000f0e5adb9b1786fa9014b55c40824",
-  "generated_at": "2026-07-31T20:00:00Z",
-  "status": "INVALIDATED"
+  "experiment_id": "daph_gate_a_real_003",
+  "target": "../gate_a_qualified/daph_gate_a_real_003",
+  "qualification_status": "PASS",
+  "evidence_level": "EXPERIMENTALLY_QUALIFIED",
+  "source_hash": "51ad856027a33c21e4a477fbc2c7cf57ccd67c292602e42339f09c5fab933809",
+  "generated_at": "2026-07-31T22:21:27Z"
 }
