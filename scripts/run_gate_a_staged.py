@@ -695,8 +695,9 @@ def _concat_features(hidden: "np.ndarray", surface: "np.ndarray") -> "np.ndarray
     return np.concatenate([hidden_normed, surface], axis=1)
 
 
-def _capture_all_layers(tasks, model, tokenizer, device="cuda", batch_size: int = 16):
-    """Capture hidden states for ALL layers and ALL pooling methods in one pass.
+def _capture_all_layers(tasks, model, tokenizer, device="cuda", batch_size: int = 16,
+                        layer_indices: list[int] | None = None):
+    """Capture hidden states for specified layers and ALL pooling methods in one pass.
 
     Fix 3: the previous implementation captured only the last token and
     ignored ``c.pooling``, so the three pooling candidates
@@ -709,6 +710,13 @@ def _capture_all_layers(tasks, model, tokenizer, device="cuda", batch_size: int 
         positions (the full prompt).
       * ``mean_content_tokens`` — mean over non-pad, non-special (BOS/EOS)
         positions (pure content tokens, excluding structural tokens).
+
+    Parameters
+    ----------
+    layer_indices : list[int] | None
+        If provided, only capture hidden states for these layer indices
+        (0-indexed including embedding layer). If None, capture all layers.
+        Capturing only the needed layers (e.g. 4 out of 37) is ~9x faster.
 
     Returns
     -------
@@ -725,6 +733,7 @@ def _capture_all_layers(tasks, model, tokenizer, device="cuda", batch_size: int 
     per_pool: dict[str, list[list[np.ndarray]]] = {
         p: None for p in pooling_names}
     n_layers = None
+    capture_layers = None  # set after first batch
     for i in range(0, len(tasks), batch_size):
         batch = tasks[i:i + batch_size]
         prompts = [str(t.get("prompt", t.get("specification", ""))) for t in batch]
@@ -734,6 +743,12 @@ def _capture_all_layers(tasks, model, tokenizer, device="cuda", batch_size: int 
             outputs = model(**inputs, output_hidden_states=True)
         if n_layers is None:
             n_layers = len(outputs.hidden_states)
+            if layer_indices is not None:
+                # Map requested layer indices to actual positions, clamp to valid range.
+                capture_layers = sorted(set(
+                    min(max(l, 0), n_layers - 1) for l in layer_indices))
+            else:
+                capture_layers = list(range(n_layers))
             per_pool = {p: [[] for _ in range(n_layers)] for p in pooling_names}
         for j in range(len(batch)):
             attn = inputs.attention_mask[j]
@@ -747,7 +762,7 @@ def _capture_all_layers(tasks, model, tokenizer, device="cuda", batch_size: int 
             # Guarantee at least one content token; fall back to full mask.
             if content_mask.sum().item() == 0:
                 content_mask = attn
-            for layer_idx in range(n_layers):
+            for layer_idx in capture_layers:
                 h = outputs.hidden_states[layer_idx][j]
                 # last_prompt_token
                 per_pool["last_prompt_token"][layer_idx].append(
@@ -762,10 +777,11 @@ def _capture_all_layers(tasks, model, tokenizer, device="cuda", batch_size: int 
                 per_pool["mean_content_tokens"][layer_idx].append(
                     (h * cm).sum(0).div(cm.sum().clamp(min=1))
                     .float().cpu().numpy())
-        if (i + batch_size) % 100 == 0 or i + batch_size >= len(tasks):
+        if (i + batch_size) % 400 == 0 or i + batch_size >= len(tasks):
             print(f"    ... captured {min(i + batch_size, len(tasks))}/{len(tasks)} "
-                  f"hidden states (3 poolings × {n_layers} layers)")
-    return {p: [np.array(layer_feats) for layer_feats in per_pool[p]]
+                  f"hidden states (3 poolings × {len(capture_layers)} layers)")
+    return {p: [np.array(layer_feats) if layer_feats else np.array([])
+                 for layer_feats in per_pool[p]]
             for p in pooling_names}
 
 
@@ -1080,14 +1096,22 @@ def stage_develop(criteria, args) -> int:
     train_exp = experiences["train"]
     if model_info is not None and capture_config is not None:
         n_layers = model.config.num_hidden_layers
-        print(f"[develop] Capturing hidden states for train split (all layers)...")
+        # Only capture the layers we actually need (0.25, 0.50, 0.75, last)
+        # instead of all layers. This is ~9x faster on CPU.
+        from daph_learning.evaluation.representation_selection import layer_candidates
+        needed_layers = layer_candidates(n_layers)
+        print(f"[develop] Capturing hidden states for train split "
+              f"(layers {needed_layers} of {n_layers})...")
         train_hidden_all = _capture_all_layers(
             splits["train"], model, tokenizer,
-            device=getattr(args, "device", "mps"))
-        print(f"[develop] Capturing hidden states for dev split (all layers)...")
+            device=getattr(args, "device", "mps"),
+            layer_indices=needed_layers)
+        print(f"[develop] Capturing hidden states for dev split "
+              f"(layers {needed_layers} of {n_layers})...")
         dev_hidden_all = _capture_all_layers(
             splits["development"], model, tokenizer,
-            device=getattr(args, "device", "mps"))
+            device=getattr(args, "device", "mps"),
+            layer_indices=needed_layers)
     else:
         n_layers = args.n_layers or 24
         train_hidden_all = None
