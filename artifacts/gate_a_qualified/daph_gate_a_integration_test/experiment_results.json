@@ -306,7 +306,7 @@
   },
   "utility_protocol": "gate_a_accuracy_primary",
   "utility_config_sha256": "9c2c7dd74ca8db552d40c28916f59461e1ad4f4e383a29dafb476c91851bee63",
-  "policy_hash": "87b46a58d0213a2afda5ec24c2ae804e447478e71bb716e1b38dce2343c910c8",
+  "policy_hash": "2fcae1b101da02703e43d55bed2b5e35c39f448d5e6c186199115749d5bd8937",
   "calibration_hash": "",
   "representation_hash": "9446e7180a6e1a5f225789ee3c2de51e403592564eba707a87aaad0ff5decc6b"
 }

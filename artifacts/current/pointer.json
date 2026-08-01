@@ -1,9 +1,9 @@
 {
   "artifact_type": "pointer",
-  "experiment_id": "daph_gate_a_real_003",
-  "target": "../gate_a_qualified/daph_gate_a_real_003",
+  "experiment_id": "daph_gate_a_real_005_requal",
+  "target": "../gate_a_qualified/daph_gate_a_real_005_requal",
   "qualification_status": "PASS",
   "evidence_level": "EXPERIMENTALLY_QUALIFIED",
-  "source_hash": "51ad856027a33c21e4a477fbc2c7cf57ccd67c292602e42339f09c5fab933809",
-  "generated_at": "2026-07-31T22:21:27Z"
+  "source_hash": "8902e990c65dfc9acdaddc9dedede48c0726b0069ad90227b870b27ec761c2eb",
+  "generated_at": "2026-08-01T01:33:22Z"
 }
