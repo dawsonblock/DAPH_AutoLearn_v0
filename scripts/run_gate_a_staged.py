@@ -1041,12 +1041,13 @@ def stage_develop(criteria, args) -> int:
     for split_name in ("train", "development"):
         print(f"[develop] Executing {split_name} split "
               f"({len(splits[split_name])} tasks)")
-        # Use batched LLM inference for speed.
+        # Use smart LLM inference (vLLM API → in-process vLLM → HF generate).
         llm_results = None
         if model_info is not None and model is not None:
-            llm_results = _batched_llm_generate(
-                splits[split_name], model, tokenizer,
-                device=getattr(args, "device", "cuda"), batch_size=_get_batch_size(criteria),                max_new_tokens=int(criteria.raw.get("model", {}).get("max_new_tokens", 256)))
+            llm_results = _smart_llm_generate(
+                splits[split_name], model, tokenizer, criteria,
+                device=getattr(args, "device", "cuda"),
+                max_new_tokens=int(criteria.raw.get("model", {}).get("max_new_tokens", 256)))
         experiences[split_name] = _execute_split(
             splits[split_name], utility_config,
             llm_backend=llm_backend, llm_results=llm_results)
@@ -1429,12 +1430,12 @@ def stage_calibrate(criteria, args) -> int:
 
     print(f"[calibrate] Executing calibration split "
           f"({len(splits['calibration'])} tasks)")
-    # Use batched LLM inference for speed.
+    # Use smart LLM inference (vLLM API → in-process vLLM → HF generate).
     cal_llm_results = None
     if model_info is not None and model is not None:
-        cal_llm_results = _batched_llm_generate(
-            splits["calibration"], model, tokenizer,
-            device=getattr(args, "device", "cuda"), batch_size=_get_batch_size(criteria),
+        cal_llm_results = _smart_llm_generate(
+            splits["calibration"], model, tokenizer, criteria,
+            device=getattr(args, "device", "cuda"),
             max_new_tokens=int(criteria.raw.get("model", {}).get("max_new_tokens", 256)))
     cal_experiences = _execute_split(
         splits["calibration"], utility_config,
@@ -1544,12 +1545,12 @@ def stage_final(criteria, args) -> int:
             llm_backend = _RealLLMBackend(model, tokenizer, capture_config,
                                           device=getattr(args, "device", "mps"))
 
-    # Use batched LLM inference for speed.
+    # Use smart LLM inference (vLLM API → in-process vLLM → HF generate).
     final_llm_results = None
     if model_info is not None and model is not None:
-        final_llm_results = _batched_llm_generate(
-            splits["final"], model, tokenizer,
-            device=getattr(args, "device", "cuda"), batch_size=_get_batch_size(criteria),
+        final_llm_results = _smart_llm_generate(
+            splits["final"], model, tokenizer, criteria,
+            device=getattr(args, "device", "cuda"),
             max_new_tokens=int(criteria.raw.get("model", {}).get("max_new_tokens", 256)))
     final_experiences = _execute_split(
         splits["final"], utility_config,
