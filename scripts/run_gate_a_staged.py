@@ -377,7 +377,9 @@ def _batched_llm_generate(tasks, model, tokenizer, device="cuda", batch_size=64,
 _VLLM_ENGINE = None
 
 
-def _vllm_generate(tasks, model_id, max_new_tokens=256, revision=None):
+def _vllm_generate(tasks, model_id, max_new_tokens=256, revision=None,
+                   *, gpu_memory_utilization=0.90, max_model_len=2048,
+                   tensor_parallel_size=1):
     """Use vLLM for fast batched generation. 5-10x faster than HF generate.
 
     Returns list of (generated_text, latency) tuples.
@@ -393,8 +395,9 @@ def _vllm_generate(tasks, model_id, max_new_tokens=256, revision=None):
             model=model_id,
             revision=revision,
             dtype="float16",
-            gpu_memory_utilization=0.85,
-            max_model_len=1024,
+            gpu_memory_utilization=gpu_memory_utilization,
+            max_model_len=max_model_len,
+            tensor_parallel_size=tensor_parallel_size,
             enforce_eager=False,
         )
         print(f"[vllm] Engine loaded.")
@@ -444,9 +447,17 @@ def _smart_llm_generate(tasks, model, tokenizer, criteria, device="cuda",
         revision = None
 
     try:
-        return _vllm_generate(tasks, model_id,
-                              max_new_tokens=max_new_tokens,
-                              revision=revision)
+        model_cfg = criteria.raw.get("model", {})
+        return _vllm_generate(
+            tasks, model_id,
+            max_new_tokens=max_new_tokens,
+            revision=revision,
+            gpu_memory_utilization=float(
+                model_cfg.get("vllm_gpu_memory_utilization", 0.90)),
+            max_model_len=int(model_cfg.get("vllm_max_model_len", 2048)),
+            tensor_parallel_size=int(
+                model_cfg.get("vllm_tensor_parallel_size", 1)),
+        )
     except Exception as exc:
         print(f"[llm] vLLM failed ({exc}), falling back to HF generate")
         return _batched_llm_generate(
@@ -723,6 +734,111 @@ def _extract_tfidf_features(tasks: list[dict[str, Any]], ref_tasks: list[dict[st
     return features
 
 
+def _extract_char_ngram_features(
+    tasks: list[dict[str, Any]], ref_tasks: list[dict[str, Any]]
+) -> "np.ndarray":
+    """Extract character n-gram TF-IDF features from task prompts.
+
+    Priority 4: a stronger text baseline than word-level TF-IDF. Character
+    n-grams (3-5) capture morphological structure (e.g. "mod", "gcd",
+    "remainder", "convert") that word-level tokenization may miss, and are
+    robust to minor phrasing variations.
+    """
+    import numpy as np
+    import re
+    from collections import Counter
+
+    def char_ngrams(text: str, n_min: int = 3, n_max: int = 5) -> list[str]:
+        text = re.sub(r'\s+', ' ', text.lower().strip())
+        grams = []
+        for n in range(n_min, n_max + 1):
+            for i in range(len(text) - n + 1):
+                grams.append(text[i:i+n])
+        return grams
+
+    # Build vocabulary from reference tasks (min_df=3).
+    doc_freq = Counter()
+    ref_docs = []
+    for t in ref_tasks:
+        spec = str(t.get("specification", t.get("prompt", "")))
+        grams = char_ngrams(spec)
+        ref_docs.append(grams)
+        for g in set(grams):
+            doc_freq[g] += 1
+    vocab = {}
+    for g, c in sorted(doc_freq.items()):
+        if c >= 3:
+            vocab[g] = len(vocab)
+    # Limit vocab size.
+    max_features = 8000
+    if len(vocab) > max_features:
+        vocab = dict(list(vocab.items())[:max_features])
+
+    # Compute IDF.
+    n_docs = len(ref_docs)
+    idf = np.zeros(len(vocab))
+    for g, idx in vocab.items():
+        idf[idx] = np.log((1 + n_docs) / (1 + doc_freq[g])) + 1
+
+    # Transform tasks.
+    features = np.zeros((len(tasks), len(vocab)), dtype=np.float32)
+    for i, t in enumerate(tasks):
+        spec = str(t.get("specification", t.get("prompt", "")))
+        grams = char_ngrams(spec)
+        tf = Counter(grams)
+        for g, count in tf.items():
+            if g in vocab:
+                features[i, vocab[g]] = count * idf[vocab[g]]
+    # L2 normalize.
+    norms = np.linalg.norm(features, axis=1, keepdims=True)
+    norms[norms == 0] = 1.0
+    features = features / norms
+    return features
+
+
+def _extract_text_embedding_features(
+    tasks: list[dict[str, Any]], model, tokenizer, device: str = "cuda",
+    batch_size: int = 16,
+) -> "np.ndarray":
+    """Extract text embedding features by mean-pooling the model's token
+    embeddings (input embeddings, NOT hidden states).
+
+    Priority 4: this is a stronger text baseline that uses the model's
+    learned token embeddings but NOT its contextual representations. It
+    captures lexical semantics (which tokens appear) without contextual
+    processing (how they interact). If hidden states add value beyond
+    this, it's because of contextual processing, not just token identity.
+    """
+    import numpy as np
+    import torch
+
+    model.eval()
+    all_embeddings: list[np.ndarray] = []
+
+    for batch_start in range(0, len(tasks), batch_size):
+        batch = tasks[batch_start:batch_start + batch_size]
+        specs = [str(t.get("specification", "")) for t in batch]
+        enc = tokenizer(
+            specs, return_tensors="pt", padding=True,
+            truncation=True, max_length=512,
+        ).to(device)
+        with torch.no_grad():
+            # Get input embeddings (token embeddings only, no positional,
+            # no layers). This is the raw embedding lookup.
+            input_embeds = model.get_input_embeddings()(enc["input_ids"])
+            # Mean-pool over non-pad tokens.
+            mask = enc["attention_mask"].float().unsqueeze(-1)
+            pooled = (input_embeds * mask).sum(1) / mask.sum(1).clamp(min=1)
+            all_embeddings.append(pooled.cpu().numpy().astype(np.float32))
+
+    features = np.concatenate(all_embeddings, axis=0)
+    # L2 normalize.
+    norms = np.linalg.norm(features, axis=1, keepdims=True)
+    norms[norms == 0] = 1.0
+    features = features / norms
+    return features
+
+
 def _fit_heuristic_threshold(dev_tasks: list[dict[str, Any]],
                               dev_experiences: list[dict[str, Any]]) -> float:
     """Fit a deterministic heuristic threshold from development data.
@@ -767,7 +883,10 @@ def stage_collect(criteria, args) -> int:
 
     # Select benchmark generator based on config.
     benchmark_type = criteria.raw.get("dataset", {}).get("benchmark_type", "standard")
-    if benchmark_type == "harder":
+    if benchmark_type == "v3":
+        from daph_learning.data.benchmark_v3_grouped import generate_all_grouped_splits
+        print(f"[collect] Using BENCHMARK V3 (reduced-tie, balanced-crossover)")
+    elif benchmark_type == "harder":
         from daph_learning.data.harder_grouped_benchmark import generate_all_grouped_splits
         print(f"[collect] Using HARDER benchmark (magnitude-decoupled)")
     else:
@@ -830,6 +949,8 @@ def stage_develop(criteria, args) -> int:
     llm_backend = None
     capture_config = None
     model_info = None
+    model = None
+    tokenizer = None
     if getattr(args, "use_real_model", False):
         model_info = _load_model(criteria, device=getattr(args, "device", "mps"))
         if model_info is not None:
@@ -1038,6 +1159,107 @@ def stage_develop(criteria, args) -> int:
         development_dataset_hash=_hash_tasks(splits["development"]),
         calibration_artifact_hash=None, regularization=0.0, solver="adam")
     (dev_out / "tfidf_policy.json").write_text(json.dumps(tfidf_artifact, indent=2))
+
+    # ── Priority 4: Stronger representation baselines ──
+    # (a) Character n-gram TF-IDF — captures morphological structure.
+    print(f"[develop] Training char-ngram TF-IDF baseline...")
+    train_charngram = _extract_char_ngram_features(splits["train"], splits["train"])
+    dev_charngram = _extract_char_ngram_features(splits["development"], splits["train"])
+    charngram_model = fit_policy(
+        config_rep, train_charngram, train_delta_u, train_weights,
+        dev_features=dev_charngram, dev_delta_u=dev_delta_u,
+        dev_weights=dev_weights, seed=args.seed)
+    np.save(dev_out / "train_charngram.npy", train_charngram)
+    np.save(dev_out / "dev_charngram.npy", dev_charngram)
+    charngram_artifact = serialize_frozen_policy(
+        charngram_model, experiment_id=criteria.experiment_id,
+        feature_schema_hash=hashlib.sha256(train_charngram.tobytes()).hexdigest()[:16],
+        feature_transform_hash=hashlib.sha256(dev_charngram.tobytes()).hexdigest()[:16],
+        training_seed=args.seed, target_mode="soft",
+        training_dataset_hash=_hash_tasks(splits["train"]),
+        development_dataset_hash=_hash_tasks(splits["development"]),
+        calibration_artifact_hash=None, regularization=0.0, solver="adam")
+    (dev_out / "charngram_policy.json").write_text(json.dumps(charngram_artifact, indent=2))
+
+    # (b) Text embedding — mean-pooled input token embeddings (no contextual layers).
+    # Only available when a real model is loaded (requires get_input_embeddings).
+    _has_real_model = (
+        model_info is not None and model is not None and tokenizer is not None)
+    train_text_emb = None
+    if _has_real_model:
+        print(f"[develop] Training text-embedding baseline...")
+        train_text_emb = _extract_text_embedding_features(
+            splits["train"], model, tokenizer, device=device)
+        dev_text_emb = _extract_text_embedding_features(
+            splits["development"], model, tokenizer, device=device)
+        text_emb_model = fit_policy(
+            config_rep, train_text_emb, train_delta_u, train_weights,
+            dev_features=dev_text_emb, dev_delta_u=dev_delta_u,
+            dev_weights=dev_weights, seed=args.seed)
+        np.save(dev_out / "train_text_emb.npy", train_text_emb)
+        np.save(dev_out / "dev_text_emb.npy", dev_text_emb)
+        text_emb_artifact = serialize_frozen_policy(
+            text_emb_model, experiment_id=criteria.experiment_id,
+            feature_schema_hash=hashlib.sha256(train_text_emb.tobytes()).hexdigest()[:16],
+            feature_transform_hash=hashlib.sha256(dev_text_emb.tobytes()).hexdigest()[:16],
+            training_seed=args.seed, target_mode="soft",
+            training_dataset_hash=_hash_tasks(splits["train"]),
+            development_dataset_hash=_hash_tasks(splits["development"]),
+            calibration_artifact_hash=None, regularization=0.0, solver="adam")
+        (dev_out / "text_emb_policy.json").write_text(json.dumps(text_emb_artifact, indent=2))
+    else:
+        print(f"[develop] Skipping text-embedding baseline (no real model)")
+
+    # (c) Hidden + TF-IDF — concatenation of hidden states and word TF-IDF.
+    print(f"[develop] Training hidden+TF-IDF baseline...")
+    train_hidden_tfidf = np.concatenate(
+        [train_hidden / np.linalg.norm(train_hidden, axis=1, keepdims=True).clip(min=1),
+         train_tfidf], axis=1)
+    dev_hidden_tfidf = np.concatenate(
+        [dev_hidden / np.linalg.norm(dev_hidden, axis=1, keepdims=True).clip(min=1),
+         dev_tfidf], axis=1)
+    hidden_tfidf_model = fit_policy(
+        config_rep, train_hidden_tfidf, train_delta_u, train_weights,
+        dev_features=dev_hidden_tfidf, dev_delta_u=dev_delta_u,
+        dev_weights=dev_weights, seed=args.seed)
+    np.save(dev_out / "train_hidden_tfidf.npy", train_hidden_tfidf)
+    np.save(dev_out / "dev_hidden_tfidf.npy", dev_hidden_tfidf)
+    hidden_tfidf_artifact = serialize_frozen_policy(
+        hidden_tfidf_model, experiment_id=criteria.experiment_id,
+        feature_schema_hash=hashlib.sha256(train_hidden_tfidf.tobytes()).hexdigest()[:16],
+        feature_transform_hash=hashlib.sha256(dev_hidden_tfidf.tobytes()).hexdigest()[:16],
+        training_seed=args.seed, target_mode="soft",
+        training_dataset_hash=_hash_tasks(splits["train"]),
+        development_dataset_hash=_hash_tasks(splits["development"]),
+        calibration_artifact_hash=None, regularization=0.0, solver="adam")
+    (dev_out / "hidden_tfidf_policy.json").write_text(json.dumps(hidden_tfidf_artifact, indent=2))
+
+    # (d) Hidden + text embedding — concatenation of hidden states and text embeddings.
+    if _has_real_model and train_text_emb is not None:
+        print(f"[develop] Training hidden+text-embedding baseline...")
+        train_hidden_text = np.concatenate(
+            [train_hidden / np.linalg.norm(train_hidden, axis=1, keepdims=True).clip(min=1),
+             train_text_emb], axis=1)
+        dev_hidden_text = np.concatenate(
+            [dev_hidden / np.linalg.norm(dev_hidden, axis=1, keepdims=True).clip(min=1),
+             dev_text_emb], axis=1)
+        hidden_text_model = fit_policy(
+            config_rep, train_hidden_text, train_delta_u, train_weights,
+            dev_features=dev_hidden_text, dev_delta_u=dev_delta_u,
+            dev_weights=dev_weights, seed=args.seed)
+        np.save(dev_out / "train_hidden_text.npy", train_hidden_text)
+        np.save(dev_out / "dev_hidden_text.npy", dev_hidden_text)
+        hidden_text_artifact = serialize_frozen_policy(
+            hidden_text_model, experiment_id=criteria.experiment_id,
+            feature_schema_hash=hashlib.sha256(train_hidden_text.tobytes()).hexdigest()[:16],
+            feature_transform_hash=hashlib.sha256(dev_hidden_text.tobytes()).hexdigest()[:16],
+            training_seed=args.seed, target_mode="soft",
+            training_dataset_hash=_hash_tasks(splits["train"]),
+            development_dataset_hash=_hash_tasks(splits["development"]),
+            calibration_artifact_hash=None, regularization=0.0, solver="adam")
+        (dev_out / "hidden_text_policy.json").write_text(json.dumps(hidden_text_artifact, indent=2))
+    else:
+        print(f"[develop] Skipping hidden+text-embedding baseline (no real model)")
 
     # Heuristic baseline: frozen threshold from dev data
     print(f"[develop] Fitting heuristic threshold from dev data...")
@@ -1643,6 +1865,60 @@ def stage_final(criteria, args) -> int:
         t_actions, t_utils, t_util = _route_through_pipeline(t_probs, final_experiences)
         trained_baselines["tfidf"] = {"utility": t_util, "actions": t_actions.tolist()}
         print(f"    tfidf: utility={t_util:.4f}")
+
+    # ── Priority 4: Stronger baselines (final evaluation) ──
+    # Char n-gram TF-IDF
+    charngram_policy_path = dev_out / "charngram_policy.json"
+    if charngram_policy_path.exists():
+        final_charngram = _extract_char_ngram_features(splits["final"], splits["train"])
+        cn_hash = hashlib.sha256(charngram_policy_path.read_bytes()).hexdigest()
+        cn_policy = load_frozen_policy(charngram_policy_path, expected_sha256=cn_hash)
+        cn_probs = cn_policy.predict_proba(final_charngram)
+        cn_actions, _cn_utils, cn_util = _route_through_pipeline(cn_probs, final_experiences)
+        trained_baselines["charngram"] = {"utility": cn_util, "actions": cn_actions.tolist()}
+        print(f"    charngram: utility={cn_util:.4f}")
+
+    # Text embedding (mean-pooled input token embeddings)
+    text_emb_policy_path = dev_out / "text_emb_policy.json"
+    if text_emb_policy_path.exists():
+        final_text_emb = _extract_text_embedding_features(
+            splits["final"], model, tokenizer, device=device)
+        te_hash = hashlib.sha256(text_emb_policy_path.read_bytes()).hexdigest()
+        te_policy = load_frozen_policy(text_emb_policy_path, expected_sha256=te_hash)
+        te_probs = te_policy.predict_proba(final_text_emb)
+        te_actions, _te_utils, te_util = _route_through_pipeline(te_probs, final_experiences)
+        trained_baselines["text_embedding"] = {"utility": te_util, "actions": te_actions.tolist()}
+        print(f"    text_embedding: utility={te_util:.4f}")
+
+    # Hidden + TF-IDF
+    hidden_tfidf_policy_path = dev_out / "hidden_tfidf_policy.json"
+    if hidden_tfidf_policy_path.exists():
+        final_hidden_tfidf = np.concatenate(
+            [final_hidden / np.linalg.norm(final_hidden, axis=1, keepdims=True).clip(min=1),
+             final_tfidf], axis=1) if tfidf_policy_path.exists() else final_hidden
+        ht_hash = hashlib.sha256(hidden_tfidf_policy_path.read_bytes()).hexdigest()
+        ht_policy = load_frozen_policy(hidden_tfidf_policy_path, expected_sha256=ht_hash)
+        ht_probs = ht_policy.predict_proba(final_hidden_tfidf)
+        ht_actions, _ht_utils, ht_util = _route_through_pipeline(ht_probs, final_experiences)
+        trained_baselines["hidden_plus_tfidf"] = {"utility": ht_util, "actions": ht_actions.tolist()}
+        print(f"    hidden_plus_tfidf: utility={ht_util:.4f}")
+
+    # Hidden + text embedding
+    hidden_text_policy_path = dev_out / "hidden_text_policy.json"
+    if hidden_text_policy_path.exists():
+        if text_emb_policy_path.exists():
+            final_hidden_text = np.concatenate(
+                [final_hidden / np.linalg.norm(final_hidden, axis=1, keepdims=True).clip(min=1),
+                 final_text_emb], axis=1)
+        else:
+            final_hidden_text = final_hidden
+        hx_hash = hashlib.sha256(hidden_text_policy_path.read_bytes()).hexdigest()
+        hx_policy = load_frozen_policy(hidden_text_policy_path, expected_sha256=hx_hash)
+        hx_probs = hx_policy.predict_proba(final_hidden_text)
+        hx_actions, _hx_utils, hx_util = _route_through_pipeline(hx_probs, final_experiences)
+        trained_baselines["hidden_plus_text_embedding"] = {
+            "utility": hx_util, "actions": hx_actions.tolist()}
+        print(f"    hidden_plus_text_embedding: utility={hx_util:.4f}")
 
     # Heuristic baseline
     heuristic_path = dev_out / "heuristic_policy.json"
