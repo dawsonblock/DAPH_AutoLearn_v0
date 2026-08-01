@@ -1,0 +1,27 @@
+{
+  "artifact_version": "1.0",
+  "experiment_id": "daph_gate_a_integration_test",
+  "policy_class": "logistic_regression",
+  "feature_dimension": 4,
+  "feature_schema_hash": "3c8b802272b375de",
+  "feature_transform_hash": "fb8ed2dd70ac18a9",
+  "coefficients": [
+    2.3699469566345215,
+    -1.0008199214935303,
+    -0.7107263207435608,
+    -0.535423219203949
+  ],
+  "intercept": -0.8565232157707214,
+  "classes": [
+    "llm",
+    "symbolic"
+  ],
+  "regularization": 0.0,
+  "solver": "adam",
+  "training_seed": 42,
+  "target_mode": "soft",
+  "training_dataset_hash": "a4aee52088296711bb4466958afe663b4e1ed8e3e0a2a03e187a1fce362c8752",
+  "development_dataset_hash": "459149396c4b3163f667777a6e7e0460f4addb3b0c731f1d6b72bccb4f83cba7",
+  "calibration_artifact_hash": null,
+  "policy_sha256": "d7556521a335ad1f0890d152176264ceebd302975b69e023d1d755cc3d7dd3c2"
+}

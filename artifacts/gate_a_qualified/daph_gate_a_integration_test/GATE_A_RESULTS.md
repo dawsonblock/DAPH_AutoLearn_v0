@@ -1,6 +1,6 @@
 # Gate A Results — daph_gate_a_integration_test
 
-**Generated:** 2026-07-31T19:19:33
+**Generated:** 2026-07-31T20:34:41
 **Criteria hash:** `1e95de8b3d12642c901b7a9ae2c90d5fc2533a24a3fbc352083ceb66b282785a`
 **Overall status:** PASS
 
@@ -10,19 +10,19 @@
 
 | Gate | Actual | Threshold | Comparator | Passed |
 |------|--------|-----------|------------|--------|
-| minimum_point_gain_vs_p0 | 0.2440 | 0.0000 | gt | YES |
-| require_lcb_vs_p0_above | 0.1964 | -1.0000 | gt | YES |
+| minimum_point_gain_vs_p0 | 0.0893 | 0.0000 | gt | YES |
+| require_lcb_vs_p0_above | 0.0536 | -1.0000 | gt | YES |
 | require_lcb_vs_sham_above | 0.0536 | -1.0000 | gt | YES |
-| minimum_oracle_gap_capture | 0.9318 | 0.0000 | gte | YES |
-| minimum_positive_group_fraction | 0.6548 | 0.0000 | gt | YES |
-| maximum_worst_subtype_regression | 0.0000 | 1.0000 | lte | YES |
+| minimum_oracle_gap_capture | 0.8333 | 0.0000 | gte | YES |
+| minimum_positive_group_fraction | 0.3810 | 0.0000 | gt | YES |
+| maximum_worst_subtype_regression | 0.0250 | 1.0000 | lte | YES |
 | maximum_final_access_count | 1.0000 | 1.0000 | lte | YES |
 
 ## Primary Endpoint
 
 - Estimand: group_weighted
-- Point estimate: 0.24404761904761904
-- 95% CI (group_weighted): [0.19642857142857142, 0.29464285714285715]
+- Point estimate: 0.08928571428571429
+- 95% CI (group_weighted): [0.05357142857142857, 0.125]
 - CI label: group_weighted
 - Utility protocol: gate_a_accuracy_primary
 
@@ -57,14 +57,52 @@
 
 - always_llm: utility=0.53869
 - always_symbolic: utility=0.693452
+- best_fixed: utility=0.693452
 - oracle: utility=0.800595
-- p1_policy: utility=0.782738
-- subtype_majority: utility=0.702381
+- hidden_plus_surface: utility=0.782738
+- subtype_only: utility=0.702381
+
+## Trained Baselines
+
+- surface_only: utility=0.8005952380952381
+- hidden_only: utility=0.6041666666666666
+- tfidf: utility=0.7976190476190477
+- heuristic: utility=0.7946428571428571
+- shuffled_hidden: utility=0.7827380952380952
+- random_projection: utility=0.7886904761904762
+- hidden_norm_only: utility=0.6934523809523809
+
+## Hidden-State Contribution Ablation
+
+- P_COMBINED - P_SURFACE: estimate=-0.017857142857142856, LCB95=-0.03869047619047619, UCB95=-0.002976190476190476
+- P_HIDDEN - P_TFIDF: estimate=-0.19345238095238096, LCB95=-0.23214285714285715, UCB95=-0.15476190476190477
+- Hidden-state claim supported: False
+- Minimum effect threshold: 0.02
+
+## Limitations
+
+1. **Benchmark specificity:** This experiment evaluates routing on a
+   structured-math benchmark. Generalization to other domains is not
+   established.
+2. **Model specificity:** Results are for the specified model revision
+   only. Different models may produce different hidden-state representations.
+3. **No OOD evaluation in this run:** OOD results are not reported in
+   this bundle. The policy may be benchmark-specific.
+4. **Hidden-state contribution:** The hidden-state ablation result
+   (claim_supported field above) determines whether hidden states
+   added measurable routing value beyond prompt-only baselines.
+5. **Single final access:** The final stage was run exactly once.
+   No hyperparameter tuning was performed after final access.
+6. **Sham control:** Sham uses label permutation within bins, not
+   feature permutation. Both variants should be tested in future work.
 
 ## Final Access
 
 - Access count: 1
-- Source hash: `8902e990c65dfc9acdaddc9dedede48c0726b0069ad90227b870b27ec761c2eb`
+- Source hash: `141cbece50b986e9a945302fa99c0967f5c2a486e8fbae72167e792a7f19d8f5`
+- Primary policy: hidden_plus_surface
+- Primary comparator: best_fixed
+- Best fixed policy: always_symbolic
 
 ---
 This report was generated from machine-readable artifacts. No numbers were manually typed.
