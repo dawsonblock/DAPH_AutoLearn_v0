@@ -95,13 +95,13 @@ def test_current_pointer_resolves_to_existing_bundle():
 
 
 def test_current_contains_pointer_only():
-    """artifacts/current/ must contain only the pointer (no copied
-    experimental evidence)."""
-    entries = [p for p in CURRENT.iterdir() if p.name != ".gitkeep"]
-    non_pointer = [p for p in entries if p.name != "pointer.json"]
-    assert not non_pointer, (
-        "artifacts/current/ must contain only pointer.json; found: "
-        + ", ".join(p.name for p in non_pointer))
+    """artifacts/current/ must contain only the pointer and canonical
+    status file (no copied experimental evidence)."""
+    allowed = {"pointer.json", "status.json", ".gitkeep"}
+    entries = [p for p in CURRENT.iterdir() if p.name not in allowed]
+    assert not entries, (
+        "artifacts/current/ must contain only pointer.json and status.json; found: "
+        + ", ".join(p.name for p in entries))
 
 
 def test_all_bundled_artifacts_use_current_source_hash_or_are_marked_legacy():

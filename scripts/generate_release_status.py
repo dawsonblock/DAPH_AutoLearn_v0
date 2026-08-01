@@ -99,11 +99,17 @@ def main() -> int:
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
 
-    # Write to artifacts/release_status.json.
-    out_path = REPO_ROOT / "artifacts" / "release_status.json"
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(status, indent=2))
-    print(f"Wrote {out_path}")
+    # Write to artifacts/current/status.json (canonical) and
+    # artifacts/release_status.json (backward-compatible copy).
+    canonical_path = REPO_ROOT / "artifacts" / "current" / "status.json"
+    canonical_path.parent.mkdir(parents=True, exist_ok=True)
+    canonical_path.write_text(json.dumps(status, indent=2))
+    print(f"Wrote {canonical_path} (canonical)")
+
+    compat_path = REPO_ROOT / "artifacts" / "release_status.json"
+    compat_path.write_text(json.dumps(status, indent=2))
+    print(f"Wrote {compat_path} (backward-compatible copy)")
+
     print(f"  gate_a_status: {status['gate_a_status']}")
     print(f"  qualified_experiment_id: {status['qualified_experiment_id']}")
     print(f"  test_count: {status['test_count']}")

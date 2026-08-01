@@ -46,7 +46,15 @@ def test_v037_test_file_exists(test_file):
 def test_package_importable_without_pythonpath():
     """If this test runs, the package is installed (pip install -e .)."""
     import daph_learning
-    assert daph_learning.__version__ == "0.3.10.5-alpha"
+    # Read canonical version from pyproject.toml instead of hard-coding.
+    import tomllib
+    from pathlib import Path
+    pp = Path(__file__).resolve().parent.parent / "pyproject.toml"
+    with open(pp, "rb") as f:
+        expected = tomllib.load(f)["project"]["version"]
+    assert daph_learning.__version__ == expected, (
+        f"__version__ is {daph_learning.__version__!r}, "
+        f"expected {expected!r}")
 
 
 def test_cli_entry_points_on_path():
