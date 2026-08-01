@@ -1,0 +1,102 @@
+# DAPH v0.4 — Executive Qualification Benchmark B1
+#
+# First new v0.4 experiment: direct reasoning vs retrieval vs decomposition.
+#
+# This config defines a 3-action executive qualification experiment using
+# the generic daph_learning.executive module. Unlike the B0 compatibility
+# benchmark (binary symbolic vs llm), this experiment tests three distinct
+# cognitive strategies:
+#
+#   action.reasoning.direct   — direct LLM generation (no decomposition)
+#   action.retrieval.vector   — retrieve similar examples, then generate
+#   action.reasoning.decompose — decompose into sub-problems, solve each
+#
+# The experiment uses the same scientific infrastructure as B0:
+#   - Counterfactual execution of all actions
+#   - Frozen utility model
+#   - Group-aware bootstrap
+#   - Sham control
+#   - Oracle gap measurement
+
+experiment_id: daph_executive_b1_direct_vs_retrieval_vs_decompose
+version: "0.4.0-alpha"
+benchmark: B1
+
+# Action space definition
+action_space:
+  actions:
+    - action_id: "action.reasoning.direct"
+      display_name: "Direct Reasoning"
+      description: "Direct LLM generation without decomposition or retrieval."
+      cost_estimate: 0.15
+      tags: ["reasoning", "direct", "neural"]
+    - action_id: "action.retrieval.vector"
+      display_name: "Vector Retrieval"
+      description: "Retrieve similar examples from a vector store, then generate."
+      cost_estimate: 0.10
+      tags: ["retrieval", "vector", "augmented"]
+    - action_id: "action.reasoning.decompose"
+      display_name: "Decomposed Reasoning"
+      description: "Decompose into sub-problems, solve each, then combine."
+      cost_estimate: 0.30
+      tags: ["reasoning", "decompose", "multi-step"]
+  abstain_id: "action.abstain"
+
+# Utility model (frozen)
+utility_model:
+  quality_weight: 1.0
+  lambda_time: 0.01
+  lambda_compute: 0.1
+  lambda_risk: 1.0
+  time_reference_ms: 1000.0
+  compute_reference: 1.0
+  abstention_band: 0.05
+
+# Policy configuration
+policy:
+  type: "logistic"  # "centroid" or "logistic"
+  learning_rate: 0.01
+  n_iter: 500
+  l2: 0.0001
+
+# Data configuration
+data:
+  n_tasks_train: 3200
+  n_tasks_dev: 1280
+  n_tasks_test: 1280
+  n_groups: 80
+  n_subtypes: 8
+  seed: 20260801
+
+# Qualification configuration
+qualification:
+  bootstrap_iterations: 20000
+  bootstrap_seed: 20260801
+  n_sham_seeds: 20
+  sham_seed_base: 10000
+  # Gate thresholds (to be calibrated after first run)
+  gate_p1_minus_p0_lcb: 0.02
+  gate_p1_minus_sham_mean: 0.01
+  gate_oracle_gap_capture: 0.15
+  gate_positive_group_fraction: 0.60
+  gate_worst_subtype_regression: -0.01
+
+# Model configuration (for LLM-based actions)
+model:
+  name: "qwen/Qwen2.5-Math-1.5B-Instruct"
+  revision: "main"
+  vllm_api_key_env: "DAPH_VLLM_API_KEY"  # read from environment variable
+  max_tokens: 512
+  temperature: 0.0
+
+# Hidden state capture (for policy features)
+hidden_state_capture:
+  model_name: "Qwen/Qwen2.5-Math-1.5B-Instruct"
+  layers: [0.25, 0.50, 0.75, 1.0]  # fractional layer positions
+  token_location: "last"
+  max_capture_attempts: 3
+
+# Provenance
+provenance:
+  source_hash: "auto"  # computed at runtime
+  config_hash: "auto"  # computed at runtime

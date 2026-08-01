@@ -60,6 +60,12 @@ from daph_learning.executive.report import (
     generate_json_report,
     write_report,
 )
+from daph_learning.executive.policy import (
+    ExecutivePolicyModel,
+    ExecutiveCentroidPolicy,
+    ExecutiveLogisticPolicy,
+    make_executive_policy,
+)
 
 __all__ = [
     "ActionDescriptor",
@@ -93,4 +99,9 @@ __all__ = [
     "generate_markdown_report",
     "generate_json_report",
     "write_report",
+    # Policy
+    "ExecutivePolicyModel",
+    "ExecutiveCentroidPolicy",
+    "ExecutiveLogisticPolicy",
+    "make_executive_policy",
 ]
