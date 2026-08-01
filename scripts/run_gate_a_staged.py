@@ -677,8 +677,15 @@ def _fit_heuristic_threshold(dev_tasks: list[dict[str, Any]],
 
 def stage_collect(criteria, args) -> int:
     """Stage 1: generate dataset + collect counterfactual experience."""
-    from daph_learning.data.grouped_benchmark import generate_all_grouped_splits
     from daph_learning.benchmark.audit import audit_dataset
+
+    # Select benchmark generator based on config.
+    benchmark_type = criteria.raw.get("dataset", {}).get("benchmark_type", "standard")
+    if benchmark_type == "harder":
+        from daph_learning.data.harder_grouped_benchmark import generate_all_grouped_splits
+        print(f"[collect] Using HARDER benchmark (magnitude-decoupled)")
+    else:
+        from daph_learning.data.grouped_benchmark import generate_all_grouped_splits
 
     print(f"[collect] Generating grouped dataset for {criteria.experiment_id}")
     n_per_group = args.n_per_group

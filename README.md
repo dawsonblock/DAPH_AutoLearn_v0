@@ -15,14 +15,14 @@
 
 ---
 
-> **Gate A status: FAIL (daph_gate_a_real_006_repair).** This repository implements an
-> experimental counterfactual routing learner. The latest Gate A run with the
-> repaired protocol (Qwen2.5-1.5B-Instruct) produces a **FAIL**: the primary
-> endpoint passes (P1 - best_fixed = 0.112, LCB = 0.086 > 0), but the
-> positive-group-fraction gate fails (57.1% < 60% threshold). Additionally,
-> the hidden-state contribution claim is **NOT supported**: surface-only
-> baselines match the primary policy exactly (0.814 = 0.814). Only a validated
-> bundle under `artifacts/gate_a_qualified/` constitutes current Gate A evidence.
+> **Gate A status: FAIL (daph_gate_a_real_007_harder).** This repository implements an
+> experimental counterfactual routing learner. The latest Gate A run uses a
+> **harder magnitude-decoupled benchmark** with **Qwen2.5-7B-Instruct**.
+> The primary endpoint passes (P1 - best_fixed = 0.129, LCB = 0.074 > 0),
+> and the **hidden-state contribution claim is SUPPORTED** (P1 - surface_only
+> = 0.222, LCB = 0.173 > 0). The gate fails only on positive-group-fraction
+> (50% < 60% threshold). Only a validated bundle under
+> `artifacts/gate_a_qualified/` constitutes current Gate A evidence.
 > The earlier real-model run (`daph_gate_a_real_001_failed`) is archived under
 > `artifacts/legacy/` after failing its group-aware confidence-bound gate
 > (LCB95% for P1−P0 = −0.041 < 0); it is retained for audit history only.
