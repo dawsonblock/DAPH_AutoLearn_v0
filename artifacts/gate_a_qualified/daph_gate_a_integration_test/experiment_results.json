@@ -6,7 +6,7 @@
   "tokenizer_revision": "",
   "capture_layer": 23,
   "feature_dim": 36,
-  "source_hash": "c14874d03187aba91b3fbd1fe818fcaffd34548d8d7f74c223b13168b0b5df5f",
+  "source_hash": "8902e990c65dfc9acdaddc9dedede48c0726b0069ad90227b870b27ec761c2eb",
   "qualification_status": "NOT_EVALUABLE",
   "route_distribution": {
     "p1_symbolic_fraction": 0.6577380952380952,
@@ -277,10 +277,36 @@
     }
   ],
   "all_preconditions_pass": false,
-  "baselines": {},
+  "baselines": {
+    "always_llm": {
+      "utility": 0.53869,
+      "gain_vs_p0": 0.0,
+      "oracle_capture": 0.0
+    },
+    "always_symbolic": {
+      "utility": 0.693452,
+      "gain_vs_p0": 0.154762,
+      "oracle_capture": 0.590909
+    },
+    "oracle": {
+      "utility": 0.800595,
+      "gain_vs_p0": 0.261905,
+      "oracle_capture": 1.0
+    },
+    "p1_policy": {
+      "utility": 0.782738,
+      "gain_vs_p0": 0.244048,
+      "oracle_capture": 0.931818
+    },
+    "subtype_majority": {
+      "utility": 0.702381,
+      "gain_vs_p0": 0.16369,
+      "oracle_capture": 0.625
+    }
+  },
   "utility_protocol": "gate_a_accuracy_primary",
   "utility_config_sha256": "9c2c7dd74ca8db552d40c28916f59461e1ad4f4e383a29dafb476c91851bee63",
-  "policy_hash": "927d5565772987ee9ddba35890a953ee023451f78687c1db691a35753764bb6f",
+  "policy_hash": "87b46a58d0213a2afda5ec24c2ae804e447478e71bb716e1b38dce2343c910c8",
   "calibration_hash": "",
   "representation_hash": "9446e7180a6e1a5f225789ee3c2de51e403592564eba707a87aaad0ff5decc6b"
 }

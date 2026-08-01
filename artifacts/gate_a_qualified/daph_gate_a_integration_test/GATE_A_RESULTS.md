@@ -1,6 +1,6 @@
 # Gate A Results — daph_gate_a_integration_test
 
-**Generated:** 2026-07-31T17:29:34
+**Generated:** 2026-07-31T19:15:19
 **Criteria hash:** `1e95de8b3d12642c901b7a9ae2c90d5fc2533a24a3fbc352083ceb66b282785a`
 **Overall status:** PASS
 
@@ -55,11 +55,16 @@
 
 ## Baselines
 
+- always_llm: utility=0.53869
+- always_symbolic: utility=0.693452
+- oracle: utility=0.800595
+- p1_policy: utility=0.782738
+- subtype_majority: utility=0.702381
 
 ## Final Access
 
 - Access count: 1
-- Source hash: `c14874d03187aba91b3fbd1fe818fcaffd34548d8d7f74c223b13168b0b5df5f`
+- Source hash: `8902e990c65dfc9acdaddc9dedede48c0726b0069ad90227b870b27ec761c2eb`
 
 ---
 This report was generated from machine-readable artifacts. No numbers were manually typed.

@@ -78,6 +78,69 @@ def _get_batch_size(criteria) -> int:
     return int(criteria.raw.get("model", {}).get("batch_size", 64))
 
 
+def _evaluate_baselines(records: list) -> dict[str, dict[str, float]]:
+    """Section 19 — evaluate baseline policies from final task records.
+
+    Computes utility for always_llm, always_symbolic, oracle, and
+    per-subtype majority routing. These are deterministic baselines
+    that don't require training.
+    """
+    import numpy as np
+    if not records:
+        return {}
+    n = len(records)
+    # Always LLM = P0
+    always_llm_util = float(np.mean([r.llm_utility for r in records]))
+    # Always symbolic
+    always_sym_util = float(np.mean([r.symbolic_utility for r in records]))
+    # Oracle (per-task max)
+    oracle_util = float(np.mean([
+        max(r.symbolic_utility, r.llm_utility) for r in records
+    ]))
+    # P1 (actual policy)
+    p1_util = float(np.mean([r.p1_realized_utility for r in records]))
+    # Subtype-majority: route to whichever backend wins more in each subtype
+    from collections import defaultdict
+    subtype_wins: dict[str, dict[str, int]] = defaultdict(lambda: {"symbolic": 0, "llm": 0})
+    for r in records:
+        if r.symbolic_utility > r.llm_utility:
+            subtype_wins[r.subtype]["symbolic"] += 1
+        elif r.llm_utility > r.symbolic_utility:
+            subtype_wins[r.subtype]["llm"] += 1
+    subtype_majority_util = 0.0
+    for r in records:
+        wins = subtype_wins[r.subtype]
+        if wins["symbolic"] >= wins["llm"]:
+            subtype_majority_util += r.symbolic_utility
+        else:
+            subtype_majority_util += r.llm_utility
+    subtype_majority_util /= n
+
+    def _gain_vs_p0(util):
+        return util - always_llm_util
+
+    def _oracle_capture(util):
+        headroom = oracle_util - always_llm_util
+        if headroom <= 1e-10:
+            return None
+        return (util - always_llm_util) / headroom
+
+    result = {}
+    for name, util in [
+        ("always_llm", always_llm_util),
+        ("always_symbolic", always_sym_util),
+        ("oracle", oracle_util),
+        ("p1_policy", p1_util),
+        ("subtype_majority", subtype_majority_util),
+    ]:
+        result[name] = {
+            "utility": round(util, 6),
+            "gain_vs_p0": round(_gain_vs_p0(util), 6),
+            "oracle_capture": round(_oracle_capture(util), 6) if _oracle_capture(util) is not None else None,
+        }
+    return result
+
+
 def _load_tasks(out_dir: Path) -> dict[str, list[dict[str, Any]]]:
     """Load the four split task files written by stage_collect."""
     splits = {}
@@ -895,8 +958,13 @@ def stage_final(criteria, args) -> int:
     # ── Load frozen representation (Section 12) ──
     rep_path = _develop_dir(criteria) / "representation_selection.json"
     rep_artifact = None
+    rep_hash = ""
     if rep_path.exists():
         rep_data = json.loads(rep_path.read_text())
+        # Compute hash of the representation selection for provenance
+        rep_hash = hashlib.sha256(
+            json.dumps(rep_data, sort_keys=True, default=str).encode()
+        ).hexdigest()
         rep_selected = rep_data.get("selected", {})
         frozen_layer = rep_selected.get("layer", capture_config.layer if capture_config else 10)
         frozen_pooling = rep_selected.get("pooling", "last_prompt_token")
@@ -1212,8 +1280,11 @@ def stage_final(criteria, args) -> int:
         estimand=criteria.primary_endpoint.estimand,
     )
 
-    # Save bootstrap samples.
-    # (The samples are in the BootstrapResult, but we save the hash for verification.)
+    # Save bootstrap samples as .npy for independent verification.
+    if bootstrap_result.samples is not None:
+        np.save(out / "bootstrap_p1_minus_p0.npy", bootstrap_result.samples)
+    if sham_bootstrap.samples is not None:
+        np.save(out / "bootstrap_p1_minus_sham.npy", sham_bootstrap.samples)
 
     # ── Compute all statistics from records ──
     oracle_capture = compute_oracle_gap_capture(records)
@@ -1375,7 +1446,7 @@ def stage_final(criteria, args) -> int:
             "actual": str(p.actual), "required": str(p.required),
         } for p in preconditions],
         "all_preconditions_pass": all_preconditions_pass,
-        "baselines": {},  # Section 19 — to be filled by baseline suite
+        "baselines": _evaluate_baselines(records),
         "utility_protocol": criteria.utility_protocol,
         "utility_config_sha256": utility_config.utility_config_hash,
         "policy_hash": actual_policy_hash,

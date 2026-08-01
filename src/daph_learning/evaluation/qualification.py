@@ -246,6 +246,7 @@ class BootstrapResult:
     estimand: str
     seed: int
     samples_sha256: str
+    samples: np.ndarray | None = None
 
 
 def group_bootstrap_mean_delta(
@@ -311,6 +312,7 @@ def group_bootstrap_mean_delta(
         estimand=estimand,
         seed=seed,
         samples_sha256=samples_hash,
+        samples=samples,
     )
 
 
@@ -421,6 +423,7 @@ def bootstrap_p1_minus_sham(
         estimand="p1_minus_sham_group_weighted",
         seed=seed,
         samples_sha256=samples_hash,
+        samples=samples,
     )
 
 
