@@ -63,7 +63,10 @@ def _group_id(subtype: str, group_idx: int) -> str:
 
 
 def _template_family(subtype: str, group_n: int) -> str:
-    return f"{FAMILY_ID}:{subtype}:template_{group_n % 8}"
+    # Each group gets a unique template family to prevent cross-split
+    # template family leakage (the audit checks that template families
+    # don't cross splits).
+    return f"{FAMILY_ID}:{subtype}:template_{group_n:03d}"
 
 
 def generate_grouped_crossover_split(
@@ -108,8 +111,8 @@ def generate_grouped_crossover_split(
             prompt_hash = hashlib.sha256(
                 normalize_prompt(spec).encode("utf-8")).hexdigest()
             if prompt_hash in seen_prompts:
-                for _retry in range(50):
-                    retry_seed = (global_seed + _retry * 7919) % (2**31)
+                for _retry in range(200):
+                    retry_seed = (global_seed + _retry * 7919 + gidx * 31) % (2**31)
                     task_rng = random.Random(retry_seed)
                     retry_slot = valid_slots[(slot + _retry + 1) % len(valid_slots)]
                     body = _GENERATORS[subtype](
