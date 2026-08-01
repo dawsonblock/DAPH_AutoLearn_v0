@@ -136,11 +136,11 @@ def _gen_a(rng: random.Random, slot: int, *, force_parseable: bool | None = None
     """
     op = rng.choice(["+", "-", "*"])
     if op == "*":
-        a = rng.randint(2, 50)
-        b = rng.randint(2, 50)
+        a = rng.randint(2, 99)
+        b = rng.randint(2, 99)
     else:
-        a = rng.randint(100, 9999)
-        b = rng.randint(100, 9999)
+        a = rng.randint(100, 99999)
+        b = rng.randint(100, 99999)
     if op == "+":
         expected = a + b
     elif op == "-":
@@ -196,8 +196,8 @@ def _gen_a(rng: random.Random, slot: int, *, force_parseable: bool | None = None
 
 def _gen_b(rng: random.Random, slot: int, *, force_parseable: bool | None = None) -> dict[str, Any]:
     """B. Semantic extraction + exact arithmetic — v3 reduced-tie."""
-    a = rng.randint(100, 9999)
-    b = rng.randint(100, 9999)
+    a = rng.randint(100, 99999)
+    b = rng.randint(100, 99999)
     expected = a + b
     is_parseable = force_parseable if force_parseable is not None else rng.random() < 0.5
 
@@ -228,8 +228,8 @@ def _gen_b(rng: random.Random, slot: int, *, force_parseable: bool | None = None
 
 def _gen_c(rng: random.Random, slot: int, *, force_parseable: bool | None = None) -> dict[str, Any]:
     """C. Semantic interpretation — v3 reduced-tie."""
-    x = rng.randint(100, 9999)
-    y = rng.randint(10, 999)
+    x = rng.randint(100, 99999)
+    y = rng.randint(10, 9999)
     expected = x - 2 * y
     is_parseable = force_parseable if force_parseable is not None else rng.random() < 0.5
 
@@ -263,8 +263,8 @@ def _gen_d(rng: random.Random, slot: int, *, force_parseable: bool | None = None
 
     Tuned: smaller numbers (10-500) so the 7B model can compute mod.
     """
-    a = rng.randint(10, 500)
-    b = rng.randint(2, 50)
+    a = rng.randint(10, 9999)
+    b = rng.randint(2, 99)
     expected = a % b
     is_parseable = force_parseable if force_parseable is not None else rng.random() < 0.5
 
@@ -298,10 +298,10 @@ def _gen_e(rng: random.Random, slot: int, *, force_parseable: bool | None = None
 
     Tuned: smaller products so the 7B can compare.
     """
-    a = rng.randint(2, 30)
-    b = rng.randint(2, 30)
-    c = rng.randint(2, 30)
-    d = rng.randint(2, 30)
+    a = rng.randint(2, 99)
+    b = rng.randint(2, 99)
+    c = rng.randint(2, 99)
+    d = rng.randint(2, 99)
     left = a * b
     right = c * d
     expected = left if left > right else right
@@ -343,7 +343,7 @@ def _gen_f(rng: random.Random, slot: int, *, force_parseable: bool | None = None
     """
     while True:
         loss_pct = rng.randint(10, 40)
-        total = rng.randint(1000, 99999)
+        total = rng.randint(1000, 999999)
         if (total * loss_pct) % 100 == 0:
             break
     gain = rng.randint(10, 999)
@@ -390,7 +390,7 @@ def _gen_g(rng: random.Random, slot: int, *, force_parseable: bool | None = None
         ("L", "mL", 1000),
     )
     unit_from, unit_to, factor = rng.choice(units)
-    value = rng.randint(100, 9999)
+    value = rng.randint(100, 99999)
     addend = rng.randint(10, 999)
     converted = value * factor
     expected = converted + addend
@@ -426,8 +426,8 @@ def _gen_h(rng: random.Random, slot: int, *, force_parseable: bool | None = None
 
     Tuned: smaller values (10-200) so the 7B can compute GCD/LCM.
     """
-    a = rng.randint(10, 200)
-    b = rng.randint(10, 200)
+    a = rng.randint(10, 999)
+    b = rng.randint(10, 999)
     op = rng.choice(["gcd", "lcm"])
     if op == "gcd":
         expected = math.gcd(a, b)
