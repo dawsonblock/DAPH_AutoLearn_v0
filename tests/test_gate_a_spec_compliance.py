@@ -485,7 +485,9 @@ def test_current_pointer_is_relative():
     if not pointer_path.exists():
         pytest.skip("no pointer.json")
     pointer = json.loads(pointer_path.read_text())
-    target = pointer.get("target", "")
+    target = pointer.get("target") or ""
+    if not target:
+        pytest.skip("no target (NOT_YET_REQUALIFIED)")
     assert not target.startswith("/"), f"absolute path: {target}"
     assert not (len(target) > 1 and target[1] == ":"), f"Windows path: {target}"
 
@@ -497,7 +499,7 @@ def test_current_pointer_target_exists():
     if not pointer_path.exists():
         pytest.skip("no pointer.json")
     pointer = json.loads(pointer_path.read_text())
-    target = pointer.get("target", "")
+    target = pointer.get("target") or ""
     if not target:
         pytest.skip("empty target")
     resolved = (pointer_path.parent / target).resolve()
@@ -511,7 +513,9 @@ def test_current_pointer_stays_within_artifacts():
     if not pointer_path.exists():
         pytest.skip("no pointer.json")
     pointer = json.loads(pointer_path.read_text())
-    target = pointer.get("target", "")
+    target = pointer.get("target") or ""
+    if not target:
+        pytest.skip("no target (NOT_YET_REQUALIFIED)")
     resolved = (pointer_path.parent / target).resolve()
     artifacts_root = (repo / "artifacts").resolve()
     assert str(resolved).startswith(str(artifacts_root)), (

@@ -51,6 +51,7 @@ _EXCLUDED_DIR_NAMES: frozenset[str] = frozenset({
     "artifacts",
     "experiments",
     "extensions",
+    "archive",
     ".venv",
     "venv",
     "env",
@@ -106,7 +107,7 @@ def should_exclude(path: Path, root: Path) -> bool:
 
     Excludes:
     - .git, __pycache__, .pytest_cache, artifacts/, experiments/,
-      extensions/, and other non-source directories
+      extensions/, archive/, and other non-source directories
     - compiled bytecode (.pyc, .pyo, .so, .dll, .egg-info)
     - generated artifacts (release_gates.json, experiment_results.json,
       test reports, junit XML, freeze manifests, temp files)

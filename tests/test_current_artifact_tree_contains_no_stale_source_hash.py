@@ -38,10 +38,17 @@ def test_current_artifact_tree_contains_no_stale_source_hash():
     for af in artifact_files:
         with open(af) as f:
             data = json.load(f)
-        # A NOT_YET_REQUALIFIED pointer with no target asserts no evidence
-        # and is always acceptable.
+        # A NOT_YET_REQUALIFIED pointer/status with no target asserts no
+        # evidence and is always acceptable.
         status = str(data.get("status", "")).upper()
-        if status == "NOT_YET_REQUALIFIED" and data.get("target") is None:
+        gate_status = str(data.get("gate_a_status", "")).upper()
+        evidence = str(data.get("evidence_level", "")).upper()
+        is_unqualified = (
+            status == "NOT_YET_REQUALIFIED"
+            or gate_status == "NOT_YET_REQUALIFIED"
+            or evidence == "NOT_YET_REQUALIFIED"
+        )
+        if is_unqualified and data.get("target") is None:
             continue
         artifact_hash = (
             data.get("source_hash")

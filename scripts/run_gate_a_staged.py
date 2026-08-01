@@ -454,7 +454,13 @@ def _vllm_api_generate(tasks, model_id, criteria, max_new_tokens=256):
 
     model_cfg = criteria.raw.get("model", {})
     port = int(model_cfg.get("vllm_port", 8000))
-    api_key = model_cfg.get("vllm_api_key", "")
+    # Read API key from env var name (vllm_api_key_env) or direct value (legacy).
+    api_key_env = model_cfg.get("vllm_api_key_env")
+    if api_key_env:
+        import os
+        api_key = os.environ.get(api_key_env, "")
+    else:
+        api_key = model_cfg.get("vllm_api_key", "")
     base_url = f"http://localhost:{port}/v1"
     max_concurrent = int(model_cfg.get("vllm_max_concurrent", 64))
 
@@ -528,7 +534,7 @@ def _smart_llm_generate(tasks, model, tokenizer, criteria, device="cuda",
     model_cfg = criteria.raw.get("model", {})
 
     # 1. Try vLLM API server first (preferred when a server is already running)
-    if model_cfg.get("vllm_api_key"):
+    if model_cfg.get("vllm_api_key") or model_cfg.get("vllm_api_key_env"):
         try:
             print(f"[llm] Using vLLM API server (port {model_cfg.get('vllm_port', 8000)})...")
             return _vllm_api_generate(

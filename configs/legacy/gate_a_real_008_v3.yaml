@@ -83,7 +83,7 @@ model:
   vllm_tensor_parallel_size: 1
   vllm_gpu_memory_utilization: 0.95
   vllm_max_model_len: 8128
-  vllm_api_key: sk-6cbxgk04y6hyvm
+  vllm_api_key_env: DAPH_VLLM_API_KEY
 
 representation:
   layer_strategy: depth_fractional
