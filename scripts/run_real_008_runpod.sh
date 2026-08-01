@@ -50,15 +50,52 @@ echo "[setup] Checking torch..."
 python3 -c "import torch; print(f'torch {torch.__version__}, CUDA: {torch.cuda.is_available()}')"
 
 # Run the staged pipeline.
-# The runner will use vLLM for generation (fast) and HF for hidden state capture.
+# The runner takes one --stage at a time. We run them sequentially.
+# vLLM API is used for generation (fast), HF model on CPU for hidden states.
 echo ""
 echo "[run] Starting staged Gate A pipeline..."
+
+for STAGE in collect develop calibrate; do
+    echo ""
+    echo "[run] === Stage: $STAGE ==="
+    python3 scripts/run_gate_a_staged.py \
+        --config "$CONFIG" \
+        --seed "$SEED" \
+        --n-per-group "$N_PER_GROUP" \
+        --device cpu \
+        --use-real-model \
+        --stage "$STAGE" || {
+            echo "[run] Stage $STAGE FAILED, aborting."
+            exit 1
+        }
+    echo "[run] Stage $STAGE completed."
+done
+
+# Freeze stage (separate script)
+echo ""
+echo "[run] === Stage: freeze ==="
+python3 scripts/freeze_gate_a.py \
+    --config "$CONFIG" \
+    --seed "$SEED" || {
+        echo "[run] Freeze stage FAILED, aborting."
+        exit 1
+    }
+echo "[run] Freeze stage completed."
+
+# Final stage
+echo ""
+echo "[run] === Stage: final ==="
 python3 scripts/run_gate_a_staged.py \
     --config "$CONFIG" \
     --seed "$SEED" \
     --n-per-group "$N_PER_GROUP" \
-    --device cuda \
-    --stages collect develop calibrate freeze final
+    --device cpu \
+    --use-real-model \
+    --stage final || {
+        echo "[run] Final stage FAILED, aborting."
+        exit 1
+    }
+echo "[run] Final stage completed."
 
 echo ""
 echo "[done] Gate A pipeline complete."
