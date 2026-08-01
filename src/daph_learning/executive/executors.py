@@ -443,6 +443,49 @@ class ExecutorRegistry:
             selected_action=None,  # set by policy later
         )
 
+    def execute_all_tasks(
+        self,
+        tasks: list[Mapping[str, Any]],
+        action_space: ActionSpace,
+        *,
+        max_concurrent: int = 64,
+        progress_every: int = 50,
+    ) -> list[CounterfactualSet]:
+        """Execute all actions on all tasks concurrently.
+
+        Uses ThreadPoolExecutor for concurrent API calls.
+        """
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        import time as _time
+
+        results: list[CounterfactualSet | None] = [None] * len(tasks)
+        t0 = _time.time()
+
+        def _execute_one(idx_task):
+            idx, task = idx_task
+            return idx, self.execute_all(task, action_space)
+
+        with ThreadPoolExecutor(max_workers=max_concurrent) as executor:
+            futures = {
+                executor.submit(_execute_one, (i, t)): i
+                for i, t in enumerate(tasks)
+            }
+            completed = 0
+            for future in as_completed(futures):
+                idx, cf_set = future.result()
+                results[idx] = cf_set
+                completed += 1
+                if progress_every > 0 and completed % progress_every == 0:
+                    elapsed = _time.time() - t0
+                    rate = completed / max(elapsed, 0.1)
+                    print(f"  [{completed}/{len(tasks)}] "
+                          f"{elapsed:.1f}s ({rate:.1f} tasks/s)")
+
+        elapsed = _time.time() - t0
+        print(f"  Completed {len(tasks)} tasks in {elapsed:.1f}s "
+              f"({len(tasks)/max(elapsed,0.1):.1f} tasks/s)")
+        return results  # type: ignore[return-value]
+
     @property
     def action_ids(self) -> tuple[str, ...]:
         return tuple(self._executors.keys())

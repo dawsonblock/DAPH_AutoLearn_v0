@@ -115,6 +115,7 @@ def build_llm_config(config: dict) -> LLMGenerationConfig:
         max_tokens=mc.get("max_tokens", 512),
         temperature=mc.get("temperature", 0.0),
         vllm_port=mc.get("vllm_port", 8000),
+        vllm_api_key=mc.get("vllm_api_key", ""),
         vllm_api_key_env=mc.get("vllm_api_key_env", ""),
     )
 
@@ -225,16 +226,12 @@ def run_experiment(
                 for t in train_tasks[:20]]  # use first 20 as retrieval store
     registry = build_executors(config, llm_config, mock=mock, examples=examples)
 
-    # 4. Counterfactual execution
+    # 4. Counterfactual execution (concurrent)
     print(f"\nExecuting {len(train_tasks)} train tasks × {len(space.action_ids)} actions...")
-    t0 = time.time()
-    train_cf = [registry.execute_all(task, space) for task in train_tasks]
-    print(f"  Done in {time.time() - t0:.1f}s")
+    train_cf = registry.execute_all_tasks(train_tasks, space, max_concurrent=64)
 
-    print(f"Executing {len(test_tasks)} test tasks × {len(space.action_ids)} actions...")
-    t0 = time.time()
-    test_cf = [registry.execute_all(task, space) for task in test_tasks]
-    print(f"  Done in {time.time() - t0:.1f}s")
+    print(f"\nExecuting {len(test_tasks)} test tasks × {len(space.action_ids)} actions...")
+    test_cf = registry.execute_all_tasks(test_tasks, space, max_concurrent=64)
 
     # 5. Build experiences
     print("\nBuilding executive experiences...")
