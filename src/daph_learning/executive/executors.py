@@ -86,12 +86,73 @@ def _build_prompt(task: Mapping[str, Any], *, suffix: str = _FINAL_ANSWER_SUFFIX
 
 
 def _parse_final_answer(text: str | None) -> int | None:
-    """Extract the integer from a FINAL_ANSWER: <int> field."""
+    """Extract the integer from an LLM response.
+
+    Tries multiple strategies in order:
+    1. Canonical ``FINAL_ANSWER: <integer>`` marker (preferred).
+    2. Strip ``...`` reasoning blocks and retry FINAL_ANSWER.
+    3. Fallback: extract the last standalone integer from the
+       non-thinking portion of the response.
+
+    Returns the integer value, or ``None`` if no answer can be extracted.
+    """
     if text is None:
         return None
+    raw = str(text)
+
+    # Strategy 1: canonical FINAL_ANSWER marker
     from daph_learning.evaluation.canonical_verifier import parse_canonical_integer_answer
-    parsed = parse_canonical_integer_answer(str(text))
-    return parsed.value if parsed.status == "VALID" else None
+    parsed = parse_canonical_integer_answer(raw)
+    if parsed.status == "VALID" and parsed.value is not None:
+        return parsed.value
+
+    # Strategy 2: strip <think>...</think> blocks and retry
+    cleaned = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL)
+    if cleaned != raw:
+        parsed = parse_canonical_integer_answer(cleaned)
+        if parsed.status == "VALID" and parsed.value is not None:
+            return parsed.value
+
+    # Strategy 3: fallback — look for common answer patterns
+    # in the non-thinking portion
+    search_text = cleaned if cleaned != raw else raw
+
+    # Pattern: "The answer is X" / "answer is X" / "= X"
+    for pattern in [
+        r"(?:the\s+)?answer\s+is\s*:?\s*(-?\d+)",
+        r"=\s*(-?\d+)\s*(?:\.|$)",
+        r"(?:result|total|sum|product)\s+is\s*:?\s*(-?\d+)",
+    ]:
+        m = re.search(pattern, search_text, re.IGNORECASE)
+        if m:
+            try:
+                return int(m.group(1))
+            except ValueError:
+                pass
+
+    # Strategy 4: last standalone integer on its own line
+    lines = search_text.strip().split("\n")
+    for line in reversed(lines):
+        line = line.strip()
+        # Skip empty lines and lines that are just punctuation
+        if not line or line in ("```", "---", "***"):
+            continue
+        # Try to find a standalone integer
+        m = re.search(r"(?<![\d.]) (-?\d{1,10}) (?![\d.])", " " + line + " ")
+        if m:
+            try:
+                return int(m.group(1))
+            except ValueError:
+                pass
+        # Or a number at the end of the line
+        m = re.search(r"(-?\d+)\s*\.?\s*$", line)
+        if m:
+            try:
+                return int(m.group(1))
+            except ValueError:
+                pass
+
+    return None
 
 
 def _verify_answer(task: Mapping[str, Any], answer: int | None) -> bool | None:
@@ -252,15 +313,39 @@ class RetrievalVectorExecutor:
     n_retrieved: int = 3
 
     def _default_retrieve(self, query: str, examples: list[dict], k: int) -> list[dict]:
-        """Default retrieval: random selection (placeholder).
+        """Default retrieval: keyword-based selection.
 
-        In production, this should use vector similarity search.
-        For testing, deterministic random is fine.
+        Uses simple keyword matching to find examples that share words
+        with the query. This is a lightweight stand-in for vector
+        similarity search — sufficient to create conditional structure
+        where retrieval helps on matching subtypes and hurts on
+        trap subtypes (which share keywords with stored examples but
+        require different operations).
         """
-        import random
-        rng = random.Random(hash(query) % 2**31)
-        n = min(k, len(examples))
-        return rng.sample(examples, n) if n > 0 else []
+        if not examples:
+            return []
+
+        # Tokenize the query
+        query_words = set(query.lower().split())
+        # Remove common words
+        stopwords = {"what", "is", "the", "calculate", "consider", "note:",
+                     "not", "their", "sum", "product", "answer", "with", "for",
+                     "of", "in", "to", "a", "an", "this", "that", "these",
+                     "those", "first", "then", "later", "more", "and", "or",
+                     "by", "at", "on", "from", "they", "she", "he", "it"}
+        query_words -= stopwords
+
+        # Score each example by keyword overlap
+        scored = []
+        for ex in examples:
+            ex_words = set(str(ex.get("prompt", "")).lower().split())
+            ex_words -= stopwords
+            overlap = len(query_words & ex_words)
+            scored.append((overlap, ex))
+
+        # Sort by score (descending), take top k
+        scored.sort(key=lambda x: -x[0])
+        return [ex for _, ex in scored[:k]]
 
     def _build_retrieval_prompt(self, task: Mapping[str, Any]) -> str:
         """Build a prompt with retrieved examples as in-context demonstrations."""
@@ -321,11 +406,12 @@ class ReasoningDecomposeExecutor:
     """Execute decomposed reasoning: break the problem into sub-problems.
 
     Step 1: Ask the LLM to decompose the problem into sub-problems.
-    Step 2: Solve each sub-problem.
-    Step 3: Combine the sub-problem answers into a final answer.
+    Step 2: Solve each sub-problem in a separate LLM call.
+    Step 3: Combine the sub-problem answers in a final LLM call.
 
     This is more expensive (multiple LLM calls) but can solve problems
-    that direct reasoning cannot.
+    that direct reasoning cannot, particularly multi-step problems
+    where each step is simple but the composition is complex.
 
     Attributes
     ----------
@@ -344,39 +430,98 @@ class ReasoningDecomposeExecutor:
     cost_estimate: float = 0.30
     max_subproblems: int = 3
 
-    _DECOMPOSE_SUFFIX = (
-        "\n\nBreak this problem into at most {n} simpler sub-problems. "
-        "List each sub-problem on a new line starting with 'SUB:'. "
-        "Then solve each sub-problem and provide the final combined answer "
-        "as: FINAL_ANSWER: <integer>"
+    _DECOMPOSE_PROMPT = (
+        "{problem}\n\n"
+        "Break this problem into at most {n} simpler sub-problems. "
+        "Output each sub-problem on its own line in this exact format:\n"
+        "SUB: <sub-problem description>\n"
+        "Do not solve the sub-problems yet. Just list them."
     )
+
+    _SOLVE_PROMPT = (
+        "Solve this sub-problem and output ONLY the numerical answer:\n"
+        "{sub_problem}\n\n"
+        "Provide your answer as: FINAL_ANSWER: <integer>"
+    )
+
+    _COMBINE_PROMPT = (
+        "Here are the answers to sub-problems that solve a larger problem:\n"
+        "{sub_answers}\n\n"
+        "The original problem was:\n{original_problem}\n\n"
+        "Combine these sub-answers to get the final answer. "
+        "Provide your answer as: FINAL_ANSWER: <integer>"
+    )
+
+    def _parse_sub_problems(self, text: str) -> list[str]:
+        """Parse SUB: lines from the decomposition output."""
+        subs = []
+        for line in text.split("\n"):
+            line = line.strip()
+            if line.upper().startswith("SUB:"):
+                subs.append(line[4:].strip())
+            elif line.upper().startswith("SUB :"):
+                subs.append(line[5:].strip())
+        return subs[:self.max_subproblems]
 
     def execute(self, task: Mapping[str, Any]) -> ActionExecution:
         base_prompt = str(task.get("prompt", task.get("specification", "")))
-        decompose_prompt = base_prompt + self._DECOMPOSE_SUFFIX.format(
-            n=self.max_subproblems)
-
-        total_latency = 0.0
         gen = self.generate_fn or _call_vllm_api
+        total_latency = 0.0
+        all_outputs = []
 
-        # Step 1: Decompose + solve in one call (simplification for v0.4)
-        text, latency = gen(decompose_prompt, self.config)
-        total_latency += latency
+        # Step 1: Decompose the problem
+        decompose_prompt = self._DECOMPOSE_PROMPT.format(
+            problem=base_prompt, n=self.max_subproblems)
+        text1, latency1 = gen(decompose_prompt, self.config)
+        total_latency += latency1
+        all_outputs.append(f"[DECOMPOSE]\n{text1[:200]}")
 
-        answer = _parse_final_answer(text)
+        sub_problems = self._parse_sub_problems(text1)
+
+        if not sub_problems:
+            # Fallback: if decomposition failed, try direct solve
+            solve_prompt = base_prompt + _FINAL_ANSWER_SUFFIX
+            text, latency = gen(solve_prompt, self.config)
+            total_latency += latency
+            all_outputs.append(f"[FALLBACK DIRECT]\n{text[:200]}")
+            answer = _parse_final_answer(text)
+        else:
+            # Step 2: Solve each sub-problem
+            sub_answers = []
+            for i, sub in enumerate(sub_problems):
+                solve_prompt = self._SOLVE_PROMPT.format(sub_problem=sub)
+                text_s, latency_s = gen(solve_prompt, self.config)
+                total_latency += latency_s
+                sub_answer = _parse_final_answer(text_s)
+                all_outputs.append(f"[SUB {i+1}: {sub[:50]}]\n{text_s[:100]}")
+                if sub_answer is not None:
+                    sub_answers.append(f"Sub-problem {i+1}: {sub} → Answer: {sub_answer}")
+                else:
+                    sub_answers.append(f"Sub-problem {i+1}: {sub} → Answer: unknown")
+
+            # Step 3: Combine
+            combine_prompt = self._COMBINE_PROMPT.format(
+                sub_answers="\n".join(sub_answers),
+                original_problem=base_prompt,
+            )
+            text_c, latency_c = gen(combine_prompt, self.config)
+            total_latency += latency_c
+            all_outputs.append(f"[COMBINE]\n{text_c[:200]}")
+            answer = _parse_final_answer(text_c)
+
         verified = _verify_answer(task, answer)
 
         failure_type = None
-        if text.startswith("ERROR:"):
+        if any("ERROR:" in o for o in all_outputs):
             failure_type = "execution_error"
-        elif answer is None and not text.startswith("ERROR:"):
+        elif answer is None:
             failure_type = "parse_error"
 
         return ActionExecution(
             action_id=self.action_id,
             selected=False,
             executed=True,
-            output=text,
+            output="\n\n".join(all_outputs),
             verified_correct=verified,
             verifier_name="numeric_exact",
             latency_ms=total_latency,

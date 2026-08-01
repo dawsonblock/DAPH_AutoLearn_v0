@@ -430,6 +430,8 @@ def run_experiment(
     for cf in test_cf:
         cf_data.append({
             "task_id": cf.task_id,
+            "subtype": cf.state.subtype or "",
+            "group_id": cf.state.group_id or "",
             "executions": {
                 aid: {
                     "executed": e.executed,
@@ -437,6 +439,7 @@ def run_experiment(
                     "latency_ms": e.latency_ms,
                     "compute_cost": e.compute_cost,
                     "failure_type": e.failure_type,
+                    "output_preview": (e.output or "")[:500] if e.output else "",
                 }
                 for aid, e in cf.executions.items()
             }
