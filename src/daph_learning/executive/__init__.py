@@ -92,6 +92,7 @@ from daph_learning.executive.hidden_state import (
     HiddenStateConfig,
     load_model_for_capture,
     capture_hidden_states,
+    capture_logprob_features,
 )
 
 __all__ = [
@@ -154,4 +155,5 @@ __all__ = [
     "HiddenStateConfig",
     "load_model_for_capture",
     "capture_hidden_states",
+    "capture_logprob_features",
 ]

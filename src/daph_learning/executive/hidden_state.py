@@ -1,21 +1,21 @@
 """DAPH v0.4 — Hidden state capture for executive qualification.
 
-Captures hidden states from a HuggingFace model to use as features for
-the executive policy. This is the v0.4 equivalent of the
-``_capture_hidden_states`` function in ``run_gate_a_staged.py``,
-generalized to work with the executive pipeline.
+Captures features from tasks to use as input for the executive policy.
 
-The capture is done separately from LLM generation (which uses the vLLM
-API server). The HF model is loaded in-process for a single forward
-pass per task to extract hidden states.
+Two capture modes are supported:
 
-Multiple layers and pooling strategies are supported:
-  - last_token: hidden state at the last prompt token
-  - mean_prompt: mean of all prompt token hidden states
-  - mean_content: mean of non-special tokens
+1. **HF model mode** (``capture_hidden_states``): Loads a HuggingFace
+   model in-process and runs a forward pass to extract hidden states.
+   Requires GPU memory separate from vLLM.
 
-Multiple layers can be captured and concatenated to produce richer
-features.
+2. **vLLM logprob mode** (``capture_logprob_features``): Uses the vLLM
+   completions API with ``echo=true`` to get prompt token logprobs.
+   Computes statistics (mean, std, min, max, percentiles) from these
+   logprobs as features. No additional GPU memory needed — works
+   alongside a running vLLM server.
+
+The logprob mode is preferred when the GPU is already fully utilized by
+vLLM, as it requires no additional model loading.
 """
 
 from __future__ import annotations
@@ -86,7 +86,7 @@ def capture_hidden_states(
     config: HiddenStateConfig,
     device: str = "cuda",
 ) -> np.ndarray:
-    """Capture hidden states for a list of tasks.
+    """Capture hidden states for a list of tasks using a HF model.
 
     Parameters
     ----------
@@ -170,8 +170,138 @@ def capture_hidden_states(
     return np.array(features, dtype=np.float32)
 
 
+def capture_logprob_features(
+    tasks: list[dict[str, Any]],
+    *,
+    vllm_base_url: str = "http://localhost:8000",
+    vllm_api_key: str = "",
+    model_name: str = "",
+    max_tokens: int = 0,
+    batch_size: int = 32,
+) -> np.ndarray:
+    """Capture features from vLLM prompt logprobs.
+
+    Uses the vLLM completions API with ``echo=true`` and ``logprobs=1``
+    to get the logprob of each prompt token. Computes statistics from
+    these logprobs as features.
+
+    This approach requires no additional GPU memory — it uses the
+    already-running vLLM server.
+
+    Features extracted (10 per task):
+    - n_tokens: number of prompt tokens
+    - mean_logprob: mean logprob across prompt tokens
+    - std_logprob: std of logprobs
+    - min_logprob: minimum logprob (most surprising token)
+    - max_logprob: maximum logprob (most expected token)
+    - median_logprob: median logprob
+    - p25_logprob: 25th percentile
+    - p75_logprob: 75th percentile
+    - first_logprob: logprob of first content token
+    - last_logprob: logprob of last prompt token
+
+    Parameters
+    ----------
+    tasks : list[dict]
+        Each task must have a "prompt" field.
+    vllm_base_url : str
+        Base URL of the vLLM server.
+    vllm_api_key : str
+        API key for the vLLM server.
+    model_name : str
+        Model name to pass to vLLM.
+    max_tokens : int
+        Maximum tokens to generate (0 = just echo prompt).
+    batch_size : int
+        Number of concurrent requests.
+
+    Returns
+    -------
+    np.ndarray  shape [N, 10]
+        Feature array.
+    """
+    import requests
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    import time as _time
+
+    headers = {
+        "Authorization": f"Bearer {vllm_api_key}",
+        "Content-Type": "application/json",
+    }
+
+    def _capture_one(task):
+        prompt = str(task.get("prompt", task.get("specification", "")))
+        payload = {
+            "model": model_name,
+            "prompt": prompt,
+            "max_tokens": max_tokens,
+            "echo": True,
+            "logprobs": 1,
+            "temperature": 0.0,
+        }
+        try:
+            resp = requests.post(
+                f"{vllm_base_url}/v1/completions",
+                headers=headers,
+                json=payload,
+                timeout=30,
+            )
+            data = resp.json()
+            choice = data["choices"][0]
+            logprobs_info = choice.get("logprobs")
+
+            if logprobs_info is None:
+                return _default_features()
+
+            token_logprobs = logprobs_info.get("token_logprobs", [])
+            # Filter out None values (first token has no logprob)
+            valid_lps = [lp for lp in token_logprobs if lp is not None]
+
+            if not valid_lps:
+                return _default_features()
+
+            lps = np.array(valid_lps, dtype=np.float32)
+            features = np.array([
+                len(token_logprobs),           # n_tokens
+                float(np.mean(lps)),            # mean_logprob
+                float(np.std(lps)),             # std_logprob
+                float(np.min(lps)),             # min_logprob
+                float(np.max(lps)),             # max_logprob
+                float(np.median(lps)),          # median_logprob
+                float(np.percentile(lps, 25)),  # p25_logprob
+                float(np.percentile(lps, 75)),  # p75_logprob
+                float(valid_lps[0]),            # first_logprob
+                float(valid_lps[-1]),           # last_logprob
+            ], dtype=np.float32)
+            return features
+        except Exception:
+            return _default_features()
+
+    def _default_features():
+        return np.zeros(10, dtype=np.float32)
+
+    features = []
+    t0 = _time.time()
+
+    with ThreadPoolExecutor(max_workers=batch_size) as executor:
+        futures = {executor.submit(_capture_one, t): i for i, t in enumerate(tasks)}
+        results = [None] * len(tasks)
+        completed = 0
+        for future in as_completed(futures):
+            idx = futures[future]
+            results[idx] = future.result()
+            completed += 1
+            if completed % 100 == 0 or completed == len(tasks):
+                elapsed = _time.time() - t0
+                print(f"    ... captured {completed}/{len(tasks)} logprob features "
+                      f"({elapsed:.1f}s)")
+
+    return np.array(results, dtype=np.float32)
+
+
 __all__ = [
     "HiddenStateConfig",
     "load_model_for_capture",
     "capture_hidden_states",
+    "capture_logprob_features",
 ]

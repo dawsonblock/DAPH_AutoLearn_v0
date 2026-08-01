@@ -75,6 +75,7 @@ from daph_learning.executive import (
     HiddenStateConfig,
     load_model_for_capture,
     capture_hidden_states,
+    capture_logprob_features,
 )
 
 
@@ -262,35 +263,63 @@ def run_experiment(
     test_experiences = build_executive_experiences(test_cf, um, space)
     print(f"  {len(train_experiences)} train, {len(test_experiences)} test")
 
-    # 6. Extract features (hidden states or random fallback)
+    # 6. Extract features (hidden states, logprobs, or random fallback)
     mc = config.get("model", {})
     use_hidden_states = mc.get("capture_hidden_states", False)
+    feature_mode = mc.get("feature_mode", "auto")  # auto, hf_model, logprob, random
 
     if use_hidden_states and not mock:
-        print("\nCapturing hidden states from HF model...")
-        hs_cfg = HiddenStateConfig(
-            model_name=mc.get("name", ""),
-            layers=mc.get("capture_layers", [0.5]),
-            location=mc.get("capture_location", "last_token"),
-            max_length=mc.get("capture_max_length", 512),
-            batch_size=mc.get("capture_batch_size", 16),
-        )
-        device = mc.get("device", "cuda")
-        print(f"  Loading model {hs_cfg.model_name} on {device}...")
-        cap_model, cap_tokenizer = load_model_for_capture(
-            hs_cfg.model_name, device=device, dtype=mc.get("dtype", "auto"))
-        print(f"  Capturing train features ({len(train_tasks)} tasks)...")
-        train_features = capture_hidden_states(
-            train_tasks, cap_model, cap_tokenizer, hs_cfg, device=device)
-        print(f"  Capturing test features ({len(test_tasks)} tasks)...")
-        test_features = capture_hidden_states(
-            test_tasks, cap_model, cap_tokenizer, hs_cfg, device=device)
-        # Free model memory
-        del cap_model
-        import torch
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-        print(f"  Feature dim: {train_features.shape[1]}")
+        if feature_mode in ("auto", "hf_model"):
+            print("\nCapturing hidden states from HF model...")
+            hs_cfg = HiddenStateConfig(
+                model_name=mc.get("name", ""),
+                layers=mc.get("capture_layers", [0.5]),
+                location=mc.get("capture_location", "last_token"),
+                max_length=mc.get("capture_max_length", 512),
+                batch_size=mc.get("capture_batch_size", 16),
+            )
+            device = mc.get("device", "cuda")
+            try:
+                print(f"  Loading model {hs_cfg.model_name} on {device}...")
+                cap_model, cap_tokenizer = load_model_for_capture(
+                    hs_cfg.model_name, device=device, dtype=mc.get("dtype", "auto"))
+                print(f"  Capturing train features ({len(train_tasks)} tasks)...")
+                train_features = capture_hidden_states(
+                    train_tasks, cap_model, cap_tokenizer, hs_cfg, device=device)
+                print(f"  Capturing test features ({len(test_tasks)} tasks)...")
+                test_features = capture_hidden_states(
+                    test_tasks, cap_model, cap_tokenizer, hs_cfg, device=device)
+                # Free model memory
+                del cap_model
+                import torch
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+                print(f"  Feature dim: {train_features.shape[1]}")
+            except (RuntimeError, OSError, MemoryError) as e:
+                print(f"  HF model loading failed ({e}), falling back to logprob features")
+                feature_mode = "logprob"
+
+        if feature_mode == "logprob":
+            print("\nCapturing logprob features from vLLM...")
+            vllm_url = f"http://localhost:{mc.get('vllm_port', 8000)}"
+            vllm_key = mc.get("vllm_api_key", os.environ.get("VLLM_API_KEY", ""))
+            print(f"  Capturing train features ({len(train_tasks)} tasks)...")
+            train_features = capture_logprob_features(
+                train_tasks,
+                vllm_base_url=vllm_url,
+                vllm_api_key=vllm_key,
+                model_name=mc.get("name", ""),
+                batch_size=mc.get("capture_batch_size", 32),
+            )
+            print(f"  Capturing test features ({len(test_tasks)} tasks)...")
+            test_features = capture_logprob_features(
+                test_tasks,
+                vllm_base_url=vllm_url,
+                vllm_api_key=vllm_key,
+                model_name=mc.get("name", ""),
+                batch_size=mc.get("capture_batch_size", 32),
+            )
+            print(f"  Feature dim: {train_features.shape[1]}")
     else:
         print("\nUsing random features (no hidden state capture)...")
         rng = np.random.RandomState(config.get("data", {}).get("seed", 42))

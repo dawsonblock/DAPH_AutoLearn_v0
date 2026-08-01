@@ -57,9 +57,10 @@ model:
   vllm_port: 8000
   vllm_api_key: "sk-6cbxgk04y6hyvm"
   capture_hidden_states: true
+  feature_mode: "logprob"
   capture_layers: [0.25, 0.5, 0.75, 1.0]
   capture_location: "last_token"
   capture_max_length: 512
-  capture_batch_size: 16
+  capture_batch_size: 32
   device: "cuda"
   dtype: "auto"
