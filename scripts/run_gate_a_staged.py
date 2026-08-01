@@ -442,33 +442,30 @@ def _vllm_api_generate(tasks, model_id, criteria, max_new_tokens=256):
     in-process. The HF model is still loaded separately for hidden state
     capture.
 
+    Uses concurrent requests for speed (vLLM handles batching internally).
+
     Returns list of (generated_text, latency) tuples.
     """
     import time as _time
     import json as _json
     import urllib.request
+    from concurrent.futures import ThreadPoolExecutor, as_completed
     from daph_learning.execution.real_backends import build_llm_prompt
 
     model_cfg = criteria.raw.get("model", {})
     port = int(model_cfg.get("vllm_port", 8000))
     api_key = model_cfg.get("vllm_api_key", "")
     base_url = f"http://localhost:{port}/v1"
+    max_concurrent = int(model_cfg.get("vllm_max_concurrent", 64))
 
-    results = []
-    t0 = _time.time()
-
+    # Build prompts.
+    prompts = []
     for task in tasks:
         prompt = build_llm_prompt(task)
-        # Apply chat template if available
-        try:
-            from transformers import AutoTokenizer
-            tok = AutoTokenizer.from_pretrained(model_id)
-            messages = [{"role": "user", "content": prompt}]
-            formatted = tok.apply_chat_template(
-                messages, tokenize=False, add_generation_prompt=True)
-        except Exception:
-            formatted = prompt
+        prompts.append(prompt)
 
+    def send_one(idx_prompt):
+        idx, prompt = idx_prompt
         payload = _json.dumps({
             "model": model_id,
             "messages": [{"role": "user", "content": prompt}],
@@ -476,7 +473,6 @@ def _vllm_api_generate(tasks, model_id, criteria, max_new_tokens=256):
             "temperature": 0.0,
             "top_p": 1.0,
         }).encode("utf-8")
-
         req = urllib.request.Request(
             f"{base_url}/chat/completions",
             data=payload,
@@ -489,13 +485,30 @@ def _vllm_api_generate(tasks, model_id, criteria, max_new_tokens=256):
             with urllib.request.urlopen(req, timeout=120) as resp:
                 data = _json.loads(resp.read())
                 text = data["choices"][0]["message"]["content"].strip()
-                results.append((text, 0.0))
+                return idx, text, 0.0
         except Exception as e:
-            print(f"[vllm-api] Error on task {task.get('task_id', '?')}: {e}")
-            results.append(("", 0.0))
+            if idx < 5:
+                print(f"[vllm-api] Error on task {idx}: {e}")
+            return idx, "", 0.0
+
+    t0 = _time.time()
+    results = [("", 0.0)] * len(tasks)
+
+    with ThreadPoolExecutor(max_workers=max_concurrent) as executor:
+        futures = {executor.submit(send_one, (i, p)): i
+                   for i, p in enumerate(prompts)}
+        completed = 0
+        for future in as_completed(futures):
+            idx, text, latency = future.result()
+            results[idx] = (text, latency)
+            completed += 1
+            if completed % 500 == 0:
+                print(f"[vllm-api] {completed}/{len(tasks)} completed...")
 
     total_latency = _time.time() - t0
     avg_latency = total_latency / max(len(tasks), 1)
+    print(f"[vllm-api] Done: {len(tasks)} tasks in {total_latency:.1f}s "
+          f"({avg_latency*1000:.0f}ms/task)")
     return [(text, avg_latency) for text, _ in results]
 
 
