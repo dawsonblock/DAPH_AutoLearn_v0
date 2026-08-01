@@ -66,6 +66,15 @@ from daph_learning.executive.policy import (
     ExecutiveLogisticPolicy,
     make_executive_policy,
 )
+from daph_learning.executive.experience import (
+    ExecutiveExperience,
+    build_executive_experiences,
+    experiences_to_training_arrays,
+    combine_action_confidences,
+    ExecutiveTrainingTargets,
+    build_executive_training_targets,
+    estimate_uncertainty,
+)
 
 __all__ = [
     "ActionDescriptor",
@@ -104,4 +113,12 @@ __all__ = [
     "ExecutiveCentroidPolicy",
     "ExecutiveLogisticPolicy",
     "make_executive_policy",
+    # Experience
+    "ExecutiveExperience",
+    "build_executive_experiences",
+    "experiences_to_training_arrays",
+    "combine_action_confidences",
+    "ExecutiveTrainingTargets",
+    "build_executive_training_targets",
+    "estimate_uncertainty",
 ]
