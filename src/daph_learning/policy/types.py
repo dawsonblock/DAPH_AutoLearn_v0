@@ -18,11 +18,15 @@ import numpy as np
 
 
 class Route(str, Enum):
-    """Primary action space for v0.3.10.
+    """Primary action space for the B0 compatibility benchmark (v0.3.10).
 
     The action space is designed to grow in future releases
-    (HYBRID, VERIFY, RETRIEVE, THINK_MORE, TOOL, ...). For this release
+    (HYBRID, VERIFY, RETRIEVE, THINK_MORE, TOOL, ...). For v0.3.x
     only SYMBOLIC, LLM, and ABSTAIN are produced by the learned policy.
+
+    v0.4 — superseded by :class:`daph_learning.executive.ActionSpace`
+    for new experiments. This enum is kept as a thin alias for backward
+    compatibility with all v0.3.x code and artifacts.
     """
 
     SYMBOLIC = "symbolic"

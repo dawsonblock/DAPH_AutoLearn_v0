@@ -68,10 +68,20 @@ def compare(observed: float, comparator: Comparator, threshold: float) -> bool:
 
 # ──────────────────────────────────────────────────────────────────────
 # Section 7 — Route Actions and Realized Utility
+#
+# v0.4 — This is the B0 compatibility benchmark action space (formerly
+# "Gate A"). The generic :class:`daph_learning.executive.ActionSpace`
+# supersedes this enum for new experiments. ``RouteAction`` is kept as
+# a thin alias so all v0.3.x code and artifacts continue to work.
 # ──────────────────────────────────────────────────────────────────────
 
 class RouteAction(str, Enum):
-    """Hard routing action selected by the frozen policy."""
+    """Hard routing action selected by the frozen policy (B0 benchmark).
+
+    This is the binary compatibility action space. New experiments
+    should use :func:`daph_learning.executive.binary_action_space` or
+    a custom :class:`~daph_learning.executive.ActionSpace`.
+    """
     SYMBOLIC = "symbolic"
     LLM = "llm"
     ABSTAIN = "abstain"
@@ -79,7 +89,11 @@ class RouteAction(str, Enum):
 
 @dataclass(frozen=True)
 class RoutingDecision:
-    """A single routing decision for one task."""
+    """A single routing decision for one task (B0 benchmark).
+
+    v0.4 — :class:`~daph_learning.executive.ActionDecision` is the
+    generic equivalent for arbitrary action spaces.
+    """
     task_id: str
     symbolic_probability: float
     action: RouteAction
@@ -87,6 +101,17 @@ class RoutingDecision:
     threshold_symbolic: float
     threshold_llm: float
     calibration_applied: bool
+
+    def to_action_decision(self):
+        """Convert to a generic :class:`ActionDecision`."""
+        from daph_learning.executive.adapters import (
+            action_decision_from_symbolic_probability,
+        )
+        return action_decision_from_symbolic_probability(
+            self.task_id,
+            self.symbolic_probability,
+            calibrated=self.calibration_applied,
+        )
 
 
 def select_route_action(

@@ -38,10 +38,20 @@ from daph_learning.evaluation.verification import (
     OutcomeVerifier,
 )
 
-# The two executable backends. ``"abstain"`` is a route *decision* (V039-003),
+# The two executable backends for the B0 compatibility benchmark
+# (formerly "Gate A"). ``"abstain"`` is a route *decision* (V039-003),
 # not a backend; an abstained task executes neither backend.
+#
+# v0.4 — these are the legacy backend names for the binary action space
+# defined in :func:`daph_learning.executive.binary_action_space`. The
+# generic executive types use action IDs (``action.symbolic_arithmetic``,
+# ``action.llm_direct``) but these short names are kept for backward
+# compatibility with all v0.3.x code and artifacts.
 BACKENDS = ("symbolic", "llm")
 RouteAction = str  # "symbolic" | "llm" | "abstain" | None
+
+# v0.4 — the B0 compatibility benchmark name (formerly "Gate A").
+BENCHMARK_B0 = "gate_a"  # artifact directory name remains gate_a for compatibility
 
 
 @dataclass(frozen=True)

@@ -172,36 +172,56 @@ def compute_backend_utility(
     :func:`daph_learning.policy.utility.utility_formula` so the
     experience-construction path and the evaluation path share one
     formula implementation and cannot drift.
+
+    v0.4 — now delegates to the generic
+    :class:`daph_learning.executive.UtilityModel` which is the single
+    canonical implementation of ``U(state, action)``. The legacy
+    ``UtilityBreakdown`` is returned for backward compatibility.
     """
-    from daph_learning.policy.utility import utility_formula
-    cfg = config.freeze()
-    q = _quality(record)
-    t = record.latency_ms if record.latency_ms is not None else 0.0
-    c = record.compute_cost if record.compute_cost is not None else 0.0
-    r = _risk(record)
-    utility = utility_formula(
-        quality=q,
-        latency_ms=t,
-        compute_cost=c,
-        risk=r,
-        quality_weight=cfg.quality_weight,
-        lambda_time=cfg.lambda_time,
-        lambda_compute=cfg.lambda_compute,
-        lambda_risk=cfg.lambda_risk,
-        time_reference_ms=cfg.time_reference_ms,
-        compute_reference=cfg.compute_reference,
+    from daph_learning.executive.adapters import (
+        utility_model_from_legacy_config,
+        action_from_backend,
     )
-    time_term = cfg.lambda_time * (t / cfg.time_reference_ms)
-    compute_term = cfg.lambda_compute * (c / cfg.compute_reference)
-    risk_term = cfg.lambda_risk * r
+    from daph_learning.executive.types import ActionExecution
+
+    cfg = config.freeze()
+    generic_model = utility_model_from_legacy_config(cfg)
+
+    # Convert BackendExecutionRecord → ActionExecution
+    verification = record.verification
+    verified_correct = None
+    if hasattr(verification, "status"):
+        status = verification.status
+        status_val = status.value if hasattr(status, "value") else str(status)
+        if status_val == "verified_correct":
+            verified_correct = True
+        elif status_val == "verified_incorrect":
+            verified_correct = False
+
+    action_id = action_from_backend(record.backend)
+    action_exec = ActionExecution(
+        action_id=action_id,
+        selected=record.selected,
+        executed=record.executed,
+        output=record.output,
+        verified_correct=verified_correct,
+        verifier_name=getattr(verification, "verifier", "unknown"),
+        latency_ms=record.latency_ms,
+        compute_cost=record.compute_cost,
+        failure_type=record.failure_type,
+    )
+
+    generic_bd = generic_model.compute(action_exec)
+
+    # Return legacy UtilityBreakdown for backward compatibility
     return UtilityBreakdown(
         backend=record.backend,
-        quality=q,
-        time_term=time_term,
-        compute_term=compute_term,
-        risk_term=risk_term,
-        utility=utility,
-        config_sha256=cfg.config_sha256,  # type: ignore[arg-type]
+        quality=generic_bd.quality,
+        time_term=generic_bd.time_term,
+        compute_term=generic_bd.compute_term,
+        risk_term=generic_bd.risk_term,
+        utility=generic_bd.utility,
+        config_sha256=generic_bd.config_sha256,
     )
 
 

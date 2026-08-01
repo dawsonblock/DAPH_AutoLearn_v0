@@ -1,3 +1,44 @@
+# 0.4.0-alpha (Executive generalization)
+
+## What changed
+
+### Generic executive qualification
+
+- **New `daph_learning.executive` package**: introduces generic N-action
+  executive qualification types that replace the hard-coded
+  `symbolic` vs `llm` binary routing of v0.3.x.
+  - `ActionDescriptor` / `ActionSpace`: arbitrary action sets
+  - `ExecutiveState`: observable state at a decision point
+  - `ActionExecution`: result of executing one action
+  - `CounterfactualSet`: all action executions for one state
+  - `UtilityModel`: computes `U(state, action)` for any action
+  - `ActionDecision`: per-action probabilities (replaces `symbolic_probability`)
+  - `Regret`: `U(s, a*) - U(s, a)` for any chosen action
+- **Generic qualification machinery**: oracle, group-aware bootstrap,
+  sham permutation, and full evaluation for arbitrary N-action spaces.
+- **Generic report generation**: markdown and JSON reports for any
+  action space.
+- **Legacy adapters**: `binary_action_space()`, `action_from_backend()`,
+  `action_decision_from_symbolic_probability()` bridge old binary types
+  to generic types.
+- **Parity verified**: 11 parity tests confirm the generic interface
+  produces identical results to the legacy binary interface.
+
+### B0 compatibility benchmark (formerly "Gate A")
+
+- The "Gate A" benchmark is now known as **benchmark B0** (the binary
+  compatibility benchmark). The artifact directory name `gate_a` is
+  kept for backward compatibility.
+- `compute_backend_utility()` now delegates to `UtilityModel.compute()`
+  internally — single canonical utility implementation.
+- `RouteAction` enum and `BACKENDS` tuple kept as thin aliases for
+  backward compatibility with all v0.3.x code and artifacts.
+
+### Test suite
+
+- 68 new tests for executive types, qualification, report, and parity.
+- Total: 1376 collected, 1355 passed, 8 skipped, 0 failures.
+
 # 0.3.10.6-alpha (Scientific repair + prompt interface fix + 1.5B experiment)
 
 ## What changed

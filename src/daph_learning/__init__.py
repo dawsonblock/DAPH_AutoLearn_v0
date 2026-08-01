@@ -1,5 +1,11 @@
 __version__ = "0.3.10.6-alpha"
 
+# v0.4 — The "Gate A" benchmark is now known as "benchmark B0" (the
+# binary compatibility benchmark). The artifact directory name
+# ``gate_a`` is kept for backward compatibility. New experiments should
+# use the generic :mod:`daph_learning.executive` module.
+BENCHMARK_B0 = "gate_a"  # formerly "Gate A"
+
 # Section 2: experiment identity. The current experiment is determined by
 # the Gate A config (configs/gate_a_real_007_harder.yaml), not hardcoded
 # in package source. The earlier real-model runs are preserved as legacy

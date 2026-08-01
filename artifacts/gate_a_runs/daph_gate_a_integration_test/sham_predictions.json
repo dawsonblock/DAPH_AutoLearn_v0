@@ -65,7 +65,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_H_g327_0001",
-    "symbolic_probability": 0.49553900957107544,
+    "symbolic_probability": 0.4955390393733978,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -163,7 +163,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_C_g506_0003",
-    "symbolic_probability": 0.5481668710708618,
+    "symbolic_probability": 0.5481669306755066,
     "selected_action": "symbolic",
     "realized_utility": 0.0
   },
@@ -184,7 +184,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_E_g236_0002",
-    "symbolic_probability": 0.4707934558391571,
+    "symbolic_probability": 0.47079339623451233,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -296,7 +296,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_B_g273_0002",
-    "symbolic_probability": 0.4657382369041443,
+    "symbolic_probability": 0.46573829650878906,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -443,7 +443,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_D_g331_0003",
-    "symbolic_probability": 0.38394442200660706,
+    "symbolic_probability": 0.38394445180892944,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -457,7 +457,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_F_g349_0001",
-    "symbolic_probability": 0.4860663414001465,
+    "symbolic_probability": 0.48606640100479126,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -548,14 +548,14 @@
   {
     "sham_seed": 42,
     "task_id": "final_A_g136_0002",
-    "symbolic_probability": 0.4334617853164673,
+    "symbolic_probability": 0.4334617257118225,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
   {
     "sham_seed": 42,
     "task_id": "final_A_g136_0003",
-    "symbolic_probability": 0.6133991479873657,
+    "symbolic_probability": 0.613399088382721,
     "selected_action": "symbolic",
     "realized_utility": 1.0
   },
@@ -639,7 +639,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_F_g181_0003",
-    "symbolic_probability": 0.49677103757858276,
+    "symbolic_probability": 0.49677109718322754,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -695,7 +695,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_D_g83_0003",
-    "symbolic_probability": 0.339199960231781,
+    "symbolic_probability": 0.3391999304294586,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -807,7 +807,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_A_g232_0003",
-    "symbolic_probability": 0.4366281032562256,
+    "symbolic_probability": 0.436628133058548,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -891,14 +891,14 @@
   {
     "sham_seed": 42,
     "task_id": "final_D_g51_0003",
-    "symbolic_probability": 0.40004998445510864,
+    "symbolic_probability": 0.40004995465278625,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
   {
     "sham_seed": 42,
     "task_id": "final_D_g443_0000",
-    "symbolic_probability": 0.39149951934814453,
+    "symbolic_probability": 0.39149948954582214,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -1003,14 +1003,14 @@
   {
     "sham_seed": 42,
     "task_id": "final_B_g81_0003",
-    "symbolic_probability": 0.4692175090312958,
+    "symbolic_probability": 0.46921756863594055,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
   {
     "sham_seed": 42,
     "task_id": "final_A_g296_0000",
-    "symbolic_probability": 0.38940849900245667,
+    "symbolic_probability": 0.38940852880477905,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -1248,7 +1248,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_D_g387_0002",
-    "symbolic_probability": 0.3809106945991516,
+    "symbolic_probability": 0.3809106647968292,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -1262,7 +1262,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_H_g127_0000",
-    "symbolic_probability": 0.3874843716621399,
+    "symbolic_probability": 0.3874844014644623,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -1297,7 +1297,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_G_g470_0001",
-    "symbolic_probability": 0.3892354667186737,
+    "symbolic_probability": 0.3892354369163513,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -1381,7 +1381,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_A_g352_0001",
-    "symbolic_probability": 0.510979413986206,
+    "symbolic_probability": 0.5109793543815613,
     "selected_action": "symbolic",
     "realized_utility": 1.0
   },
@@ -1409,7 +1409,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_H_g367_0001",
-    "symbolic_probability": 0.4517006576061249,
+    "symbolic_probability": 0.4517006278038025,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -1437,14 +1437,14 @@
   {
     "sham_seed": 42,
     "task_id": "final_D_g99_0001",
-    "symbolic_probability": 0.4346901476383209,
+    "symbolic_probability": 0.43469011783599854,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
   {
     "sham_seed": 42,
     "task_id": "final_D_g99_0002",
-    "symbolic_probability": 0.5456705689430237,
+    "symbolic_probability": 0.5456706285476685,
     "selected_action": "symbolic",
     "realized_utility": 1.0
   },
@@ -1458,14 +1458,14 @@
   {
     "sham_seed": 42,
     "task_id": "final_F_g389_0000",
-    "symbolic_probability": 0.3589526116847992,
+    "symbolic_probability": 0.3589525818824768,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
   {
     "sham_seed": 42,
     "task_id": "final_F_g389_0001",
-    "symbolic_probability": 0.5564671158790588,
+    "symbolic_probability": 0.5564670562744141,
     "selected_action": "symbolic",
     "realized_utility": 1.0
   },
@@ -1507,7 +1507,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_G_g94_0003",
-    "symbolic_probability": 0.432343453168869,
+    "symbolic_probability": 0.43234342336654663,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -1633,7 +1633,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_D_g539_0001",
-    "symbolic_probability": 0.4277852177619934,
+    "symbolic_probability": 0.42778515815734863,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -1654,7 +1654,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_E_g348_0000",
-    "symbolic_probability": 0.3738968074321747,
+    "symbolic_probability": 0.3738967776298523,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -1675,7 +1675,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_E_g348_0003",
-    "symbolic_probability": 0.5469554662704468,
+    "symbolic_probability": 0.5469555258750916,
     "selected_action": "symbolic",
     "realized_utility": 1.0
   },
@@ -1801,7 +1801,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_D_g459_0001",
-    "symbolic_probability": 0.4974172115325928,
+    "symbolic_probability": 0.49741727113723755,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -1815,7 +1815,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_D_g459_0003",
-    "symbolic_probability": 0.35046231746673584,
+    "symbolic_probability": 0.35046228766441345,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -1850,7 +1850,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_F_g429_0000",
-    "symbolic_probability": 0.5331448316574097,
+    "symbolic_probability": 0.5331448912620544,
     "selected_action": "symbolic",
     "realized_utility": 1.0
   },
@@ -1885,7 +1885,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_D_g203_0001",
-    "symbolic_probability": 0.44410717487335205,
+    "symbolic_probability": 0.44410720467567444,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -1906,7 +1906,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_D_g27_0000",
-    "symbolic_probability": 0.37687161564826965,
+    "symbolic_probability": 0.37687158584594727,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -1969,7 +1969,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_G_g238_0001",
-    "symbolic_probability": 0.4321063756942749,
+    "symbolic_probability": 0.4321064054965973,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -1983,14 +1983,14 @@
   {
     "sham_seed": 42,
     "task_id": "final_G_g238_0003",
-    "symbolic_probability": 0.4943789541721344,
+    "symbolic_probability": 0.4943788945674896,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
   {
     "sham_seed": 42,
     "task_id": "final_H_g223_0000",
-    "symbolic_probability": 0.41315558552742004,
+    "symbolic_probability": 0.41315555572509766,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -2039,7 +2039,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_H_g95_0003",
-    "symbolic_probability": 0.6312144994735718,
+    "symbolic_probability": 0.631214439868927,
     "selected_action": "symbolic",
     "realized_utility": 0.0
   },
@@ -2130,7 +2130,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_B_g89_0000",
-    "symbolic_probability": 0.4690782427787781,
+    "symbolic_probability": 0.46907830238342285,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -2158,14 +2158,14 @@
   {
     "sham_seed": 42,
     "task_id": "final_A_g104_0000",
-    "symbolic_probability": 0.41934266686439514,
+    "symbolic_probability": 0.41934263706207275,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
   {
     "sham_seed": 42,
     "task_id": "final_A_g104_0001",
-    "symbolic_probability": 0.4780077636241913,
+    "symbolic_probability": 0.4780077040195465,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -2263,7 +2263,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_C_g250_0003",
-    "symbolic_probability": 0.58541339635849,
+    "symbolic_probability": 0.5854134559631348,
     "selected_action": "symbolic",
     "realized_utility": 1.0
   },
@@ -2305,7 +2305,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_B_g25_0001",
-    "symbolic_probability": 0.3498894274234772,
+    "symbolic_probability": 0.3498893976211548,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -2319,7 +2319,7 @@
   {
     "sham_seed": 42,
     "task_id": "final_B_g25_0003",
-    "symbolic_probability": 0.46050789952278137,
+    "symbolic_probability": 0.46050792932510376,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -2375,7 +2375,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_F_g285_0003",
-    "symbolic_probability": 0.5614606142044067,
+    "symbolic_probability": 0.5614606738090515,
     "selected_action": "symbolic",
     "realized_utility": 1.0
   },
@@ -2417,7 +2417,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_H_g327_0001",
-    "symbolic_probability": 0.45734402537345886,
+    "symbolic_probability": 0.4573439955711365,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -2438,7 +2438,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_B_g473_0000",
-    "symbolic_probability": 0.4977208375930786,
+    "symbolic_probability": 0.49772077798843384,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -2501,7 +2501,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_C_g506_0001",
-    "symbolic_probability": 0.5087913274765015,
+    "symbolic_probability": 0.5087912678718567,
     "selected_action": "symbolic",
     "realized_utility": 0.0
   },
@@ -2809,7 +2809,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_F_g349_0001",
-    "symbolic_probability": 0.46561455726623535,
+    "symbolic_probability": 0.4656146168708801,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -2872,7 +2872,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_H_g359_0002",
-    "symbolic_probability": 0.4580562710762024,
+    "symbolic_probability": 0.45805633068084717,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -2942,7 +2942,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_D_g107_0000",
-    "symbolic_probability": 0.3762851357460022,
+    "symbolic_probability": 0.3762851655483246,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -3026,7 +3026,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_D_g83_0000",
-    "symbolic_probability": 0.2944251000881195,
+    "symbolic_probability": 0.2944251298904419,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -3089,7 +3089,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_D_g427_0001",
-    "symbolic_probability": 0.5172328948974609,
+    "symbolic_probability": 0.5172329545021057,
     "selected_action": "symbolic",
     "realized_utility": 1.0
   },
@@ -3103,7 +3103,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_D_g427_0003",
-    "symbolic_probability": 0.3626773953437805,
+    "symbolic_probability": 0.3626774251461029,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -3257,7 +3257,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_D_g443_0001",
-    "symbolic_probability": 0.4268973171710968,
+    "symbolic_probability": 0.4268973469734192,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -3593,7 +3593,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_D_g387_0001",
-    "symbolic_probability": 0.48112794756889343,
+    "symbolic_probability": 0.4811280071735382,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -3747,7 +3747,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_A_g352_0003",
-    "symbolic_probability": 0.41609063744544983,
+    "symbolic_probability": 0.4160906970500946,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -3964,7 +3964,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_H_g159_0002",
-    "symbolic_probability": 0.4841015636920929,
+    "symbolic_probability": 0.4841015338897705,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -3978,7 +3978,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_D_g539_0000",
-    "symbolic_probability": 0.40330520272254944,
+    "symbolic_probability": 0.4033052623271942,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -3992,7 +3992,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_D_g539_0002",
-    "symbolic_probability": 0.4232832193374634,
+    "symbolic_probability": 0.42328324913978577,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -4321,7 +4321,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_G_g238_0001",
-    "symbolic_probability": 0.4695563316345215,
+    "symbolic_probability": 0.46955639123916626,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -4356,7 +4356,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_H_g223_0002",
-    "symbolic_probability": 0.4039844870567322,
+    "symbolic_probability": 0.40398454666137695,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -4503,7 +4503,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_B_g89_0003",
-    "symbolic_probability": 0.4202243685722351,
+    "symbolic_probability": 0.4202243387699127,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -4524,7 +4524,7 @@
   {
     "sham_seed": 43,
     "task_id": "final_A_g104_0002",
-    "symbolic_probability": 0.5146735906600952,
+    "symbolic_probability": 0.5146735310554504,
     "selected_action": "symbolic",
     "realized_utility": 1.0
   },
@@ -4706,7 +4706,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_F_g285_0000",
-    "symbolic_probability": 0.6153038740158081,
+    "symbolic_probability": 0.6153038144111633,
     "selected_action": "symbolic",
     "realized_utility": 1.0
   },
@@ -4741,7 +4741,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_F_g525_0001",
-    "symbolic_probability": 0.4555117189884186,
+    "symbolic_probability": 0.4555116593837738,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -4776,14 +4776,14 @@
   {
     "sham_seed": 44,
     "task_id": "final_H_g327_0002",
-    "symbolic_probability": 0.3896448612213135,
+    "symbolic_probability": 0.38964489102363586,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
   {
     "sham_seed": 44,
     "task_id": "final_H_g327_0003",
-    "symbolic_probability": 0.5210578441619873,
+    "symbolic_probability": 0.5210579037666321,
     "selected_action": "symbolic",
     "realized_utility": 1.0
   },
@@ -4832,14 +4832,14 @@
   {
     "sham_seed": 44,
     "task_id": "final_C_g138_0002",
-    "symbolic_probability": 0.45529717206954956,
+    "symbolic_probability": 0.4552971124649048,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
   {
     "sham_seed": 44,
     "task_id": "final_C_g138_0003",
-    "symbolic_probability": 0.5000195503234863,
+    "symbolic_probability": 0.5000194907188416,
     "selected_action": "symbolic",
     "realized_utility": 1.0
   },
@@ -4853,7 +4853,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_C_g506_0001",
-    "symbolic_probability": 0.42914217710494995,
+    "symbolic_probability": 0.4291422367095947,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -4979,7 +4979,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_F_g373_0003",
-    "symbolic_probability": 0.40449047088623047,
+    "symbolic_probability": 0.4044904112815857,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -5077,7 +5077,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_H_g311_0001",
-    "symbolic_probability": 0.3532516658306122,
+    "symbolic_probability": 0.3532516360282898,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -5147,7 +5147,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_D_g331_0003",
-    "symbolic_probability": 0.3040396571159363,
+    "symbolic_probability": 0.30403968691825867,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -5203,7 +5203,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_H_g479_0003",
-    "symbolic_probability": 0.6864626407623291,
+    "symbolic_probability": 0.6864627003669739,
     "selected_action": "symbolic",
     "realized_utility": 0.0
   },
@@ -5217,7 +5217,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_H_g359_0001",
-    "symbolic_probability": 0.5429141521453857,
+    "symbolic_probability": 0.542914092540741,
     "selected_action": "symbolic",
     "realized_utility": 1.0
   },
@@ -5238,7 +5238,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_A_g136_0000",
-    "symbolic_probability": 0.4835391342639923,
+    "symbolic_probability": 0.48353907465934753,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -5273,7 +5273,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_H_g343_0001",
-    "symbolic_probability": 0.3453536033630371,
+    "symbolic_probability": 0.3453535735607147,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -5308,7 +5308,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_D_g107_0002",
-    "symbolic_probability": 0.43631359934806824,
+    "symbolic_probability": 0.4363136291503906,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -5357,7 +5357,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_F_g189_0001",
-    "symbolic_probability": 0.5390516519546509,
+    "symbolic_probability": 0.5390517115592957,
     "selected_action": "symbolic",
     "realized_utility": 0.0
   },
@@ -5406,7 +5406,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_C_g186_0000",
-    "symbolic_probability": 0.4085772931575775,
+    "symbolic_probability": 0.4085773229598999,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -5448,7 +5448,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_D_g427_0002",
-    "symbolic_probability": 0.45748427510261536,
+    "symbolic_probability": 0.45748430490493774,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -5511,7 +5511,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_A_g232_0003",
-    "symbolic_probability": 0.5070222616195679,
+    "symbolic_probability": 0.5070223212242126,
     "selected_action": "symbolic",
     "realized_utility": 0.0
   },
@@ -5539,7 +5539,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_C_g554_0003",
-    "symbolic_probability": 0.5404320955276489,
+    "symbolic_probability": 0.5404320359230042,
     "selected_action": "symbolic",
     "realized_utility": 1.0
   },
@@ -5609,7 +5609,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_D_g443_0001",
-    "symbolic_probability": 0.35198864340782166,
+    "symbolic_probability": 0.35198867321014404,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -5630,7 +5630,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_H_g119_0000",
-    "symbolic_probability": 0.4830741584300995,
+    "symbolic_probability": 0.48307421803474426,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -5735,7 +5735,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_A_g296_0003",
-    "symbolic_probability": 0.4491479694843292,
+    "symbolic_probability": 0.44914790987968445,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -5819,7 +5819,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_H_g71_0003",
-    "symbolic_probability": 0.532299816608429,
+    "symbolic_probability": 0.5322997570037842,
     "selected_action": "symbolic",
     "realized_utility": 1.0
   },
@@ -5875,7 +5875,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_C_g370_0003",
-    "symbolic_probability": 0.4107792377471924,
+    "symbolic_probability": 0.4107791781425476,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -5938,7 +5938,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_D_g387_0000",
-    "symbolic_probability": 0.41023674607276917,
+    "symbolic_probability": 0.41023677587509155,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -5952,7 +5952,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_D_g387_0002",
-    "symbolic_probability": 0.45784521102905273,
+    "symbolic_probability": 0.4578452706336975,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -6050,14 +6050,14 @@
   {
     "sham_seed": 44,
     "task_id": "final_G_g270_0000",
-    "symbolic_probability": 0.3845371901988983,
+    "symbolic_probability": 0.3845371603965759,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
   {
     "sham_seed": 44,
     "task_id": "final_G_g270_0001",
-    "symbolic_probability": 0.43495044112205505,
+    "symbolic_probability": 0.4349503815174103,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -6239,7 +6239,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_B_g553_0003",
-    "symbolic_probability": 0.42835456132888794,
+    "symbolic_probability": 0.42835453152656555,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -6260,7 +6260,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_A_g344_0002",
-    "symbolic_probability": 0.4085860252380371,
+    "symbolic_probability": 0.4085860848426819,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -6288,7 +6288,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_E_g220_0002",
-    "symbolic_probability": 0.45700010657310486,
+    "symbolic_probability": 0.45700016617774963,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -6337,14 +6337,14 @@
   {
     "sham_seed": 44,
     "task_id": "final_D_g539_0001",
-    "symbolic_probability": 0.3971637785434723,
+    "symbolic_probability": 0.3971638083457947,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
   {
     "sham_seed": 44,
     "task_id": "final_D_g539_0002",
-    "symbolic_probability": 0.35140934586524963,
+    "symbolic_probability": 0.351409375667572,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -6372,7 +6372,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_E_g348_0002",
-    "symbolic_probability": 0.38537001609802246,
+    "symbolic_probability": 0.3853699862957001,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -6400,7 +6400,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_H_g551_0002",
-    "symbolic_probability": 0.3568531572818756,
+    "symbolic_probability": 0.356853187084198,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -6414,7 +6414,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_D_g163_0000",
-    "symbolic_probability": 0.32397571206092834,
+    "symbolic_probability": 0.32397568225860596,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -6470,7 +6470,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_E_g284_0000",
-    "symbolic_probability": 0.38768720626831055,
+    "symbolic_probability": 0.38768714666366577,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -6498,14 +6498,14 @@
   {
     "sham_seed": 44,
     "task_id": "final_D_g459_0000",
-    "symbolic_probability": 0.4308810234069824,
+    "symbolic_probability": 0.4308810532093048,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
   {
     "sham_seed": 44,
     "task_id": "final_D_g459_0001",
-    "symbolic_probability": 0.35203203558921814,
+    "symbolic_probability": 0.35203200578689575,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -6540,7 +6540,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_B_g225_0002",
-    "symbolic_probability": 0.4840642511844635,
+    "symbolic_probability": 0.4840641915798187,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -6589,7 +6589,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_D_g203_0001",
-    "symbolic_probability": 0.33097973465919495,
+    "symbolic_probability": 0.33097970485687256,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -6610,7 +6610,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_D_g27_0000",
-    "symbolic_probability": 0.3296172320842743,
+    "symbolic_probability": 0.3296172618865967,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -6631,7 +6631,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_D_g27_0003",
-    "symbolic_probability": 0.41035398840904236,
+    "symbolic_probability": 0.41035401821136475,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -6673,7 +6673,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_G_g238_0001",
-    "symbolic_probability": 0.4293578267097473,
+    "symbolic_probability": 0.4293577969074249,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -6722,7 +6722,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_H_g95_0000",
-    "symbolic_probability": 0.5872894525527954,
+    "symbolic_probability": 0.5872895121574402,
     "selected_action": "symbolic",
     "realized_utility": 0.0
   },
@@ -6834,7 +6834,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_B_g89_0000",
-    "symbolic_probability": 0.36247238516807556,
+    "symbolic_probability": 0.36247241497039795,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -6869,7 +6869,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_A_g104_0001",
-    "symbolic_probability": 0.4584054946899414,
+    "symbolic_probability": 0.458405464887619,
     "selected_action": "llm",
     "realized_utility": 0.0
   },
@@ -6939,7 +6939,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_E_g228_0003",
-    "symbolic_probability": 0.41856101155281067,
+    "symbolic_probability": 0.41856104135513306,
     "selected_action": "llm",
     "realized_utility": 1.0
   },
@@ -7009,7 +7009,7 @@
   {
     "sham_seed": 44,
     "task_id": "final_B_g25_0001",
-    "symbolic_probability": 0.5094899535179138,
+    "symbolic_probability": 0.5094900131225586,
     "selected_action": "symbolic",
     "realized_utility": 0.0
   },
