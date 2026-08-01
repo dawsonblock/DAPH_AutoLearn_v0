@@ -219,11 +219,19 @@ def _wrap(spec: str, slot: int) -> str:
 
 
 def _gen_a(rng: random.Random, slot: int) -> dict[str, Any]:
-    """A. Direct exact arithmetic — magnitude-decoupled."""
-    # Same range for both variants — moderate numbers the 7B model can handle.
-    a = rng.randint(1000, 99999)
-    b = rng.randint(1000, 99999)
+    """A. Direct exact arithmetic — magnitude-decoupled.
+
+    Tuned for ~60% LLM success. Addition/subtraction uses larger
+    numbers (1K-99K) the 7B handles well; multiplication uses smaller
+    numbers (10-99) to keep products computable.
+    """
     op = rng.choice(["+", "-", "*"])
+    if op == "*":
+        a = rng.randint(10, 99)
+        b = rng.randint(10, 99)
+    else:
+        a = rng.randint(1000, 99999)
+        b = rng.randint(1000, 99999)
     if op == "+":
         expected = a + b
     elif op == "-":
@@ -301,9 +309,13 @@ def _gen_a(rng: random.Random, slot: int) -> dict[str, Any]:
 
 
 def _gen_b(rng: random.Random, slot: int) -> dict[str, Any]:
-    """B. Semantic extraction + exact arithmetic — magnitude-decoupled."""
-    a = rng.randint(500, 5000)
-    b = rng.randint(100, 500)
+    """B. Semantic extraction + exact arithmetic — magnitude-decoupled.
+
+    Tuned for ~60% LLM success: products in 100-10K range that the 7B
+    model can often compute correctly.
+    """
+    a = rng.randint(20, 200)
+    b = rng.randint(5, 50)
     expected = a * b
 
     if rng.random() < 0.5:
@@ -353,9 +365,13 @@ def _gen_b(rng: random.Random, slot: int) -> dict[str, Any]:
 
 
 def _gen_c(rng: random.Random, slot: int) -> dict[str, Any]:
-    """C. Semantic interpretation — magnitude-decoupled."""
-    x = 2 * rng.randint(500, 5000)  # always even
-    y = rng.randint(100, 500)
+    """C. Semantic interpretation — magnitude-decoupled.
+
+    Tuned for ~60% LLM success: larger values that make the arithmetic
+    harder for the 7B model, creating more symbolic-preferred tasks.
+    """
+    x = 2 * rng.randint(5000, 50000)  # always even
+    y = rng.randint(500, 5000)
 
     if rng.random() < 0.5:
         # Parseable — matches "What is {x} minus twice {y}?".
@@ -392,9 +408,13 @@ def _gen_c(rng: random.Random, slot: int) -> dict[str, Any]:
 
 
 def _gen_d(rng: random.Random, slot: int) -> dict[str, Any]:
-    """D. Modular arithmetic — magnitude-decoupled."""
-    a = rng.randint(10000, 999999)
-    modulus = rng.randint(2, 10000)
+    """D. Modular arithmetic — magnitude-decoupled.
+
+    Tuned for ~60% LLM success: small dividends/moduli the 7B model
+    can often compute correctly.
+    """
+    a = rng.randint(100, 2000)
+    modulus = rng.randint(3, 50)
     expected = a % modulus
 
     if rng.random() < 0.5:
@@ -429,8 +449,12 @@ def _gen_d(rng: random.Random, slot: int) -> dict[str, Any]:
 
 
 def _gen_e(rng: random.Random, slot: int) -> dict[str, Any]:
-    """E. Comparison / relation problem — magnitude-decoupled."""
-    lo, hi = 100, 999
+    """E. Comparison / relation problem — magnitude-decoupled.
+
+    Tuned for ~60% LLM success: small products (100-2500) the 7B model
+    can often compare correctly.
+    """
+    lo, hi = 10, 50
     while True:
         a1, b1 = rng.randint(lo, hi), rng.randint(lo, hi)
         a2, b2 = rng.randint(lo, hi), rng.randint(lo, hi)
@@ -573,9 +597,13 @@ def _gen_g(rng: random.Random, slot: int) -> dict[str, Any]:
 
 
 def _gen_h(rng: random.Random, slot: int) -> dict[str, Any]:
-    """H. Number theory (GCD/LCM) — magnitude-decoupled."""
-    a = rng.randint(10000, 99999)
-    b = rng.randint(10000, 99999)
+    """H. Number theory (GCD/LCM) — magnitude-decoupled.
+
+    Tuned for ~60% LLM success: small values (50-500) the 7B model
+    can often compute GCD/LCM for.
+    """
+    a = rng.randint(50, 500)
+    b = rng.randint(50, 500)
     op = rng.choice(["gcd", "lcm"])
     if op == "gcd":
         expected = math.gcd(a, b)
