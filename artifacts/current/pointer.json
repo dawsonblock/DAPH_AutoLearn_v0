@@ -1,9 +1,11 @@
 {
   "artifact_type": "pointer",
-  "experiment_id": "daph_gate_a_real_005_requal",
-  "target": "../gate_a_qualified/daph_gate_a_real_005_requal",
-  "qualification_status": "PASS",
-  "evidence_level": "EXPERIMENTALLY_QUALIFIED",
-  "source_hash": "8902e990c65dfc9acdaddc9dedede48c0726b0069ad90227b870b27ec761c2eb",
-  "generated_at": "2026-08-01T01:33:22Z"
+  "experiment_id": null,
+  "target": null,
+  "status": "NOT_YET_REQUALIFIED",
+  "qualification_status": "NOT_YET_REQUALIFIED",
+  "evidence_level": "NOT_YET_REQUALIFIED",
+  "source_hash": "",
+  "generated_at": "2026-08-01T00:00:00Z",
+  "note": "No current Gate A PASS exists. real_007_harder FAILED (positive_group_fraction=0.50 < 0.60). real_005_requal PASS is historical (stale source hash). See gate_a_historical/ and gate_a_failed/."
 }

@@ -571,7 +571,7 @@ class TestTaskIDAlignment:
 
 class TestVersionConsistency:
     def test_version_is_0310_alpha(self):
-        assert __version__ == "0.3.10.5-alpha", f"version is {__version__}, expected 0.3.10.5-alpha"
+        assert __version__ == "0.3.10.6-alpha", f"version is {__version__}, expected 0.3.10.6-alpha"
 
     def test_pyproject_version_matches(self):
         import tomllib
@@ -583,7 +583,7 @@ class TestVersionConsistency:
 
     def test_experiment_config_has_version(self):
         cfg = ExperimentConfig()
-        assert cfg.autolearn_version == "0.3.10.5-alpha"
+        assert cfg.autolearn_version == "0.3.10.6-alpha"
 
     def test_experiment_config_freeze_is_idempotent(self):
         cfg = ExperimentConfig(random_seed=42)

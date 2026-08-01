@@ -158,6 +158,62 @@ def shuffle_labels_within_bins(
     return shuffled, n_shuffled
 
 
+def permute_targets_within_bins(
+    delta_u: np.ndarray,
+    weights: np.ndarray,
+    subtypes: np.ndarray,
+    splits: np.ndarray,
+    decisive: np.ndarray,
+    *,
+    seed: int,
+) -> tuple[np.ndarray, np.ndarray, int]:
+    """Section 15 — permute the signed continuous ΔU (and its matching
+    sample weights) within subtype×split×decisive bins.
+
+    This is the matched sham control: it destroys only the
+    ``X ↔ ΔU`` association while preserving the *exact* target
+    distribution, target magnitude, sample weights, and bin structure
+    that the real P1 policy was trained against. Because the permuted
+    values are the real continuous ΔU values (not a binary derivative),
+    passing them through ``fit_policy(..., target_mode="soft")`` applies
+    the identical ``sigmoid(ΔU/τ)`` transform the real model received —
+    so the sham changes *only* the feature→target association.
+
+    Parameters
+    ----------
+    delta_u, weights : np.ndarray
+        The real continuous utility differences and sample weights used
+        to train P1. Shape ``[N]``. Permuted identically (the same
+        permutation index is applied to both so the (ΔU, weight) pairing
+        is preserved).
+    subtypes, splits, decisive : np.ndarray
+        Grouping arrays for binning (same semantics as
+        :func:`shuffle_labels_within_bins`).
+    seed : int
+        Permutation seed.
+
+    Returns
+    -------
+    permuted_delta_u, permuted_weights : np.ndarray
+        The permuted continuous ΔU and weights.
+    n_shuffled : int
+        Number of items that were actually permuted.
+    """
+    rng = np.random.RandomState(seed)
+    bins = _fallback_hierarchy(subtypes, splits, decisive)
+    perm_du = delta_u.copy()
+    perm_w = weights.copy()
+    n_shuffled = 0
+    for _key, indices in bins.items():
+        if len(indices) > 1:
+            order = rng.permutation(len(indices))
+            idx = np.array(indices)
+            perm_du[idx] = delta_u[idx[order]]
+            perm_w[idx] = weights[idx[order]]
+            n_shuffled += len(indices)
+    return perm_du, perm_w, n_shuffled
+
+
 def _feature_matrix_hash(features: np.ndarray) -> str:
     """Compute a hash of the feature matrix for provenance."""
     return hashlib.sha256(np.ascontiguousarray(features).tobytes()).hexdigest()
@@ -250,4 +306,5 @@ __all__ = [
     "ShamResult",
     "run_sham_control",
     "shuffle_labels_within_bins",
+    "permute_targets_within_bins",
 ]

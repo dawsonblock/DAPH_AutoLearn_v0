@@ -1,13 +1,13 @@
-# DAPH AutoLearn v0.3.10.5-alpha
+# DAPH AutoLearn v0.3.10.6-alpha
 
 <div align="center">
 
 **Counterfactual compute-selection learning for auditable LLM tool-routing research.**
 
-`v0.3.10.5-alpha` · Python ≥ 3.10 · MIT-style research software
+`v0.3.10.6-alpha` · Python ≥ 3.10 · MIT-style research software
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/version-0.3.10.5--alpha-orange.svg)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.3.10.6--alpha-orange.svg)](./CHANGELOG.md)
 [![Tests](https://img.shields.io/badge/tests-1269%2B-brightgreen.svg)](#testing)
 [![Status](https://img.shields.io/badge/status-research%20alpha-lightgrey.svg)](./CLAIMS.md)
 
@@ -630,6 +630,32 @@ test-set tuning, and leaky splits. **Its reported z-score is not a licensed
 result.**
 
 ## Changelog
+
+### v0.3.10.6-alpha
+
+- **Scientific repair release** — fixes five Priority 0 correctness issues
+  from the external audit:
+  - **Matched sham control**: permutes signed continuous ΔU (and matching
+    weights) within strata, not binary labels — so `fit_policy` applies the
+    identical `sigmoid(ΔU/τ)` transform the real P1 model received.
+  - **Ablation pipeline parity**: all ablation policies (surface-only,
+    hidden-only, TF-IDF, negative controls) now traverse the same
+    calibration + frozen thresholds + abstention pipeline as P1.
+  - **Real pooling**: `last_prompt_token`, `mean_prompt_tokens`, and
+    `mean_content_tokens` are now independently computed (previously
+    identical due to unimplemented pooling).
+  - **Proper negative controls**: replaced the invalid square
+    random-projection with orthogonal-rotation invariance, dimension-reduced
+    JL projection, Gaussian noise, coordinate permutation, and
+    subtype-stratified shuffled-hidden.
+  - **Subtype-only dev freeze**: the subtype-only baseline is now frozen on
+    development data, never derived from final labels.
+- **Artifact integrity repair**: failed runs moved from `gate_a_qualified/`
+  to `gate_a_failed/`; stale PASS runs moved to `gate_a_historical/`;
+  final stage writes to `gate_a_runs/` (staging) — only promotion logic
+  moves to `gate_a_qualified/`.
+- **Version normalization**: all version surfaces now agree on
+  0.3.10.6-alpha. Removed stale `CURRENT_EXPERIMENT_ID` from package source.
 
 ### v0.3.10.5-alpha
 

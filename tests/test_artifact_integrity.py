@@ -46,7 +46,8 @@ def _current_hash() -> str:
 
 @pytest.mark.parametrize("subdir", [
     "synthetic_ci", "real_model_smoke", "gate_a_qualified",
-    "gate_a_failed", "legacy", "current",
+    "gate_a_failed", "gate_a_runs", "gate_a_historical", "invalidated",
+    "legacy", "current",
 ])
 def test_required_artifact_layout_dirs_exist(subdir: str):
     assert (ARTIFACTS / subdir).is_dir(), (
@@ -108,9 +109,9 @@ def test_all_bundled_artifacts_use_current_source_hash_or_are_marked_legacy():
     current source hash."""
     hash = _current_hash()
     # Check the qualified and failed buckets (the only places current
-    # evidence may live). Legacy is exempt.
-    for bucket in ("gate_a_qualified", "gate_a_failed", "real_model_smoke",
-                   "synthetic_ci"):
+    # evidence may live). Legacy and historical are exempt.
+    for bucket in ("gate_a_qualified", "gate_a_failed", "gate_a_runs",
+                   "real_model_smoke", "synthetic_ci"):
         bucket_dir = ARTIFACTS / bucket
         if not bucket_dir.is_dir():
             continue

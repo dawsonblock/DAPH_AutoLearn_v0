@@ -45,8 +45,10 @@ def main() -> int:
     config_hash = criteria.criteria_hash
     utility_config = get_protocol(criteria.utility_protocol)
 
+    # Priority 1 fix: freeze writes to gate_a_runs/ (staging), not
+    # gate_a_qualified/. Only promotion logic may move to qualified.
     out_dir = Path(args.out_dir) if args.out_dir else (
-        REPO_ROOT / "artifacts" / "gate_a_qualified" / criteria.experiment_id)
+        REPO_ROOT / "artifacts" / "gate_a_runs" / criteria.experiment_id)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     # Load dataset hashes from collect stage.

@@ -65,13 +65,18 @@ def _get_pointer_status() -> dict:
 
 
 def main() -> int:
-    # Get package version.
+    # Get package version — prefer __version__ from source (always current),
+    # fall back to installed metadata.
     sys.path.insert(0, str(REPO_ROOT / "src"))
     try:
-        from importlib.metadata import version
-        pkg_version = version("daph-autolearn")
+        import daph_learning
+        pkg_version = daph_learning.__version__
     except Exception:
-        pkg_version = "0.3.10.5-alpha"
+        try:
+            from importlib.metadata import version
+            pkg_version = version("daph-autolearn")
+        except Exception:
+            pkg_version = "0.3.10.6-alpha"
 
     # Get test count.
     test_info = _get_test_count()

@@ -45,9 +45,16 @@ def _load_config(path: str):
 
 
 def _out_dir(criteria, stage: str) -> Path:
+    """Return the output directory for a given stage.
+
+    Priority 1 fix: the final stage writes to ``gate_a_runs/`` (neutral
+    staging), NOT ``gate_a_qualified/``. Only promotion logic may move a
+    bundle into ``gate_a_qualified/`` (PASS) or ``gate_a_failed/`` (FAIL).
+    This prevents failed runs from appearing in the qualified directory.
+    """
     base = REPO_ROOT / "artifacts"
     if stage == "final":
-        bucket = base / "gate_a_qualified"
+        bucket = base / "gate_a_runs"
     elif "smoke" in criteria.experiment_id:
         bucket = base / "real_model_smoke"
     else:
@@ -78,7 +85,12 @@ def _get_batch_size(criteria) -> int:
     return int(criteria.raw.get("model", {}).get("batch_size", 64))
 
 
-def _evaluate_baselines(records: list, best_fixed_id: str = "always_symbolic") -> dict[str, dict[str, float]]:
+def _evaluate_baselines(
+    records: list,
+    best_fixed_id: str = "always_symbolic",
+    *,
+    dev_subtype_preferences: dict[str, str] | None = None,
+) -> dict[str, dict[str, float]]:
     """Section 19 — evaluate ALL baseline policies from final task records.
 
     Computes utility for every required baseline:
@@ -86,6 +98,14 @@ def _evaluate_baselines(records: list, best_fixed_id: str = "always_symbolic") -
     subtype_only, and any trained baselines passed in via records.
 
     The primary comparator is best_fixed (selected from dev data).
+
+    Fix 5: the subtype-only baseline must be frozen on DEVELOPMENT data,
+    never derived from final labels. ``dev_subtype_preferences`` maps
+    subtype → preferred backend ("symbolic" | "llm") and is computed
+    from the development split before final access. When provided, the
+    final subtype-majority utility applies that frozen policy to the
+    final records. When omitted, the subtype baseline is reported as
+    ``None`` (not optimistically re-fit on final data).
     """
     import numpy as np
     if not records:
@@ -103,27 +123,42 @@ def _evaluate_baselines(records: list, best_fixed_id: str = "always_symbolic") -
     ]))
     # P1 (primary policy — hidden_plus_surface)
     p1_util = float(np.mean([r.p1_realized_utility for r in records]))
-    # Subtype-majority: route to whichever backend wins more in each subtype
-    from collections import defaultdict
-    subtype_wins: dict[str, dict[str, int]] = defaultdict(lambda: {"symbolic": 0, "llm": 0})
-    for r in records:
-        if r.symbolic_utility > r.llm_utility:
-            subtype_wins[r.subtype]["symbolic"] += 1
-        elif r.llm_utility > r.symbolic_utility:
-            subtype_wins[r.subtype]["llm"] += 1
-    subtype_majority_util = 0.0
-    for r in records:
-        wins = subtype_wins[r.subtype]
-        if wins["symbolic"] >= wins["llm"]:
-            subtype_majority_util += r.symbolic_utility
-        else:
-            subtype_majority_util += r.llm_utility
-    subtype_majority_util /= n
+    # Subtype-majority: apply the FROZEN dev-derived per-subtype preference.
+    # Fix 5: never derive routing rules from final labels.
+    if dev_subtype_preferences is not None:
+        subtype_majority_util = 0.0
+        n_matched = 0
+        for r in records:
+            pref = dev_subtype_preferences.get(r.subtype)
+            if pref == "symbolic":
+                subtype_majority_util += r.symbolic_utility
+                n_matched += 1
+            elif pref == "llm":
+                subtype_majority_util += r.llm_utility
+                n_matched += 1
+            else:
+                # Unknown subtype → fall back to best_fixed action.
+                if best_fixed_id == "always_symbolic":
+                    subtype_majority_util += r.symbolic_utility
+                else:
+                    subtype_majority_util += r.llm_utility
+                n_matched += 1
+        subtype_majority_util /= n
+        subtype_source = "development (frozen)"
+    else:
+        # No frozen dev preferences available — report as unavailable
+        # rather than leaking final labels.
+        subtype_majority_util = None
+        subtype_source = "unavailable (no frozen dev preferences)"
 
     def _gain_vs_best_fixed(util):
+        if util is None:
+            return None
         return util - best_fixed_util
 
     def _oracle_capture(util):
+        if util is None:
+            return None
         headroom = oracle_util - best_fixed_util
         if headroom <= 1e-10:
             return None
@@ -139,10 +174,11 @@ def _evaluate_baselines(records: list, best_fixed_id: str = "always_symbolic") -
         ("subtype_only", subtype_majority_util),
     ]:
         result[name] = {
-            "utility": round(util, 6),
-            "gain_vs_best_fixed": round(_gain_vs_best_fixed(util), 6),
+            "utility": round(util, 6) if util is not None else None,
+            "gain_vs_best_fixed": round(_gain_vs_best_fixed(util), 6) if _gain_vs_best_fixed(util) is not None else None,
             "oracle_capture": round(_oracle_capture(util), 6) if _oracle_capture(util) is not None else None,
         }
+    result["subtype_only"]["selection_data"] = subtype_source
     return result
 
 
@@ -247,8 +283,9 @@ def _capture_hidden_states(tasks, model, tokenizer, capture_config, device="cuda
         with torch.no_grad():
             outputs = model(**inputs, output_hidden_states=True)
         hidden = outputs.hidden_states[cfg.layer]  # [batch, seq, dim]
+        special_ids = set(getattr(tokenizer, "all_special_ids", []) or [])
         for j in range(len(batch)):
-            if cfg.location == "last_token":
+            if cfg.location in ("last_token", "last_prompt_token"):
                 # Find the last non-padding token
                 attn = inputs.attention_mask[j]
                 last_idx = int(attn.sum().item()) - 1
@@ -257,13 +294,21 @@ def _capture_hidden_states(tasks, model, tokenizer, capture_config, device="cuda
                 seq_len = hidden.shape[1]
                 idx = min(1, seq_len - 1)
                 h = hidden[j, idx, :]
-            elif cfg.location == "last_prompt_token":
-                attn = inputs.attention_mask[j]
-                last_idx = int(attn.sum().item()) - 1
-                h = hidden[j, last_idx, :]
-            elif cfg.location == "mean":
+            elif cfg.location in ("mean", "mean_prompt_tokens"):
                 attn = inputs.attention_mask[j].float().unsqueeze(-1)
                 h = (hidden[j] * attn).sum(0) / attn.sum().clamp(min=1)
+            elif cfg.location == "mean_content_tokens":
+                # Mean over non-pad, non-special (BOS/EOS) content tokens.
+                attn = inputs.attention_mask[j]
+                content_mask = attn.clone()
+                input_ids = inputs.input_ids[j]
+                for t_idx in range(int(attn.sum().item())):
+                    if int(input_ids[t_idx].item()) in special_ids:
+                        content_mask[t_idx] = 0
+                if content_mask.sum().item() == 0:
+                    content_mask = attn  # fallback to full prompt
+                cm = content_mask.float().unsqueeze(-1)
+                h = (hidden[j] * cm).sum(0) / cm.sum().clamp(min=1)
             else:
                 h = hidden[j, -1, :]
             features.append(h.cpu().numpy().astype(np.float32))
@@ -549,15 +594,35 @@ def _concat_features(hidden: "np.ndarray", surface: "np.ndarray") -> "np.ndarray
 
 
 def _capture_all_layers(tasks, model, tokenizer, device="cuda", batch_size: int = 16):
-    """Capture hidden states for ALL layers in one pass.
+    """Capture hidden states for ALL layers and ALL pooling methods in one pass.
 
-    Returns a list of numpy arrays, one per layer (0..n_layers).
-    Each array has shape (n_tasks, hidden_dim) using last-token pooling.
+    Fix 3: the previous implementation captured only the last token and
+    ignored ``c.pooling``, so the three pooling candidates
+    (last_prompt_token / mean_prompt_tokens / mean_content_tokens) were
+    functionally identical. This version independently produces three
+    genuinely distinct representations per layer:
+
+      * ``last_prompt_token``  — hidden state at the last non-pad position.
+      * ``mean_prompt_tokens`` — mean of hidden states over all non-pad
+        positions (the full prompt).
+      * ``mean_content_tokens`` — mean over non-pad, non-special (BOS/EOS)
+        positions (pure content tokens, excluding structural tokens).
+
+    Returns
+    -------
+    dict[str, list[np.ndarray]]
+        Maps pooling name → list of per-layer arrays, each of shape
+        (n_tasks, hidden_dim). Index by ``result[pooling][layer]``.
     """
     import numpy as np
     import torch
 
-    features_per_layer = None
+    pooling_names = ("last_prompt_token", "mean_prompt_tokens", "mean_content_tokens")
+    special_ids = set(getattr(tokenizer, "all_special_ids", []) or [])
+
+    per_pool: dict[str, list[list[np.ndarray]]] = {
+        p: None for p in pooling_names}
+    n_layers = None
     for i in range(0, len(tasks), batch_size):
         batch = tasks[i:i + batch_size]
         prompts = [str(t.get("prompt", t.get("specification", ""))) for t in batch]
@@ -565,20 +630,41 @@ def _capture_all_layers(tasks, model, tokenizer, device="cuda", batch_size: int 
                            truncation=True, max_length=512).to(device)
         with torch.no_grad():
             outputs = model(**inputs, output_hidden_states=True)
+        if n_layers is None:
+            n_layers = len(outputs.hidden_states)
+            per_pool = {p: [[] for _ in range(n_layers)] for p in pooling_names}
         for j in range(len(batch)):
             attn = inputs.attention_mask[j]
             last_idx = int(attn.sum().item()) - 1
-            row = []
-            for layer_idx in range(len(outputs.hidden_states)):
-                h = outputs.hidden_states[layer_idx][j, last_idx, :]
-                row.append(h.float().cpu().numpy())
-            if features_per_layer is None:
-                features_per_layer = [[] for _ in range(len(outputs.hidden_states))]
-            for layer_idx in range(len(outputs.hidden_states)):
-                features_per_layer[layer_idx].append(row[layer_idx])
+            input_ids = inputs.input_ids[j]
+            content_mask = attn.clone()
+            # Exclude special (BOS/EOS/PAD) tokens from the content mean.
+            for t_idx in range(int(attn.sum().item())):
+                if int(input_ids[t_idx].item()) in special_ids:
+                    content_mask[t_idx] = 0
+            # Guarantee at least one content token; fall back to full mask.
+            if content_mask.sum().item() == 0:
+                content_mask = attn
+            for layer_idx in range(n_layers):
+                h = outputs.hidden_states[layer_idx][j]
+                # last_prompt_token
+                per_pool["last_prompt_token"][layer_idx].append(
+                    h[last_idx].float().cpu().numpy())
+                # mean_prompt_tokens
+                am = attn.float().unsqueeze(-1)
+                per_pool["mean_prompt_tokens"][layer_idx].append(
+                    (h * am).sum(0).div(am.sum().clamp(min=1))
+                    .float().cpu().numpy())
+                # mean_content_tokens
+                cm = content_mask.float().unsqueeze(-1)
+                per_pool["mean_content_tokens"][layer_idx].append(
+                    (h * cm).sum(0).div(cm.sum().clamp(min=1))
+                    .float().cpu().numpy())
         if (i + batch_size) % 100 == 0 or i + batch_size >= len(tasks):
-            print(f"    ... captured {min(i + batch_size, len(tasks))}/{len(tasks)} hidden states")
-    return [np.array(layer_feats) for layer_feats in features_per_layer]
+            print(f"    ... captured {min(i + batch_size, len(tasks))}/{len(tasks)} "
+                  f"hidden states (3 poolings × {n_layers} layers)")
+    return {p: [np.array(layer_feats) for layer_feats in per_pool[p]]
+            for p in pooling_names}
 
 
 def _extract_tfidf_features(tasks: list[dict[str, Any]], ref_tasks: list[dict[str, Any]]) -> "np.ndarray":
@@ -818,8 +904,10 @@ def stage_develop(criteria, args) -> int:
     print(f"[develop] Evaluating {len(candidates)} representation candidates...")
     for c in candidates:
         if train_hidden_all is not None:
-            train_h = train_hidden_all[c.layer]
-            dev_h = dev_hidden_all[c.layer]
+            # Fix 3: select the pooling-specific representation. The dict
+            # is keyed by pooling name → list[per-layer array].
+            train_h = train_hidden_all[c.pooling][c.layer]
+            dev_h = dev_hidden_all[c.pooling][c.layer]
         else:
             train_h = _build_features(splits["train"])
             dev_h = _build_features(splits["development"])
@@ -866,10 +954,10 @@ def stage_develop(criteria, args) -> int:
     print(f"[develop] Selected: layer={sel.selected.layer}, "
           f"pooling={sel.selected.pooling}")
 
-    # Build final features using the SELECTED representation.
+    # Build final features using the SELECTED representation (pooling-aware).
     if train_hidden_all is not None:
-        train_hidden = train_hidden_all[sel.selected.layer]
-        dev_hidden = dev_hidden_all[sel.selected.layer]
+        train_hidden = train_hidden_all[sel.selected.pooling][sel.selected.layer]
+        dev_hidden = dev_hidden_all[sel.selected.pooling][sel.selected.layer]
     else:
         train_hidden = _build_features(splits["train"])
         dev_hidden = _build_features(splits["development"])
@@ -1084,7 +1172,8 @@ def stage_final(criteria, args) -> int:
     from daph_learning.evaluation.report import generate_report
     from daph_learning.policy.utility import get_protocol
     from daph_learning.evaluation.sham import (
-        PolicyTrainingSpec, run_sham_control, shuffle_labels_within_bins)
+        PolicyTrainingSpec, run_sham_control, shuffle_labels_within_bins,
+        permute_targets_within_bins)
     from daph_learning.policy.policy_factory import fit_policy, predict_proba
     from daph_learning.policy.config import ExperimentConfig
 
@@ -1253,12 +1342,20 @@ def stage_final(criteria, args) -> int:
         frozen_pooling = "last_prompt_token"
 
     # ── Capture final features using frozen representation ──
-    # Update capture_config to use the SELECTED representation layer.
+    # Update capture_config to use the SELECTED representation layer and
+    # pooling method. Fix 3: pass the actual pooling name through so
+    # mean_content_tokens is distinct from mean_prompt_tokens.
     if model_info is not None and capture_config is not None:
         from daph_learning.execution.real_backends import CaptureConfig
+        # Map the frozen pooling name to a capture location. The three
+        # canonical pooling names are handled directly by
+        # _capture_hidden_states; legacy "mean" maps to mean_prompt_tokens.
+        loc = frozen_pooling
+        if loc == "mean":
+            loc = "mean_prompt_tokens"
         capture_config = CaptureConfig(
             layer=frozen_layer,
-            location="last_token" if "last" in frozen_pooling else "mean",
+            location=loc,
         )
         print(f"[final] Capturing hidden states for final split "
               f"(layer={frozen_layer}, pooling={frozen_pooling})...")
@@ -1478,7 +1575,41 @@ def stage_final(criteria, args) -> int:
                 u += llm_u
         return u / len(experiences_list)
 
-    # Surface-only baseline
+    # ── Shared deployment pipeline (Fix 2: ablation comparability) ──
+    # Every learned policy — P1 and every ablation — must traverse the
+    # SAME inference path: raw prob → calibration → frozen thresholds →
+    # abstention → action → realized utility. Only the feature set (and
+    # therefore the fitted model) differs. This makes representation
+    # ablations a clean causal estimate of feature-set contribution.
+    def _route_through_pipeline(raw_probs, experiences_list):
+        """Apply P1's frozen calibration + thresholds + abstention to a
+        set of raw probabilities and return (actions, utilities, mean_util)."""
+        calibrated = np.array([
+            apply_calibration(float(p), cal_artifact) for p in raw_probs
+        ])
+        actions = np.array([
+            select_route_action(
+                float(p),
+                threshold_symbolic=sym_threshold,
+                threshold_llm=llm_threshold,
+                abstention_enabled=abstention_enabled,
+            ).value for p in calibrated
+        ])
+        utils = np.zeros(len(experiences_list), dtype=np.float64)
+        for j, exp in enumerate(experiences_list):
+            sym_u = float(exp["symbolic"].get("quality", 0.0))
+            llm_u = float(exp["llm"].get("quality", 0.0))
+            if actions[j] == "symbolic":
+                utils[j] = sym_u
+            elif actions[j] == "llm":
+                utils[j] = llm_u
+            else:
+                utils[j] = 0.0  # abstain
+        return actions, utils, float(np.mean(utils))
+
+    # Surface-only baseline — routed through the SAME deployment pipeline
+    # as P1 (calibration + frozen thresholds + abstention), so the only
+    # difference vs P1 is the feature set.
     surface_policy_path = dev_out / "surface_only_policy.json"
     if surface_policy_path.exists():
         from daph_learning.evaluation.qualification import load_frozen_policy
@@ -1486,24 +1617,22 @@ def stage_final(criteria, args) -> int:
         s_hash = hashlib.sha256(surface_policy_path.read_bytes()).hexdigest()
         s_policy = load_frozen_policy(surface_policy_path, expected_sha256=s_hash)
         s_probs = s_policy.predict_proba(final_surface)
-        s_actions = np.array(["symbolic" if float(p) >= 0.5 else "llm" for p in s_probs])
-        s_util = _compute_util_from_actions(s_actions, final_experiences)
+        s_actions, s_utils, s_util = _route_through_pipeline(s_probs, final_experiences)
         trained_baselines["surface_only"] = {"utility": s_util, "actions": s_actions.tolist()}
         print(f"    surface_only: utility={s_util:.4f}")
 
-    # Hidden-only baseline
+    # Hidden-only baseline — same deployment pipeline as P1.
     hidden_policy_path = dev_out / "hidden_only_policy.json"
     if hidden_policy_path.exists():
         h_artifact = json.loads(hidden_policy_path.read_text())
         h_hash = hashlib.sha256(hidden_policy_path.read_bytes()).hexdigest()
         h_policy = load_frozen_policy(hidden_policy_path, expected_sha256=h_hash)
         h_probs = h_policy.predict_proba(final_hidden)
-        h_actions = np.array(["symbolic" if float(p) >= 0.5 else "llm" for p in h_probs])
-        h_util = _compute_util_from_actions(h_actions, final_experiences)
+        h_actions, h_utils, h_util = _route_through_pipeline(h_probs, final_experiences)
         trained_baselines["hidden_only"] = {"utility": h_util, "actions": h_actions.tolist()}
         print(f"    hidden_only: utility={h_util:.4f}")
 
-    # TF-IDF baseline
+    # TF-IDF baseline — same deployment pipeline as P1.
     tfidf_policy_path = dev_out / "tfidf_policy.json"
     if tfidf_policy_path.exists():
         final_tfidf = _extract_tfidf_features(splits["final"], splits["train"])
@@ -1511,8 +1640,7 @@ def stage_final(criteria, args) -> int:
         t_hash = hashlib.sha256(tfidf_policy_path.read_bytes()).hexdigest()
         t_policy = load_frozen_policy(tfidf_policy_path, expected_sha256=t_hash)
         t_probs = t_policy.predict_proba(final_tfidf)
-        t_actions = np.array(["symbolic" if float(p) >= 0.5 else "llm" for p in t_probs])
-        t_util = _compute_util_from_actions(t_actions, final_experiences)
+        t_actions, t_utils, t_util = _route_through_pipeline(t_probs, final_experiences)
         trained_baselines["tfidf"] = {"utility": t_util, "actions": t_actions.tolist()}
         print(f"    tfidf: utility={t_util:.4f}")
 
@@ -1534,45 +1662,159 @@ def stage_final(criteria, args) -> int:
         trained_baselines["heuristic"] = {"utility": heur_util, "actions": heur_actions.tolist()}
         print(f"    heuristic: utility={heur_util:.4f}")
 
-    # Shuffled-hidden control: permute hidden vectors across training groups
-    print(f"[final] Evaluating shuffled-hidden control...")
-    train_features_path = dev_out / "train_features.npy"
+    # ── Negative controls (Fix 4: replace invalid square random projection) ──
+    # The previous "random_projection" used a square Gaussian matrix, which
+    # is almost surely full-rank and therefore approximately invertible — a
+    # linear classifier over XA has the same representational capacity as
+    # over X, so a performance drop there reflected conditioning/optimization
+    # rather than signal destruction. It is replaced with a battery of
+    # proper signal-destruction / invariance controls, all routed through
+    # the SAME deployment pipeline as P1 (calibration + frozen thresholds).
+    hidden_dim = final_hidden.shape[1]
+    train_hidden_extracted = (
+        train_features_loaded[:, :hidden_dim]
+        if train_features_path.exists() else final_hidden
+    )
+    train_subtypes = np.array([
+        t.get("metadata", {}).get("subtype", "A") for t in splits["train"]
+    ])
+
+    # (a) Shuffled-hidden — subtype-stratified (group-aware): permute hidden
+    # vectors WITHIN each subtype so subtype identity is preserved but the
+    # task-specific hidden↔utility alignment is destroyed. This isolates
+    # task-specific hidden information from subtype-identity leakage.
+    print(f"[final] Evaluating shuffled-hidden control (subtype-stratified)...")
     if train_features_path.exists():
-        train_features_loaded = np.load(train_features_path)
         rng = np.random.default_rng(args.seed)
-        # Extract hidden dim from the feature shape (hidden + surface).
-        hidden_dim = final_hidden.shape[1]
-        # Permute rows of training hidden states across groups.
-        perm = rng.permutation(len(train_features_loaded))
-        # Train a policy on shuffled hidden + surface.
         train_shuffled = train_features_loaded.copy()
-        train_shuffled[:, :hidden_dim] = train_features_loaded[perm, :hidden_dim]
+        n_shuffled_rows = 0
+        for st in np.unique(train_subtypes):
+            mask = (train_subtypes == st)
+            idx = np.where(mask)[0]
+            if len(idx) > 1:
+                order = rng.permutation(len(idx))
+                train_shuffled[idx, :hidden_dim] = (
+                    train_features_loaded[idx[order], :hidden_dim])
+                n_shuffled_rows += len(idx)
         shuffled_model = fit_policy(
             config, train_shuffled, train_delta_u, train_weights,
             seed=args.seed)
         sh_probs = predict_proba(shuffled_model, final_features)
-        sh_actions = np.array(["symbolic" if float(p) >= 0.5 else "llm" for p in sh_probs])
-        sh_util = _compute_util_from_actions(sh_actions, final_experiences)
-        trained_baselines["shuffled_hidden"] = {"utility": sh_util, "actions": sh_actions.tolist()}
+        sh_actions, _sh_utils, sh_util = _route_through_pipeline(
+            sh_probs, final_experiences)
+        trained_baselines["shuffled_hidden"] = {
+            "utility": sh_util, "actions": sh_actions.tolist(),
+            "n_shuffled_rows": int(n_shuffled_rows),
+            "stratification": "subtype",
+        }
         print(f"    shuffled_hidden: utility={sh_util:.4f}")
 
-    # Random-projection control: replace hidden states with random vectors
-    print(f"[final] Evaluating random-projection control...")
-    hidden_dim = final_hidden.shape[1]
-    rng_proj = np.random.default_rng(args.seed + 999)
-    random_proj = rng_proj.standard_normal((hidden_dim, hidden_dim)).astype(np.float32)
-    train_random = train_features_loaded.copy()
-    train_random[:, :hidden_dim] = train_features_loaded[:, :hidden_dim] @ random_proj
-    final_random = final_features.copy()
-    final_random[:, :hidden_dim] = final_features[:, :hidden_dim] @ random_proj
-    random_model = fit_policy(
-        config, train_random, train_delta_u, train_weights,
-        seed=args.seed)
-    rp_probs = predict_proba(random_model, final_random)
-    rp_actions = np.array(["symbolic" if float(p) >= 0.5 else "llm" for p in rp_probs])
-    rp_util = _compute_util_from_actions(rp_actions, final_experiences)
-    trained_baselines["random_projection"] = {"utility": rp_util, "actions": rp_actions.tolist()}
-    print(f"    random_projection: utility={rp_util:.4f}")
+    # (b) Orthogonal-rotation invariance test: apply a random orthogonal
+    # matrix Q (Q Q^T = I). A linear probe over XQ can represent the same
+    # boundary as over X (w' = Q^T w), so performance should be ~invariant.
+    # A large drop here flags conditioning/optimization sensitivity, not
+    # signal loss — making this a useful implementation sanity check.
+    print(f"[final] Evaluating orthogonal-rotation invariance control...")
+    rng_orth = np.random.default_rng(args.seed + 998)
+    G = rng_orth.standard_normal((hidden_dim, hidden_dim)).astype(np.float32)
+    Q, _R = np.linalg.qr(G)  # orthonormal columns
+    train_orth = train_features_loaded.copy()
+    train_orth[:, :hidden_dim] = train_hidden_extracted @ Q
+    final_orth = final_features.copy()
+    final_orth[:, :hidden_dim] = final_features[:, :hidden_dim] @ Q
+    orth_model = fit_policy(
+        config, train_orth, train_delta_u, train_weights, seed=args.seed)
+    orth_probs = predict_proba(orth_model, final_orth)
+    orth_actions, _o_utils, orth_util = _route_through_pipeline(
+        orth_probs, final_experiences)
+    trained_baselines["orthogonal_rotation"] = {
+        "utility": orth_util, "actions": orth_actions.tolist(),
+        "interpretation": "should be ~invariant vs hidden_only; large drop flags conditioning sensitivity",
+    }
+    print(f"    orthogonal_rotation: utility={orth_util:.4f}")
+
+    # (c) Dimension-reduced random projection (Johnson–Lindenstrauss): a
+    # wide rectangular Gaussian matrix reduces hidden_dim → hidden_dim//4.
+    # Unlike the square case this is NOT invertible, so genuine information
+    # is discarded. A performance drop here reflects real dimensionality
+    # dependence rather than conditioning. The reduced hidden representation
+    # is concatenated with the (unchanged) surface features, so the only
+    # change vs the hidden+surface policy is the hidden dimensionality.
+    print(f"[final] Evaluating dimension-reduced projection control...")
+    reduced_dim = max(1, hidden_dim // 4)
+    rng_red = np.random.default_rng(args.seed + 997)
+    # JL projection scaled by 1/sqrt(reduced_dim) for norm preservation.
+    P = (rng_red.standard_normal((hidden_dim, reduced_dim)).astype(np.float32)
+         / np.sqrt(reduced_dim))
+    train_red_hidden = (train_hidden_extracted @ P).astype(np.float32)
+    final_red_hidden = (final_features[:, :hidden_dim] @ P).astype(np.float32)
+    # L2-normalize the reduced hidden states, then concat with surface.
+    _tn = np.linalg.norm(train_red_hidden, axis=1, keepdims=True)
+    _tn[_tn == 0] = 1.0
+    _fn = np.linalg.norm(final_red_hidden, axis=1, keepdims=True)
+    _fn[_fn == 0] = 1.0
+    train_red = np.concatenate(
+        [train_red_hidden / _tn, train_features_loaded[:, hidden_dim:]], axis=1)
+    final_red = np.concatenate(
+        [final_red_hidden / _fn, final_features[:, hidden_dim:]], axis=1)
+    red_model = fit_policy(
+        config, train_red, train_delta_u, train_weights, seed=args.seed)
+    red_probs = predict_proba(red_model, final_red)
+    red_actions, _rd_utils, red_util = _route_through_pipeline(
+        red_probs, final_experiences)
+    trained_baselines["reduced_projection"] = {
+        "utility": red_util, "actions": red_actions.tolist(),
+        "reduced_dim": int(reduced_dim),
+    }
+    print(f"    reduced_projection: utility={red_util:.4f}")
+
+    # (d) Gaussian-noise control: replace hidden states with iid Gaussian
+    # noise matched to the per-coordinate mean and std of the real hidden
+    # states. This destroys all structure while preserving marginal scale.
+    print(f"[final] Evaluating gaussian-noise control...")
+    rng_noise = np.random.default_rng(args.seed + 996)
+    coord_mean = train_hidden_extracted.mean(axis=0, keepdims=True)
+    coord_std = train_hidden_extracted.std(axis=0, keepdims=True) + 1e-6
+    train_noise = train_features_loaded.copy()
+    train_noise[:, :hidden_dim] = (
+        coord_mean + coord_std * rng_noise.standard_normal(
+            train_hidden_extracted.shape)).astype(np.float32)
+    final_noise = final_features.copy()
+    final_noise[:, :hidden_dim] = (
+        coord_mean + coord_std * rng_noise.standard_normal(
+            final_features[:, :hidden_dim].shape)).astype(np.float32)
+    noise_model = fit_policy(
+        config, train_noise, train_delta_u, train_weights, seed=args.seed)
+    noise_probs = predict_proba(noise_model, final_noise)
+    noise_actions, _nz_utils, noise_util = _route_through_pipeline(
+        noise_probs, final_experiences)
+    trained_baselines["gaussian_noise"] = {
+        "utility": noise_util, "actions": noise_actions.tolist()}
+    print(f"    gaussian_noise: utility={noise_util:.4f}")
+
+    # (e) Hidden-coordinate permutation: independently permute the hidden
+    # coordinates (columns) of each task. This destroys inter-coordinate
+    # structure within each vector while preserving the per-coordinate
+    # marginal distribution across tasks.
+    print(f"[final] Evaluating hidden-coordinate-permutation control...")
+    rng_cp = np.random.default_rng(args.seed + 995)
+    train_cp = train_features_loaded.copy()
+    for i in range(train_cp.shape[0]):
+        train_cp[i, :hidden_dim] = train_hidden_extracted[
+            i, rng_cp.permutation(hidden_dim)]
+    final_cp = final_features.copy()
+    final_hidden_extracted = final_features[:, :hidden_dim]
+    for i in range(final_cp.shape[0]):
+        final_cp[i, :hidden_dim] = final_hidden_extracted[
+            i, rng_cp.permutation(hidden_dim)]
+    cp_model = fit_policy(
+        config, train_cp, train_delta_u, train_weights, seed=args.seed)
+    cp_probs = predict_proba(cp_model, final_cp)
+    cp_actions, _cp_utils, cp_util = _route_through_pipeline(
+        cp_probs, final_experiences)
+    trained_baselines["coord_permutation"] = {
+        "utility": cp_util, "actions": cp_actions.tolist()}
+    print(f"    coord_permutation: utility={cp_util:.4f}")
 
     # Hidden-norm-only control: use only magnitude statistics of hidden states
     print(f"[final] Evaluating hidden-norm-only control...")
@@ -1587,15 +1829,14 @@ def stage_final(criteria, args) -> int:
         ], axis=1).astype(np.float32)
 
     # Extract train hidden states from saved train_features (hidden + surface).
-    train_hidden_extracted = train_features_loaded[:, :hidden_dim] if train_features_path.exists() else final_hidden
     train_norm = _hidden_norm_features(train_hidden_extracted)
     final_norm = _hidden_norm_features(final_hidden)
     norm_model = fit_policy(
         config, train_norm, train_delta_u, train_weights,
         seed=args.seed)
     n_probs = predict_proba(norm_model, final_norm)
-    n_actions = np.array(["symbolic" if float(p) >= 0.5 else "llm" for p in n_probs])
-    n_util = _compute_util_from_actions(n_actions, final_experiences)
+    n_actions, _n_utils, n_util = _route_through_pipeline(
+        n_probs, final_experiences)
     trained_baselines["hidden_norm_only"] = {"utility": n_util, "actions": n_actions.tolist()}
     print(f"    hidden_norm_only: utility={n_util:.4f}")
 
@@ -1690,9 +1931,17 @@ def stage_final(criteria, args) -> int:
     print(f"    hidden-tfidf: {hidden_minus_tfidf_bootstrap.point_estimate:.4f} "
           f"LCB={hidden_minus_tfidf_bootstrap.ci_low:.4f}")
 
-    # ── Run sham control with HARD routing ──
+    # ── Run sham control (matched: permute continuous ΔU + weights) ──
+    # Fix 1: the sham previously binarized ΔU into 0/1 labels and permuted
+    # those, then passed them to fit_policy with target_mode="soft" — which
+    # re-applied sigmoid(ΔU/τ), turning 0→0.5 and 1→sigmoid(1/τ). That
+    # changed the target distribution, magnitude, and weights simultaneously,
+    # not just the X↔ΔU association. The matched sham instead permutes the
+    # actual signed continuous ΔU (and its matching weights) within strata,
+    # so fit_policy applies the identical sigmoid(ΔU/τ) transform the real
+    # P1 model received. Only the feature→target association is destroyed.
     n_sham_seeds = int(criteria.raw.get("sham", {}).get("n_seeds", 20))
-    print(f"[final] Running sham control ({n_sham_seeds} seeds)")
+    print(f"[final] Running sham control ({n_sham_seeds} seeds, matched ΔU permutation)")
 
     # Train features already loaded above for control baselines.
     train_features = train_features_loaded
@@ -1702,7 +1951,6 @@ def stage_final(criteria, args) -> int:
     ])
     split_names_arr = np.array(["train"] * len(splits["train"]))
     decisive_arr = np.abs(train_delta_u) > 0.02
-    labels = (train_delta_u > 0).astype(int)
 
     training_spec = PolicyTrainingSpec(
         feature_schema_hash=hashlib.sha256(
@@ -1715,47 +1963,33 @@ def stage_final(criteria, args) -> int:
         calibration_method="none",
     )
 
-    # config already defined above for control baselines.
+    # config already defined above for control baselines (same as P1).
 
-    # Sham uses HARD routing for evaluation (same as P1).
+    # Sham uses the SAME deployment pipeline as P1 (calibration + frozen
+    # thresholds + abstention) for evaluation.
     sham_predictions: list[ShamTaskPrediction] = []
 
-    def sham_train_fn(X, y):
-        return fit_policy(config, X, y.astype(np.float64),
-                          np.ones_like(y, dtype=np.float64), seed=args.seed)
+    def sham_train_fn(X, sham_du, sham_w):
+        # Identical fit_policy config as P1: target_mode="soft" applies
+        # sigmoid(sham_du/τ) to the permuted continuous ΔU.
+        return fit_policy(config, X, sham_du, sham_w, seed=args.seed)
 
     sham_utilities = []
     for seed_i in range(n_sham_seeds):
         seed = args.seed + seed_i
-        sham_labels, n_shuffled = shuffle_labels_within_bins(
-            labels, subtypes_arr, split_names_arr, decisive_arr, seed=seed)
-        sham_model = sham_train_fn(train_features, sham_labels)
+        sham_du, sham_w, n_shuffled = permute_targets_within_bins(
+            train_delta_u, train_weights, subtypes_arr,
+            split_names_arr, decisive_arr, seed=seed)
+        sham_model = sham_train_fn(train_features, sham_du, sham_w)
         sham_probs = predict_proba(sham_model, final_features)
-        # Apply same calibration.
+        # Apply the SAME calibration + frozen thresholds + abstention as P1.
+        sham_actions, sham_u, sham_util = _route_through_pipeline(
+            sham_probs, final_experiences)
+        sham_utilities.append(sham_util)
+        # Calibrated probabilities (for the prediction ledger).
         sham_calibrated = np.array([
             apply_calibration(float(p), cal_artifact) for p in sham_probs
         ])
-        # Hard routing for sham.
-        sham_actions = np.array([
-            select_route_action(
-                float(p),
-                threshold_symbolic=sym_threshold,
-                threshold_llm=llm_threshold,
-                abstention_enabled=abstention_enabled,
-            ).value for p in sham_calibrated
-        ])
-        sham_u = np.zeros(len(splits["final"]), dtype=np.float64)
-        for j, exp in enumerate(final_experiences):
-            sym_u = float(exp["symbolic"].get("quality", 0.0))
-            llm_u = float(exp["llm"].get("quality", 0.0))
-            if sham_actions[j] == "symbolic":
-                sham_u[j] = sym_u
-            elif sham_actions[j] == "llm":
-                sham_u[j] = llm_u
-            else:
-                sham_u[j] = 0.0
-        sham_util = float(np.mean(sham_u))
-        sham_utilities.append(sham_util)
         # Store per-task predictions.
         for j, task in enumerate(splits["final"]):
             sham_predictions.append(ShamTaskPrediction(
@@ -1899,6 +2133,36 @@ def stage_final(criteria, args) -> int:
         all_gates_pass = all(v["passed"] for v in gate_verdicts.values())
         qualification_status = QualificationStatus.PASS if all_gates_pass else QualificationStatus.FAIL
 
+    # ── Fix 5: freeze subtype-only baseline on DEVELOPMENT data ──
+    # Compute per-subtype preferred backend from the development split
+    # (never from final labels), then freeze it before final evaluation.
+    dev_subtype_prefs: dict[str, str] = {}
+    dev_exp_path = _develop_dir(criteria) / "development_experiences.json"
+    if dev_exp_path.exists() and "development" in splits:
+        dev_exps = json.loads(dev_exp_path.read_text())
+        from collections import defaultdict
+        dev_subtype_wins: dict[str, dict[str, int]] = defaultdict(
+            lambda: {"symbolic": 0, "llm": 0})
+        for dev_task, dev_exp in zip(splits["development"], dev_exps):
+            st = dev_task.get("metadata", {}).get("subtype", "unknown")
+            sym_u = float(dev_exp["symbolic"].get("quality", 0.0))
+            llm_u = float(dev_exp["llm"].get("quality", 0.0))
+            if sym_u > llm_u:
+                dev_subtype_wins[st]["symbolic"] += 1
+            elif llm_u > sym_u:
+                dev_subtype_wins[st]["llm"] += 1
+        for st, wins in dev_subtype_wins.items():
+            if wins["symbolic"] >= wins["llm"]:
+                dev_subtype_prefs[st] = "symbolic"
+            else:
+                dev_subtype_prefs[st] = "llm"
+        (out / "dev_subtype_preferences.json").write_text(json.dumps({
+            "preferences": dev_subtype_prefs,
+            "selection_data": "development",
+            "frozen_before_final": True,
+        }, indent=2))
+        print(f"[final] Frozen subtype-only preferences from dev data: {dev_subtype_prefs}")
+
     # ── Build stats dict ──
     stats = {
         "experiment_id": criteria.experiment_id,
@@ -1976,7 +2240,9 @@ def stage_final(criteria, args) -> int:
             "actual": str(p.actual), "required": str(p.required),
         } for p in preconditions],
         "all_preconditions_pass": all_preconditions_pass,
-        "baselines": _evaluate_baselines(records, best_fixed_id=best_fixed_id),
+        "baselines": _evaluate_baselines(
+            records, best_fixed_id=best_fixed_id,
+            dev_subtype_preferences=dev_subtype_prefs),
         "trained_baselines": trained_baselines,
         "hidden_state_claim": hidden_state_claim,
         "primary_policy_id": "hidden_plus_surface",

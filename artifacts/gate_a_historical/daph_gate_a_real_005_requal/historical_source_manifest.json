@@ -1,0 +1,13 @@
+{
+  "legacy": true,
+  "not_current_source": true,
+  "historical_source_hash": "8902e990c65dfc9acdaddc9dedede48c0726b0069ad90227b870b27ec761c2eb",
+  "historical_release": "0.3.10.5-alpha",
+  "experiment_id": "daph_gate_a_real_005_requal",
+  "status": "PASS",
+  "historical_result": "PASS",
+  "current_qualification_evidence": false,
+  "archived_at": "2026-08-01",
+  "archived_by": "v0.3.10.6-alpha artifact integrity repair (Priority 1)",
+  "note": "This experiment passed Gate A under an earlier source hash. It is retained for audit history only and must not be presented as current Gate A evidence."
+}

@@ -1,6 +1,6 @@
 # Gate A Results — daph_gate_a_integration_test
 
-**Generated:** 2026-07-31T22:13:20
+**Generated:** 2026-08-01T06:31:27
 **Criteria hash:** `1e95de8b3d12642c901b7a9ae2c90d5fc2533a24a3fbc352083ceb66b282785a`
 **Overall status:** PASS
 
@@ -12,7 +12,7 @@
 |------|--------|-----------|------------|--------|
 | minimum_point_gain_vs_p0 | 0.0893 | 0.0000 | gt | YES |
 | require_lcb_vs_p0_above | 0.0536 | -1.0000 | gt | YES |
-| require_lcb_vs_sham_above | 0.0536 | -1.0000 | gt | YES |
+| require_lcb_vs_sham_above | 0.0863 | -1.0000 | gt | YES |
 | minimum_oracle_gap_capture | 0.8333 | 0.0000 | gte | YES |
 | minimum_positive_group_fraction | 0.3810 | 0.0000 | gt | YES |
 | maximum_worst_subtype_regression | 0.0250 | 1.0000 | lte | YES |
@@ -39,9 +39,9 @@
 ## Sham Control
 
 - P1 utility: 0.7827380952380952
-- Mean sham utility: 0.6934523809523809
-- P1 minus sham (mean): 0.0892857142857143
-- P1 minus sham 95% CI: [0.05357142857142849, 0.125]
+- Mean sham utility: 0.6180555555555555
+- P1 minus sham (mean): 0.16468253968253965
+- P1 minus sham 95% CI: [0.08630952380952384, 0.23809523809523803]
 - P1 percentile vs sham: 100.0%
 - Sham seeds: 3
 - Training spec hash: `N/A`
@@ -60,7 +60,7 @@
 - best_fixed: utility=0.693452
 - oracle: utility=0.800595
 - hidden_plus_surface: utility=0.782738
-- subtype_only: utility=0.702381
+- subtype_only: utility=0.699405
 
 ## Trained Baselines
 
@@ -68,8 +68,11 @@
 - hidden_only: utility=0.6041666666666666
 - tfidf: utility=0.7976190476190477
 - heuristic: utility=0.7946428571428571
-- shuffled_hidden: utility=0.7827380952380952
-- random_projection: utility=0.7886904761904762
+- shuffled_hidden: utility=0.7767857142857143
+- orthogonal_rotation: utility=0.7827380952380952
+- reduced_projection: utility=0.7976190476190477
+- gaussian_noise: utility=0.7767857142857143
+- coord_permutation: utility=0.7857142857142857
 - hidden_norm_only: utility=0.6934523809523809
 
 ## Hidden-State Contribution Ablation
@@ -99,7 +102,7 @@
 ## Final Access
 
 - Access count: 1
-- Source hash: `340cd5fc5760cdd456f40fc8371ffa5c6c79a5e566d21c44989d4be794ce48b5`
+- Source hash: `f95b976d2c40535769441a5bdd07c69965c54405f986803b017a3583a292c3d2`
 - Primary policy: hidden_plus_surface
 - Primary comparator: best_fixed
 - Best fixed policy: always_symbolic

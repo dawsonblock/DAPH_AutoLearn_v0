@@ -1,0 +1,13 @@
+{
+  "legacy": true,
+  "not_current_source": true,
+  "historical_source_hash": "a48a3555177015102d82042cf0b16bd775733187af5483d2cd78a4c96a579c01",
+  "historical_release": "0.3.10.5-alpha",
+  "experiment_id": "daph_gate_a_real_006_repair",
+  "status": "FAIL",
+  "historical_result": "FAIL",
+  "current_qualification_evidence": false,
+  "archived_at": "2026-08-01",
+  "archived_by": "v0.3.10.6-alpha artifact integrity repair (Priority 1)",
+  "note": "This experiment failed Gate A under an earlier source hash. It is retained for audit history only."
+}
