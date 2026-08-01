@@ -1,0 +1,5202 @@
+[
+  {
+    "task_id": "diverse_0400",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9418.62177848816,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6970.49880027771,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 44245.258808135986,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0401",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 11421.856880187988,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7900.931835174561,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9910.40301322937,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0402",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 22922.900915145874,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16794.52085494995,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 18374.05276298523,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0403",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6741.2450313568115,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4205.191850662231,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 23972.72801399231,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0404",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 19186.399221420288,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 15788.810729980469,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 30649.582624435425,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0405",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7404.044151306152,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7157.231569290161,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14183.29381942749,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0406",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7615.40961265564,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6695.268869400024,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 35707.47637748718,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0407",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7668.848037719727,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4347.6197719573975,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 28025.771141052246,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0408",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12249.431133270264,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6032.163143157959,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9870.33462524414,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0409",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 11719.2964553833,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5121.985673904419,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 29319.05746459961,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0410",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 12578.843832015991,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8221.115112304688,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 13749.783039093018,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0411",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6246.958017349243,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3104.4678688049316,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 23481.02617263794,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0412",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 16615.433931350708,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8796.159982681274,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 62961.867809295654,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0413",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14397.059917449951,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5703.441143035889,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14705.976486206055,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0414",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 12418.113231658936,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 2747.8508949279785,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9211.8980884552,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0415",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5957.64422416687,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 2943.6848163604736,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 21125.930786132812,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0416",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 9462.528228759766,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3562.857151031494,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 29262.224435806274,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0417",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 8981.916189193726,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4873.360633850098,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12488.699674606323,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0418",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 14274.147033691406,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6605.664014816284,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12413.898229598999,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0419",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5125.776052474976,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5082.471609115601,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16206.80856704712,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0420",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 18260.031938552856,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8910.86459159851,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 21837.91708946228,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0421",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7952.494859695435,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4462.794303894043,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 27393.580675125122,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0422",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11953.028678894043,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6636.294841766357,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17096.036672592163,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0423",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6352.390289306641,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5236.56964302063,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17449.992656707764,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0424",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 12770.959615707397,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3271.095037460327,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 13195.075035095215,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0425",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 11246.602535247803,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4228.888750076294,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12327.414274215698,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0426",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 18687.79468536377,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4790.6646728515625,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 19269.035577774048,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0427",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 12700.629711151123,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6699.505567550659,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11018.05305480957,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0428",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 15938.752174377441,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4003.5934448242188,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 15847.342729568481,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0429",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16444.239139556885,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6345.360994338989,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 13577.625751495361,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0430",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5405.608654022217,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6600.050926208496,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 19117.05756187439,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0431",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4887.4101638793945,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3881.588935852051,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 13934.256315231323,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0432",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5721.275568008423,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3353.515386581421,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11085.9534740448,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0433",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 12237.977504730225,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5388.0181312561035,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 19271.791219711304,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0434",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 17859.755516052246,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14506.142854690552,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17336.952686309814,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0435",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 13425.392866134644,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9123.18205833435,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 29598.63543510437,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0436",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 14673.860549926758,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6036.576747894287,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 30220.462560653687,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0437",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12857.306480407715,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4900.741338729858,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 22834.39326286316,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0438",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 9102.502346038818,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4919.949769973755,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 41395.408391952515,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0439",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4534.17181968689,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4148.728370666504,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 15440.886497497559,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0440",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9263.046503067017,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 2696.6629028320312,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16713.500261306763,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0441",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8442.548036575317,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4911.12756729126,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16662.85991668701,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0442",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 19303.40313911438,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7189.12672996521,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 15048.372983932495,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0443",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5974.808931350708,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5084.687948226929,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17282.422065734863,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0444",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 21128.51619720459,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 10379.375696182251,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 28101.36651992798,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0445",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9261.237382888794,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4485.438585281372,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12946.672439575195,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0446",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8777.62770652771,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4432.486057281494,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14907.896518707275,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0447",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4269.646406173706,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3183.1862926483154,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11564.810514450073,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0448",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 7035.473823547363,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4526.550531387329,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 20329.40721511841,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0449",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 13155.008316040039,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4815.171241760254,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9724.220752716064,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0450",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 16278.996706008911,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6619.643211364746,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 19927.521467208862,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0451",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9460.82353591919,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3311.3927841186523,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 52617.10166931152,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0452",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 20298.6741065979,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7725.484609603882,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 32217.636108398438,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0453",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6479.659557342529,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3343.294382095337,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 26649.070978164673,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0454",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7660.958528518677,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4595.982551574707,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 13916.808128356934,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0455",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3065.265417098999,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 2964.409589767456,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 15934.097051620483,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0456",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 9185.695171356201,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7648.331642150879,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 42469.982862472534,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0457",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 9284.332513809204,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6091.356992721558,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12064.49294090271,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0458",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 16158.867359161377,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5478.548288345337,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9384.293794631958,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0459",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6744.418621063232,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8468.520641326904,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17524.797916412354,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0460",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 15591.19701385498,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6487.828016281128,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 29644.466876983643,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0461",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7082.655191421509,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5343.687295913696,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16524.56521987915,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0462",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14041.620016098022,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6625.237226486206,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17310.11939048767,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0463",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6003.542184829712,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 2825.4613876342773,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17888.320922851562,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0464",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6758.70156288147,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6400.443077087402,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 37974.4074344635,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0465",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7526.029109954834,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3190.645217895508,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12856.878995895386,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0466",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 34238.006591796875,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16109.682083129883,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 22479.899644851685,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0467",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8720.015287399292,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6861.549854278564,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 29350.23546218872,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0468",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 14234.037160873413,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6581.141233444214,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 50882.800817489624,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0469",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7904.939651489258,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4996.77848815918,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 20496.9220161438,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0470",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11695.39213180542,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3631.6959857940674,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 21311.89775466919,
+        "compute_cost": 0.3,
+        "failure_type": "parse_error"
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0471",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4799.889802932739,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5008.914232254028,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9771.733045578003,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0472",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 17129.81939315796,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4250.942230224609,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 35254.95886802673,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0473",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 11992.984294891357,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6651.453256607056,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17217.27681159973,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0474",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 17036.346197128296,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6874.220132827759,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 10851.995944976807,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0475",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 11495.803833007812,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3870.241165161133,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 28723.079442977905,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0476",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 15279.223442077637,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 10798.520803451538,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17150.80738067627,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0477",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6640.312671661377,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7286.794185638428,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16199.9351978302,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0478",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8181.121587753296,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3014.402151107788,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 21762.073278427124,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0479",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3110.4910373687744,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3852.648973464966,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17191.827297210693,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0480",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 10378.668308258057,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7097.491502761841,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 18684.58080291748,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0481",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 11486.513614654541,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4008.0201625823975,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 22324.76258277893,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0482",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 20614.21251296997,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8016.150236129761,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 22246.121168136597,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0483",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 8482.997417449951,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3851.4344692230225,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 15003.521203994751,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0484",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 29497.08867073059,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16829.183340072632,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 35686.98835372925,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0485",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17211.135864257812,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5366.177320480347,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16722.32675552368,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0486",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11899.30534362793,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9431.921482086182,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 48176.62215232849,
+        "compute_cost": 0.3,
+        "failure_type": "parse_error"
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0487",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6318.785905838013,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 2736.7103099823,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 28050.846099853516,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0488",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 11112.701892852783,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3497.1728324890137,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9370.274066925049,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0489",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12160.845518112183,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6503.436326980591,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16377.47836112976,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0490",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16906.52298927307,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7754.946708679199,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16874.09234046936,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0491",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 8563.594102859497,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5692.2900676727295,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9944.638729095459,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0492",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 19871.75679206848,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4110.512733459473,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 21494.21501159668,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0493",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9196.934461593628,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5332.135438919067,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 22937.21652030945,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0494",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8938.54546546936,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6399.25742149353,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 25079.09059524536,
+        "compute_cost": 0.3,
+        "failure_type": "parse_error"
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0495",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3266.7336463928223,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4112.98394203186,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12692.766904830933,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0496",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5564.516067504883,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 2937.8271102905273,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 40176.97596549988,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0497",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7778.697490692139,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6974.72620010376,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11978.44648361206,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0498",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 17554.551124572754,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12333.314895629883,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 15395.024538040161,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0499",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 8457.471132278442,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6223.31166267395,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 31881.82020187378,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0500",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 17094.415426254272,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7103.060722351074,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16488.68751525879,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0501",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6910.7959270477295,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5990.383148193359,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 27068.588972091675,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0502",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8078.084707260132,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4187.599658966064,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 21228.936910629272,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0503",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6176.620721817017,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3851.811647415161,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 26054.1729927063,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0504",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6536.45658493042,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7540.974378585815,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 15343.963861465454,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0505",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 10003.807067871094,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4360.431909561157,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11306.671857833862,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0506",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 11905.110836029053,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5912.5378131866455,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17046.525716781616,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0507",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6136.1894607543945,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5693.76277923584,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8290.05241394043,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0508",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 19472.962856292725,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12611.784219741821,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 19754.426956176758,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0509",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 10822.91841506958,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3487.844705581665,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16371.223449707031,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0510",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12170.22728919983,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8455.154657363892,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16158.1449508667,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0511",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6937.795639038086,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3735.725164413452,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 26563.53783607483,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0512",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5950.758695602417,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6009.490013122559,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12553.477764129639,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0513",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 17075.14500617981,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4657.447576522827,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 20771.7866897583,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0514",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 23375.31805038452,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9868.579387664795,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 15985.39662361145,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0515",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 16108.68763923645,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6463.379621505737,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 40442.09170341492,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0516",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 13581.27212524414,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6460.723876953125,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 22817.40975379944,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0517",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16237.44535446167,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6078.869342803955,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 18701.467037200928,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0518",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5790.582895278931,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6498.705625534058,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 19598.46782684326,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0519",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4493.438243865967,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4727.4720668792725,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 33696.47669792175,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0520",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 10044.075012207031,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6383.780717849731,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12474.574565887451,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0521",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 14636.34705543518,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5045.068264007568,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17498.745918273926,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0522",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 20922.417879104614,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9950.018644332886,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17240.82064628601,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0523",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 15878.024578094482,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3953.2291889190674,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 18358.297109603882,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0524",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 25477.882623672485,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14290.393352508545,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 38298.784255981445,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0525",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7931.906938552856,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4895.730972290039,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 20032.20820426941,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0526",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6981.629371643066,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6966.686248779297,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 44153.57041358948,
+        "compute_cost": 0.3,
+        "failure_type": "parse_error"
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0527",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3445.899724960327,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6290.6341552734375,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 18657.116889953613,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0528",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 12108.974695205688,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3219.7961807250977,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14864.480257034302,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0529",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 17739.569187164307,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4559.920787811279,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14830.107927322388,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0530",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 20608.78825187683,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11779.900789260864,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 19220.759630203247,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0531",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 15915.637493133545,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9131.242752075195,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 13899.529218673706,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0532",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 15825.091361999512,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9742.064237594604,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14434.384822845459,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0533",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16836.148738861084,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6644.2999839782715,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 20792.611598968506,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0534",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11774.794816970825,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8328.217267990112,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16062.998533248901,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0535",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5928.9820194244385,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3086.9226455688477,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16904.284238815308,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0536",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5235.029220581055,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3879.939556121826,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 25556.017875671387,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0537",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 7789.040565490723,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6415.87233543396,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12046.817779541016,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0538",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 26087.134838104248,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6652.1055698394775,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12437.361001968384,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0539",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6076.735258102417,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4650.510787963867,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 22139.240741729736,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0540",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 25996.248245239258,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11758.39638710022,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 44771.509647369385,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0541",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 10821.593284606934,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4455.63817024231,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14921.186447143555,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0542",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 10600.497245788574,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8924.938201904297,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16405.782222747803,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0543",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5421.449899673462,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4057.748794555664,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 20811.56063079834,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0544",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 11729.108095169067,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 68800.98700523376,
+        "compute_cost": 0.1,
+        "failure_type": "parse_error"
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 36607.36012458801,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0545",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 71456.7277431488,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3564.699172973633,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12541.56517982483,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0546",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 13439.988136291504,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 13001.915216445923,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14065.834999084473,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0547",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9945.111513137817,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4867.559432983398,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12227.822303771973,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0548",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 19431.106090545654,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7422.58620262146,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17055.294275283813,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0549",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 24216.136693954468,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11745.135068893433,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 21786.579608917236,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0550",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9105.727910995483,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6076.035737991333,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 32696.49910926819,
+        "compute_cost": 0.3,
+        "failure_type": "parse_error"
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0551",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6417.365550994873,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4716.5207862854,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 18742.592334747314,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0552",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4796.44250869751,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3340.1169776916504,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14540.532112121582,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0553",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 10423.837423324585,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3357.128381729126,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 15303.09534072876,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0554",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 22540.087461471558,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 10259.19508934021,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16495.948791503906,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0555",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 13442.205667495728,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5374.194383621216,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 10608.021020889282,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0556",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 20797.757387161255,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9130.661487579346,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 38553.730726242065,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0557",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 15518.706321716309,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6075.744390487671,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 18925.79221725464,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0558",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8281.322717666626,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7882.645845413208,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 19944.46587562561,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0559",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6648.262977600098,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6237.8222942352295,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 22255.040884017944,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0560",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5654.268980026245,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6828.003168106079,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 31191.806316375732,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0561",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 11528.19013595581,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5368.893384933472,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 40602.696895599365,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0562",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 27313.573122024536,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7119.9212074279785,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11296.942949295044,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0563",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 18150.030612945557,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3683.393955230713,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 22571.405172348022,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0564",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 24698.795557022095,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8709.909677505493,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 26674.71671104431,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0565",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11117.671251296997,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5171.499490737915,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 31963.343143463135,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0566",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 9973.657608032227,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6175.016403198242,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 45148.74839782715,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0567",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4950.105428695679,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5264.436960220337,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12801.019430160522,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0568",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 10635.192394256592,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4495.5503940582275,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14491.849899291992,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0569",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 8096.552610397339,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5922.393083572388,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11231.509685516357,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0570",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 26931.709051132202,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5792.5097942352295,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14876.286268234253,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0571",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6064.8698806762695,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4782.002925872803,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 25125.18358230591,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0572",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 26797.66535758972,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 13595.639944076538,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 25538.92469406128,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0573",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 10607.612133026123,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5024.417877197266,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 20320.31488418579,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0574",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4718.391895294189,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4580.337047576904,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17516.75772666931,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0575",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7725.967645645142,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4273.226737976074,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 27250.261068344116,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0576",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 7810.409069061279,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6870.260238647461,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 13096.26841545105,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0577",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 65401.92270278931,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4916.1717891693115,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8310.385942459106,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0578",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 26882.171392440796,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8183.920383453369,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17285.622119903564,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0579",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 13855.724573135376,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 2629.5225620269775,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 25437.960147857666,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0580",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 13095.919847488403,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7071.157455444336,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 30678.638458251953,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0581",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11033.572435379028,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8525.590658187866,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 15011.943340301514,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0582",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7464.77484703064,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4480.103969573975,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 24546.995162963867,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0583",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5296.220779418945,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5101.801872253418,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7520.359754562378,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0584",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9298.51770401001,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5734.48634147644,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 44390.05637168884,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0585",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 15608.2181930542,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5709.0277671813965,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12298.072099685669,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0586",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 24507.41958618164,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 13689.626932144165,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 13704.271793365479,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0587",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 13308.657169342041,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3830.408811569214,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 27255.224466323853,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0588",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 13768.627643585205,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4382.425546646118,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14708.173513412476,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0589",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7611.876964569092,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6270.63250541687,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16617.926836013794,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0590",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 7875.516176223755,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5925.226211547852,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 23127.696752548218,
+        "compute_cost": 0.3,
+        "failure_type": "parse_error"
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0591",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5174.296855926514,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4137.319803237915,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 22169.182062149048,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0592",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7708.534002304077,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 4694.809436798096,
+        "compute_cost": 0.1,
+        "failure_type": "parse_error"
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 18358.344554901123,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0593",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 11576.306104660034,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6816.04790687561,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14509.030103683472,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0594",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 29315.32573699951,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5669.871807098389,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 14951.186418533325,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0595",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 15950.54006576538,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7415.158271789551,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 23624.70841407776,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0596",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 21003.363370895386,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 13951.221942901611,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 30651.820182800293,
+        "compute_cost": 0.3,
+        "failure_type": "parse_error"
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0597",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9211.155891418457,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6769.187211990356,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16560.939073562622,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0598",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7463.0937576293945,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5587.673664093018,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17131.354093551636,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "diverse_0599",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3533.910036087036,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 2632.7414512634277,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 34443.981885910034,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  }
+]
