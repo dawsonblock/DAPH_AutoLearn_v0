@@ -8,7 +8,7 @@
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Version](https://img.shields.io/badge/version-0.3.10.5--alpha-orange.svg)](./CHANGELOG.md)
-[![Tests](https://img.shields.io/badge/tests-1229%2B-brightgreen.svg)](#testing)
+[![Tests](https://img.shields.io/badge/tests-1269%2B-brightgreen.svg)](#testing)
 [![Status](https://img.shields.io/badge/status-research%20alpha-lightgrey.svg)](./CLAIMS.md)
 
 </div>
