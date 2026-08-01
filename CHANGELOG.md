@@ -1,6 +1,28 @@
-# 0.3.10.6-alpha (Prompt interface fix + 1.5B experiment)
+# 0.3.10.6-alpha (Scientific repair + prompt interface fix + 1.5B experiment)
 
 ## What changed
+
+### Scientific repair (Priority 0 + Priority 1 + Priority 2)
+
+- **Matched sham control (P0)**: sham now permutes signed continuous ΔU and
+  matching weights within strata — not binary labels — so `fit_policy` applies
+  the identical `sigmoid(ΔU/τ)` transform the real P1 model received.
+- **Ablation pipeline parity (P0)**: all ablation policies now traverse the
+  same calibration + frozen thresholds + abstention pipeline as P1.
+- **Real pooling (P0)**: `last_prompt_token`, `mean_prompt_tokens`, and
+  `mean_content_tokens` are independently computed (previously identical).
+- **Proper negative controls (P0)**: replaced invalid square random-projection
+  with orthogonal-rotation invariance, dimension-reduced JL projection,
+  Gaussian noise, coordinate permutation, and subtype-stratified shuffled-hidden.
+- **Subtype-only dev freeze (P0)**: subtype-only baseline frozen on development
+  data, never derived from final labels.
+- **Artifact integrity (P1)**: failed runs moved to `gate_a_failed/`; stale
+  PASS moved to `gate_a_historical/`; final stage writes to `gate_a_runs/`
+  (staging) — only promotion logic moves to `gate_a_qualified/`.
+- **Version normalization (P2)**: all version surfaces agree on 0.3.10.6-alpha.
+  Removed stale `CURRENT_EXPERIMENT_ID` from package source.
+
+### Prompt interface fix + 1.5B experiment
 
 - **Prompt interface fix**: Created shared `build_llm_prompt()` in
   `real_backends.py` as the single source of truth for LLM prompt

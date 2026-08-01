@@ -1,9 +1,9 @@
-__version__ = "0.3.10.5-alpha"
+__version__ = "0.3.10.6-alpha"
 
-# Section 2: experiment identity. The current source tree targets a NEW,
-# frozen, auditable Gate A experiment. The earlier real-model run is
-# preserved as legacy evidence (see artifacts/legacy/).
-CURRENT_EXPERIMENT_ID = "daph_gate_a_real_002"
+# Section 2: experiment identity. The current experiment is determined by
+# the Gate A config (configs/gate_a_real_007_harder.yaml), not hardcoded
+# in package source. The earlier real-model runs are preserved as legacy
+# or historical evidence (see artifacts/legacy/ and artifacts/gate_a_historical/).
 LEGACY_FAILED_EXPERIMENT_ID = "daph_gate_a_real_001_failed"
 
 # Section 7/12: canonical execution + verification exports.
@@ -49,7 +49,6 @@ __all__ = [
     "BackendExecution",
     "BackendName",
     "CanonicalIntegerVerifier",
-    "CURRENT_EXPERIMENT_ID",
     "EmpiricalCrossoverAudit",
     "ExecutionStatus",
     "GATE_A_ACCURACY_PRIMARY",

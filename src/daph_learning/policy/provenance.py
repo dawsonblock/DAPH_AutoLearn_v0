@@ -43,7 +43,7 @@ from typing import Any
 class ProvenanceRecord:
     """Full provenance for a policy artifact (Section 45)."""
 
-    release_version: str = "0.3.10.5-alpha"
+    release_version: str = "0.3.10.6-alpha"
     git_hash: str | None = None
     model_id: str | None = None
     model_revision: str | None = None

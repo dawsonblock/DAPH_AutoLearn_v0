@@ -1,9 +1,11 @@
 {
   "artifact_type": "pointer",
-  "experiment_id": "daph_gate_a_real_007_harder",
-  "target": "../gate_a_qualified/daph_gate_a_real_007_harder",
-  "qualification_status": "FAIL",
-  "evidence_level": "EXPERIMENTALLY_FAILED",
-  "source_hash": "a48a3555177015102d82042cf0b16bd775733187af5483d2cd78a4c96a579c01",
-  "generated_at": "2026-08-01T03:23:48Z"
+  "experiment_id": null,
+  "target": null,
+  "status": "NOT_YET_REQUALIFIED",
+  "qualification_status": "NOT_YET_REQUALIFIED",
+  "evidence_level": "NOT_YET_REQUALIFIED",
+  "source_hash": "",
+  "generated_at": "2026-08-01T00:00:00Z",
+  "note": "No current Gate A PASS exists. real_007_harder FAILED. real_005_requal is historical. See artifacts/current/pointer.json for the canonical pointer."
 }

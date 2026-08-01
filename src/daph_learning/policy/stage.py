@@ -149,7 +149,7 @@ class FinalAccessLedger:
     No hyperparameter updates after the first final access.
     """
     max_accesses: int = 1
-    release_version: str = "0.3.10.5-alpha"
+    release_version: str = "0.3.10.6-alpha"
     source_hash: str = ""
     config_hash: str = ""
     policy_hash: str = ""
@@ -224,7 +224,7 @@ class FreezeManifest:
     All identity-bearing inputs must be non-empty at freeze time.
     """
     experiment_id: str = ""
-    release_version: str = "0.3.10.5-alpha"
+    release_version: str = "0.3.10.6-alpha"
     source_tree_sha256: str = ""
     config_sha256: str = ""
     train_dataset_sha256: str = ""
