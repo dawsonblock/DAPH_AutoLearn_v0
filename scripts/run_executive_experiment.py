@@ -70,6 +70,11 @@ from daph_learning.executive import (
     evaluate_qualification,
     write_report,
     ExecutiveTaskRecord,
+    generate_diverse_tasks,
+    build_retrieval_store,
+    HiddenStateConfig,
+    load_model_for_capture,
+    capture_hidden_states,
 )
 
 
@@ -144,12 +149,19 @@ def generate_synthetic_tasks(
     n_groups: int = 10,
     n_subtypes: int = 3,
     seed: int = 42,
+    *,
+    diverse: bool = False,
 ) -> list[dict]:
     """Generate synthetic arithmetic tasks for testing.
 
-    Each task is a simple addition problem. The answer is always the
-    sum. Subtypes vary the difficulty.
+    If ``diverse=True``, uses the diverse task generator with 8 subtypes
+    (addition, multiplication, word problems, multi-step, comparison).
+    Otherwise uses simple addition with 3 difficulty levels.
     """
+    if diverse:
+        return generate_diverse_tasks(
+            n_tasks=n_tasks, n_groups=n_groups, seed=seed)
+
     rng = np.random.RandomState(seed)
     tasks = []
     for i in range(n_tasks):
@@ -202,28 +214,39 @@ def run_experiment(
     llm_config = build_llm_config(config)
 
     # 2. Load or generate tasks
+    data_cfg = config.get("data", {})
+    use_diverse = data_cfg.get("diverse", True)
+    use_hidden_states = config.get("model", {}).get("capture_hidden_states", False)
+
     if synthetic:
-        data_cfg = config.get("data", {})
-        n = n_tasks or data_cfg.get("n_tasks_test", 100)
+        n_total = n_tasks or data_cfg.get("n_tasks_train", 400) + data_cfg.get("n_tasks_test", 200)
+        n_groups = data_cfg.get("n_groups", 40)
+        n_subtypes = data_cfg.get("n_subtypes", 8)
+        seed = data_cfg.get("seed", 42)
         tasks = generate_synthetic_tasks(
-            n_tasks=n,
-            n_groups=data_cfg.get("n_groups", 10),
-            n_subtypes=data_cfg.get("n_subtypes", 3),
-            seed=data_cfg.get("seed", 42),
+            n_tasks=n_total,
+            n_groups=n_groups,
+            n_subtypes=n_subtypes,
+            seed=seed,
+            diverse=use_diverse,
         )
         # Split into train/test
-        split_idx = int(len(tasks) * 0.6)
-        train_tasks = tasks[:split_idx]
-        test_tasks = tasks[split_idx:]
-        print(f"Synthetic tasks: {len(train_tasks)} train, {len(test_tasks)} test")
+        n_train = data_cfg.get("n_tasks_train", int(len(tasks) * 0.6))
+        n_train = min(n_train, len(tasks) - 20)  # ensure at least 20 test
+        train_tasks = tasks[:n_train]
+        test_tasks = tasks[n_train:]
+        print(f"{'Diverse' if use_diverse else 'Simple'} tasks: "
+              f"{len(train_tasks)} train, {len(test_tasks)} test")
     else:
-        # In production, load from a data file
         raise NotImplementedError(
             "Real data loading not yet implemented. Use --synthetic for testing.")
 
-    # 3. Build executors
-    examples = [{"prompt": t["prompt"], "answer": t["answer"]}
-                for t in train_tasks[:20]]  # use first 20 as retrieval store
+    # 3. Build executors with diverse retrieval store
+    if use_diverse:
+        examples = build_retrieval_store(train_tasks, n_per_subtype=5)
+    else:
+        examples = [{"prompt": t["prompt"], "answer": t["answer"]}
+                    for t in train_tasks[:20]]
     registry = build_executors(config, llm_config, mock=mock, examples=examples)
 
     # 4. Counterfactual execution (concurrent)
@@ -239,12 +262,41 @@ def run_experiment(
     test_experiences = build_executive_experiences(test_cf, um, space)
     print(f"  {len(train_experiences)} train, {len(test_experiences)} test")
 
-    # 6. Extract features (placeholder: random for now)
-    # In production, this would be hidden state capture from the LLM
-    rng = np.random.RandomState(config.get("data", {}).get("seed", 42))
-    d = 16  # feature dimension
-    train_features = rng.randn(len(train_experiences), d).astype(np.float32)
-    test_features = rng.randn(len(test_experiences), d).astype(np.float32)
+    # 6. Extract features (hidden states or random fallback)
+    mc = config.get("model", {})
+    use_hidden_states = mc.get("capture_hidden_states", False)
+
+    if use_hidden_states and not mock:
+        print("\nCapturing hidden states from HF model...")
+        hs_cfg = HiddenStateConfig(
+            model_name=mc.get("name", ""),
+            layers=mc.get("capture_layers", [0.5]),
+            location=mc.get("capture_location", "last_token"),
+            max_length=mc.get("capture_max_length", 512),
+            batch_size=mc.get("capture_batch_size", 16),
+        )
+        device = mc.get("device", "cuda")
+        print(f"  Loading model {hs_cfg.model_name} on {device}...")
+        cap_model, cap_tokenizer = load_model_for_capture(
+            hs_cfg.model_name, device=device, dtype=mc.get("dtype", "auto"))
+        print(f"  Capturing train features ({len(train_tasks)} tasks)...")
+        train_features = capture_hidden_states(
+            train_tasks, cap_model, cap_tokenizer, hs_cfg, device=device)
+        print(f"  Capturing test features ({len(test_tasks)} tasks)...")
+        test_features = capture_hidden_states(
+            test_tasks, cap_model, cap_tokenizer, hs_cfg, device=device)
+        # Free model memory
+        del cap_model
+        import torch
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        print(f"  Feature dim: {train_features.shape[1]}")
+    else:
+        print("\nUsing random features (no hidden state capture)...")
+        rng = np.random.RandomState(config.get("data", {}).get("seed", 42))
+        d = 16  # feature dimension
+        train_features = rng.randn(len(train_experiences), d).astype(np.float32)
+        test_features = rng.randn(len(test_experiences), d).astype(np.float32)
 
     # 7. Build training arrays
     train_arrays = experiences_to_training_arrays(

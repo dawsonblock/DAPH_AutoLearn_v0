@@ -84,6 +84,15 @@ from daph_learning.executive.executors import (
     ExecutorRegistry,
     build_b1_executors,
 )
+from daph_learning.executive.task_generator import (
+    generate_diverse_tasks,
+    build_retrieval_store,
+)
+from daph_learning.executive.hidden_state import (
+    HiddenStateConfig,
+    load_model_for_capture,
+    capture_hidden_states,
+)
 
 __all__ = [
     "ActionDescriptor",
@@ -138,4 +147,11 @@ __all__ = [
     "ReasoningDecomposeExecutor",
     "ExecutorRegistry",
     "build_b1_executors",
+    # Task generation
+    "generate_diverse_tasks",
+    "build_retrieval_store",
+    # Hidden state capture
+    "HiddenStateConfig",
+    "load_model_for_capture",
+    "capture_hidden_states",
 ]

@@ -1,0 +1,65 @@
+experiment_id: daph_executive_b2_qwen3_8b_diverse
+version: "0.4.0-alpha"
+benchmark: B2
+
+action_space:
+  actions:
+    - action_id: "action.reasoning.direct"
+      display_name: "Direct Reasoning"
+      description: "Direct LLM generation without decomposition or retrieval."
+      cost_estimate: 0.15
+      tags: ["reasoning", "direct", "neural"]
+    - action_id: "action.retrieval.vector"
+      display_name: "Vector Retrieval"
+      description: "Retrieve similar examples from a vector store, then generate."
+      cost_estimate: 0.10
+      tags: ["retrieval", "vector", "augmented"]
+    - action_id: "action.reasoning.decompose"
+      display_name: "Decomposed Reasoning"
+      description: "Decompose into sub-problems, solve each, then combine."
+      cost_estimate: 0.30
+      tags: ["reasoning", "decompose", "multi-step"]
+  abstain_id: "action.abstain"
+
+utility_model:
+  quality_weight: 1.0
+  lambda_time: 0.01
+  lambda_compute: 0.1
+  lambda_risk: 1.0
+  time_reference_ms: 10000.0
+  compute_reference: 1.0
+  abstention_band: 0.05
+
+policy:
+  type: "logistic"
+  learning_rate: 0.01
+  n_iter: 1000
+  l2: 0.001
+
+data:
+  diverse: true
+  n_tasks_train: 400
+  n_tasks_test: 200
+  n_groups: 40
+  n_subtypes: 8
+  seed: 20260801
+
+qualification:
+  bootstrap_iterations: 10000
+  bootstrap_seed: 20260801
+  n_sham_seeds: 50
+  sham_seed_base: 10000
+
+model:
+  name: "Qwen/Qwen3-8B"
+  max_tokens: 4096
+  temperature: 0.0
+  vllm_port: 8000
+  vllm_api_key: "sk-6cbxgk04y6hyvm"
+  capture_hidden_states: true
+  capture_layers: [0.25, 0.5, 0.75, 1.0]
+  capture_location: "last_token"
+  capture_max_length: 512
+  capture_batch_size: 16
+  device: "cuda"
+  dtype: "auto"
