@@ -13,9 +13,9 @@
   "tokenizer_id": "mock-llm",
   "tokenizer_revision": "",
   "representation_config_sha256": "9446e7180a6e1a5f225789ee3c2de51e403592564eba707a87aaad0ff5decc6b",
-  "policy_sha256": "d6647229146127be23f4b7edee4d708938a13f5b836eb5b7a9106d6baac240e0",
-  "calibration_sha256": "86881497c36b5aca661ffcae2bcc0f6080167a39bc072c096a01f99b108fe559",
+  "policy_sha256": "3371b94305dbac514937a6fef010ba3caba2c2514376792b21be1da47b3ff8b9",
+  "calibration_sha256": "8175698f63001cea616e208249425160c74480fb1922a267d55694451825e841",
   "gate_criteria_sha256": "1e95de8b3d12642c901b7a9ae2c90d5fc2533a24a3fbc352083ceb66b282785a",
-  "frozen_at": 1785547186.334906,
+  "frozen_at": 1785551694.928319,
   "stage": "frozen"
 }

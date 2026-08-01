@@ -268,10 +268,56 @@ def generate_gate_a_results_md(
         lines.append(f"- {name}: utility={info.get('utility', 'N/A')}")
     lines.extend([
         "",
+        "## Trained Baselines",
+        "",
+    ])
+    for name, info in stats.get("trained_baselines", {}).items():
+        lines.append(f"- {name}: utility={info.get('utility', 'N/A')}")
+    lines.extend([
+        "",
+        "## Hidden-State Contribution Ablation",
+        "",
+    ])
+    hsc = stats.get("hidden_state_claim", {})
+    if hsc:
+        cms = hsc.get("combined_minus_surface", {})
+        hmt = hsc.get("hidden_minus_tfidf", {})
+        lines.extend([
+            f"- P_COMBINED - P_SURFACE: estimate={cms.get('estimate', 'N/A')}, "
+            f"LCB95={cms.get('lcb_95', 'N/A')}, UCB95={cms.get('ucb_95', 'N/A')}",
+            f"- P_HIDDEN - P_TFIDF: estimate={hmt.get('estimate', 'N/A')}, "
+            f"LCB95={hmt.get('lcb_95', 'N/A')}, UCB95={hmt.get('ucb_95', 'N/A')}",
+            f"- Hidden-state claim supported: {hsc.get('claim_supported', 'N/A')}",
+            f"- Minimum effect threshold: {hsc.get('minimum_effect_threshold', 'N/A')}",
+        ])
+    else:
+        lines.append("- Not computed.")
+    lines.extend([
+        "",
+        "## Limitations",
+        "",
+        "1. **Benchmark specificity:** This experiment evaluates routing on a",
+        "   structured-math benchmark. Generalization to other domains is not",
+        "   established.",
+        "2. **Model specificity:** Results are for the specified model revision",
+        "   only. Different models may produce different hidden-state representations.",
+        "3. **No OOD evaluation in this run:** OOD results are not reported in",
+        "   this bundle. The policy may be benchmark-specific.",
+        "4. **Hidden-state contribution:** The hidden-state ablation result",
+        "   (claim_supported field above) determines whether hidden states",
+        "   added measurable routing value beyond prompt-only baselines.",
+        "5. **Single final access:** The final stage was run exactly once.",
+        "   No hyperparameter tuning was performed after final access.",
+        "6. **Sham control:** Sham uses label permutation within bins, not",
+        "   feature permutation. Both variants should be tested in future work.",
+        "",
         "## Final Access",
         "",
         f"- Access count: {stats.get('final_access_count', 'N/A')}",
         f"- Source hash: `{stats.get('source_hash', 'N/A')}`",
+        f"- Primary policy: {stats.get('primary_policy_id', 'hidden_plus_surface')}",
+        f"- Primary comparator: {stats.get('primary_comparator_id', 'best_fixed')}",
+        f"- Best fixed policy: {stats.get('best_fixed_policy_id', 'N/A')}",
         "",
         "---",
         "This report was generated from machine-readable artifacts. "
