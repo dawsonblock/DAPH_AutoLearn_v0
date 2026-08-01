@@ -75,6 +75,15 @@ from daph_learning.executive.experience import (
     build_executive_training_targets,
     estimate_uncertainty,
 )
+from daph_learning.executive.executors import (
+    ActionExecutor,
+    LLMGenerationConfig,
+    DirectReasoningExecutor,
+    RetrievalVectorExecutor,
+    ReasoningDecomposeExecutor,
+    ExecutorRegistry,
+    build_b1_executors,
+)
 
 __all__ = [
     "ActionDescriptor",
@@ -121,4 +130,12 @@ __all__ = [
     "ExecutiveTrainingTargets",
     "build_executive_training_targets",
     "estimate_uncertainty",
+    # Executors
+    "ActionExecutor",
+    "LLMGenerationConfig",
+    "DirectReasoningExecutor",
+    "RetrievalVectorExecutor",
+    "ReasoningDecomposeExecutor",
+    "ExecutorRegistry",
+    "build_b1_executors",
 ]

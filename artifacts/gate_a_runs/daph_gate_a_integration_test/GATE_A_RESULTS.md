@@ -1,6 +1,6 @@
 # Gate A Results — daph_gate_a_integration_test
 
-**Generated:** 2026-08-01T16:08:10
+**Generated:** 2026-08-01T16:22:31
 **Criteria hash:** `1e95de8b3d12642c901b7a9ae2c90d5fc2533a24a3fbc352083ceb66b282785a`
 **Overall status:** PASS
 
@@ -104,7 +104,7 @@
 ## Final Access
 
 - Access count: 1
-- Source hash: `d2f47b293b64cc01c04094397d41f10559189ca7fc40925b3240ba996084e54e`
+- Source hash: `b55da71a1292ff85a2ad8b27f79ad52aba6191707e2ff574acd64e6f0111755f`
 - Primary policy: hidden_plus_surface
 - Primary comparator: best_fixed
 - Best fixed policy: always_symbolic
