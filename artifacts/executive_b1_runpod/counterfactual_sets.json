@@ -1,0 +1,626 @@
+[
+  {
+    "task_id": "synthetic_0036",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7410.575866699219,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3081.8259716033936,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 32280.850887298584,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0037",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6739.770174026489,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 10259.257078170776,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 15264.31155204773,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0038",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 11895.252227783203,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 54300.70090293884,
+        "compute_cost": 0.1,
+        "failure_type": "parse_error"
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9678.054809570312,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0039",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4991.856098175049,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4998.343706130981,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 15222.77808189392,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0040",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 9822.612524032593,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4322.087287902832,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12848.524570465088,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0041",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": false,
+        "latency_ms": 13506.541728973389,
+        "compute_cost": 0.15,
+        "failure_type": "parse_error"
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6297.062397003174,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 12245.182514190674,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0042",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3061.185836791992,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3131.8912506103516,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 32186.755657196045,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0043",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4680.389404296875,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4903.7511348724365,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8649.742364883423,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0044",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7922.541379928589,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5780.785799026489,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 18974.904775619507,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0045",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4093.287467956543,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5795.93300819397,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 13424.325942993164,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0046",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4260.378837585449,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4681.496381759644,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8262.476921081543,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0047",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9582.687854766846,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6678.48014831543,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 10952.946186065674,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0048",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 2918.4954166412354,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7509.253740310669,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7255.479574203491,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0049",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4412.3780727386475,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5070.785284042358,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9520.961999893188,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0050",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4203.183650970459,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6616.037368774414,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 21344.49815750122,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0051",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4467.435836791992,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4988.529205322266,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 41273.81634712219,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0052",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4971.212387084961,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 3422.642230987549,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11168.087005615234,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0053",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9441.911458969116,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7886.9829177856445,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 9975.071907043457,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0054",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4648.752450942993,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4793.099403381348,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 16459.63764190674,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0055",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4816.585540771484,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4554.373979568481,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8943.456888198853,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0056",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6354.3031215667725,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 7470.8850383758545,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 13148.136138916016,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0057",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6326.743602752686,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 4630.70821762085,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 23563.859701156616,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0058",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 8406.609296798706,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5375.742197036743,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 6805.3624629974365,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  },
+  {
+    "task_id": "synthetic_0059",
+    "executions": {
+      "action.reasoning.direct": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 17679.01849746704,
+        "compute_cost": 0.15,
+        "failure_type": null
+      },
+      "action.retrieval.vector": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 11269.860744476318,
+        "compute_cost": 0.1,
+        "failure_type": null
+      },
+      "action.reasoning.decompose": {
+        "executed": true,
+        "verified_correct": true,
+        "latency_ms": 5832.556247711182,
+        "compute_cost": 0.3,
+        "failure_type": null
+      }
+    }
+  }
+]

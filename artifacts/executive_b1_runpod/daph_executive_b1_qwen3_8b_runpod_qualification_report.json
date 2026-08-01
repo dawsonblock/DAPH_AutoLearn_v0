@@ -1,0 +1,596 @@
+{
+  "experiment_id": "daph_executive_b1_qwen3_8b_runpod",
+  "action_space": {
+    "actions": [
+      {
+        "action_id": "action.reasoning.direct",
+        "display_name": "Direct Reasoning",
+        "description": "Direct LLM generation without decomposition or retrieval.",
+        "cost_estimate": 0.15,
+        "tags": [
+          "reasoning",
+          "direct",
+          "neural"
+        ]
+      },
+      {
+        "action_id": "action.retrieval.vector",
+        "display_name": "Vector Retrieval",
+        "description": "Retrieve similar examples from a vector store, then generate.",
+        "cost_estimate": 0.1,
+        "tags": [
+          "retrieval",
+          "vector",
+          "augmented"
+        ]
+      },
+      {
+        "action_id": "action.reasoning.decompose",
+        "display_name": "Decomposed Reasoning",
+        "description": "Decompose into sub-problems, solve each, then combine.",
+        "cost_estimate": 0.3,
+        "tags": [
+          "reasoning",
+          "decompose",
+          "multi-step"
+        ]
+      }
+    ],
+    "abstain_id": null
+  },
+  "n_tasks": 24,
+  "n_groups": 8,
+  "p1_minus_p0": {
+    "point": 0.16989943277835845,
+    "lcb_95": -0.001168756445248932,
+    "ucb_95": 0.4193681278487046,
+    "bootstrap_mean": 0.1696630307498137,
+    "bootstrap_std": 0.10329508780853928
+  },
+  "p1_minus_sham": {},
+  "oracle_gap": 0.25637717372179036,
+  "oracle_gap_capture": 0.6626932901707002,
+  "p1_mean_utility": 0.8910149570504823,
+  "p0_mean_utility": 0.721115524272124,
+  "oracle_mean_utility": 0.9774926979939144,
+  "always_action_utilities": {
+    "action.reasoning.direct": 0.721115524272124,
+    "action.retrieval.vector": 0.8910149570504823,
+    "action.reasoning.decompose": 0.939559851805369
+  },
+  "positive_group_fraction": 0.875,
+  "worst_subtype_regression": 0.0,
+  "gate_passed": false,
+  "gate_failures": [],
+  "task_records": [
+    {
+      "task_id": "synthetic_0036",
+      "group_id": "g4",
+      "subtype": "subtype_0",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9701788482666015,
+        "action.retrieval.vector": 0.9838363480567932,
+        "action.reasoning.decompose": 0.9054382982254028
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.08352690190076828,
+        "action.retrieval.vector": 0.7951935529708862,
+        "action.reasoning.decompose": 0.1212795078754425
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9838363480567932,
+      "p0_realized_utility": 0.9701788482666015,
+      "oracle_utility": 0.9838363480567932,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0037",
+      "group_id": "g5",
+      "subtype": "subtype_1",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.971520459651947,
+        "action.retrieval.vector": 0.9694814858436585,
+        "action.reasoning.decompose": 0.9394713768959045
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.09779877215623856,
+        "action.retrieval.vector": 0.8530858159065247,
+        "action.reasoning.decompose": 0.04911541938781738
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.9694814858436585,
+      "p0_realized_utility": 0.971520459651947,
+      "oracle_utility": 0.971520459651947,
+      "regret": 0.0020389738082885467
+    },
+    {
+      "task_id": "synthetic_0038",
+      "group_id": "g6",
+      "subtype": "subtype_2",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -1.0387905044555663,
+        "action.retrieval.vector": -1.1186014018058776,
+        "action.reasoning.decompose": 0.9506438903808594
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.09987874329090118,
+        "action.retrieval.vector": 0.7978991866111755,
+        "action.reasoning.decompose": 0.1022220253944397
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -1.1186014018058776,
+      "p0_realized_utility": -1.0387905044555663,
+      "oracle_utility": 0.9506438903808594,
+      "regret": 2.069245292186737
+    },
+    {
+      "task_id": "synthetic_0039",
+      "group_id": "g7",
+      "subtype": "subtype_0",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9750162878036499,
+        "action.retrieval.vector": 0.980003312587738,
+        "action.reasoning.decompose": 0.9395544438362121
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.12993206083774567,
+        "action.retrieval.vector": 0.8012855052947998,
+        "action.reasoning.decompose": 0.06878247112035751
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.980003312587738,
+      "p0_realized_utility": 0.9750162878036499,
+      "oracle_utility": 0.980003312587738,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0040",
+      "group_id": "g0",
+      "subtype": "subtype_1",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -1.034645225048065,
+        "action.retrieval.vector": 0.9813558254241943,
+        "action.reasoning.decompose": 0.9443029508590698
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.10674487054347992,
+        "action.retrieval.vector": 0.8083035349845886,
+        "action.reasoning.decompose": 0.08495153486728668
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9813558254241943,
+      "p0_realized_utility": -1.034645225048065,
+      "oracle_utility": 0.9813558254241943,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0041",
+      "group_id": "g1",
+      "subtype": "subtype_2",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -1.0420130834579469,
+        "action.retrieval.vector": 0.9774058752059936,
+        "action.reasoning.decompose": 0.9455096349716187
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.10231059789657593,
+        "action.retrieval.vector": 0.7845035195350647,
+        "action.reasoning.decompose": 0.11318588256835938
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9774058752059936,
+      "p0_realized_utility": -1.0420130834579469,
+      "oracle_utility": 0.9774058752059936,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0042",
+      "group_id": "g2",
+      "subtype": "subtype_0",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.978877628326416,
+        "action.retrieval.vector": 0.9837362174987793,
+        "action.reasoning.decompose": 0.9056264886856079
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.03795361518859863,
+        "action.retrieval.vector": 0.8972241282463074,
+        "action.reasoning.decompose": 0.06482221186161041
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9837362174987793,
+      "p0_realized_utility": 0.978877628326416,
+      "oracle_utility": 0.9837362174987793,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0043",
+      "group_id": "g3",
+      "subtype": "subtype_1",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9756392211914062,
+        "action.retrieval.vector": 0.9801924977302551,
+        "action.reasoning.decompose": 0.9527005152702331
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.131460502743721,
+        "action.retrieval.vector": 0.6731443405151367,
+        "action.reasoning.decompose": 0.19539517164230347
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9801924977302551,
+      "p0_realized_utility": 0.9756392211914062,
+      "oracle_utility": 0.9801924977302551,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0044",
+      "group_id": "g4",
+      "subtype": "subtype_2",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9691549172401428,
+        "action.retrieval.vector": 0.9784384284019471,
+        "action.reasoning.decompose": 0.9320501904487609
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.05910155549645424,
+        "action.retrieval.vector": 0.8638008236885071,
+        "action.reasoning.decompose": 0.07709754258394241
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9784384284019471,
+      "p0_realized_utility": 0.9691549172401428,
+      "oracle_utility": 0.9784384284019471,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0045",
+      "group_id": "g5",
+      "subtype": "subtype_0",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9768134250640869,
+        "action.retrieval.vector": 0.978408133983612,
+        "action.reasoning.decompose": 0.9431513481140137
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.07142968475818634,
+        "action.retrieval.vector": 0.8264889121055603,
+        "action.reasoning.decompose": 0.10208138078451157
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.978408133983612,
+      "p0_realized_utility": 0.9768134250640869,
+      "oracle_utility": 0.978408133983612,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0046",
+      "group_id": "g6",
+      "subtype": "subtype_1",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9764792423248291,
+        "action.retrieval.vector": 0.9806370072364807,
+        "action.reasoning.decompose": 0.9534750461578368
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.17407701909542084,
+        "action.retrieval.vector": 0.6481444835662842,
+        "action.reasoning.decompose": 0.17777854204177856
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9806370072364807,
+      "p0_realized_utility": 0.9764792423248291,
+      "oracle_utility": 0.9806370072364807,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0047",
+      "group_id": "g7",
+      "subtype": "subtype_2",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9658346242904663,
+        "action.retrieval.vector": 0.9766430397033692,
+        "action.reasoning.decompose": 0.9480941076278686
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.18502040207386017,
+        "action.retrieval.vector": 0.6423096656799316,
+        "action.reasoning.decompose": 0.1726699322462082
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9766430397033692,
+      "p0_realized_utility": 0.9658346242904663,
+      "oracle_utility": 0.9766430397033692,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0048",
+      "group_id": "g0",
+      "subtype": "subtype_0",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9791630091667175,
+        "action.retrieval.vector": 0.9749814925193786,
+        "action.reasoning.decompose": 0.955489040851593
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.06891363859176636,
+        "action.retrieval.vector": 0.8878066539764404,
+        "action.reasoning.decompose": 0.043279796838760376
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.9749814925193786,
+      "p0_realized_utility": 0.9791630091667175,
+      "oracle_utility": 0.9791630091667175,
+      "regret": 0.004181516647338901
+    },
+    {
+      "task_id": "synthetic_0049",
+      "group_id": "g1",
+      "subtype": "subtype_1",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9761752438545227,
+        "action.retrieval.vector": 0.9798584294319153,
+        "action.reasoning.decompose": 0.9509580760002136
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.121841199696064,
+        "action.retrieval.vector": 0.818626880645752,
+        "action.reasoning.decompose": 0.05953194200992584
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9798584294319153,
+      "p0_realized_utility": 0.9761752438545227,
+      "oracle_utility": 0.9798584294319153,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0050",
+      "group_id": "g2",
+      "subtype": "subtype_2",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9765936326980591,
+        "action.retrieval.vector": 0.9767679252624512,
+        "action.reasoning.decompose": 0.9273110036849975
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.12120695412158966,
+        "action.retrieval.vector": 0.7728939056396484,
+        "action.reasoning.decompose": 0.1058991327881813
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9767679252624512,
+      "p0_realized_utility": 0.9765936326980591,
+      "oracle_utility": 0.9767679252624512,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0051",
+      "group_id": "g3",
+      "subtype": "subtype_0",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.976065128326416,
+        "action.retrieval.vector": 0.9800229415893554,
+        "action.reasoning.decompose": 0.8874523673057556
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.05685888230800629,
+        "action.retrieval.vector": 0.8743658065795898,
+        "action.reasoning.decompose": 0.06877536326646805
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9800229415893554,
+      "p0_realized_utility": 0.976065128326416,
+      "oracle_utility": 0.9800229415893554,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0052",
+      "group_id": "g4",
+      "subtype": "subtype_1",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.97505757522583,
+        "action.retrieval.vector": 0.9831547155380249,
+        "action.reasoning.decompose": 0.9476638259887695
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.06084207817912102,
+        "action.retrieval.vector": 0.8562335968017578,
+        "action.reasoning.decompose": 0.08292428404092789
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9831547155380249,
+      "p0_realized_utility": 0.97505757522583,
+      "oracle_utility": 0.9831547155380249,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0053",
+      "group_id": "g5",
+      "subtype": "subtype_2",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9661161770820618,
+        "action.retrieval.vector": 0.9742260341644287,
+        "action.reasoning.decompose": 0.9500498561859131
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.06804002821445465,
+        "action.retrieval.vector": 0.8841729164123535,
+        "action.reasoning.decompose": 0.04778705909848213
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9742260341644287,
+      "p0_realized_utility": 0.9661161770820618,
+      "oracle_utility": 0.9742260341644287,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0054",
+      "group_id": "g6",
+      "subtype": "subtype_0",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.975702495098114,
+        "action.retrieval.vector": 0.9804138011932373,
+        "action.reasoning.decompose": 0.9370807247161865
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.017277710139751434,
+        "action.retrieval.vector": 0.9681627154350281,
+        "action.reasoning.decompose": 0.014559555798768997
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9804138011932373,
+      "p0_realized_utility": 0.975702495098114,
+      "oracle_utility": 0.9804138011932373,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0055",
+      "group_id": "g7",
+      "subtype": "subtype_1",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.975366828918457,
+        "action.retrieval.vector": 0.980891252040863,
+        "action.reasoning.decompose": 0.9521130862236022
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.10829007625579834,
+        "action.retrieval.vector": 0.7685092091560364,
+        "action.reasoning.decompose": 0.1232006698846817
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.980891252040863,
+      "p0_realized_utility": 0.975366828918457,
+      "oracle_utility": 0.980891252040863,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0056",
+      "group_id": "g0",
+      "subtype": "subtype_2",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9722913937568665,
+        "action.retrieval.vector": 0.9750582299232483,
+        "action.reasoning.decompose": 0.9437037277221679
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.06071815267205238,
+        "action.retrieval.vector": 0.8521338701248169,
+        "action.reasoning.decompose": 0.08714793622493744
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9750582299232483,
+      "p0_realized_utility": 0.9722913937568665,
+      "oracle_utility": 0.9750582299232483,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0057",
+      "group_id": "g1",
+      "subtype": "subtype_0",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9723465127944946,
+        "action.retrieval.vector": 0.9807385835647583,
+        "action.reasoning.decompose": 0.9228722805976868
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.16723211109638214,
+        "action.retrieval.vector": 0.7649306654930115,
+        "action.reasoning.decompose": 0.06783724576234818
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9807385835647583,
+      "p0_realized_utility": 0.9723465127944946,
+      "oracle_utility": 0.9807385835647583,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0058",
+      "group_id": "g2",
+      "subtype": "subtype_1",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9681867814064026,
+        "action.retrieval.vector": 0.9792485156059265,
+        "action.reasoning.decompose": 0.9563892750740051
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.10204335302114487,
+        "action.retrieval.vector": 0.829657256603241,
+        "action.reasoning.decompose": 0.06829942017793655
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9792485156059265,
+      "p0_realized_utility": 0.9681867814064026,
+      "oracle_utility": 0.9792485156059265,
+      "regret": 0.0
+    },
+    {
+      "task_id": "synthetic_0059",
+      "group_id": "g3",
+      "subtype": "subtype_2",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9496419630050659,
+        "action.retrieval.vector": 0.9674602785110473,
+        "action.reasoning.decompose": 0.9583348875045776
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.12780196964740753,
+        "action.retrieval.vector": 0.7536447644233704,
+        "action.reasoning.decompose": 0.11855325847864151
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9674602785110473,
+      "p0_realized_utility": 0.9496419630050659,
+      "oracle_utility": 0.9674602785110473,
+      "regret": 0.0
+    }
+  ],
+  "report_generated_at": "2026-08-01T22:34:00.747509+00:00"
+}
