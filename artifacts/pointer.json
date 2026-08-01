@@ -1,9 +1,9 @@
 {
   "artifact_type": "pointer",
-  "experiment_id": "daph_gate_a_real_006_repair",
-  "target": "../gate_a_qualified/daph_gate_a_real_006_repair",
+  "experiment_id": "daph_gate_a_real_007_harder",
+  "target": "../gate_a_qualified/daph_gate_a_real_007_harder",
   "qualification_status": "FAIL",
   "evidence_level": "EXPERIMENTALLY_FAILED",
-  "source_hash": "141cbece50b986e9a945302fa99c0967f5c2a486e8fbae72167e792a7f19d8f5",
-  "generated_at": "2026-08-01T02:37:15Z"
+  "source_hash": "a48a3555177015102d82042cf0b16bd775733187af5483d2cd78a4c96a579c01",
+  "generated_at": "2026-08-01T03:23:48Z"
 }

@@ -1,0 +1,91 @@
+{
+  "artifact_type": "artifact_index",
+  "bundle": "artifacts/gate_a_qualified/daph_gate_a_real_007_harder",
+  "n_files": 14,
+  "files": [
+    {
+      "path": "GATE_A_RESULTS.md",
+      "sha256": "a3537e821600f733f7533e8d540706b9a473419b035f20d851016936f5c96535",
+      "bytes": 3769,
+      "role": "gate_a_report"
+    },
+    {
+      "path": "bootstrap_p1_minus_p0.npy",
+      "sha256": "039c930b5a6d14f9b3e5446660bd5708a63a6585eff02635f58e74b5429c1e18",
+      "bytes": 160128,
+      "role": "bootstrap_samples_p1_minus_p0"
+    },
+    {
+      "path": "bootstrap_p1_minus_sham.npy",
+      "sha256": "4a10a506a6f3c39e39a1077f53cde2fdf635c453b36a78ddaac61aca1cb3844e",
+      "bytes": 160128,
+      "role": "bootstrap_samples_p1_minus_sham"
+    },
+    {
+      "path": "experiment_results.json",
+      "sha256": "c2b3ac3cd233d32da2cc72169bdc367f10e678ee14924eef05b44fd6ce5b058f",
+      "bytes": 88881,
+      "role": "experiment_results"
+    },
+    {
+      "path": "feature_manifest.json",
+      "sha256": "adef16f41597641f6cf2e1250c46972aeae19cda80ea7a8e273e21df49cfa1ea",
+      "bytes": 3672,
+      "role": "feature_manifest"
+    },
+    {
+      "path": "final_access_ledger.json",
+      "sha256": "5b430759dc93ce1051cada77678cb12b7123361b8e65827262e7bf0cb59770e5",
+      "bytes": 291,
+      "role": "final_access_ledger"
+    },
+    {
+      "path": "final_experiences.json",
+      "sha256": "ee265a481b6471321840ce1ba799bdbc952d5868fdd71636ee7ac2accef414a6",
+      "bytes": 1091472,
+      "role": "final_counterfactual_experiences"
+    },
+    {
+      "path": "final_features.npy",
+      "sha256": "0630a056d474541322d87d3402aa82929618550c3355cf195a09811da72a7148",
+      "bytes": 9644672,
+      "role": "final_policy_features"
+    },
+    {
+      "path": "final_predictions.json",
+      "sha256": "d45e482735e741e8ced573a4bab969e194d63ffce5d0e9b5ce6f659e2270bb05",
+      "bytes": 427930,
+      "role": "final_policy_predictions"
+    },
+    {
+      "path": "final_task_metrics.json",
+      "sha256": "d13a6b8e787c127ffbd36d55d705e6540a98bf4569a6ca9d5e81d4b0d1aed4be",
+      "bytes": 232137,
+      "role": "final_task_metrics"
+    },
+    {
+      "path": "freeze_manifest.json",
+      "sha256": "28420aa93600b696a13e226037868ca33c8429b257c727f8a22fb6699ab9f481",
+      "bytes": 1402,
+      "role": "freeze_manifest"
+    },
+    {
+      "path": "gate_decision.json",
+      "sha256": "6599ac00020f36ce685eed916330d651bea86bbf2b4c7fbc6892ebd27e904c0c",
+      "bytes": 3752,
+      "role": "gate_decision"
+    },
+    {
+      "path": "sham_predictions.json",
+      "sha256": "d536d442ea3210642112f8443a4e0e552a7b713a7456f0c200c907574728fd3b",
+      "bytes": 2374244,
+      "role": "sham_predictions"
+    },
+    {
+      "path": "trained_baselines.json",
+      "sha256": "5ccc0c57116cb023d36ac2b3b0fba9df7327996011fc747856f5e7ddaf19c8d0",
+      "bytes": 69681,
+      "role": "trained_baseline_results"
+    }
+  ]
+}

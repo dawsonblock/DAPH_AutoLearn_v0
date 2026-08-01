@@ -1,0 +1,118 @@
+{
+  "manifest_type": "feature_manifest",
+  "primary_policy_features": [
+    "hidden_state",
+    "max_operand_magnitude",
+    "prompt_length_norm",
+    "has_mod_keyword",
+    "has_percentage"
+  ],
+  "feature_categories": {
+    "hidden": [
+      "hidden_state",
+      "hidden_norm_stats"
+    ],
+    "surface": [
+      "max_operand_magnitude",
+      "prompt_length_norm",
+      "has_mod_keyword",
+      "has_percentage"
+    ],
+    "lexical": [
+      "tfidf_features"
+    ],
+    "metadata": [
+      "subtype_metadata"
+    ],
+    "generator_derived": [],
+    "verifier_derived": [],
+    "post_outcome": []
+  },
+  "features": [
+    {
+      "name": "hidden_state",
+      "source": "model_activation",
+      "category": "hidden",
+      "uses_generator_metadata": false,
+      "available_at_inference": true,
+      "rationale": "Hidden-state activation from the LLM at the selected layer and pooling. Available at inference time by running the model forward pass."
+    },
+    {
+      "name": "max_operand_magnitude",
+      "source": "prompt_parser",
+      "category": "surface",
+      "uses_generator_metadata": false,
+      "available_at_inference": true,
+      "rationale": "log10 of the largest number in the prompt text. Derivable from reading the prompt."
+    },
+    {
+      "name": "prompt_length_norm",
+      "source": "prompt_parser",
+      "category": "surface",
+      "uses_generator_metadata": false,
+      "available_at_inference": true,
+      "rationale": "Normalized prompt length (chars / 500). Derivable from reading the prompt."
+    },
+    {
+      "name": "has_mod_keyword",
+      "source": "prompt_parser",
+      "category": "surface",
+      "uses_generator_metadata": false,
+      "available_at_inference": true,
+      "rationale": "1.0 if 'mod' or 'remainder' appears in the prompt. Derivable from reading the prompt."
+    },
+    {
+      "name": "has_percentage",
+      "source": "prompt_parser",
+      "category": "surface",
+      "uses_generator_metadata": false,
+      "available_at_inference": true,
+      "rationale": "1.0 if '%' appears in the prompt. Derivable from reading the prompt."
+    },
+    {
+      "name": "tfidf_features",
+      "source": "prompt_text",
+      "category": "lexical",
+      "uses_generator_metadata": false,
+      "available_at_inference": true,
+      "rationale": "TF-IDF bag-of-words features from the prompt text. Used only by the TF-IDF baseline."
+    },
+    {
+      "name": "subtype_metadata",
+      "source": "task_metadata",
+      "category": "metadata",
+      "uses_generator_metadata": true,
+      "available_at_inference": false,
+      "rationale": "Task subtype label (A-H). Used only by the subtype-only diagnostic baseline. NOT available at inference time in deployment."
+    },
+    {
+      "name": "hidden_norm_stats",
+      "source": "model_activation",
+      "category": "hidden",
+      "uses_generator_metadata": false,
+      "available_at_inference": true,
+      "rationale": "Coarse magnitude statistics (L1, L2, mean, std, max, min) of hidden states. Used only by the hidden-norm-only control."
+    }
+  ],
+  "rejected_categories": [
+    "verifier_derived",
+    "post_outcome",
+    "counterfactual_result_derived"
+  ],
+  "inference_guard": {
+    "description": "The router feature extractor must not access generator internals, latent difficulty parameters, backend assignment rules, or expected preferred backend.",
+    "permitted_input": [
+      "task_id",
+      "prompt",
+      "public_subtype"
+    ],
+    "forbidden_input": [
+      "expected_backend",
+      "oracle_backend",
+      "generator_preference",
+      "counterfactual_utilities",
+      "verifier_labels",
+      "post_execution_outputs"
+    ]
+  }
+}

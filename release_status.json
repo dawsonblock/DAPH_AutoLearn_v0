@@ -1,10 +1,10 @@
 {
   "package_version": "0.3.10.5a0",
   "gate_a_status": "FAIL",
-  "qualified_experiment_id": "daph_gate_a_real_006_repair",
+  "qualified_experiment_id": "daph_gate_a_real_007_harder",
   "evidence_level": "EXPERIMENTALLY_FAILED",
-  "source_hash": "141cbece50b986e9a945302fa99c0967f5c2a486e8fbae72167e792a7f19d8f5",
+  "source_hash": "a48a3555177015102d82042cf0b16bd775733187af5483d2cd78a4c96a579c01",
   "test_status": "UNKNOWN",
   "test_count": 0,
-  "generated_at": "2026-08-01T02:37:31.447211+00:00"
+  "generated_at": "2026-08-01T03:24:05.132985+00:00"
 }
