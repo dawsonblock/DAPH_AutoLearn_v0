@@ -434,20 +434,98 @@ def _vllm_generate(tasks, model_id, max_new_tokens=256, revision=None,
     return results
 
 
+def _vllm_api_generate(tasks, model_id, criteria, max_new_tokens=256):
+    """Use a running vLLM OpenAI-compatible API server for generation.
+
+    This is the preferred path when a vLLM server is already running
+    (e.g., on RunPod). It avoids loading a second copy of the model
+    in-process. The HF model is still loaded separately for hidden state
+    capture.
+
+    Returns list of (generated_text, latency) tuples.
+    """
+    import time as _time
+    import json as _json
+    import urllib.request
+    from daph_learning.execution.real_backends import build_llm_prompt
+
+    model_cfg = criteria.raw.get("model", {})
+    port = int(model_cfg.get("vllm_port", 8000))
+    api_key = model_cfg.get("vllm_api_key", "")
+    base_url = f"http://localhost:{port}/v1"
+
+    results = []
+    t0 = _time.time()
+
+    for task in tasks:
+        prompt = build_llm_prompt(task)
+        # Apply chat template if available
+        try:
+            from transformers import AutoTokenizer
+            tok = AutoTokenizer.from_pretrained(model_id)
+            messages = [{"role": "user", "content": prompt}]
+            formatted = tok.apply_chat_template(
+                messages, tokenize=False, add_generation_prompt=True)
+        except Exception:
+            formatted = prompt
+
+        payload = _json.dumps({
+            "model": model_id,
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": max_new_tokens,
+            "temperature": 0.0,
+            "top_p": 1.0,
+        }).encode("utf-8")
+
+        req = urllib.request.Request(
+            f"{base_url}/chat/completions",
+            data=payload,
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {api_key}",
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                data = _json.loads(resp.read())
+                text = data["choices"][0]["message"]["content"].strip()
+                results.append((text, 0.0))
+        except Exception as e:
+            print(f"[vllm-api] Error on task {task.get('task_id', '?')}: {e}")
+            results.append(("", 0.0))
+
+    total_latency = _time.time() - t0
+    avg_latency = total_latency / max(len(tasks), 1)
+    return [(text, avg_latency) for text, _ in results]
+
+
 def _smart_llm_generate(tasks, model, tokenizer, criteria, device="cuda",
                         max_new_tokens=256):
-    """Try vLLM first, fall back to HF generate.
+    """Try vLLM API server first, then in-process vLLM, then HF generate.
 
-    Uses vLLM if the model_id is available and vLLM is installed.
-    Otherwise falls back to _batched_llm_generate with the HF model.
+    Priority:
+    1. vLLM OpenAI API (if a vLLM server is already running on vllm_port)
+    2. In-process vLLM engine (if vLLM is installed)
+    3. HF batched generate (fallback)
     """
     model_id = criteria.raw.get("model", {}).get("model_id", "")
     revision = criteria.raw.get("model", {}).get("revision")
     if revision == "main":
         revision = None
+    model_cfg = criteria.raw.get("model", {})
 
+    # 1. Try vLLM API server first (preferred when a server is already running)
+    if model_cfg.get("vllm_api_key"):
+        try:
+            print(f"[llm] Using vLLM API server (port {model_cfg.get('vllm_port', 8000)})...")
+            return _vllm_api_generate(
+                tasks, model_id, criteria,
+                max_new_tokens=max_new_tokens)
+        except Exception as exc:
+            print(f"[llm] vLLM API failed ({exc}), trying in-process vLLM...")
+
+    # 2. Try in-process vLLM
     try:
-        model_cfg = criteria.raw.get("model", {})
         return _vllm_generate(
             tasks, model_id,
             max_new_tokens=max_new_tokens,
