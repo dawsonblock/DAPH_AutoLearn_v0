@@ -33,7 +33,7 @@ utility_model:
 
 data:
   n_groups: 160
-  tasks_per_group: 8
+  tasks_per_group: 9
   n_store_per_subtype: 5
   train_frac: 0.50
   dev_frac: 0.20
