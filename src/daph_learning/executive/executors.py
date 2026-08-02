@@ -262,10 +262,11 @@ class DirectReasoningExecutor:
     cost_estimate: float = 0.15
 
     def execute(self, task: Mapping[str, Any]) -> ActionExecution:
-        # Direct reasoning uses thinking mode (default Qwen3 behavior).
-        # This makes direct slower but more capable. The speed/accuracy
-        # tradeoff vs retrieval/decompose is more balanced.
-        prompt = _build_prompt(task, no_think=False)
+        # B4: Use /no_think for speed. The scientific question is about
+        # representation quality, not latency equalization. /no_think
+        # creates cleaner conditional structure: direct fails on hard
+        # problems, retrieval/decompose help more.
+        prompt = _build_prompt(task, no_think=True)
         t0 = time.time()
 
         if self.generate_fn is not None:
@@ -370,16 +371,15 @@ class RetrievalVectorExecutor:
     def _build_retrieval_prompt(self, task: Mapping[str, Any]) -> str:
         """Build a prompt with retrieved examples as in-context demonstrations.
 
-        Note: does NOT use /no_think — retrieval benefits from reasoning
-        mode because the model needs to analyze the examples and decide
-        how to apply them. This makes retrieval slower but potentially
-        more accurate on complex tasks.
+        B4: Uses /no_think for speed. The in-context examples provide
+        the pattern; the model just needs to apply it, not reason
+        extensively about it.
         """
         base_prompt = str(task.get("prompt", task.get("specification", "")))
         retrieve = self.retrieve_fn or self._default_retrieve
         retrieved = retrieve(base_prompt, self.examples, self.n_retrieved)
 
-        parts = []
+        parts = ["/no_think"]
         if retrieved:
             parts.append("Here are some similar examples:\n")
             for ex in retrieved:
@@ -457,6 +457,7 @@ class ReasoningDecomposeExecutor:
     max_subproblems: int = 3
 
     _DECOMPOSE_PROMPT = (
+        "/no_think\n"
         "{problem}\n\n"
         "Break this problem into at most {n} simpler sub-problems. "
         "Output each sub-problem on its own line in this exact format:\n"

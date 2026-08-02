@@ -42,11 +42,11 @@ data:
 model:
   name: "Qwen/Qwen3-8B"
   revision: "b968826d9c46dd6066d109eabc6255188de91218"
-  max_tokens: 4096
+  max_tokens: 1024
   temperature: 0.0
   vllm_port: 8000
-  vllm_api_key: "sk-6cbxgk04y6hyvm"
-  vllm_max_concurrent: 16
+  vllm_api_key: "sk-placeholder"
+  vllm_max_concurrent: 24
   capture_hidden_states: true
   feature_mode: "hf_model"
   device: "cuda"
