@@ -220,7 +220,7 @@ def _call_vllm_api(
 
     t0 = time.time()
     try:
-        with urllib.request.urlopen(req, timeout=120) as resp:
+        with urllib.request.urlopen(req, timeout=300) as resp:
             data = json.loads(resp.read())
             text = data["choices"][0]["message"]["content"].strip()
             latency_ms = (time.time() - t0) * 1000.0
@@ -514,18 +514,27 @@ class ReasoningDecomposeExecutor:
             all_outputs.append(f"[FALLBACK DIRECT]\n{text[:200]}")
             answer = _parse_final_answer(text)
         else:
-            # Step 2: Solve each sub-problem
-            sub_answers = []
-            for i, sub in enumerate(sub_problems):
+            # Step 2: Solve each sub-problem CONCURRENTLY
+            from concurrent.futures import ThreadPoolExecutor
+
+            def _solve_sub(i_sub):
+                i, sub = i_sub
                 solve_prompt = self._SOLVE_PROMPT.format(sub_problem=sub)
                 text_s, latency_s = gen(solve_prompt, self.config)
-                total_latency += latency_s
-                sub_answer = _parse_final_answer(text_s)
-                all_outputs.append(f"[SUB {i+1}: {sub[:50]}]\n{text_s[:100]}")
-                if sub_answer is not None:
-                    sub_answers.append(f"Sub-problem {i+1}: {sub} → Answer: {sub_answer}")
-                else:
-                    sub_answers.append(f"Sub-problem {i+1}: {sub} → Answer: unknown")
+                return i, sub, text_s, latency_s, _parse_final_answer(text_s)
+
+            sub_answers = [None] * len(sub_problems)
+            with ThreadPoolExecutor(max_workers=len(sub_problems)) as ex:
+                futures = [ex.submit(_solve_sub, (i, sub))
+                           for i, sub in enumerate(sub_problems)]
+                for fut in futures:
+                    i, sub, text_s, latency_s, sub_answer = fut.result()
+                    total_latency += latency_s
+                    all_outputs.append(f"[SUB {i+1}: {sub[:50]}]\n{text_s[:100]}")
+                    if sub_answer is not None:
+                        sub_answers[i] = f"Sub-problem {i+1}: {sub} → Answer: {sub_answer}"
+                    else:
+                        sub_answers[i] = f"Sub-problem {i+1}: {sub} → Answer: unknown"
 
             # Step 3: Combine
             combine_prompt = self._COMBINE_PROMPT.format(
@@ -585,6 +594,9 @@ class ExecutorRegistry:
     ) -> CounterfactualSet:
         """Execute all actions on a task (counterfactual execution).
 
+        Actions are executed CONCURRENTLY since they are independent
+        and all hit the same vLLM server (I/O bound, not CPU bound).
+
         Returns a CounterfactualSet with all action executions.
         """
         state = ExecutiveState(
@@ -596,19 +608,27 @@ class ExecutorRegistry:
             },
         )
 
+        from concurrent.futures import ThreadPoolExecutor
+
         executions: dict[str, ActionExecution] = {}
-        for action_id in action_space.action_ids:
+
+        def _run_action(action_id):
             executor = self._executors.get(action_id)
             if executor is None:
-                # Action not registered — mark as not executed
-                executions[action_id] = ActionExecution(
+                return action_id, ActionExecution(
                     action_id=action_id,
                     selected=False,
                     executed=False,
                     failure_type="no_executor",
                 )
-            else:
-                executions[action_id] = executor.execute(task)
+            return action_id, executor.execute(task)
+
+        # Run all actions concurrently — they're independent I/O calls
+        with ThreadPoolExecutor(max_workers=len(action_space.action_ids)) as ex:
+            futures = [ex.submit(_run_action, aid) for aid in action_space.action_ids]
+            for fut in futures:
+                aid, execution = fut.result()
+                executions[aid] = execution
 
         return CounterfactualSet(
             state=state,

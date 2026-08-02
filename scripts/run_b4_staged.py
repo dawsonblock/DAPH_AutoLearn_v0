@@ -155,6 +155,14 @@ def run_stage_a(config: dict, mock: bool = False):
     for split_name in ["train", "dev", "final"]:
         split = dataset[split_name]
         tasks = split.tasks
+
+        # Resume: skip split if counterfactuals already saved
+        cf_path = cf_dir / f"{split_name}_cf.json"
+        logprob_path = rep_dir / f"{split_name}_logprob.npy"
+        if cf_path.exists() and logprob_path.exists() and not mock:
+            print(f"\n  {split_name}: already complete ({cf_path.stat().st_size // 1024}KB), skipping")
+            continue
+
         print(f"\nExecuting {len(tasks)} {split_name} tasks × {len(action_ids)} actions...")
 
         cf_results = {}
@@ -179,6 +187,9 @@ def run_stage_a(config: dict, mock: bool = False):
                 cf_results[task["task_id"]] = utilities
         else:
             # Real execution with concurrency
+            # With action-level parallelism (3 threads/task), use fewer
+            # task workers to avoid overwhelming vLLM. Target ~48 concurrent
+            # vLLM requests total.
             max_workers = mc.get("vllm_max_concurrent", 16)
             with ThreadPoolExecutor(max_workers=max_workers) as executor:
                 futures = {executor.submit(execute_task, t, split_name): t for t in tasks}
@@ -201,6 +212,9 @@ def run_stage_a(config: dict, mock: bool = False):
                         elapsed = time.time() - t0
                         print(f"  [{completed}/{len(tasks)}] {elapsed:.1f}s "
                               f"({completed/elapsed:.1f} tasks/s)")
+                        # Incremental save every 50 tasks (crash recovery)
+                        with open(cf_dir / f"{split_name}_cf_partial.json", "w") as f:
+                            json.dump(cf_results, f, indent=2)
 
         elapsed = time.time() - t0
         print(f"  Completed {len(tasks)} in {elapsed:.1f}s")

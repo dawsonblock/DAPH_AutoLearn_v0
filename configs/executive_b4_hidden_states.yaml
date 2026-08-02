@@ -46,7 +46,7 @@ model:
   temperature: 0.0
   vllm_port: 8000
   vllm_api_key: "sk-6cbxgk04y6hyvm"
-  vllm_max_concurrent: 32
+  vllm_max_concurrent: 16
   capture_hidden_states: true
   feature_mode: "hf_model"
   device: "cuda"
