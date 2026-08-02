@@ -121,31 +121,47 @@ def _generate_one_task(subtype: str, rng: np.random.RandomState, idx: int) -> di
         }
 
     if subtype == "medium_mul":
-        a = int(rng.randint(3, 13))
-        b = int(rng.randint(10, 100))
+        # Larger multiplication that's harder for no_think mode
+        a = int(rng.randint(12, 99))
+        b = int(rng.randint(12, 99))
         return {
             "prompt": f"Calculate: {a} × {b} = ?",
             "answer": a * b,
         }
 
     if subtype == "pattern_extend":
-        # Generate a simple geometric or arithmetic sequence
-        patterns = ["geometric", "arithmetic", "square"]
+        # More complex sequences that benefit from reasoning
+        patterns = ["fibonacci", "two_step", "alternating"]
         pat = patterns[idx % len(patterns)]
-        if pat == "geometric":
+        if pat == "fibonacci":
+            a, b = int(rng.randint(1, 5)), int(rng.randint(5, 15))
+            seq = [a, b]
+            for _ in range(3):
+                seq.append(seq[-1] + seq[-2])
+            answer = seq[-1] + seq[-2]
+        elif pat == "two_step":
+            # Multiply then add: a, a*r+c, (a*r+c)*r+c, ...
             start = int(rng.randint(1, 5))
-            ratio = int(rng.randint(2, 4))
-            seq = [start * ratio**k for k in range(4)]
-            answer = start * ratio**4
-        elif pat == "arithmetic":
-            start = int(rng.randint(1, 10))
-            step = int(rng.randint(2, 8))
-            seq = [start + step * k for k in range(4)]
-            answer = start + step * 4
-        else:  # square
-            start_n = int(rng.randint(1, 4))
-            seq = [(start_n + k) ** 2 for k in range(4)]
-            answer = (start_n + 4) ** 2
+            r = int(rng.randint(2, 4))
+            c = int(rng.randint(1, 5))
+            seq = [start]
+            for _ in range(4):
+                seq.append(seq[-1] * r + c)
+            answer = seq[-1] * r + c
+            seq = seq[:4]
+        else:  # alternating
+            # Alternating add/multiply: +a, ×b, +a, ×b, ...
+            start = int(rng.randint(2, 8))
+            a_add = int(rng.randint(3, 10))
+            b_mul = int(rng.randint(2, 4))
+            seq = [start]
+            for k in range(4):
+                if k % 2 == 0:
+                    seq.append(seq[-1] + a_add)
+                else:
+                    seq.append(seq[-1] * b_mul)
+            answer = seq[-1] + a_add if len(seq) % 2 == 1 else seq[-1] * b_mul
+            seq = seq[:4]
         seq_str = ", ".join(str(x) for x in seq)
         return {
             "prompt": f"What is the next number in the sequence: {seq_str}, ?",
@@ -153,45 +169,58 @@ def _generate_one_task(subtype: str, rng: np.random.RandomState, idx: int) -> di
         }
 
     if subtype == "large_arithmetic":
-        a = int(rng.randint(100, 500))
-        b = int(rng.randint(100, 500))
-        c = int(rng.randint(2, 12))
-        ops = rng.choice(["add_then_mul", "mul_then_add", "add_then_sub"])
-        if ops == "add_then_mul":
+        # Three-step arithmetic with large numbers — too complex for
+        # no_think direct, benefits from retrieval examples of multi-step
+        # arithmetic or from decomposition
+        a = int(rng.randint(200, 800))
+        b = int(rng.randint(200, 800))
+        c = int(rng.randint(3, 15))
+        d = int(rng.randint(50, 200))
+        ops = rng.choice(["add_mul_sub", "mul_add_div", "add_add_mul"])
+        if ops == "add_mul_sub":
             return {
-                "prompt": f"First calculate {a} + {b}, then multiply the result by {c}. What is the final answer?",
-                "answer": (a + b) * c,
+                "prompt": f"First calculate {a} + {b}, then multiply the result by {c}, then subtract {d}. What is the final answer?",
+                "answer": (a + b) * c - d,
             }
-        elif ops == "mul_then_add":
+        elif ops == "mul_add_div":
+            # Use integer division
+            product = a * c
+            total = product + b
+            # Make sure it divides evenly
+            d = int(rng.randint(2, 10))
+            total = (total // d) * d
             return {
-                "prompt": f"First calculate {a} × {c}, then add {b}. What is the final answer?",
-                "answer": a * c + b,
+                "prompt": f"First calculate {a} × {c}, then add {b}, then divide the result by {d} (integer division). What is the final answer?",
+                "answer": total // d,
             }
         else:
             return {
-                "prompt": f"First calculate {a} + {b}, then subtract {c * 10}. What is the final answer?",
-                "answer": a + b - c * 10,
+                "prompt": f"First calculate {a} + {b}, then add {d}, then multiply the result by {c}. What is the final answer?",
+                "answer": (a + b + d) * c,
             }
 
     if subtype == "multi_step_word":
+        # More complex word problems with 3-4 steps
         templates = [
-            ("apples", "bought", "gave away", "has"),
-            ("books", "read", "borrowed", "has"),
-            ("marbles", "found", "lost", "has"),
+            ("apples", "bought", "gave away", "sold", "has"),
+            ("books", "read", "borrowed", "returned", "has"),
+            ("marbles", "found", "lost", "traded", "has"),
         ]
         tpl = templates[idx % len(templates)]
-        a = int(rng.randint(10, 50))
+        a = int(rng.randint(20, 80))
         b = int(rng.randint(5, 30))
-        c = int(rng.randint(1, 10))
-        d = int(rng.randint(2, 8))
+        c = int(rng.randint(1, 15))
+        d = int(rng.randint(2, 10))
+        e = int(rng.randint(1, 5))
         return {
             "prompt": (
                 f"Sarah {tpl[1]} {a} {tpl[0]}. "
                 f"Then she {tpl[2]} {b} of them. "
                 f"Later she {tpl[1]} {c} more and her friend gave her {d} more. "
-                f"How many {tpl[0]} does Sarah {tpl[3]} now?"
+                f"Finally she {tpl[3]} {e} of them. "
+                f"How many {tpl[0]} does Sarah {tpl[4]} now?"
             ),
-            "answer": a - b + c + d,
+            "answer": a - b + c + d - e,
         }
 
     if subtype == "trap_near":

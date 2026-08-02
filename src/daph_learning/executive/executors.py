@@ -241,6 +241,9 @@ class DirectReasoningExecutor:
     This is the simplest action: send the task prompt to the LLM and
     parse the FINAL_ANSWER from the response.
 
+    Uses ``/no_think`` mode for Qwen3 to disable reasoning blocks,
+    making it fast but less capable on complex problems.
+
     Attributes
     ----------
     action_id : str
