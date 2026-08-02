@@ -1,0 +1,4468 @@
+{
+  "experiment_id": "daph_executive_b3_qwen3_8b_conditional",
+  "action_space": {
+    "actions": [
+      {
+        "action_id": "action.reasoning.direct",
+        "display_name": "Direct Reasoning",
+        "description": "Direct LLM generation without decomposition or retrieval.",
+        "cost_estimate": 0.15,
+        "tags": [
+          "reasoning",
+          "direct",
+          "neural"
+        ]
+      },
+      {
+        "action_id": "action.retrieval.vector",
+        "display_name": "Vector Retrieval",
+        "description": "Retrieve similar examples from a vector store, then generate.",
+        "cost_estimate": 0.1,
+        "tags": [
+          "retrieval",
+          "vector",
+          "augmented"
+        ]
+      },
+      {
+        "action_id": "action.reasoning.decompose",
+        "display_name": "Decomposed Reasoning",
+        "description": "Decompose into sub-problems, solve each, then combine.",
+        "cost_estimate": 0.3,
+        "tags": [
+          "reasoning",
+          "decompose",
+          "multi-step"
+        ]
+      }
+    ],
+    "abstain_id": null
+  },
+  "n_tasks": 200,
+  "n_groups": 40,
+  "p1_minus_p0": {
+    "point": 0.21424200123469034,
+    "lcb_95": 0.13424237913739676,
+    "ucb_95": 0.29383849721912536,
+    "bootstrap_mean": 0.21475603329444834,
+    "bootstrap_std": 0.04067409028002421
+  },
+  "p1_minus_sham": {},
+  "oracle_gap": 0.4136988972504934,
+  "oracle_gap_capture": 0.5178694037102242,
+  "p1_mean_utility": 0.5189902060079575,
+  "p0_mean_utility": 0.3047482047732671,
+  "oracle_mean_utility": 0.7184471020237605,
+  "always_action_utilities": {
+    "action.reasoning.direct": 0.3047482047732671,
+    "action.retrieval.vector": 0.5557744549369812,
+    "action.reasoning.decompose": 0.4010285447136561
+  },
+  "positive_group_fraction": 0.9,
+  "worst_subtype_regression": -0.037524897181193104,
+  "gate_passed": false,
+  "gate_failures": [],
+  "task_records": [
+    {
+      "task_id": "diverse_0400",
+      "group_id": "g0",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9633104235331218,
+        "action.retrieval.vector": 0.973149866104126,
+        "action.reasoning.decompose": 0.9581998456319173
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.2479425072669983,
+        "action.retrieval.vector": 0.6120542883872986,
+        "action.reasoning.decompose": 0.14000320434570312
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.973149866104126,
+      "p0_realized_utility": 0.9633104235331218,
+      "oracle_utility": 0.973149866104126,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0401",
+      "group_id": "g1",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9844354244867961,
+        "action.retrieval.vector": 0.9874514433542887,
+        "action.reasoning.decompose": 0.9700359989802042
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.05647611990571022,
+        "action.retrieval.vector": 0.400827020406723,
+        "action.reasoning.decompose": 0.5426968336105347
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9700359989802042,
+      "p0_realized_utility": 0.9844354244867961,
+      "oracle_utility": 0.9874514433542887,
+      "regret": 0.017415444374084488
+    },
+    {
+      "task_id": "diverse_0402",
+      "group_id": "g2",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.0458614231745402,
+        "action.retrieval.vector": -0.03458814112345378,
+        "action.reasoning.decompose": -0.11589349015553792
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.16032586991786957,
+        "action.retrieval.vector": 0.6786803603172302,
+        "action.reasoning.decompose": 0.16099372506141663
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.03458814112345378,
+      "p0_realized_utility": -0.0458614231745402,
+      "oracle_utility": -0.03458814112345378,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0403",
+      "group_id": "g3",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9540291185379028,
+        "action.retrieval.vector": 0.9499480927785238,
+        "action.reasoning.decompose": 0.9365297365188598
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.18312475085258484,
+        "action.retrieval.vector": 0.5241539478302002,
+        "action.reasoning.decompose": 0.29272136092185974
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.9499480927785238,
+      "p0_realized_utility": 0.9540291185379028,
+      "oracle_utility": 0.9540291185379028,
+      "regret": 0.0040810257593790755
+    },
+    {
+      "task_id": "diverse_0404",
+      "group_id": "g4",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.049569897651672364,
+        "action.retrieval.vector": 0.9676040023167928,
+        "action.reasoning.decompose": 0.9574865544637045
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.04844457656145096,
+        "action.retrieval.vector": 0.19217368960380554,
+        "action.reasoning.decompose": 0.7593817114830017
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9574865544637045,
+      "p0_realized_utility": -0.049569897651672364,
+      "oracle_utility": 0.9676040023167928,
+      "regret": 0.010117447853088324
+    },
+    {
+      "task_id": "diverse_0405",
+      "group_id": "g5",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.987591153462728,
+        "action.retrieval.vector": 0.9908809102376303,
+        "action.reasoning.decompose": 0.9299409850438436
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.19154612720012665,
+        "action.retrieval.vector": 0.6171271800994873,
+        "action.reasoning.decompose": 0.19132669270038605
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9908809102376303,
+      "p0_realized_utility": 0.987591153462728,
+      "oracle_utility": 0.9908809102376303,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0406",
+      "group_id": "g6",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9817191314697266,
+        "action.retrieval.vector": 0.9823510382970174,
+        "action.reasoning.decompose": 0.9587086528142293
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.229667529463768,
+        "action.retrieval.vector": 0.5434441566467285,
+        "action.reasoning.decompose": 0.2268882542848587
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9823510382970174,
+      "p0_realized_utility": 0.9817191314697266,
+      "oracle_utility": 0.9823510382970174,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0407",
+      "group_id": "g7",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.10702516905466716,
+        "action.retrieval.vector": -0.12819466431935628,
+        "action.reasoning.decompose": -0.09007817808787028
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1916004866361618,
+        "action.retrieval.vector": 0.20301523804664612,
+        "action.reasoning.decompose": 0.6053842902183533
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.09007817808787028,
+      "p0_realized_utility": -0.10702516905466716,
+      "oracle_utility": -0.09007817808787028,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0408",
+      "group_id": "g8",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05448507022857666,
+        "action.retrieval.vector": -0.05713335259755453,
+        "action.reasoning.decompose": -0.10938015143076578
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.227447971701622,
+        "action.retrieval.vector": 0.6199098825454712,
+        "action.reasoning.decompose": 0.1526421159505844
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.05713335259755453,
+      "p0_realized_utility": -0.05448507022857666,
+      "oracle_utility": -0.05448507022857666,
+      "regret": 0.002648282368977871
+    },
+    {
+      "task_id": "diverse_0409",
+      "group_id": "g9",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.11340956783294678,
+        "action.retrieval.vector": -0.04395958232879639,
+        "action.reasoning.decompose": -0.07171618175506592
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.10055503994226456,
+        "action.retrieval.vector": 0.7264493107795715,
+        "action.reasoning.decompose": 0.1729957014322281
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.04395958232879639,
+      "p0_realized_utility": -0.11340956783294678,
+      "oracle_utility": -0.04395958232879639,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0410",
+      "group_id": "g10",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.04026664447784424,
+        "action.retrieval.vector": 0.9697137667338054,
+        "action.reasoning.decompose": 0.8561294291814168
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1704675406217575,
+        "action.retrieval.vector": 0.6580676436424255,
+        "action.reasoning.decompose": 0.17146481573581696
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9697137667338054,
+      "p0_realized_utility": -0.04026664447784424,
+      "oracle_utility": 0.9697137667338054,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0411",
+      "group_id": "g11",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.04824020067850749,
+        "action.retrieval.vector": -0.022582638104756674,
+        "action.reasoning.decompose": -0.039237269719441734
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23680205643177032,
+        "action.retrieval.vector": 0.6334131956100464,
+        "action.reasoning.decompose": 0.1297847181558609
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.022582638104756674,
+      "p0_realized_utility": -0.04824020067850749,
+      "oracle_utility": -0.022582638104756674,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0412",
+      "group_id": "g12",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.0420906769434611,
+        "action.retrieval.vector": -0.03547403717041016,
+        "action.reasoning.decompose": 0.9690870189666748
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.0424833744764328,
+        "action.retrieval.vector": 0.15754419565200806,
+        "action.reasoning.decompose": 0.7999723553657532
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": 0.9690870189666748,
+      "p0_realized_utility": -0.0420906769434611,
+      "oracle_utility": 0.9690870189666748,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0413",
+      "group_id": "g13",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9881638793945313,
+        "action.retrieval.vector": 0.9904202349980672,
+        "action.reasoning.decompose": 0.9718320293426513
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1909191906452179,
+        "action.retrieval.vector": 0.6418856978416443,
+        "action.reasoning.decompose": 0.1671951562166214
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9904202349980672,
+      "p0_realized_utility": 0.9881638793945313,
+      "oracle_utility": 0.9904202349980672,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0414",
+      "group_id": "g14",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.0200043363571167,
+        "action.retrieval.vector": 0.9870088567733765,
+        "action.reasoning.decompose": -0.039163143475850426
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23569849133491516,
+        "action.retrieval.vector": 0.5666951537132263,
+        "action.reasoning.decompose": 0.19760634005069733
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9870088567733765,
+      "p0_realized_utility": -0.0200043363571167,
+      "oracle_utility": 0.9870088567733765,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0415",
+      "group_id": "g15",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.08168476549784343,
+        "action.retrieval.vector": 0.8717545512517293,
+        "action.reasoning.decompose": -0.08700506242116292
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.19691649079322815,
+        "action.retrieval.vector": 0.14591734111309052,
+        "action.reasoning.decompose": 0.6571661829948425
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.08700506242116292,
+      "p0_realized_utility": -0.08168476549784343,
+      "oracle_utility": 0.8717545512517293,
+      "regret": 0.9587596136728922
+    },
+    {
+      "task_id": "diverse_0416",
+      "group_id": "g16",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9582825415929159,
+        "action.retrieval.vector": -0.04704989910125733,
+        "action.reasoning.decompose": 0.883148733774821
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.233150452375412,
+        "action.retrieval.vector": 0.5747548341751099,
+        "action.reasoning.decompose": 0.192094624042511
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.04704989910125733,
+      "p0_realized_utility": 0.9582825415929159,
+      "oracle_utility": 0.9582825415929159,
+      "regret": 1.0053324406941733
+    },
+    {
+      "task_id": "diverse_0417",
+      "group_id": "g17",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9839754412968954,
+        "action.retrieval.vector": 0.9866491905848185,
+        "action.reasoning.decompose": 0.9735427090326945
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.07063544541597366,
+        "action.retrieval.vector": 0.6221016645431519,
+        "action.reasoning.decompose": 0.3072628676891327
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9866491905848185,
+      "p0_realized_utility": 0.9839754412968954,
+      "oracle_utility": 0.9866491905848185,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0418",
+      "group_id": "g18",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.054429931640625,
+        "action.retrieval.vector": 0.9508050829569499,
+        "action.reasoning.decompose": 0.9224750661849975
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.17090100049972534,
+        "action.retrieval.vector": 0.748621940612793,
+        "action.reasoning.decompose": 0.08047710359096527
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9508050829569499,
+      "p0_realized_utility": -0.054429931640625,
+      "oracle_utility": 0.9508050829569499,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0419",
+      "group_id": "g19",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.03854893716176351,
+        "action.retrieval.vector": -0.022246543884277346,
+        "action.reasoning.decompose": 0.9130177278518676
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1345265954732895,
+        "action.retrieval.vector": 0.31989097595214844,
+        "action.reasoning.decompose": 0.5455824136734009
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": 0.9130177278518676,
+      "p0_realized_utility": -0.03854893716176351,
+      "oracle_utility": 0.9130177278518676,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0420",
+      "group_id": "g20",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.03465238761901856,
+        "action.retrieval.vector": -0.027181381225585936,
+        "action.reasoning.decompose": 0.9677292439142863
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.05388040840625763,
+        "action.retrieval.vector": 0.22510971128940582,
+        "action.reasoning.decompose": 0.7210098505020142
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": 0.9677292439142863,
+      "p0_realized_utility": -0.03465238761901856,
+      "oracle_utility": 0.9677292439142863,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0421",
+      "group_id": "g21",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9884592440923056,
+        "action.retrieval.vector": 0.9887514686584472,
+        "action.reasoning.decompose": 0.9596334851582845
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.19350232183933258,
+        "action.retrieval.vector": 0.6290359497070312,
+        "action.reasoning.decompose": 0.17746172845363617
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9887514686584472,
+      "p0_realized_utility": 0.9884592440923056,
+      "oracle_utility": 0.9887514686584472,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0422",
+      "group_id": "g22",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9789238189061483,
+        "action.retrieval.vector": 0.9849534943898519,
+        "action.reasoning.decompose": -0.05163595453898112
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.2385302484035492,
+        "action.retrieval.vector": 0.575722336769104,
+        "action.reasoning.decompose": 0.1857473999261856
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9849534943898519,
+      "p0_realized_utility": 0.9789238189061483,
+      "oracle_utility": 0.9849534943898519,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0423",
+      "group_id": "g23",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.11402527173360189,
+        "action.retrieval.vector": -0.12836981264750164,
+        "action.reasoning.decompose": -0.08724267387390137
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.19176214933395386,
+        "action.retrieval.vector": 0.1832844465970993,
+        "action.reasoning.decompose": 0.6249534487724304
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.08724267387390137,
+      "p0_realized_utility": -0.11402527173360189,
+      "oracle_utility": -0.08724267387390137,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0424",
+      "group_id": "g24",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.03632880528767904,
+        "action.retrieval.vector": -0.049968048413594576,
+        "action.reasoning.decompose": -0.11296648915608724
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23047985136508942,
+        "action.retrieval.vector": 0.6456241011619568,
+        "action.reasoning.decompose": 0.12389607727527618
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.049968048413594576,
+      "p0_realized_utility": -0.03632880528767904,
+      "oracle_utility": -0.03632880528767904,
+      "regret": 0.013639243125915537
+    },
+    {
+      "task_id": "diverse_0425",
+      "group_id": "g25",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9841635370254517,
+        "action.retrieval.vector": 0.9860486831665038,
+        "action.reasoning.decompose": -0.02898115348815918
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.05809666961431503,
+        "action.retrieval.vector": 0.7921544313430786,
+        "action.reasoning.decompose": 0.14974890649318695
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9860486831665038,
+      "p0_realized_utility": 0.9841635370254517,
+      "oracle_utility": 0.9860486831665038,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0426",
+      "group_id": "g26",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.03930529403686523,
+        "action.retrieval.vector": 0.9424138803482056,
+        "action.reasoning.decompose": -0.09479140949249268
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.15564271807670593,
+        "action.retrieval.vector": 0.7149800658226013,
+        "action.reasoning.decompose": 0.12937717139720917
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9424138803482056,
+      "p0_realized_utility": -0.03930529403686523,
+      "oracle_utility": 0.9424138803482056,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0427",
+      "group_id": "g27",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.8859752546946208,
+        "action.retrieval.vector": -0.10625303014119467,
+        "action.reasoning.decompose": 0.914155813852946
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1769273430109024,
+        "action.retrieval.vector": 0.4959995448589325,
+        "action.reasoning.decompose": 0.32707318663597107
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.10625303014119467,
+      "p0_realized_utility": 0.8859752546946208,
+      "oracle_utility": 0.914155813852946,
+      "regret": 1.0204088439941406
+    },
+    {
+      "task_id": "diverse_0428",
+      "group_id": "g28",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.06470277055104573,
+        "action.retrieval.vector": -0.0936106046040853,
+        "action.reasoning.decompose": -0.036824451128641765
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.04346451163291931,
+        "action.retrieval.vector": 0.16661912202835083,
+        "action.reasoning.decompose": 0.7899163365364075
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.036824451128641765,
+      "p0_realized_utility": -0.06470277055104573,
+      "oracle_utility": -0.036824451128641765,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0429",
+      "group_id": "g29",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9877046257654827,
+        "action.retrieval.vector": 0.9900304536819458,
+        "action.reasoning.decompose": 0.9567133557001749
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.19781558215618134,
+        "action.retrieval.vector": 0.6042225956916809,
+        "action.reasoning.decompose": 0.19796185195446014
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9900304536819458,
+      "p0_realized_utility": 0.9877046257654827,
+      "oracle_utility": 0.9900304536819458,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0430",
+      "group_id": "g30",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9841464484532675,
+        "action.retrieval.vector": 0.9867439517974853,
+        "action.reasoning.decompose": 0.9557846981684367
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.24912293255329132,
+        "action.retrieval.vector": 0.6614447236061096,
+        "action.reasoning.decompose": 0.08943232893943787
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9867439517974853,
+      "p0_realized_utility": 0.9841464484532675,
+      "oracle_utility": 0.9867439517974853,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0431",
+      "group_id": "g31",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.10060431575775147,
+        "action.retrieval.vector": -0.10272919114430747,
+        "action.reasoning.decompose": -0.05576259899139404
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.19456994533538818,
+        "action.retrieval.vector": 0.15195822715759277,
+        "action.reasoning.decompose": 0.653471827507019
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.05576259899139404,
+      "p0_realized_utility": -0.10060431575775147,
+      "oracle_utility": -0.05576259899139404,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0432",
+      "group_id": "g32",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.050282029787699384,
+        "action.retrieval.vector": -0.034909364700317386,
+        "action.reasoning.decompose": 0.8864111372629802
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23894450068473816,
+        "action.retrieval.vector": 0.5907275080680847,
+        "action.reasoning.decompose": 0.17032796144485474
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.034909364700317386,
+      "p0_realized_utility": -0.050282029787699384,
+      "oracle_utility": 0.8864111372629802,
+      "regret": 0.9213205019632975
+    },
+    {
+      "task_id": "diverse_0433",
+      "group_id": "g33",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.07634280459086101,
+        "action.retrieval.vector": -0.10389518674214682,
+        "action.reasoning.decompose": -0.09603920841217041
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.0967709943652153,
+        "action.retrieval.vector": 0.7706529498100281,
+        "action.reasoning.decompose": 0.13257600367069244
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.10389518674214682,
+      "p0_realized_utility": -0.07634280459086101,
+      "oracle_utility": -0.07634280459086101,
+      "regret": 0.027552382151285804
+    },
+    {
+      "task_id": "diverse_0434",
+      "group_id": "g34",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.041587420463562015,
+        "action.retrieval.vector": 0.9612137149175008,
+        "action.reasoning.decompose": 0.8978751907348632
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.16409549117088318,
+        "action.retrieval.vector": 0.7106598615646362,
+        "action.reasoning.decompose": 0.12524469196796417
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9612137149175008,
+      "p0_realized_utility": -0.041587420463562015,
+      "oracle_utility": 0.9612137149175008,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0435",
+      "group_id": "g35",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9545575927098593,
+        "action.retrieval.vector": -0.019182358105977376,
+        "action.reasoning.decompose": 0.9319282128016154
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.25048714876174927,
+        "action.retrieval.vector": 0.5783398747444153,
+        "action.reasoning.decompose": 0.17117302119731903
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.019182358105977376,
+      "p0_realized_utility": 0.9545575927098593,
+      "oracle_utility": 0.9545575927098593,
+      "regret": 0.9737399508158366
+    },
+    {
+      "task_id": "diverse_0436",
+      "group_id": "g36",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9564088443120321,
+        "action.retrieval.vector": 0.9657593374252319,
+        "action.reasoning.decompose": -0.03501128578186035
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.04301539063453674,
+        "action.retrieval.vector": 0.1569254845380783,
+        "action.reasoning.decompose": 0.8000591397285461
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.03501128578186035,
+      "p0_realized_utility": 0.9564088443120321,
+      "oracle_utility": 0.9657593374252319,
+      "regret": 1.0007706232070923
+    },
+    {
+      "task_id": "diverse_0437",
+      "group_id": "g37",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9870862239201864,
+        "action.retrieval.vector": 0.9862393681208292,
+        "action.reasoning.decompose": -0.034694463411966955
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1914019137620926,
+        "action.retrieval.vector": 0.6263061165809631,
+        "action.reasoning.decompose": 0.18229196965694427
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.9862393681208292,
+      "p0_realized_utility": 0.9870862239201864,
+      "oracle_utility": 0.9870862239201864,
+      "regret": 0.0008468557993571713
+    },
+    {
+      "task_id": "diverse_0438",
+      "group_id": "g38",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9871080334981283,
+        "action.retrieval.vector": 0.9800860694249471,
+        "action.reasoning.decompose": -0.05473780473073324
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23480691015720367,
+        "action.retrieval.vector": 0.5872346758842468,
+        "action.reasoning.decompose": 0.1779584139585495
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.9800860694249471,
+      "p0_realized_utility": 0.9871080334981283,
+      "oracle_utility": 0.9871080334981283,
+      "regret": 0.0070219640731811195
+    },
+    {
+      "task_id": "diverse_0439",
+      "group_id": "g39",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.03825668430328369,
+        "action.retrieval.vector": -0.12073589515686035,
+        "action.reasoning.decompose": -0.07586873531341554
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1754915863275528,
+        "action.retrieval.vector": 0.1180880069732666,
+        "action.reasoning.decompose": 0.7064204216003418
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.07586873531341554,
+      "p0_realized_utility": -0.03825668430328369,
+      "oracle_utility": -0.03825668430328369,
+      "regret": 0.03761205101013185
+    },
+    {
+      "task_id": "diverse_0440",
+      "group_id": "g0",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05772384961446126,
+        "action.retrieval.vector": 0.9615378980636596,
+        "action.reasoning.decompose": -0.10354716904958089
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23804304003715515,
+        "action.retrieval.vector": 0.6312921643257141,
+        "action.reasoning.decompose": 0.13066473603248596
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9615378980636596,
+      "p0_realized_utility": -0.05772384961446126,
+      "oracle_utility": 0.9615378980636596,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0441",
+      "group_id": "g1",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9816317977905273,
+        "action.retrieval.vector": 0.9836614151000976,
+        "action.reasoning.decompose": -0.036979558944702146
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.044548384845256805,
+        "action.retrieval.vector": 0.3138285279273987,
+        "action.reasoning.decompose": 0.6416230797767639
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.036979558944702146,
+      "p0_realized_utility": 0.9816317977905273,
+      "oracle_utility": 0.9836614151000976,
+      "regret": 1.0206409740447997
+    },
+    {
+      "task_id": "diverse_0442",
+      "group_id": "g2",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.046085884094238284,
+        "action.retrieval.vector": -0.037255351702372236,
+        "action.reasoning.decompose": -0.12684276072184245
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.15301315486431122,
+        "action.retrieval.vector": 0.765933096408844,
+        "action.reasoning.decompose": 0.08105374872684479
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.037255351702372236,
+      "p0_realized_utility": -0.046085884094238284,
+      "oracle_utility": -0.037255351702372236,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0443",
+      "group_id": "g3",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.033311464627583824,
+        "action.retrieval.vector": -0.02683056704203288,
+        "action.reasoning.decompose": -0.09445078722635905
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.12999945878982544,
+        "action.retrieval.vector": 0.2874448001384735,
+        "action.reasoning.decompose": 0.5825557112693787
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.09445078722635905,
+      "p0_realized_utility": -0.033311464627583824,
+      "oracle_utility": -0.02683056704203288,
+      "regret": 0.06762022018432617
+    },
+    {
+      "task_id": "diverse_0444",
+      "group_id": "g4",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05201700337727865,
+        "action.retrieval.vector": 0.9594923496246338,
+        "action.reasoning.decompose": -0.038399648030598955
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.05639677122235298,
+        "action.retrieval.vector": 0.2697433829307556,
+        "action.reasoning.decompose": 0.6738598942756653
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.038399648030598955,
+      "p0_realized_utility": -0.05201700337727865,
+      "oracle_utility": 0.9594923496246338,
+      "regret": 0.9978919976552327
+    },
+    {
+      "task_id": "diverse_0445",
+      "group_id": "g5",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9844845081965129,
+        "action.retrieval.vector": 0.9894322859446207,
+        "action.reasoning.decompose": -0.05557033920288086
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.20392778515815735,
+        "action.retrieval.vector": 0.5837442278862,
+        "action.reasoning.decompose": 0.21232794225215912
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9894322859446207,
+      "p0_realized_utility": 0.9844845081965129,
+      "oracle_utility": 0.9894322859446207,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0446",
+      "group_id": "g6",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.029612360000610353,
+        "action.retrieval.vector": 0.984073787689209,
+        "action.reasoning.decompose": -0.04632677110036214
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.22480124235153198,
+        "action.retrieval.vector": 0.6020645499229431,
+        "action.reasoning.decompose": 0.17313417792320251
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.984073787689209,
+      "p0_realized_utility": -0.029612360000610353,
+      "oracle_utility": 0.984073787689209,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0447",
+      "group_id": "g7",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.08830191771189372,
+        "action.retrieval.vector": -0.12852690474192302,
+        "action.reasoning.decompose": -0.06810096899668376
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.17551085352897644,
+        "action.retrieval.vector": 0.1221727803349495,
+        "action.reasoning.decompose": 0.702316403388977
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.06810096899668376,
+      "p0_realized_utility": -0.08830191771189372,
+      "oracle_utility": -0.06810096899668376,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0448",
+      "group_id": "g8",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.030581857681274416,
+        "action.retrieval.vector": 0.9805729440053303,
+        "action.reasoning.decompose": 0.904237099647522
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.24308587610721588,
+        "action.retrieval.vector": 0.6392707824707031,
+        "action.reasoning.decompose": 0.11764336377382278
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9805729440053303,
+      "p0_realized_utility": -0.030581857681274416,
+      "oracle_utility": 0.9805729440053303,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0449",
+      "group_id": "g9",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.02720126247406006,
+        "action.retrieval.vector": 0.9855218960444132,
+        "action.reasoning.decompose": 0.9708862756093343
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.044388093054294586,
+        "action.retrieval.vector": 0.9403612017631531,
+        "action.reasoning.decompose": 0.015250692144036293
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9855218960444132,
+      "p0_realized_utility": -0.02720126247406006,
+      "oracle_utility": 0.9855218960444132,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0450",
+      "group_id": "g10",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.03229603163401286,
+        "action.retrieval.vector": 0.9791054614384969,
+        "action.reasoning.decompose": -0.08062391757965089
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.18278531730175018,
+        "action.retrieval.vector": 0.7137067317962646,
+        "action.reasoning.decompose": 0.1035078763961792
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9791054614384969,
+      "p0_realized_utility": -0.03229603163401286,
+      "oracle_utility": 0.9791054614384969,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0451",
+      "group_id": "g11",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.11406546115875243,
+        "action.retrieval.vector": -0.12837396876017254,
+        "action.reasoning.decompose": 0.9096303033828735
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.17911198735237122,
+        "action.retrieval.vector": 0.5942241549491882,
+        "action.reasoning.decompose": 0.22666381299495697
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.12837396876017254,
+      "p0_realized_utility": -0.11406546115875243,
+      "oracle_utility": 0.9096303033828735,
+      "regret": 1.038004272143046
+    },
+    {
+      "task_id": "diverse_0452",
+      "group_id": "g12",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.03297826480865479,
+        "action.retrieval.vector": 0.9642038297653198,
+        "action.reasoning.decompose": 0.963909013748169
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.05578666925430298,
+        "action.retrieval.vector": 0.24034664034843445,
+        "action.reasoning.decompose": 0.7038666605949402
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.963909013748169,
+      "p0_realized_utility": -0.03297826480865479,
+      "oracle_utility": 0.9642038297653198,
+      "regret": 0.00029481601715086736
+    },
+    {
+      "task_id": "diverse_0453",
+      "group_id": "g13",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9873688414891562,
+        "action.retrieval.vector": 0.9861696259180704,
+        "action.reasoning.decompose": 0.9459969809850057
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.19550205767154694,
+        "action.retrieval.vector": 0.5826531648635864,
+        "action.reasoning.decompose": 0.22184476256370544
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.9861696259180704,
+      "p0_realized_utility": 0.9873688414891562,
+      "oracle_utility": 0.9873688414891562,
+      "regret": 0.00119921557108571
+    },
+    {
+      "task_id": "diverse_0454",
+      "group_id": "g14",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.019612069447835286,
+        "action.retrieval.vector": -0.016395858764648438,
+        "action.reasoning.decompose": -0.058384322802225753
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23172125220298767,
+        "action.retrieval.vector": 0.5575435757637024,
+        "action.reasoning.decompose": 0.21073511242866516
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.016395858764648438,
+      "p0_realized_utility": -0.019612069447835286,
+      "oracle_utility": -0.016395858764648438,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0455",
+      "group_id": "g15",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05342114512125651,
+        "action.retrieval.vector": -0.12448492113749186,
+        "action.reasoning.decompose": -0.07793911933898925
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.18066288530826569,
+        "action.retrieval.vector": 0.07941820472478867,
+        "action.reasoning.decompose": 0.7399188876152039
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.07793911933898925,
+      "p0_realized_utility": -0.05342114512125651,
+      "oracle_utility": -0.05342114512125651,
+      "regret": 0.024517974217732746
+    },
+    {
+      "task_id": "diverse_0456",
+      "group_id": "g16",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.03525709533691406,
+        "action.retrieval.vector": 0.9782954947153727,
+        "action.reasoning.decompose": -0.0851826655069987
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.24708348512649536,
+        "action.retrieval.vector": 0.6267370581626892,
+        "action.reasoning.decompose": 0.12617947161197662
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9782954947153727,
+      "p0_realized_utility": -0.03525709533691406,
+      "oracle_utility": 0.9782954947153727,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0457",
+      "group_id": "g17",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.11007569853464763,
+        "action.retrieval.vector": -0.038153302510579426,
+        "action.reasoning.decompose": -0.07287195523579915
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.08822549879550934,
+        "action.retrieval.vector": 0.730265736579895,
+        "action.reasoning.decompose": 0.18150870501995087
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.038153302510579426,
+      "p0_realized_utility": -0.11007569853464763,
+      "oracle_utility": -0.038153302510579426,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0458",
+      "group_id": "g18",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.026441534678141275,
+        "action.retrieval.vector": -0.03832863648732504,
+        "action.reasoning.decompose": -0.07931222915649414
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.15680615603923798,
+        "action.retrieval.vector": 0.7708171606063843,
+        "action.reasoning.decompose": 0.07237669825553894
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.03832863648732504,
+      "p0_realized_utility": -0.026441534678141275,
+      "oracle_utility": -0.026441534678141275,
+      "regret": 0.011887101809183766
+    },
+    {
+      "task_id": "diverse_0459",
+      "group_id": "g19",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.039368280728658035,
+        "action.retrieval.vector": 0.9818503545125326,
+        "action.reasoning.decompose": 0.9665338408152262
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.24482394754886627,
+        "action.retrieval.vector": 0.6122422218322754,
+        "action.reasoning.decompose": 0.14293381571769714
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9818503545125326,
+      "p0_realized_utility": -0.039368280728658035,
+      "oracle_utility": 0.9818503545125326,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0460",
+      "group_id": "g20",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.031595239957173664,
+        "action.retrieval.vector": 0.9747742207845052,
+        "action.reasoning.decompose": 0.9597691040039062
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.049951665103435516,
+        "action.retrieval.vector": 0.19275015592575073,
+        "action.reasoning.decompose": 0.7572981119155884
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9597691040039062,
+      "p0_realized_utility": -0.031595239957173664,
+      "oracle_utility": 0.9747742207845052,
+      "regret": 0.015005116780598904
+    },
+    {
+      "task_id": "diverse_0461",
+      "group_id": "g21",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.987101578394572,
+        "action.retrieval.vector": 0.988361832300822,
+        "action.reasoning.decompose": 0.9518410256703694
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.19798769056797028,
+        "action.retrieval.vector": 0.554852306842804,
+        "action.reasoning.decompose": 0.24715997278690338
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.988361832300822,
+      "p0_realized_utility": 0.987101578394572,
+      "oracle_utility": 0.988361832300822,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0462",
+      "group_id": "g22",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9874715309143067,
+        "action.retrieval.vector": 0.9756270036697388,
+        "action.reasoning.decompose": -0.09291964149475097
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.24849030375480652,
+        "action.retrieval.vector": 0.5954068899154663,
+        "action.reasoning.decompose": 0.15610280632972717
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.9756270036697388,
+      "p0_realized_utility": 0.9874715309143067,
+      "oracle_utility": 0.9874715309143067,
+      "regret": 0.01184452724456797
+    },
+    {
+      "task_id": "diverse_0463",
+      "group_id": "g23",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.11405601755777997,
+        "action.retrieval.vector": -0.1283749574025472,
+        "action.reasoning.decompose": -0.0994650370279948
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.19317211210727692,
+        "action.retrieval.vector": 0.19550280272960663,
+        "action.reasoning.decompose": 0.6113250851631165
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.0994650370279948,
+      "p0_realized_utility": -0.11405601755777997,
+      "oracle_utility": -0.0994650370279948,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0464",
+      "group_id": "g24",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.04684229564666748,
+        "action.retrieval.vector": -0.04298627948760987,
+        "action.reasoning.decompose": 0.9261304546991984
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23825505375862122,
+        "action.retrieval.vector": 0.5817283391952515,
+        "action.reasoning.decompose": 0.18001654744148254
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.04298627948760987,
+      "p0_realized_utility": -0.04684229564666748,
+      "oracle_utility": 0.9261304546991984,
+      "regret": 0.9691167341868083
+    },
+    {
+      "task_id": "diverse_0465",
+      "group_id": "g25",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.025648093859354654,
+        "action.retrieval.vector": 0.9847390403747559,
+        "action.reasoning.decompose": -0.052004591623942054
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.06999976933002472,
+        "action.retrieval.vector": 0.5886111855506897,
+        "action.reasoning.decompose": 0.3413890302181244
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9847390403747559,
+      "p0_realized_utility": -0.025648093859354654,
+      "oracle_utility": 0.9847390403747559,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0466",
+      "group_id": "g26",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.045119633356730145,
+        "action.retrieval.vector": 0.9751909777323405,
+        "action.reasoning.decompose": 0.8898168512980144
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.17617560923099518,
+        "action.retrieval.vector": 0.6492751836776733,
+        "action.reasoning.decompose": 0.1745491772890091
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9751909777323405,
+      "p0_realized_utility": -0.045119633356730145,
+      "oracle_utility": 0.9751909777323405,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0467",
+      "group_id": "g27",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.040302521387736004,
+        "action.retrieval.vector": 0.9809082164764404,
+        "action.reasoning.decompose": 0.8118071279525757
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1704643815755844,
+        "action.retrieval.vector": 0.45935988426208496,
+        "action.reasoning.decompose": 0.3701757490634918
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9809082164764404,
+      "p0_realized_utility": -0.040302521387736004,
+      "oracle_utility": 0.9809082164764404,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0468",
+      "group_id": "g28",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.06133820311228434,
+        "action.retrieval.vector": 0.9692942717870077,
+        "action.reasoning.decompose": 0.9636370045344035
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.05420318990945816,
+        "action.retrieval.vector": 0.24364767968654633,
+        "action.reasoning.decompose": 0.7021491527557373
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9636370045344035,
+      "p0_realized_utility": -0.06133820311228434,
+      "oracle_utility": 0.9692942717870077,
+      "regret": 0.005657267252604181
+    },
+    {
+      "task_id": "diverse_0469",
+      "group_id": "g29",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.983672667503357,
+        "action.retrieval.vector": 0.988508378982544,
+        "action.reasoning.decompose": 0.9224557545979818
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.19847147166728973,
+        "action.retrieval.vector": 0.6155401468276978,
+        "action.reasoning.decompose": 0.1859884262084961
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.988508378982544,
+      "p0_realized_utility": 0.983672667503357,
+      "oracle_utility": 0.988508378982544,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0470",
+      "group_id": "g30",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9852541513442994,
+        "action.retrieval.vector": 0.9731086953481038,
+        "action.reasoning.decompose": -0.053416598002115886
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.2468104511499405,
+        "action.retrieval.vector": 0.5628892183303833,
+        "action.reasoning.decompose": 0.1903003603219986
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.9731086953481038,
+      "p0_realized_utility": 0.9852541513442994,
+      "oracle_utility": 0.9852541513442994,
+      "regret": 0.012145455996195542
+    },
+    {
+      "task_id": "diverse_0471",
+      "group_id": "g31",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.10425944296518963,
+        "action.retrieval.vector": 0.8703364680608113,
+        "action.reasoning.decompose": -1.062805853207906
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1819077879190445,
+        "action.retrieval.vector": 0.12427731603384018,
+        "action.reasoning.decompose": 0.6938149333000183
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -1.062805853207906,
+      "p0_realized_utility": -0.10425944296518963,
+      "oracle_utility": 0.8703364680608113,
+      "regret": 1.9331423212687175
+    },
+    {
+      "task_id": "diverse_0472",
+      "group_id": "g32",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05257696183522542,
+        "action.retrieval.vector": 0.9533273547490437,
+        "action.reasoning.decompose": -0.08883249727884929
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.233230322599411,
+        "action.retrieval.vector": 0.589637279510498,
+        "action.reasoning.decompose": 0.17713235318660736
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9533273547490437,
+      "p0_realized_utility": -0.05257696183522542,
+      "oracle_utility": 0.9533273547490437,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0473",
+      "group_id": "g33",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.02676997661590576,
+        "action.retrieval.vector": 0.9857910095850626,
+        "action.reasoning.decompose": 0.9631564445495605
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.06594341993331909,
+        "action.retrieval.vector": 0.6957712173461914,
+        "action.reasoning.decompose": 0.2382853776216507
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9857910095850626,
+      "p0_realized_utility": -0.02676997661590576,
+      "oracle_utility": 0.9857910095850626,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0474",
+      "group_id": "g34",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05385890165964763,
+        "action.retrieval.vector": 0.9595895818074545,
+        "action.reasoning.decompose": -0.09142199770609538
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.16935895383358002,
+        "action.retrieval.vector": 0.6868893504142761,
+        "action.reasoning.decompose": 0.14375169575214386
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9595895818074545,
+      "p0_realized_utility": -0.05385890165964763,
+      "oracle_utility": 0.9595895818074545,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0475",
+      "group_id": "g35",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.12560876146952313,
+        "action.retrieval.vector": -0.11684379196166993,
+        "action.reasoning.decompose": 0.9429075892766317
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.17404593527317047,
+        "action.retrieval.vector": 0.4925750195980072,
+        "action.reasoning.decompose": 0.33337900042533875
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.11684379196166993,
+      "p0_realized_utility": -0.12560876146952313,
+      "oracle_utility": 0.9429075892766317,
+      "regret": 1.0597513812383015
+    },
+    {
+      "task_id": "diverse_0476",
+      "group_id": "g36",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05621916929880778,
+        "action.retrieval.vector": 0.960223419825236,
+        "action.reasoning.decompose": 0.9629172468185425
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.04378413408994675,
+        "action.retrieval.vector": 0.16923050582408905,
+        "action.reasoning.decompose": 0.7869853973388672
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": 0.9629172468185425,
+      "p0_realized_utility": -0.05621916929880778,
+      "oracle_utility": 0.9629172468185425,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0477",
+      "group_id": "g37",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9870774354934693,
+        "action.retrieval.vector": 0.9847323090235393,
+        "action.reasoning.decompose": 0.9452671667734782
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.20236249268054962,
+        "action.retrieval.vector": 0.5963912606239319,
+        "action.reasoning.decompose": 0.20124629139900208
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.9847323090235393,
+      "p0_realized_utility": 0.9870774354934693,
+      "oracle_utility": 0.9870774354934693,
+      "regret": 0.0023451264699300145
+    },
+    {
+      "task_id": "diverse_0478",
+      "group_id": "g38",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.03240209325154622,
+        "action.retrieval.vector": 0.9824636898040772,
+        "action.reasoning.decompose": 0.9346854982376098
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.24654044210910797,
+        "action.retrieval.vector": 0.6629970669746399,
+        "action.reasoning.decompose": 0.09046248346567154
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9824636898040772,
+      "p0_realized_utility": -0.03240209325154622,
+      "oracle_utility": 0.9824636898040772,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0479",
+      "group_id": "g39",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.08093317317962648,
+        "action.retrieval.vector": -0.1297270654042562,
+        "action.reasoning.decompose": -0.09333810742696126
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.17495036125183105,
+        "action.retrieval.vector": 0.1679631769657135,
+        "action.reasoning.decompose": 0.6570864915847778
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.09333810742696126,
+      "p0_realized_utility": -0.08093317317962648,
+      "oracle_utility": -0.08093317317962648,
+      "regret": 0.012404934247334784
+    },
+    {
+      "task_id": "diverse_0480",
+      "group_id": "g0",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.040872021675109865,
+        "action.retrieval.vector": -0.03767685826619466,
+        "action.reasoning.decompose": 0.8786799980799357
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.2410643845796585,
+        "action.retrieval.vector": 0.6214157342910767,
+        "action.reasoning.decompose": 0.13751985132694244
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.03767685826619466,
+      "p0_realized_utility": -0.040872021675109865,
+      "oracle_utility": 0.8786799980799357,
+      "regret": 0.9163568563461304
+    },
+    {
+      "task_id": "diverse_0481",
+      "group_id": "g1",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.12972260570526123,
+        "action.retrieval.vector": -0.09251839415232342,
+        "action.reasoning.decompose": -0.10917291990915935
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.08588545024394989,
+        "action.retrieval.vector": 0.6024984121322632,
+        "action.reasoning.decompose": 0.31161612272262573
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.09251839415232342,
+      "p0_realized_utility": -0.12972260570526123,
+      "oracle_utility": -0.09251839415232342,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0482",
+      "group_id": "g2",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.969134885152181,
+        "action.retrieval.vector": -0.045021086057027176,
+        "action.reasoning.decompose": -0.08998889446258546
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.16857385635375977,
+        "action.retrieval.vector": 0.7439766526222229,
+        "action.reasoning.decompose": 0.08744952827692032
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.045021086057027176,
+      "p0_realized_utility": 0.969134885152181,
+      "oracle_utility": 0.969134885152181,
+      "regret": 1.0141559712092083
+    },
+    {
+      "task_id": "diverse_0483",
+      "group_id": "g3",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9644562072753907,
+        "action.retrieval.vector": -0.02041397031148275,
+        "action.reasoning.decompose": 0.9391182076136271
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.2660534679889679,
+        "action.retrieval.vector": 0.5407220721244812,
+        "action.reasoning.decompose": 0.1932244449853897
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.02041397031148275,
+      "p0_realized_utility": 0.9644562072753907,
+      "oracle_utility": 0.9644562072753907,
+      "regret": 0.9848701775868735
+    },
+    {
+      "task_id": "diverse_0484",
+      "group_id": "g4",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05595178445180257,
+        "action.retrieval.vector": 0.9580961519877116,
+        "action.reasoning.decompose": 0.9681599063873291
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.0543782003223896,
+        "action.retrieval.vector": 0.23128071427345276,
+        "action.reasoning.decompose": 0.7143411636352539
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": 0.9681599063873291,
+      "p0_realized_utility": -0.05595178445180257,
+      "oracle_utility": 0.9681599063873291,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0485",
+      "group_id": "g5",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9879925311406454,
+        "action.retrieval.vector": 0.9896911522547404,
+        "action.reasoning.decompose": 0.9465071986516317
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.19957737624645233,
+        "action.retrieval.vector": 0.608773410320282,
+        "action.reasoning.decompose": 0.19164921343326569
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9896911522547404,
+      "p0_realized_utility": 0.9879925311406454,
+      "oracle_utility": 0.9896911522547404,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0486",
+      "group_id": "g6",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9807512928644817,
+        "action.retrieval.vector": 0.9759340810775757,
+        "action.reasoning.decompose": 0.9353481667836507
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.24292968213558197,
+        "action.retrieval.vector": 0.5570555925369263,
+        "action.reasoning.decompose": 0.20001474022865295
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.9759340810775757,
+      "p0_realized_utility": 0.9807512928644817,
+      "oracle_utility": 0.9807512928644817,
+      "regret": 0.004817211786905973
+    },
+    {
+      "task_id": "diverse_0487",
+      "group_id": "g7",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.13067147445678712,
+        "action.retrieval.vector": -0.12793932247161866,
+        "action.reasoning.decompose": -0.0963077745437622
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1798218935728073,
+        "action.retrieval.vector": 0.15674854815006256,
+        "action.reasoning.decompose": 0.6634295582771301
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.0963077745437622,
+      "p0_realized_utility": -0.13067147445678712,
+      "oracle_utility": -0.0963077745437622,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0488",
+      "group_id": "g8",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05397488276163737,
+        "action.retrieval.vector": 0.9633942651748657,
+        "action.reasoning.decompose": -0.14435289955139158
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23367105424404144,
+        "action.retrieval.vector": 0.5997525453567505,
+        "action.reasoning.decompose": 0.16657638549804688
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9633942651748657,
+      "p0_realized_utility": -0.05397488276163737,
+      "oracle_utility": 0.9633942651748657,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0489",
+      "group_id": "g9",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9778215548197429,
+        "action.retrieval.vector": 0.9796202669143677,
+        "action.reasoning.decompose": 0.9682161013285319
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.058486852794885635,
+        "action.retrieval.vector": 0.6554010510444641,
+        "action.reasoning.decompose": 0.28611209988594055
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9796202669143677,
+      "p0_realized_utility": 0.9778215548197429,
+      "oracle_utility": 0.9796202669143677,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0490",
+      "group_id": "g10",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.048980221112569174,
+        "action.retrieval.vector": -0.02980996545155843,
+        "action.reasoning.decompose": 0.8561847114562988
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.16331827640533447,
+        "action.retrieval.vector": 0.7648096084594727,
+        "action.reasoning.decompose": 0.07187214493751526
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.02980996545155843,
+      "p0_realized_utility": -0.048980221112569174,
+      "oracle_utility": 0.8561847114562988,
+      "regret": 0.8859946769078573
+    },
+    {
+      "task_id": "diverse_0491",
+      "group_id": "g11",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.057619927406311035,
+        "action.retrieval.vector": -0.035483455975850425,
+        "action.reasoning.decompose": 0.9079883340199788
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.13296180963516235,
+        "action.retrieval.vector": 0.30943503975868225,
+        "action.reasoning.decompose": 0.557603120803833
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": 0.9079883340199788,
+      "p0_realized_utility": -0.057619927406311035,
+      "oracle_utility": 0.9079883340199788,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0492",
+      "group_id": "g12",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.915657837231954,
+        "action.retrieval.vector": -0.052305333455403655,
+        "action.reasoning.decompose": 0.9555404243469238
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.0512898825109005,
+        "action.retrieval.vector": 0.232784241437912,
+        "action.reasoning.decompose": 0.7159258723258972
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": 0.9555404243469238,
+      "p0_realized_utility": 0.915657837231954,
+      "oracle_utility": 0.9555404243469238,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0493",
+      "group_id": "g13",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9855877831776937,
+        "action.retrieval.vector": 0.9906591936747233,
+        "action.reasoning.decompose": 0.9596949777603149
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.19514989852905273,
+        "action.retrieval.vector": 0.4191572666168213,
+        "action.reasoning.decompose": 0.3856927752494812
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9906591936747233,
+      "p0_realized_utility": 0.9855877831776937,
+      "oracle_utility": 0.9906591936747233,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0494",
+      "group_id": "g14",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.024676769892374675,
+        "action.retrieval.vector": 0.9849009532928467,
+        "action.reasoning.decompose": -0.03371841621398926
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.22829462587833405,
+        "action.retrieval.vector": 0.5122578144073486,
+        "action.reasoning.decompose": 0.25944751501083374
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9849009532928467,
+      "p0_realized_utility": -0.024676769892374675,
+      "oracle_utility": 0.9849009532928467,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0495",
+      "group_id": "g15",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.1016649284362793,
+        "action.retrieval.vector": -0.12793937969207764,
+        "action.reasoning.decompose": -0.06322022438049316
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.18182842433452606,
+        "action.retrieval.vector": 0.18498043715953827,
+        "action.reasoning.decompose": 0.6331911087036133
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.06322022438049316,
+      "p0_realized_utility": -0.1016649284362793,
+      "oracle_utility": -0.06322022438049316,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0496",
+      "group_id": "g16",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.04708436679840088,
+        "action.retrieval.vector": 0.9668413422902425,
+        "action.reasoning.decompose": -0.08091613006591797
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23062172532081604,
+        "action.retrieval.vector": 0.6106695532798767,
+        "action.reasoning.decompose": 0.15870875120162964
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9668413422902425,
+      "p0_realized_utility": -0.04708436679840088,
+      "oracle_utility": 0.9668413422902425,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0497",
+      "group_id": "g17",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.030770177523295087,
+        "action.retrieval.vector": 0.9802976570129395,
+        "action.reasoning.decompose": -0.037095239639282226
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.048323821276426315,
+        "action.retrieval.vector": 0.88558030128479,
+        "action.reasoning.decompose": 0.06609588861465454
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9802976570129395,
+      "p0_realized_utility": -0.030770177523295087,
+      "oracle_utility": 0.9802976570129395,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0498",
+      "group_id": "g18",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.0567620096206665,
+        "action.retrieval.vector": -0.0648724536895752,
+        "action.reasoning.decompose": -0.19036778386433922
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.15102940797805786,
+        "action.retrieval.vector": 0.7643625140190125,
+        "action.reasoning.decompose": 0.08460813015699387
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.0648724536895752,
+      "p0_realized_utility": -0.0567620096206665,
+      "oracle_utility": -0.0567620096206665,
+      "regret": 0.0081104440689087
+    },
+    {
+      "task_id": "diverse_0499",
+      "group_id": "g19",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9455504693984986,
+        "action.retrieval.vector": 0.9618659966786702,
+        "action.reasoning.decompose": 0.9359057102203369
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.17502491176128387,
+        "action.retrieval.vector": 0.4879211187362671,
+        "action.reasoning.decompose": 0.3370540142059326
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9618659966786702,
+      "p0_realized_utility": 0.9455504693984986,
+      "oracle_utility": 0.9618659966786702,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0500",
+      "group_id": "g20",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.061118247667948405,
+        "action.retrieval.vector": 0.9484763345718383,
+        "action.reasoning.decompose": -0.038822873115539544
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.04455004259943962,
+        "action.retrieval.vector": 0.16523809731006622,
+        "action.reasoning.decompose": 0.7902118563652039
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.038822873115539544,
+      "p0_realized_utility": -0.061118247667948405,
+      "oracle_utility": 0.9484763345718383,
+      "regret": 0.9872992076873779
+    },
+    {
+      "task_id": "diverse_0501",
+      "group_id": "g21",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9781770807902018,
+        "action.retrieval.vector": 0.9886198291778564,
+        "action.reasoning.decompose": 0.9324394410451253
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1947041153907776,
+        "action.retrieval.vector": 0.6412322521209717,
+        "action.reasoning.decompose": 0.16406358778476715
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9886198291778564,
+      "p0_realized_utility": 0.9781770807902018,
+      "oracle_utility": 0.9886198291778564,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0502",
+      "group_id": "g22",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9833714116414388,
+        "action.retrieval.vector": 0.9618368943532308,
+        "action.reasoning.decompose": -0.09847551822662354
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.24122925102710724,
+        "action.retrieval.vector": 0.6016938090324402,
+        "action.reasoning.decompose": 0.15707699954509735
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.9618368943532308,
+      "p0_realized_utility": 0.9833714116414388,
+      "oracle_utility": 0.9833714116414388,
+      "regret": 0.02153451728820799
+    },
+    {
+      "task_id": "diverse_0503",
+      "group_id": "g23",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.09434990151723224,
+        "action.retrieval.vector": -0.12789082527160645,
+        "action.reasoning.decompose": -0.09064587084452311
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.15425120294094086,
+        "action.retrieval.vector": 0.096309132874012,
+        "action.reasoning.decompose": 0.7494396567344666
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.09064587084452311,
+      "p0_realized_utility": -0.09434990151723224,
+      "oracle_utility": -0.09064587084452311,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0504",
+      "group_id": "g24",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.058770981152852377,
+        "action.retrieval.vector": 0.9620351575215658,
+        "action.reasoning.decompose": 0.953368345896403
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23526908457279205,
+        "action.retrieval.vector": 0.5944526791572571,
+        "action.reasoning.decompose": 0.17027825117111206
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9620351575215658,
+      "p0_realized_utility": -0.058770981152852377,
+      "oracle_utility": 0.9620351575215658,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0505",
+      "group_id": "g25",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.08552998956044516,
+        "action.retrieval.vector": -0.08873742802937826,
+        "action.reasoning.decompose": -0.1383449010848999
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.09029433876276016,
+        "action.retrieval.vector": 0.7406648993492126,
+        "action.reasoning.decompose": 0.169040709733963
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.08873742802937826,
+      "p0_realized_utility": -0.08552998956044516,
+      "oracle_utility": -0.08552998956044516,
+      "regret": 0.0032074384689330937
+    },
+    {
+      "task_id": "diverse_0506",
+      "group_id": "g26",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.07082542324066163,
+        "action.retrieval.vector": -0.03120753892262777,
+        "action.reasoning.decompose": -0.08352128378550211
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.16724812984466553,
+        "action.retrieval.vector": 0.7011371850967407,
+        "action.reasoning.decompose": 0.13161469995975494
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.03120753892262777,
+      "p0_realized_utility": -0.07082542324066163,
+      "oracle_utility": -0.03120753892262777,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0507",
+      "group_id": "g27",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.03735038407643636,
+        "action.retrieval.vector": 0.9721615203221639,
+        "action.reasoning.decompose": 0.957744815826416
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.25089576840400696,
+        "action.retrieval.vector": 0.5855984687805176,
+        "action.reasoning.decompose": 0.16350579261779785
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9721615203221639,
+      "p0_realized_utility": -0.03735038407643636,
+      "oracle_utility": 0.9721615203221639,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0508",
+      "group_id": "g28",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.0566663859685262,
+        "action.retrieval.vector": 0.9697479298909505,
+        "action.reasoning.decompose": -0.042839669227600095
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.055621929466724396,
+        "action.retrieval.vector": 0.24593426287174225,
+        "action.reasoning.decompose": 0.6984438300132751
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.042839669227600095,
+      "p0_realized_utility": -0.0566663859685262,
+      "oracle_utility": 0.9697479298909505,
+      "regret": 1.0125875991185507
+    },
+    {
+      "task_id": "diverse_0509",
+      "group_id": "g29",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9872732976277669,
+        "action.retrieval.vector": 0.987949203491211,
+        "action.reasoning.decompose": 0.9273397709528605
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.19601167738437653,
+        "action.retrieval.vector": 0.6034777760505676,
+        "action.reasoning.decompose": 0.20051051676273346
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.987949203491211,
+      "p0_realized_utility": 0.9872732976277669,
+      "oracle_utility": 0.987949203491211,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0510",
+      "group_id": "g30",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9854996973673503,
+        "action.retrieval.vector": 0.9760057423909505,
+        "action.reasoning.decompose": -0.03891761366526286
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.24357466399669647,
+        "action.retrieval.vector": 0.6496511101722717,
+        "action.reasoning.decompose": 0.10677419602870941
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.9760057423909505,
+      "p0_realized_utility": 0.9854996973673503,
+      "oracle_utility": 0.9854996973673503,
+      "regret": 0.009493954976399821
+    },
+    {
+      "task_id": "diverse_0511",
+      "group_id": "g31",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.13230838203430176,
+        "action.retrieval.vector": -0.12550905227661133,
+        "action.reasoning.decompose": -0.18253158442179362
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.15901003777980804,
+        "action.retrieval.vector": 0.11527883261442184,
+        "action.reasoning.decompose": 0.7257111072540283
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.18253158442179362,
+      "p0_realized_utility": -0.13230838203430176,
+      "oracle_utility": -0.12550905227661133,
+      "regret": 0.0570225321451823
+    },
+    {
+      "task_id": "diverse_0512",
+      "group_id": "g32",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05714030520121256,
+        "action.retrieval.vector": -0.045911601702372226,
+        "action.reasoning.decompose": 0.8913376633326212
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23744505643844604,
+        "action.retrieval.vector": 0.6194912791252136,
+        "action.reasoning.decompose": 0.14306360483169556
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.045911601702372226,
+      "p0_realized_utility": -0.05714030520121256,
+      "oracle_utility": 0.8913376633326212,
+      "regret": 0.9372492650349934
+    },
+    {
+      "task_id": "diverse_0513",
+      "group_id": "g33",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9744800434112549,
+        "action.retrieval.vector": 0.9827205505371094,
+        "action.reasoning.decompose": 0.9432216911315918
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.07621056586503983,
+        "action.retrieval.vector": 0.6791877150535583,
+        "action.reasoning.decompose": 0.24460171163082123
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9827205505371094,
+      "p0_realized_utility": 0.9744800434112549,
+      "oracle_utility": 0.9827205505371094,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0514",
+      "group_id": "g34",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.045408425013224285,
+        "action.retrieval.vector": 0.9516438248952229,
+        "action.reasoning.decompose": -0.07221954441070556
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.15336628258228302,
+        "action.retrieval.vector": 0.7687368988990784,
+        "action.reasoning.decompose": 0.07789681106805801
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9516438248952229,
+      "p0_realized_utility": -0.045408425013224285,
+      "oracle_utility": 0.9516438248952229,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0515",
+      "group_id": "g35",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.07154147052764892,
+        "action.retrieval.vector": -0.028247361501057944,
+        "action.reasoning.decompose": 0.9326600062052409
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1431358903646469,
+        "action.retrieval.vector": 0.34536129236221313,
+        "action.reasoning.decompose": 0.5115028023719788
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": 0.9326600062052409,
+      "p0_realized_utility": -0.07154147052764892,
+      "oracle_utility": 0.9326600062052409,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0516",
+      "group_id": "g36",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05743484814961751,
+        "action.retrieval.vector": 0.9619499998092651,
+        "action.reasoning.decompose": -0.030340596834818524
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.04769504815340042,
+        "action.retrieval.vector": 0.1756558120250702,
+        "action.reasoning.decompose": 0.7766491770744324
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.030340596834818524,
+      "p0_realized_utility": -0.05743484814961751,
+      "oracle_utility": 0.9619499998092651,
+      "regret": 0.9922905966440836
+    },
+    {
+      "task_id": "diverse_0517",
+      "group_id": "g37",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9861299352645875,
+        "action.retrieval.vector": 0.9903641462326049,
+        "action.reasoning.decompose": 0.9416903346379598
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.2057705521583557,
+        "action.retrieval.vector": 0.5669731497764587,
+        "action.reasoning.decompose": 0.22725631296634674
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9903641462326049,
+      "p0_realized_utility": 0.9861299352645875,
+      "oracle_utility": 0.9903641462326049,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0518",
+      "group_id": "g38",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9814415534337362,
+        "action.retrieval.vector": 0.9562969182332357,
+        "action.reasoning.decompose": 0.9023252067565918
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.24019616842269897,
+        "action.retrieval.vector": 0.5518144369125366,
+        "action.reasoning.decompose": 0.2079893946647644
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.9562969182332357,
+      "p0_realized_utility": 0.9814415534337362,
+      "oracle_utility": 0.9814415534337362,
+      "regret": 0.025144635200500476
+    },
+    {
+      "task_id": "diverse_0519",
+      "group_id": "g39",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.12665595563252768,
+        "action.retrieval.vector": -0.12386238606770834,
+        "action.reasoning.decompose": -0.04087978585561117
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.180592343211174,
+        "action.retrieval.vector": 0.14836826920509338,
+        "action.reasoning.decompose": 0.671039342880249
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.04087978585561117,
+      "p0_realized_utility": -0.12665595563252768,
+      "oracle_utility": -0.04087978585561117,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0520",
+      "group_id": "g0",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.049606861432393394,
+        "action.retrieval.vector": 0.97273672580719,
+        "action.reasoning.decompose": -0.09436694272359213
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23514540493488312,
+        "action.retrieval.vector": 0.5708107352256775,
+        "action.reasoning.decompose": 0.1940438449382782
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.97273672580719,
+      "p0_realized_utility": -0.049606861432393394,
+      "oracle_utility": 0.97273672580719,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0521",
+      "group_id": "g1",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9739541257222494,
+        "action.retrieval.vector": 0.9768828738530477,
+        "action.reasoning.decompose": -0.053438782691955566
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.042731910943984985,
+        "action.retrieval.vector": 0.33577367663383484,
+        "action.reasoning.decompose": 0.6214944124221802
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.053438782691955566,
+      "p0_realized_utility": 0.9739541257222494,
+      "oracle_utility": 0.9768828738530477,
+      "regret": 1.0303216565450033
+    },
+    {
+      "task_id": "diverse_0522",
+      "group_id": "g2",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.053254114151000974,
+        "action.retrieval.vector": -0.03651703770955404,
+        "action.reasoning.decompose": -0.11812942759195964
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1690230667591095,
+        "action.retrieval.vector": 0.6738461852073669,
+        "action.reasoning.decompose": 0.15713079273700714
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.03651703770955404,
+      "p0_realized_utility": -0.053254114151000974,
+      "oracle_utility": -0.03651703770955404,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0523",
+      "group_id": "g3",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.8687715841929119,
+        "action.retrieval.vector": -0.105590939839681,
+        "action.reasoning.decompose": -0.07930380058288575
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1674700528383255,
+        "action.retrieval.vector": 0.5281311869621277,
+        "action.reasoning.decompose": 0.30439871549606323
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.105590939839681,
+      "p0_realized_utility": 0.8687715841929119,
+      "oracle_utility": 0.8687715841929119,
+      "regret": 0.9743625240325929
+    },
+    {
+      "task_id": "diverse_0524",
+      "group_id": "g4",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.0799541737238566,
+        "action.retrieval.vector": -0.08075663312276204,
+        "action.reasoning.decompose": -0.03538727378845215
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.04590070620179176,
+        "action.retrieval.vector": 0.18644112348556519,
+        "action.reasoning.decompose": 0.7676581740379333
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.03538727378845215,
+      "p0_realized_utility": -0.0799541737238566,
+      "oracle_utility": -0.03538727378845215,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0525",
+      "group_id": "g5",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9867049118677775,
+        "action.retrieval.vector": 0.9875168186823527,
+        "action.reasoning.decompose": 0.9446358922322591
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1890581250190735,
+        "action.retrieval.vector": 0.6574217081069946,
+        "action.reasoning.decompose": 0.15352018177509308
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9875168186823527,
+      "p0_realized_utility": 0.9867049118677775,
+      "oracle_utility": 0.9875168186823527,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0526",
+      "group_id": "g6",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.980988725980123,
+        "action.retrieval.vector": 0.972413394610087,
+        "action.reasoning.decompose": -0.04578914419809978
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.22499267756938934,
+        "action.retrieval.vector": 0.5097011923789978,
+        "action.reasoning.decompose": 0.26530611515045166
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.972413394610087,
+      "p0_realized_utility": 0.980988725980123,
+      "oracle_utility": 0.980988725980123,
+      "regret": 0.008575331370035966
+    },
+    {
+      "task_id": "diverse_0527",
+      "group_id": "g7",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.09469018618265787,
+        "action.retrieval.vector": -0.12552066644032797,
+        "action.reasoning.decompose": -0.1030807145436605
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.17866206169128418,
+        "action.retrieval.vector": 0.13194598257541656,
+        "action.reasoning.decompose": 0.6893919706344604
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.1030807145436605,
+      "p0_realized_utility": -0.09469018618265787,
+      "oracle_utility": -0.09469018618265787,
+      "regret": 0.008390528361002625
+    },
+    {
+      "task_id": "diverse_0528",
+      "group_id": "g8",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.046186298370361326,
+        "action.retrieval.vector": -0.03463642120361328,
+        "action.reasoning.decompose": 0.9481281153361002
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.2274351567029953,
+        "action.retrieval.vector": 0.6479217410087585,
+        "action.reasoning.decompose": 0.12464304268360138
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.03463642120361328,
+      "p0_realized_utility": -0.046186298370361326,
+      "oracle_utility": 0.9481281153361002,
+      "regret": 0.9827645365397135
+    },
+    {
+      "task_id": "diverse_0529",
+      "group_id": "g9",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.1075205628077189,
+        "action.retrieval.vector": -0.12318084685007732,
+        "action.reasoning.decompose": -0.09415432103474936
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.093160480260849,
+        "action.retrieval.vector": 0.6813283562660217,
+        "action.reasoning.decompose": 0.2255111187696457
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.12318084685007732,
+      "p0_realized_utility": -0.1075205628077189,
+      "oracle_utility": -0.09415432103474936,
+      "regret": 0.02902652581532797
+    },
+    {
+      "task_id": "diverse_0530",
+      "group_id": "g10",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.04045687103271484,
+        "action.retrieval.vector": 0.9711953973770141,
+        "action.reasoning.decompose": 0.9193710622787475
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.16912178695201874,
+        "action.retrieval.vector": 0.6408518552780151,
+        "action.reasoning.decompose": 0.1900263875722885
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9711953973770141,
+      "p0_realized_utility": -0.04045687103271484,
+      "oracle_utility": 0.9711953973770141,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0531",
+      "group_id": "g11",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9396758254369101,
+        "action.retrieval.vector": -0.02073136870066325,
+        "action.reasoning.decompose": 0.9533267068862915
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.24154463410377502,
+        "action.retrieval.vector": 0.5960388779640198,
+        "action.reasoning.decompose": 0.16241642832756042
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.02073136870066325,
+      "p0_realized_utility": 0.9396758254369101,
+      "oracle_utility": 0.9533267068862915,
+      "regret": 0.9740580755869548
+    },
+    {
+      "task_id": "diverse_0532",
+      "group_id": "g12",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.04078465080261231,
+        "action.retrieval.vector": 0.9568272205988566,
+        "action.reasoning.decompose": -0.05083224773406982
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.04964260756969452,
+        "action.retrieval.vector": 0.20423997938632965,
+        "action.reasoning.decompose": 0.7461174130439758
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.05083224773406982,
+      "p0_realized_utility": -0.04078465080261231,
+      "oracle_utility": 0.9568272205988566,
+      "regret": 1.0076594683329265
+    },
+    {
+      "task_id": "diverse_0533",
+      "group_id": "g13",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9857924537658692,
+        "action.retrieval.vector": 0.982092957496643,
+        "action.reasoning.decompose": -0.08620148499806722
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.19417467713356018,
+        "action.retrieval.vector": 0.5944475531578064,
+        "action.reasoning.decompose": 0.21137776970863342
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.982092957496643,
+      "p0_realized_utility": 0.9857924537658692,
+      "oracle_utility": 0.9857924537658692,
+      "regret": 0.0036994962692261657
+    },
+    {
+      "task_id": "diverse_0534",
+      "group_id": "g14",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9808816051483155,
+        "action.retrieval.vector": 0.9837847531636555,
+        "action.reasoning.decompose": 0.9459163239796956
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.2230660617351532,
+        "action.retrieval.vector": 0.5976556539535522,
+        "action.reasoning.decompose": 0.17927828431129456
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9837847531636555,
+      "p0_realized_utility": 0.9808816051483155,
+      "oracle_utility": 0.9837847531636555,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0535",
+      "group_id": "g15",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05789021873474121,
+        "action.retrieval.vector": 0.8730145533879597,
+        "action.reasoning.decompose": -0.05352799828847249
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1885794699192047,
+        "action.retrieval.vector": 0.1584523320198059,
+        "action.reasoning.decompose": 0.652968168258667
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.05352799828847249,
+      "p0_realized_utility": -0.05789021873474121,
+      "oracle_utility": 0.8730145533879597,
+      "regret": 0.9265425516764323
+    },
+    {
+      "task_id": "diverse_0536",
+      "group_id": "g16",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.06465146478017172,
+        "action.retrieval.vector": -0.044310818672180174,
+        "action.reasoning.decompose": -0.07913112513224284
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23180794715881348,
+        "action.retrieval.vector": 0.6094430088996887,
+        "action.reasoning.decompose": 0.158749058842659
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.044310818672180174,
+      "p0_realized_utility": -0.06465146478017172,
+      "oracle_utility": -0.044310818672180174,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0537",
+      "group_id": "g17",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.02624128532409668,
+        "action.retrieval.vector": 0.9823357156117757,
+        "action.reasoning.decompose": -1.041159320195516
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.05854995176196098,
+        "action.retrieval.vector": 0.5090874433517456,
+        "action.reasoning.decompose": 0.4323625862598419
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9823357156117757,
+      "p0_realized_utility": -0.02624128532409668,
+      "oracle_utility": 0.9823357156117757,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0538",
+      "group_id": "g18",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.043824769337972004,
+        "action.retrieval.vector": -0.045620716094970704,
+        "action.reasoning.decompose": 0.8784447959264119
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.17045018076896667,
+        "action.retrieval.vector": 0.709385335445404,
+        "action.reasoning.decompose": 0.12016444653272629
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.045620716094970704,
+      "p0_realized_utility": -0.043824769337972004,
+      "oracle_utility": 0.8784447959264119,
+      "regret": 0.9240655120213825
+    },
+    {
+      "task_id": "diverse_0539",
+      "group_id": "g19",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.046706393241882325,
+        "action.retrieval.vector": 0.9824028418858846,
+        "action.reasoning.decompose": -0.08139361890157064
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1435578465461731,
+        "action.retrieval.vector": 0.3803987205028534,
+        "action.reasoning.decompose": 0.47604337334632874
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.08139361890157064,
+      "p0_realized_utility": -0.046706393241882325,
+      "oracle_utility": 0.9824028418858846,
+      "regret": 1.0637964607874553
+    },
+    {
+      "task_id": "diverse_0540",
+      "group_id": "g20",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.06630064296722413,
+        "action.retrieval.vector": 0.9531156930923462,
+        "action.reasoning.decompose": -0.03767468643188476
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.041600991040468216,
+        "action.retrieval.vector": 0.15386468172073364,
+        "action.reasoning.decompose": 0.8045343160629272
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.03767468643188476,
+      "p0_realized_utility": -0.06630064296722413,
+      "oracle_utility": 0.9531156930923462,
+      "regret": 0.990790379524231
+    },
+    {
+      "task_id": "diverse_0541",
+      "group_id": "g21",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9878162415822348,
+        "action.retrieval.vector": -0.011009764671325684,
+        "action.reasoning.decompose": 0.9688787778218587
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.20163539052009583,
+        "action.retrieval.vector": 0.5917443037033081,
+        "action.reasoning.decompose": 0.20662030577659607
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.011009764671325684,
+      "p0_realized_utility": 0.9878162415822348,
+      "oracle_utility": 0.9878162415822348,
+      "regret": 0.9988260062535604
+    },
+    {
+      "task_id": "diverse_0542",
+      "group_id": "g22",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.02353690942128499,
+        "action.retrieval.vector": 0.9840659456253051,
+        "action.reasoning.decompose": 0.9412271709442138
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23108302056789398,
+        "action.retrieval.vector": 0.6034058332443237,
+        "action.reasoning.decompose": 0.1655111014842987
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9840659456253051,
+      "p0_realized_utility": -0.02353690942128499,
+      "oracle_utility": 0.9840659456253051,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0543",
+      "group_id": "g23",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.1306400130589803,
+        "action.retrieval.vector": -0.11259136390686035,
+        "action.reasoning.decompose": -0.08214719072977703
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1728225201368332,
+        "action.retrieval.vector": 0.16207681596279144,
+        "action.reasoning.decompose": 0.665100634098053
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.08214719072977703,
+      "p0_realized_utility": -0.1306400130589803,
+      "oracle_utility": -0.08214719072977703,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0544",
+      "group_id": "g24",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.0427605037689209,
+        "action.retrieval.vector": -0.05121946493784588,
+        "action.reasoning.decompose": 0.9449420000712077
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23221561312675476,
+        "action.retrieval.vector": 0.5799391269683838,
+        "action.reasoning.decompose": 0.18784528970718384
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.05121946493784588,
+      "p0_realized_utility": -0.0427605037689209,
+      "oracle_utility": 0.9449420000712077,
+      "regret": 0.9961614650090536
+    },
+    {
+      "task_id": "diverse_0545",
+      "group_id": "g25",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9802085749308269,
+        "action.retrieval.vector": 0.9823385648727417,
+        "action.reasoning.decompose": 0.9649653282165527
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.029132673516869545,
+        "action.retrieval.vector": 0.9613336324691772,
+        "action.reasoning.decompose": 0.009533640928566456
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9823385648727417,
+      "p0_realized_utility": 0.9802085749308269,
+      "oracle_utility": 0.9823385648727417,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0546",
+      "group_id": "g26",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.060658916473388676,
+        "action.retrieval.vector": -0.03007893721262614,
+        "action.reasoning.decompose": -0.08630086962381998
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.15850228071212769,
+        "action.retrieval.vector": 0.7412173748016357,
+        "action.reasoning.decompose": 0.10028034448623657
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.03007893721262614,
+      "p0_realized_utility": -0.060658916473388676,
+      "oracle_utility": -0.03007893721262614,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0547",
+      "group_id": "g27",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.935299485842387,
+        "action.retrieval.vector": 0.9376877444585164,
+        "action.reasoning.decompose": 0.9360801862080892
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1730169802904129,
+        "action.retrieval.vector": 0.5317753553390503,
+        "action.reasoning.decompose": 0.2952077090740204
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9376877444585164,
+      "p0_realized_utility": 0.935299485842387,
+      "oracle_utility": 0.9376877444585164,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0548",
+      "group_id": "g28",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05995634078979492,
+        "action.retrieval.vector": 0.9655171203613281,
+        "action.reasoning.decompose": 0.9607372296651204
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.04992717504501343,
+        "action.retrieval.vector": 0.20978467166423798,
+        "action.reasoning.decompose": 0.7402881979942322
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9607372296651204,
+      "p0_realized_utility": -0.05995634078979492,
+      "oracle_utility": 0.9655171203613281,
+      "regret": 0.004779890696207656
+    },
+    {
+      "task_id": "diverse_0549",
+      "group_id": "g29",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9838081610997519,
+        "action.retrieval.vector": 0.9869445972442626,
+        "action.reasoning.decompose": 0.950717534383138
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.2011743187904358,
+        "action.retrieval.vector": 0.5763025283813477,
+        "action.reasoning.decompose": 0.22252312302589417
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9869445972442626,
+      "p0_realized_utility": 0.9838081610997519,
+      "oracle_utility": 0.9869445972442626,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0550",
+      "group_id": "g30",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9702682113647462,
+        "action.retrieval.vector": 0.9852001825968424,
+        "action.reasoning.decompose": 0.960718630472819
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.24257633090019226,
+        "action.retrieval.vector": 0.545434296131134,
+        "action.reasoning.decompose": 0.2119893729686737
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9852001825968424,
+      "p0_realized_utility": 0.9702682113647462,
+      "oracle_utility": 0.9852001825968424,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0551",
+      "group_id": "g31",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.12973436864217122,
+        "action.retrieval.vector": -0.10676295789082846,
+        "action.reasoning.decompose": -0.06849673748016358
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.17974942922592163,
+        "action.retrieval.vector": 0.17021705210208893,
+        "action.reasoning.decompose": 0.6500335335731506
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.06849673748016358,
+      "p0_realized_utility": -0.12973436864217122,
+      "oracle_utility": -0.06849673748016358,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0552",
+      "group_id": "g32",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05907754071553549,
+        "action.retrieval.vector": -0.05665354919433595,
+        "action.reasoning.decompose": 0.9119016469319662
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.2332010120153427,
+        "action.retrieval.vector": 0.6428039073944092,
+        "action.reasoning.decompose": 0.12399508059024811
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.05665354919433595,
+      "p0_realized_utility": -0.05907754071553549,
+      "oracle_utility": 0.9119016469319662,
+      "regret": 0.9685551961263021
+    },
+    {
+      "task_id": "diverse_0553",
+      "group_id": "g33",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.10708752473195396,
+        "action.retrieval.vector": -0.0409399003982544,
+        "action.reasoning.decompose": -0.11911318302154542
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.08606943488121033,
+        "action.retrieval.vector": 0.7197974324226379,
+        "action.reasoning.decompose": 0.19413311779499054
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.0409399003982544,
+      "p0_realized_utility": -0.10708752473195396,
+      "oracle_utility": -0.0409399003982544,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0554",
+      "group_id": "g34",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05439794381459554,
+        "action.retrieval.vector": -0.04927177238464356,
+        "action.reasoning.decompose": 0.8707000783284505
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1671963632106781,
+        "action.retrieval.vector": 0.6831364631652832,
+        "action.reasoning.decompose": 0.1496671587228775
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.04927177238464356,
+      "p0_realized_utility": -0.05439794381459554,
+      "oracle_utility": 0.8707000783284505,
+      "regret": 0.9199718507130941
+    },
+    {
+      "task_id": "diverse_0555",
+      "group_id": "g35",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9529423809051514,
+        "action.retrieval.vector": 0.9763893327713012,
+        "action.reasoning.decompose": 0.9319696095784505
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.26093071699142456,
+        "action.retrieval.vector": 0.5516289472579956,
+        "action.reasoning.decompose": 0.18744035065174103
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9763893327713012,
+      "p0_realized_utility": 0.9529423809051514,
+      "oracle_utility": 0.9763893327713012,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0556",
+      "group_id": "g36",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.040687082608540856,
+        "action.retrieval.vector": 0.9590449183781942,
+        "action.reasoning.decompose": 0.95677077293396
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.04973696172237396,
+        "action.retrieval.vector": 0.22264687716960907,
+        "action.reasoning.decompose": 0.7276161313056946
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.95677077293396,
+      "p0_realized_utility": -0.040687082608540856,
+      "oracle_utility": 0.9590449183781942,
+      "regret": 0.00227414544423421
+    },
+    {
+      "task_id": "diverse_0557",
+      "group_id": "g37",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9804082940419515,
+        "action.retrieval.vector": 0.987774985631307,
+        "action.reasoning.decompose": 0.9363236265182495
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.20294733345508575,
+        "action.retrieval.vector": 0.5560527443885803,
+        "action.reasoning.decompose": 0.24099992215633392
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.987774985631307,
+      "p0_realized_utility": 0.9804082940419515,
+      "oracle_utility": 0.987774985631307,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0558",
+      "group_id": "g38",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9763563480377198,
+        "action.retrieval.vector": 0.9811248009999594,
+        "action.reasoning.decompose": 0.9613675966262817
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.25526297092437744,
+        "action.retrieval.vector": 0.6516944169998169,
+        "action.reasoning.decompose": 0.09304255992174149
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9811248009999594,
+      "p0_realized_utility": 0.9763563480377198,
+      "oracle_utility": 0.9811248009999594,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0559",
+      "group_id": "g39",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.09554180971781415,
+        "action.retrieval.vector": -0.11181836827596028,
+        "action.reasoning.decompose": -0.062414626121521
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1918807178735733,
+        "action.retrieval.vector": 0.18724744021892548,
+        "action.reasoning.decompose": 0.6208718419075012
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.062414626121521,
+      "p0_realized_utility": -0.09554180971781415,
+      "oracle_utility": -0.062414626121521,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0560",
+      "group_id": "g0",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.8708496548334758,
+        "action.retrieval.vector": -0.049212447484334315,
+        "action.reasoning.decompose": 0.9148050193786621
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.22960621118545532,
+        "action.retrieval.vector": 0.6224033236503601,
+        "action.reasoning.decompose": 0.147990420460701
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.049212447484334315,
+      "p0_realized_utility": 0.8708496548334758,
+      "oracle_utility": 0.9148050193786621,
+      "regret": 0.9640174668629964
+    },
+    {
+      "task_id": "diverse_0561",
+      "group_id": "g1",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.979808448791504,
+        "action.retrieval.vector": 0.9845704520543417,
+        "action.reasoning.decompose": -0.030796887397766114
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.057378023862838745,
+        "action.retrieval.vector": 0.49272802472114563,
+        "action.reasoning.decompose": 0.44989386200904846
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9845704520543417,
+      "p0_realized_utility": 0.979808448791504,
+      "oracle_utility": 0.9845704520543417,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0562",
+      "group_id": "g2",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.048032030105590824,
+        "action.retrieval.vector": 0.9583646332422893,
+        "action.reasoning.decompose": -0.12773353385925296
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.16995331645011902,
+        "action.retrieval.vector": 0.7107797265052795,
+        "action.reasoning.decompose": 0.11926697194576263
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9583646332422893,
+      "p0_realized_utility": -0.048032030105590824,
+      "oracle_utility": 0.9583646332422893,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0563",
+      "group_id": "g3",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.049194955825805665,
+        "action.retrieval.vector": 0.9782522376378378,
+        "action.reasoning.decompose": 0.9115229250590007
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1490839123725891,
+        "action.retrieval.vector": 0.40932875871658325,
+        "action.reasoning.decompose": 0.44158729910850525
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9115229250590007,
+      "p0_realized_utility": -0.049194955825805665,
+      "oracle_utility": 0.9782522376378378,
+      "regret": 0.06672931257883707
+    },
+    {
+      "task_id": "diverse_0564",
+      "group_id": "g4",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.0614126927057902,
+        "action.retrieval.vector": 0.9559707590738932,
+        "action.reasoning.decompose": 0.9609284893671671
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.05314331501722336,
+        "action.retrieval.vector": 0.22036464512348175,
+        "action.reasoning.decompose": 0.7264921069145203
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": 0.9609284893671671,
+      "p0_realized_utility": -0.0614126927057902,
+      "oracle_utility": 0.9609284893671671,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0565",
+      "group_id": "g5",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9827823696136475,
+        "action.retrieval.vector": 0.9832915980021159,
+        "action.reasoning.decompose": -0.04575977961222331
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1936921626329422,
+        "action.retrieval.vector": 0.5963175892829895,
+        "action.reasoning.decompose": 0.2099902331829071
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9832915980021159,
+      "p0_realized_utility": 0.9827823696136475,
+      "oracle_utility": 0.9832915980021159,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0566",
+      "group_id": "g6",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9844234145482381,
+        "action.retrieval.vector": 0.9613952204386393,
+        "action.reasoning.decompose": 0.9371736307144165
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.2358051985502243,
+        "action.retrieval.vector": 0.6105152368545532,
+        "action.reasoning.decompose": 0.15367959439754486
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.9613952204386393,
+      "p0_realized_utility": 0.9844234145482381,
+      "oracle_utility": 0.9844234145482381,
+      "regret": 0.023028194109598776
+    },
+    {
+      "task_id": "diverse_0567",
+      "group_id": "g7",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.10922433662414552,
+        "action.retrieval.vector": -0.10200903828938802,
+        "action.reasoning.decompose": -0.06456398518880208
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.17866206169128418,
+        "action.retrieval.vector": 0.13194598257541656,
+        "action.reasoning.decompose": 0.6893919706344604
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.06456398518880208,
+      "p0_realized_utility": -0.10922433662414552,
+      "oracle_utility": -0.06456398518880208,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0568",
+      "group_id": "g8",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9356977672576905,
+        "action.retrieval.vector": 0.9495059976577759,
+        "action.reasoning.decompose": 0.9525755662918091
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.2293589562177658,
+        "action.retrieval.vector": 0.6128541827201843,
+        "action.reasoning.decompose": 0.15778686106204987
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": 0.9495059976577759,
+      "p0_realized_utility": 0.9356977672576905,
+      "oracle_utility": 0.9525755662918091,
+      "regret": 0.003069568634033182
+    },
+    {
+      "task_id": "diverse_0569",
+      "group_id": "g9",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9806204392115275,
+        "action.retrieval.vector": 0.9846177215576172,
+        "action.reasoning.decompose": -0.03928666877746582
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.03326070308685303,
+        "action.retrieval.vector": 0.20948804914951324,
+        "action.reasoning.decompose": 0.7572512030601501
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.03928666877746582,
+      "p0_realized_utility": 0.9806204392115275,
+      "oracle_utility": 0.9846177215576172,
+      "regret": 1.023904390335083
+    },
+    {
+      "task_id": "diverse_0570",
+      "group_id": "g10",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.056332145373026526,
+        "action.retrieval.vector": -0.04128371365865072,
+        "action.reasoning.decompose": -0.12128110472361246
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1618979573249817,
+        "action.retrieval.vector": 0.6991567611694336,
+        "action.reasoning.decompose": 0.13894522190093994
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.04128371365865072,
+      "p0_realized_utility": -0.056332145373026526,
+      "oracle_utility": -0.04128371365865072,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0571",
+      "group_id": "g11",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.12619854831695557,
+        "action.retrieval.vector": -0.09427898756663006,
+        "action.reasoning.decompose": 0.8422295420964558
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1643998771905899,
+        "action.retrieval.vector": 0.47420409321784973,
+        "action.reasoning.decompose": 0.3613959848880768
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.09427898756663006,
+      "p0_realized_utility": -0.12619854831695557,
+      "oracle_utility": 0.8422295420964558,
+      "regret": 0.936508529663086
+    },
+    {
+      "task_id": "diverse_0572",
+      "group_id": "g12",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05893865712483724,
+        "action.retrieval.vector": -0.05218987178802491,
+        "action.reasoning.decompose": -0.039397112528483075
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.05735441669821739,
+        "action.retrieval.vector": 0.2783261835575104,
+        "action.reasoning.decompose": 0.6643193960189819
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.039397112528483075,
+      "p0_realized_utility": -0.05893865712483724,
+      "oracle_utility": -0.039397112528483075,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0573",
+      "group_id": "g13",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9858184642791749,
+        "action.retrieval.vector": 0.9880688794453939,
+        "action.reasoning.decompose": 0.9308577664693196
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.18954592943191528,
+        "action.retrieval.vector": 0.6680885553359985,
+        "action.reasoning.decompose": 0.14236553013324738
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9880688794453939,
+      "p0_realized_utility": 0.9858184642791749,
+      "oracle_utility": 0.9880688794453939,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0574",
+      "group_id": "g14",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.02655965073903402,
+        "action.retrieval.vector": 0.9874939200083415,
+        "action.reasoning.decompose": 0.9585458386739095
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.22391220927238464,
+        "action.retrieval.vector": 0.5245089530944824,
+        "action.reasoning.decompose": 0.25157880783081055
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9874939200083415,
+      "p0_realized_utility": -0.02655965073903402,
+      "oracle_utility": 0.9874939200083415,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0575",
+      "group_id": "g15",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05026127942403158,
+        "action.retrieval.vector": -0.11423211574554444,
+        "action.reasoning.decompose": -0.04855589389801025
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.17797528207302094,
+        "action.retrieval.vector": 0.13111406564712524,
+        "action.reasoning.decompose": 0.6909106969833374
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.04855589389801025,
+      "p0_realized_utility": -0.05026127942403158,
+      "oracle_utility": -0.04855589389801025,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0576",
+      "group_id": "g16",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.06021528180440267,
+        "action.retrieval.vector": 0.9717999614079793,
+        "action.reasoning.decompose": -0.08330389022827149
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.2521776258945465,
+        "action.retrieval.vector": 0.5627811551094055,
+        "action.reasoning.decompose": 0.18504118919372559
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9717999614079793,
+      "p0_realized_utility": -0.06021528180440267,
+      "oracle_utility": 0.9717999614079793,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0577",
+      "group_id": "g17",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.11724872334798175,
+        "action.retrieval.vector": -0.09414907741546633,
+        "action.reasoning.decompose": -0.08062961800893148
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.09184522181749344,
+        "action.retrieval.vector": 0.7096021175384521,
+        "action.reasoning.decompose": 0.19855272769927979
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.09414907741546633,
+      "p0_realized_utility": -0.11724872334798175,
+      "oracle_utility": -0.08062961800893148,
+      "regret": 0.013519459406534845
+    },
+    {
+      "task_id": "diverse_0578",
+      "group_id": "g18",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.03777312246958415,
+        "action.retrieval.vector": 0.9587540330886841,
+        "action.reasoning.decompose": -0.13823918279012043
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1563921868801117,
+        "action.retrieval.vector": 0.711836576461792,
+        "action.reasoning.decompose": 0.1317712962627411
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9587540330886841,
+      "p0_realized_utility": -0.03777312246958415,
+      "oracle_utility": 0.9587540330886841,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0579",
+      "group_id": "g19",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.03294761562347412,
+        "action.retrieval.vector": 0.9768063529332479,
+        "action.reasoning.decompose": 0.9497334321339925
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.2587093412876129,
+        "action.retrieval.vector": 0.5039563179016113,
+        "action.reasoning.decompose": 0.23733435571193695
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9768063529332479,
+      "p0_realized_utility": -0.03294761562347412,
+      "oracle_utility": 0.9768063529332479,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0580",
+      "group_id": "g20",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.08196532821655272,
+        "action.retrieval.vector": 0.9630959405899048,
+        "action.reasoning.decompose": -0.03217285474141439
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.04944194108247757,
+        "action.retrieval.vector": 0.20635508000850677,
+        "action.reasoning.decompose": 0.7442029714584351
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.03217285474141439,
+      "p0_realized_utility": -0.08196532821655272,
+      "oracle_utility": 0.9630959405899048,
+      "regret": 0.9952687953313192
+    },
+    {
+      "task_id": "diverse_0581",
+      "group_id": "g21",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9829062697092693,
+        "action.retrieval.vector": 0.9878719081878662,
+        "action.reasoning.decompose": 0.9296755634943644
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.20301508903503418,
+        "action.retrieval.vector": 0.5679271221160889,
+        "action.reasoning.decompose": 0.22905775904655457
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9878719081878662,
+      "p0_realized_utility": 0.9829062697092693,
+      "oracle_utility": 0.9878719081878662,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0582",
+      "group_id": "g22",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9794240144093832,
+        "action.retrieval.vector": 0.9800422140757242,
+        "action.reasoning.decompose": -0.051885711034139
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.23347871005535126,
+        "action.retrieval.vector": 0.5587857961654663,
+        "action.reasoning.decompose": 0.20773549377918243
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9800422140757242,
+      "p0_realized_utility": 0.9794240144093832,
+      "oracle_utility": 0.9800422140757242,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0583",
+      "group_id": "g23",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.1078148078918457,
+        "action.retrieval.vector": -0.09431042448679608,
+        "action.reasoning.decompose": -0.04267794354756673
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.16401898860931396,
+        "action.retrieval.vector": 0.11117375642061234,
+        "action.reasoning.decompose": 0.7248072624206543
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.04267794354756673,
+      "p0_realized_utility": -0.1078148078918457,
+      "oracle_utility": -0.04267794354756673,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0584",
+      "group_id": "g24",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.06970228830973307,
+        "action.retrieval.vector": 0.9612608744303386,
+        "action.reasoning.decompose": 0.9290975805918376
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.22976352274417877,
+        "action.retrieval.vector": 0.5680921077728271,
+        "action.reasoning.decompose": 0.20214436948299408
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9612608744303386,
+      "p0_realized_utility": -0.06970228830973307,
+      "oracle_utility": 0.9612608744303386,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0585",
+      "group_id": "g25",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.030881452878316243,
+        "action.retrieval.vector": 0.9797607075373331,
+        "action.reasoning.decompose": 0.967157600402832
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.06372607499361038,
+        "action.retrieval.vector": 0.5870797038078308,
+        "action.reasoning.decompose": 0.3491942584514618
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9797607075373331,
+      "p0_realized_utility": -0.030881452878316243,
+      "oracle_utility": 0.9797607075373331,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0586",
+      "group_id": "g26",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.055685896873474125,
+        "action.retrieval.vector": 0.9500468289057413,
+        "action.reasoning.decompose": -0.05367174530029297
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1677887886762619,
+        "action.retrieval.vector": 0.6700553894042969,
+        "action.reasoning.decompose": 0.16215580701828003
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9500468289057413,
+      "p0_realized_utility": -0.055685896873474125,
+      "oracle_utility": 0.9500468289057413,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0587",
+      "group_id": "g27",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9547664737701417,
+        "action.retrieval.vector": -0.027908637682596844,
+        "action.reasoning.decompose": 0.937766980489095
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1383310854434967,
+        "action.retrieval.vector": 0.35277917981147766,
+        "action.reasoning.decompose": 0.5088897347450256
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": 0.937766980489095,
+      "p0_realized_utility": 0.9547664737701417,
+      "oracle_utility": 0.9547664737701417,
+      "regret": 0.016999493281046663
+    },
+    {
+      "task_id": "diverse_0588",
+      "group_id": "g28",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9479860343933106,
+        "action.retrieval.vector": -0.03971154276529948,
+        "action.reasoning.decompose": -0.03978448518117269
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.0511990524828434,
+        "action.retrieval.vector": 0.2266085296869278,
+        "action.reasoning.decompose": 0.7221924066543579
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.direct",
+      "p1_realized_utility": -0.03978448518117269,
+      "p0_realized_utility": 0.9479860343933106,
+      "oracle_utility": 0.9479860343933106,
+      "regret": 0.9877705195744834
+    },
+    {
+      "task_id": "diverse_0589",
+      "group_id": "g29",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9833518447875977,
+        "action.retrieval.vector": 0.9844908062616984,
+        "action.reasoning.decompose": -0.06085242366790771
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.2030126005411148,
+        "action.retrieval.vector": 0.5900733470916748,
+        "action.reasoning.decompose": 0.20691408216953278
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9844908062616984,
+      "p0_realized_utility": 0.9833518447875977,
+      "oracle_utility": 0.9844908062616984,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0590",
+      "group_id": "g30",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.025286209424336754,
+        "action.retrieval.vector": 0.9866040646235148,
+        "action.reasoning.decompose": 0.9509995956420898
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.22418612241744995,
+        "action.retrieval.vector": 0.518198549747467,
+        "action.reasoning.decompose": 0.2576153576374054
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9866040646235148,
+      "p0_realized_utility": -0.025286209424336754,
+      "oracle_utility": 0.9866040646235148,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0591",
+      "group_id": "g31",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.1200170726776123,
+        "action.retrieval.vector": -0.0871815938949585,
+        "action.reasoning.decompose": -0.0893474801381429
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.18218252062797546,
+        "action.retrieval.vector": 0.1890874207019806,
+        "action.reasoning.decompose": 0.628730058670044
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.0893474801381429,
+      "p0_realized_utility": -0.1200170726776123,
+      "oracle_utility": -0.0871815938949585,
+      "regret": 0.002165886243184409
+    },
+    {
+      "task_id": "diverse_0592",
+      "group_id": "g32",
+      "subtype": "medium_mul",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.044634715080261234,
+        "action.retrieval.vector": 0.9602755718231201,
+        "action.reasoning.decompose": -0.08651743761698405
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.241499662399292,
+        "action.retrieval.vector": 0.6165033578872681,
+        "action.reasoning.decompose": 0.14199700951576233
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9602755718231201,
+      "p0_realized_utility": -0.044634715080261234,
+      "oracle_utility": 0.9602755718231201,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0593",
+      "group_id": "g33",
+      "subtype": "multi_step_word",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9780945380528768,
+        "action.retrieval.vector": 0.9826416654586791,
+        "action.reasoning.decompose": 0.9723223864237467
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.06632741540670395,
+        "action.retrieval.vector": 0.7713776230812073,
+        "action.reasoning.decompose": 0.16229502856731415
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9826416654586791,
+      "p0_realized_utility": 0.9780945380528768,
+      "oracle_utility": 0.9826416654586791,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0594",
+      "group_id": "g34",
+      "subtype": "trap_near",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.04106651178995768,
+        "action.retrieval.vector": -0.017893301963806153,
+        "action.reasoning.decompose": -0.07121919218699138
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.15926317870616913,
+        "action.retrieval.vector": 0.7178518176078796,
+        "action.reasoning.decompose": 0.1228850856423378
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": -0.017893301963806153,
+      "p0_realized_utility": -0.04106651178995768,
+      "oracle_utility": -0.017893301963806153,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0595",
+      "group_id": "g35",
+      "subtype": "novel_pattern",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05985603173573811,
+        "action.retrieval.vector": -0.049794036865234384,
+        "action.reasoning.decompose": 0.9491107575098673
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.17293694615364075,
+        "action.retrieval.vector": 0.5228625535964966,
+        "action.reasoning.decompose": 0.30420050024986267
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.049794036865234384,
+      "p0_realized_utility": -0.05985603173573811,
+      "oracle_utility": 0.9491107575098673,
+      "regret": 0.9989047943751017
+    },
+    {
+      "task_id": "diverse_0596",
+      "group_id": "g36",
+      "subtype": "large_arithmetic",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.05861586125691732,
+        "action.retrieval.vector": -0.03721060562133789,
+        "action.reasoning.decompose": 0.9722659660975138
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.05385240912437439,
+        "action.retrieval.vector": 0.22822028398513794,
+        "action.reasoning.decompose": 0.7179273366928101
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": 0.9722659660975138,
+      "p0_realized_utility": -0.05861586125691732,
+      "oracle_utility": 0.9722659660975138,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0597",
+      "group_id": "g37",
+      "subtype": "simple_compare",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.980058895111084,
+        "action.retrieval.vector": 0.9873430830637614,
+        "action.reasoning.decompose": -0.04875985113779704
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.19926446676254272,
+        "action.retrieval.vector": 0.5896599888801575,
+        "action.reasoning.decompose": 0.2110755294561386
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.9873430830637614,
+      "p0_realized_utility": 0.980058895111084,
+      "oracle_utility": 0.9873430830637614,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0598",
+      "group_id": "g38",
+      "subtype": "simple_add",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": 0.9732302080790203,
+        "action.retrieval.vector": 0.981449834505717,
+        "action.reasoning.decompose": -0.08163616847991943
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.231695756316185,
+        "action.retrieval.vector": 0.5704577565193176,
+        "action.reasoning.decompose": 0.19784648716449738
+      },
+      "selected_action": "action.retrieval.vector",
+      "oracle_action": "action.retrieval.vector",
+      "p1_realized_utility": 0.981449834505717,
+      "p0_realized_utility": 0.9732302080790203,
+      "oracle_utility": 0.981449834505717,
+      "regret": 0.0
+    },
+    {
+      "task_id": "diverse_0599",
+      "group_id": "g39",
+      "subtype": "pattern_extend",
+      "split": "test",
+      "utilities": {
+        "action.reasoning.direct": -0.11403303813934326,
+        "action.retrieval.vector": -0.08300312741597494,
+        "action.reasoning.decompose": -0.05904199186960856
+      },
+      "probabilities": {
+        "action.reasoning.direct": 0.1921790987253189,
+        "action.retrieval.vector": 0.18347392976284027,
+        "action.reasoning.decompose": 0.624346911907196
+      },
+      "selected_action": "action.reasoning.decompose",
+      "oracle_action": "action.reasoning.decompose",
+      "p1_realized_utility": -0.05904199186960856,
+      "p0_realized_utility": -0.11403303813934326,
+      "oracle_utility": -0.05904199186960856,
+      "regret": 0.0
+    }
+  ],
+  "report_generated_at": "2026-08-02T01:02:19.852845+00:00"
+}
