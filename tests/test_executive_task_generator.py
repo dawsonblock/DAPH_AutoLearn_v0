@@ -12,21 +12,22 @@ from daph_learning.executive.task_generator import (
 
 class TestGenerateDiverseTasks:
     def test_generates_correct_count(self):
-        tasks = generate_diverse_tasks(n_tasks=80, n_groups=10, seed=42)
-        assert len(tasks) == 80
+        tasks = generate_diverse_tasks(n_tasks=90, n_groups=10, seed=42)
+        assert len(tasks) == 90
 
-    def test_has_8_subtypes(self):
-        tasks = generate_diverse_tasks(n_tasks=80, n_groups=10, seed=42)
+    def test_has_9_subtypes(self):
+        tasks = generate_diverse_tasks(n_tasks=90, n_groups=10, seed=42)
         subtypes = {t["subtype"] for t in tasks}
-        assert len(subtypes) == 8
+        assert len(subtypes) == 9
         assert "simple_add" in subtypes
         assert "simple_compare" in subtypes
-        assert "medium_mul" in subtypes
+        assert "digit_manip" in subtypes
         assert "pattern_extend" in subtypes
-        assert "large_arithmetic" in subtypes
+        assert "formula_apply" in subtypes
+        assert "multi_step_arith" in subtypes
         assert "multi_step_word" in subtypes
+        assert "hard_mul" in subtypes
         assert "trap_near" in subtypes
-        assert "novel_pattern" in subtypes
 
     def test_all_tasks_have_required_fields(self):
         tasks = generate_diverse_tasks(n_tasks=16, n_groups=4, seed=42)
@@ -53,14 +54,14 @@ class TestGenerateDiverseTasks:
         assert len(groups) == 8
 
     def test_simple_compare_answer_is_0_or_1(self):
-        tasks = generate_diverse_tasks(n_tasks=80, n_groups=10, seed=42)
+        tasks = generate_diverse_tasks(n_tasks=90, n_groups=10, seed=42)
         comp = [t for t in tasks if t["subtype"] == "simple_compare"]
         assert len(comp) > 0
         for t in comp:
             assert t["answer"] in (0, 1)
 
     def test_trap_near_answer_is_sum_not_product(self):
-        tasks = generate_diverse_tasks(n_tasks=80, n_groups=10, seed=42)
+        tasks = generate_diverse_tasks(n_tasks=90, n_groups=10, seed=42)
         traps = [t for t in tasks if t["subtype"] == "trap_near"]
         assert len(traps) > 0
         for t in traps:
@@ -72,19 +73,40 @@ class TestGenerateDiverseTasks:
             assert t["answer"] == a + b
             assert t["answer"] != a * b
 
-    def test_novel_pattern_digit_sum(self):
-        tasks = generate_diverse_tasks(n_tasks=80, n_groups=10, seed=42)
-        novel = [t for t in tasks if t["subtype"] == "novel_pattern"]
-        assert len(novel) > 0
-        for t in novel:
+    def test_digit_manip_has_digit_operation(self):
+        tasks = generate_diverse_tasks(n_tasks=90, n_groups=10, seed=42)
+        digit_tasks = [t for t in tasks if t["subtype"] == "digit_manip"]
+        assert len(digit_tasks) > 0
+        for t in digit_tasks:
             assert isinstance(t["answer"], int)
 
     def test_pattern_extend_has_sequence(self):
-        tasks = generate_diverse_tasks(n_tasks=80, n_groups=10, seed=42)
+        tasks = generate_diverse_tasks(n_tasks=90, n_groups=10, seed=42)
         patterns = [t for t in tasks if t["subtype"] == "pattern_extend"]
         assert len(patterns) > 0
         for t in patterns:
             assert "sequence" in t["prompt"].lower()
+
+    def test_formula_apply_has_formula_keyword(self):
+        tasks = generate_diverse_tasks(n_tasks=90, n_groups=10, seed=42)
+        formulas = [t for t in tasks if t["subtype"] == "formula_apply"]
+        assert len(formulas) > 0
+        for t in formulas:
+            assert isinstance(t["answer"], int)
+
+    def test_hard_mul_is_two_digit(self):
+        tasks = generate_diverse_tasks(n_tasks=90, n_groups=10, seed=42)
+        hards = [t for t in tasks if t["subtype"] == "hard_mul"]
+        assert len(hards) > 0
+        for t in hards:
+            assert "×" in t["prompt"]
+
+    def test_multi_step_arith_has_multiple_steps(self):
+        tasks = generate_diverse_tasks(n_tasks=90, n_groups=10, seed=42)
+        multi = [t for t in tasks if t["subtype"] == "multi_step_arith"]
+        assert len(multi) > 0
+        for t in multi:
+            assert "First calculate" in t["prompt"]
 
     def test_subtype_groups_are_disjoint(self):
         assert RETRIEVAL_POSITIVE_SUBTYPES.isdisjoint(RETRIEVAL_TRAP_SUBTYPES)
@@ -98,19 +120,19 @@ class TestGenerateDiverseTasks:
 
 class TestBuildRetrievalStore:
     def test_store_only_has_positive_subtypes(self):
-        tasks = generate_diverse_tasks(n_tasks=80, n_groups=10, seed=42)
+        tasks = generate_diverse_tasks(n_tasks=90, n_groups=10, seed=42)
         store = build_retrieval_store(tasks, n_per_subtype=3)
         store_subtypes = {s["subtype"] for s in store}
         assert store_subtypes == RETRIEVAL_POSITIVE_SUBTYPES
 
     def test_store_has_examples_per_subtype(self):
-        tasks = generate_diverse_tasks(n_tasks=80, n_groups=10, seed=42)
+        tasks = generate_diverse_tasks(n_tasks=90, n_groups=10, seed=42)
         store = build_retrieval_store(tasks, n_per_subtype=3)
         # 2 positive subtypes × 3 = 6
         assert len(store) == 6
 
     def test_store_entries_have_required_fields(self):
-        tasks = generate_diverse_tasks(n_tasks=80, n_groups=10, seed=42)
+        tasks = generate_diverse_tasks(n_tasks=90, n_groups=10, seed=42)
         store = build_retrieval_store(tasks, n_per_subtype=2)
         for s in store:
             assert "prompt" in s
@@ -121,7 +143,7 @@ class TestBuildRetrievalStore:
         """The store should NOT have trap_near examples — the whole
         point is that retrieval misleads trap_near tasks because the
         store has multiplication examples, not trap examples."""
-        tasks = generate_diverse_tasks(n_tasks=80, n_groups=10, seed=42)
+        tasks = generate_diverse_tasks(n_tasks=90, n_groups=10, seed=42)
         store = build_retrieval_store(tasks, n_per_subtype=5)
         store_subtypes = {s["subtype"] for s in store}
         assert "trap_near" not in store_subtypes

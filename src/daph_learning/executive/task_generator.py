@@ -1,41 +1,39 @@
-"""DAPH v0.4 — Diverse task generator for executive qualification.
+"""DAPH v0.4 — B4-Redesigned task generator for /no_think conditional structure.
 
-Generates arithmetic tasks across multiple subtypes designed to create
-**conditional structure** — different actions should win on different
-subtypes, so the executive policy must actually route conditionally.
+With /no_think mode, Qwen3-8B can handle simple arithmetic but fails on
+problems requiring multi-step reasoning or large computations. This
+generator creates tasks with a WIDER difficulty spread so that:
 
-Subtype design (expected action advantage):
+  - DIRECT (/no_think) wins on simple tasks it can solve in one shot
+  - DECOMPOSE wins on multi-step tasks (each sub-step is simple enough
+    for /no_think, but the full problem requires tracking intermediates)
+  - RETRIEVAL wins on pattern tasks (examples help model see the pattern)
+  - RETRIEVAL HURTS on trap tasks (misleading examples)
+
+Subtype design (expected action advantage with /no_think):
   - simple_add:       a + b, a,b < 20
-                      → DIRECT should win (trivial, no overhead needed)
+                      → DIRECT wins (trivial)
   - simple_compare:   "is a > b?" a,b < 50
-                      → DIRECT should win (simple yes/no)
-  - medium_mul:       a × b, a in [3,12], b in [10,99]
-                      → RETRIEVAL should win (examples of multiplication
-                        patterns help; direct often gets these wrong)
+                      → DIRECT wins (trivial)
+  - digit_manip:      digit sum or digit count of a number
+                      → DIRECT wins (simple, no retrieval match)
   - pattern_extend:   number sequence "2, 4, 8, 16, ?"
-                      → RETRIEVAL should win (similar sequence examples
-                        in the store)
-  - large_arithmetic: (a + b) × c with large numbers
-                      → DECOMPOSE should win (needs step-by-step
-                        breakdown; direct fails, retrieval has no
-                        exact match)
-  - multi_step_word:  word problems requiring 2-3 arithmetic steps
-                      → DECOMPOSE should win (must decompose into
-                        sub-problems)
-  - trap_near:        problems that LOOK like a stored example but
-                      have a different operation
-                      → RETRIEVAL should HURT (retrieved example
-                        suggests wrong answer), DIRECT/DECOMPOSE win
-  - novel_pattern:    unusual formats not in the retrieval store
-                      → DIRECT should win (retrieval has nothing
-                        useful, decompose is overkill)
+                      → RETRIEVAL wins (examples help see the pattern)
+  - formula_apply:    apply a formula shown in examples
+                      → RETRIEVAL wins (examples show the method)
+  - multi_step_arith: 3-4 step arithmetic with medium numbers
+                      → DECOMPOSE wins (each step simple, full problem
+                        requires tracking intermediates)
+  - multi_step_word:  3-4 step word problems with medium numbers
+                      → DECOMPOSE wins (same logic)
+  - hard_mul:         2-digit × 2-digit multiplication
+                      → DECOMPOSE wins (break into partial products)
+  - trap_near:        looks like stored pattern but different operation
+                      → DIRECT wins, RETRIEVAL HURTS
 
-The retrieval store is built to contain examples for SOME subtypes
-(medium_mul, pattern_extend) but NOT others (large_arithmetic,
-novel_pattern, trap_near). This creates the conditional structure:
-  - Retrieval helps when the store has matching examples
-  - Retrieval hurts when the store has misleading examples (trap_near)
-  - Retrieval is neutral when the store has no matching examples
+Within-subtype difficulty variation creates the conditional structure
+that hidden states need to detect: same subtype, different difficulty,
+different winning action.
 """
 
 from __future__ import annotations
@@ -47,13 +45,13 @@ import numpy as np
 
 
 # Subtypes where retrieval examples ARE in the store
-RETRIEVAL_POSITIVE_SUBTYPES = {"medium_mul", "pattern_extend"}
+RETRIEVAL_POSITIVE_SUBTYPES = {"pattern_extend", "formula_apply"}
 # Subtypes where retrieval examples are MISLEADING
 RETRIEVAL_TRAP_SUBTYPES = {"trap_near"}
 # Subtypes where retrieval store has NO matching examples
 RETRIEVAL_NEUTRAL_SUBTYPES = {
-    "simple_add", "simple_compare", "large_arithmetic",
-    "multi_step_word", "novel_pattern",
+    "simple_add", "simple_compare", "digit_manip",
+    "multi_step_arith", "multi_step_word", "hard_mul",
 }
 
 ALL_SUBTYPES = list(RETRIEVAL_POSITIVE_SUBTYPES | RETRIEVAL_TRAP_SUBTYPES | RETRIEVAL_NEUTRAL_SUBTYPES)
@@ -64,7 +62,7 @@ def generate_diverse_tasks(
     n_groups: int = 40,
     seed: int = 42,
 ) -> list[dict[str, Any]]:
-    """Generate diverse arithmetic tasks across 8 subtypes.
+    """Generate diverse arithmetic tasks across 9 subtypes.
 
     Each subtype is designed so that a different action has an advantage,
     creating the conditional structure needed for executive routing.
@@ -120,19 +118,28 @@ def _generate_one_task(subtype: str, rng: np.random.RandomState, idx: int) -> di
             "answer": 1 if a > b else 0,
         }
 
-    if subtype == "medium_mul":
-        # Larger multiplication that's harder for no_think mode
-        a = int(rng.randint(12, 99))
-        b = int(rng.randint(12, 99))
-        return {
-            "prompt": f"Calculate: {a} × {b} = ?",
-            "answer": a * b,
-        }
+    if subtype == "digit_manip":
+        # Simple digit operations that /no_think can handle
+        # but retrieval store has no matching examples for
+        ops = ["digit_sum", "digit_count"]
+        op = ops[idx % len(ops)]
+        if op == "digit_sum":
+            n = int(rng.randint(100, 9999))
+            answer = sum(int(d) for d in str(abs(n)))
+            return {
+                "prompt": f"What is the sum of all digits in the number {n}?",
+                "answer": answer,
+            }
+        else:
+            n = int(rng.randint(100, 1000000))
+            return {
+                "prompt": f"How many digits are in the number {n}?",
+                "answer": len(str(abs(n))),
+            }
 
     if subtype == "pattern_extend":
-        # Sequences that benefit from reasoning mode (thinking) to
-        # identify the pattern. Not too hard — the model should get
-        # these right with thinking, but may struggle without.
+        # Number sequences — /no_think struggles to identify patterns
+        # but retrieval examples of similar patterns help
         patterns = ["geometric", "arithmetic", "square", "fibonacci"]
         pat = patterns[idx % len(patterns)]
         if pat == "geometric":
@@ -162,50 +169,104 @@ def _generate_one_task(subtype: str, rng: np.random.RandomState, idx: int) -> di
             "answer": answer,
         }
 
-    if subtype == "large_arithmetic":
-        # Three-step arithmetic with large numbers — too complex for
-        # no_think direct, benefits from retrieval examples of multi-step
-        # arithmetic or from decomposition
-        a = int(rng.randint(200, 800))
-        b = int(rng.randint(200, 800))
-        c = int(rng.randint(3, 15))
-        d = int(rng.randint(50, 200))
-        ops = rng.choice(["add_mul_sub", "mul_add_div", "add_add_mul"])
-        if ops == "add_mul_sub":
+    if subtype == "formula_apply":
+        # Apply a formula/method shown in retrieval examples
+        # Triangular numbers: T(n) = n*(n+1)/2
+        # The store has examples showing the formula
+        formulas = ["triangular", "double_sum", "power_sum"]
+        fmt = formulas[idx % len(formulas)]
+        if fmt == "triangular":
+            n = int(rng.randint(5, 20))
             return {
-                "prompt": f"First calculate {a} + {b}, then multiply the result by {c}, then subtract {d}. What is the final answer?",
+                "prompt": f"What is the {n}th triangular number? (T(n) = n*(n+1)/2)",
+                "answer": n * (n + 1) // 2,
+            }
+        elif fmt == "double_sum":
+            n = int(rng.randint(3, 12))
+            return {
+                "prompt": f"Calculate 2*(1+2+3+...+{n}). What is the result?",
+                "answer": 2 * n * (n + 1) // 2,
+            }
+        else:  # power_sum
+            n = int(rng.randint(2, 8))
+            return {
+                "prompt": f"Calculate 1^2 + 2^2 + 3^2 + ... + {n}^2. What is the result?",
+                "answer": n * (n + 1) * (2 * n + 1) // 6,
+            }
+
+    if subtype == "multi_step_arith":
+        # 3-4 step arithmetic with MEDIUM numbers
+        # Each step is simple enough for /no_think
+        # But tracking all steps at once is hard without thinking
+        ops = rng.choice(["add_mul_sub", "mul_add_div", "add_add_mul", "sub_mul_add"])
+        if ops == "add_mul_sub":
+            a = int(rng.randint(100, 500))
+            b = int(rng.randint(100, 500))
+            c = int(rng.randint(2, 12))
+            d = int(rng.randint(50, 300))
+            return {
+                "prompt": (
+                    f"First calculate {a} + {b}, then multiply the result by {c}, "
+                    f"then subtract {d}. What is the final answer?"
+                ),
                 "answer": (a + b) * c - d,
             }
         elif ops == "mul_add_div":
-            # Use integer division
+            a = int(rng.randint(20, 80))
+            c = int(rng.randint(3, 12))
+            b = int(rng.randint(100, 500))
+            d = int(rng.randint(2, 10))
             product = a * c
             total = product + b
-            # Make sure it divides evenly
-            d = int(rng.randint(2, 10))
-            total = (total // d) * d
+            total = (total // d) * d  # ensure even division
             return {
-                "prompt": f"First calculate {a} × {c}, then add {b}, then divide the result by {d} (integer division). What is the final answer?",
+                "prompt": (
+                    f"First calculate {a} × {c}, then add {b}, "
+                    f"then divide the result by {d} (integer division). "
+                    f"What is the final answer?"
+                ),
                 "answer": total // d,
             }
-        else:
+        elif ops == "add_add_mul":
+            a = int(rng.randint(100, 500))
+            b = int(rng.randint(100, 500))
+            d = int(rng.randint(10, 100))
+            c = int(rng.randint(2, 12))
             return {
-                "prompt": f"First calculate {a} + {b}, then add {d}, then multiply the result by {c}. What is the final answer?",
+                "prompt": (
+                    f"First calculate {a} + {b}, then add {d}, "
+                    f"then multiply the result by {c}. What is the final answer?"
+                ),
                 "answer": (a + b + d) * c,
+            }
+        else:  # sub_mul_add
+            a = int(rng.randint(300, 800))
+            b = int(rng.randint(50, 200))
+            c = int(rng.randint(2, 9))
+            d = int(rng.randint(100, 500))
+            return {
+                "prompt": (
+                    f"First calculate {a} - {b}, then multiply the result by {c}, "
+                    f"then add {d}. What is the final answer?"
+                ),
+                "answer": (a - b) * c + d,
             }
 
     if subtype == "multi_step_word":
-        # More complex word problems with 3-4 steps
+        # 3-4 step word problems with medium numbers
+        # Each step is simple but the full problem requires tracking
         templates = [
             ("apples", "bought", "gave away", "sold", "has"),
             ("books", "read", "borrowed", "returned", "has"),
             ("marbles", "found", "lost", "traded", "has"),
+            ("stickers", "collected", "gave away", "bought", "has"),
         ]
         tpl = templates[idx % len(templates)]
-        a = int(rng.randint(20, 80))
-        b = int(rng.randint(5, 30))
-        c = int(rng.randint(1, 15))
-        d = int(rng.randint(2, 10))
-        e = int(rng.randint(1, 5))
+        a = int(rng.randint(50, 200))
+        b = int(rng.randint(10, 50))
+        c = int(rng.randint(5, 30))
+        d = int(rng.randint(2, 20))
+        e = int(rng.randint(1, 10))
         return {
             "prompt": (
                 f"Sarah {tpl[1]} {a} {tpl[0]}. "
@@ -217,13 +278,20 @@ def _generate_one_task(subtype: str, rng: np.random.RandomState, idx: int) -> di
             "answer": a - b + c + d - e,
         }
 
+    if subtype == "hard_mul":
+        # 2-digit × 2-digit multiplication
+        # /no_think direct struggles with this
+        # Decompose can break into: a×10 + a×units, then sum
+        a = int(rng.randint(12, 98))
+        b = int(rng.randint(12, 98))
+        return {
+            "prompt": f"Calculate: {a} × {b} = ?",
+            "answer": a * b,
+        }
+
     if subtype == "trap_near":
-        # Problems that share surface keywords with stored multiplication
-        # examples but require a DIFFERENT operation. The retrieval store
-        # has "Calculate: X × Y = ?" examples, so retrieval will retrieve
-        # those and the model may be primed to multiply. But the task
-        # asks for addition using the × symbol as a separator, not an
-        # operator.
+        # Problems that share surface keywords with stored pattern examples
+        # but require a DIFFERENT operation
         a = int(rng.randint(3, 13))
         b = int(rng.randint(10, 50))
         # Use "×" as a visual separator but ask for the sum
@@ -232,26 +300,6 @@ def _generate_one_task(subtype: str, rng: np.random.RandomState, idx: int) -> di
             "answer": a + b,
         }
 
-    if subtype == "novel_pattern":
-        # Unusual problem formats not in the retrieval store
-        formats = [
-            ("digit_sum", "What is the sum of all digits in the number {n}?"),
-            ("reverse_subtract", "Reverse the digits of {n} to get a new number, then subtract the original. What is the result?"),
-            ("count_digits", "How many digits are in the number {n}?"),
-        ]
-        fmt = formats[idx % len(formats)]
-        if fmt[0] == "digit_sum":
-            n = int(rng.randint(1000, 99999))
-            answer = sum(int(d) for d in str(abs(n)))
-            return {"prompt": fmt[1].format(n=n), "answer": answer}
-        elif fmt[0] == "reverse_subtract":
-            n = int(rng.randint(100, 9999))
-            rev = int(str(abs(n))[::-1])
-            return {"prompt": fmt[1].format(n=n), "answer": rev - n}
-        else:  # count_digits
-            n = int(rng.randint(100, 1000000))
-            return {"prompt": fmt[1].format(n=n), "answer": len(str(abs(n)))}
-
     raise ValueError(f"unknown subtype: {subtype}")
 
 
@@ -259,14 +307,13 @@ def build_retrieval_store(tasks: list[dict], n_per_subtype: int = 5) -> list[dic
     """Build a retrieval store with examples from retrieval-positive subtypes ONLY.
 
     The store contains examples for:
-    - medium_mul: multiplication examples (helps medium_mul tasks)
     - pattern_extend: sequence examples (helps pattern_extend tasks)
+    - formula_apply: formula examples (helps formula_apply tasks)
 
     The store does NOT contain examples for:
-    - simple_add, simple_compare (too simple, direct handles them)
-    - large_arithmetic, multi_step_word (decompose handles them)
-    - trap_near (store has multiplication examples that MISLEAD these tasks)
-    - novel_pattern (no matching examples, retrieval is neutral)
+    - simple_add, simple_compare, digit_manip (direct handles them)
+    - multi_step_arith, multi_step_word, hard_mul (decompose handles them)
+    - trap_near (store has pattern examples that MISLEAD these tasks)
     """
     by_subtype: dict[str, list[dict]] = {}
     for t in tasks:
@@ -274,7 +321,6 @@ def build_retrieval_store(tasks: list[dict], n_per_subtype: int = 5) -> list[dic
         by_subtype.setdefault(st, []).append(t)
 
     store = []
-    # Only include examples from retrieval-positive subtypes
     for st in RETRIEVAL_POSITIVE_SUBTYPES:
         st_tasks = by_subtype.get(st, [])
         for t in st_tasks[:n_per_subtype]:
