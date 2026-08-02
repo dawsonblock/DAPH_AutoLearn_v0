@@ -235,6 +235,8 @@ class ActionExecution:
     latency_ms: float | None = None
     compute_cost: float | None = None
     failure_type: str | None = None
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
 
     def __post_init__(self) -> None:
         # Protocol invariant: unexecuted → not correct.
@@ -280,6 +282,8 @@ class ActionExecution:
             "latency_ms": self.latency_ms,
             "compute_cost": self.compute_cost,
             "failure_type": self.failure_type,
+            "prompt_tokens": self.prompt_tokens,
+            "completion_tokens": self.completion_tokens,
         }
 
 

@@ -1,4 +1,4 @@
-"""DAPH v0.4.0a2 — Reproduction hardening tests.
+"""DAPH v0.4.0a3 — Reproduction hardening tests.
 
 Tests for:
 * Corrupted reproduction artifact

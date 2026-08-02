@@ -1,13 +1,13 @@
-# DAPH AutoLearn v0.4.0a2
+# DAPH AutoLearn v0.4.0a3
 
 <div align="center">
 
 **Counterfactual compute-selection learning for auditable LLM tool-routing research.**
 
-`v0.4.0a2` · Python ≥ 3.10 · MIT-style research software
+`v0.4.0a3` · Python ≥ 3.10 · MIT-style research software
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/version-0.4.0a2-orange.svg)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.4.0a3-orange.svg)](./CHANGELOG.md)
 [![Tests](https://img.shields.io/badge/tests-1269%2B-brightgreen.svg)](#testing)
 [![Status](https://img.shields.io/badge/status-research%20alpha-lightgrey.svg)](./CLAIMS.md)
 
@@ -631,7 +631,7 @@ result.**
 
 ## Changelog
 
-### v0.4.0a2
+### v0.4.0a3
 
 - **Scientific integration release** — integrates all executive components
   into a single canonical scientific pipeline:
@@ -688,7 +688,7 @@ result.**
   final stage writes to `gate_a_runs/` (staging) — only promotion logic
   moves to `gate_a_qualified/`.
 - **Version normalization**: all version surfaces now agree on
-  0.4.0a2. Removed stale `CURRENT_EXPERIMENT_ID` from package source.
+  0.4.0a3. Removed stale `CURRENT_EXPERIMENT_ID` from package source.
 
 ### v0.3.10.5-alpha
 

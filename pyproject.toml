@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "daph-autolearn"
-version = "0.4.0a2"
-description = "DAPH AutoLearn v0.4.0a2: Executive scientific integration — canonical pipeline, corrected statistics, artifact integrity, B5 adaptive compute"
+version = "0.4.0a3"
+description = "DAPH AutoLearn v0.4.0a3: Executive scientific integration — canonical pipeline, corrected statistics, artifact integrity, B5 adaptive compute"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "packaging>=23"]
@@ -44,3 +44,14 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+    "mock_pipeline: mock pipeline tests (subprocess, slower)",
+    "unit: unit tests",
+    "integration: integration tests",
+    "scientific_pipeline: scientific pipeline tests",
+    "artifact_integrity: artifact integrity tests",
+    "negative_control: negative control tests",
+    "mock_model: mock model tests",
+    "real_model: real model tests (requires GPU and model access)",
+    "gpu: GPU tests (requires CUDA)",
+]

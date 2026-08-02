@@ -189,10 +189,10 @@ def _verify_answer(task: Mapping[str, Any], answer: int | None) -> bool | None:
 def _call_vllm_api(
     prompt: str,
     config: LLMGenerationConfig,
-) -> tuple[str, float]:
+) -> tuple[str, float, int, int]:
     """Call a vLLM OpenAI-compatible API server for a single prompt.
 
-    Returns (generated_text, latency_ms).
+    Returns (generated_text, latency_ms, prompt_tokens, completion_tokens).
     """
     import os
     api_key = config.vllm_api_key
@@ -224,10 +224,13 @@ def _call_vllm_api(
             data = json.loads(resp.read())
             text = data["choices"][0]["message"]["content"].strip()
             latency_ms = (time.time() - t0) * 1000.0
-            return text, latency_ms
+            usage = data.get("usage", {})
+            prompt_tokens = int(usage.get("prompt_tokens", 0))
+            completion_tokens = int(usage.get("completion_tokens", 0))
+            return text, latency_ms, prompt_tokens, completion_tokens
     except Exception as e:
         latency_ms = (time.time() - t0) * 1000.0
-        return f"ERROR: {e}", latency_ms
+        return f"ERROR: {e}", latency_ms, 0, 0
 
 
 # ──────────────────────────────────────────────────────────────────────
@@ -271,8 +274,9 @@ class DirectReasoningExecutor:
 
         if self.generate_fn is not None:
             text, latency_ms = self.generate_fn(prompt, self.config)
+            prompt_tokens, completion_tokens = 0, 0
         else:
-            text, latency_ms = _call_vllm_api(prompt, self.config)
+            text, latency_ms, prompt_tokens, completion_tokens = _call_vllm_api(prompt, self.config)
 
         answer = _parse_final_answer(text)
         verified = _verify_answer(task, answer)
@@ -293,6 +297,8 @@ class DirectReasoningExecutor:
             latency_ms=latency_ms,
             compute_cost=self.cost_estimate,
             failure_type=failure_type,
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
         )
 
 
@@ -399,8 +405,9 @@ class RetrievalLexicalExecutor:
 
         if self.generate_fn is not None:
             text, latency_ms = self.generate_fn(prompt, self.config)
+            prompt_tokens, completion_tokens = 0, 0
         else:
-            text, latency_ms = _call_vllm_api(prompt, self.config)
+            text, latency_ms, prompt_tokens, completion_tokens = _call_vllm_api(prompt, self.config)
 
         answer = _parse_final_answer(text)
         verified = _verify_answer(task, answer)
@@ -421,6 +428,8 @@ class RetrievalLexicalExecutor:
             latency_ms=latency_ms,
             compute_cost=self.cost_estimate,
             failure_type=failure_type,
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
         )
 
 
@@ -497,13 +506,25 @@ class ReasoningDecomposeExecutor:
         base_prompt = str(task.get("prompt", task.get("specification", "")))
         gen = self.generate_fn or _call_vllm_api
         total_latency = 0.0
+        total_prompt_tokens = 0
+        total_completion_tokens = 0
         all_outputs = []
+
+        def _call_gen(prompt_str):
+            """Call gen and normalize return to (text, latency, ptoks, ctoks)."""
+            result = gen(prompt_str, self.config)
+            if len(result) == 4:
+                return result
+            # generate_fn returns (text, latency)
+            return result[0], result[1], 0, 0
 
         # Step 1: Decompose the problem
         decompose_prompt = self._DECOMPOSE_PROMPT.format(
             problem=base_prompt, n=self.max_subproblems)
-        text1, latency1 = gen(decompose_prompt, self.config)
+        text1, latency1, pt1, ct1 = _call_gen(decompose_prompt)
         total_latency += latency1
+        total_prompt_tokens += pt1
+        total_completion_tokens += ct1
         all_outputs.append(f"[DECOMPOSE]\n{text1[:200]}")
 
         sub_problems = self._parse_sub_problems(text1)
@@ -511,8 +532,10 @@ class ReasoningDecomposeExecutor:
         if not sub_problems:
             # Fallback: if decomposition failed, try direct solve
             solve_prompt = base_prompt + _FINAL_ANSWER_SUFFIX
-            text, latency = gen(solve_prompt, self.config)
+            text, latency, pt, ct = _call_gen(solve_prompt)
             total_latency += latency
+            total_prompt_tokens += pt
+            total_completion_tokens += ct
             all_outputs.append(f"[FALLBACK DIRECT]\n{text[:200]}")
             answer = _parse_final_answer(text)
         else:
@@ -522,16 +545,18 @@ class ReasoningDecomposeExecutor:
             def _solve_sub(i_sub):
                 i, sub = i_sub
                 solve_prompt = self._SOLVE_PROMPT.format(sub_problem=sub)
-                text_s, latency_s = gen(solve_prompt, self.config)
-                return i, sub, text_s, latency_s, _parse_final_answer(text_s)
+                text_s, latency_s, pt_s, ct_s = _call_gen(solve_prompt)
+                return i, sub, text_s, latency_s, pt_s, ct_s, _parse_final_answer(text_s)
 
             sub_answers = [None] * len(sub_problems)
             with ThreadPoolExecutor(max_workers=len(sub_problems)) as ex:
                 futures = [ex.submit(_solve_sub, (i, sub))
                            for i, sub in enumerate(sub_problems)]
                 for fut in futures:
-                    i, sub, text_s, latency_s, sub_answer = fut.result()
+                    i, sub, text_s, latency_s, pt_s, ct_s, sub_answer = fut.result()
                     total_latency += latency_s
+                    total_prompt_tokens += pt_s
+                    total_completion_tokens += ct_s
                     all_outputs.append(f"[SUB {i+1}: {sub[:50]}]\n{text_s[:100]}")
                     if sub_answer is not None:
                         sub_answers[i] = f"Sub-problem {i+1}: {sub} → Answer: {sub_answer}"
@@ -543,8 +568,10 @@ class ReasoningDecomposeExecutor:
                 sub_answers="\n".join(sub_answers),
                 original_problem=base_prompt,
             )
-            text_c, latency_c = gen(combine_prompt, self.config)
+            text_c, latency_c, pt_c, ct_c = _call_gen(combine_prompt)
             total_latency += latency_c
+            total_prompt_tokens += pt_c
+            total_completion_tokens += ct_c
             all_outputs.append(f"[COMBINE]\n{text_c[:200]}")
             answer = _parse_final_answer(text_c)
 
@@ -566,6 +593,8 @@ class ReasoningDecomposeExecutor:
             latency_ms=total_latency,
             compute_cost=self.cost_estimate,
             failure_type=failure_type,
+            prompt_tokens=total_prompt_tokens,
+            completion_tokens=total_completion_tokens,
         )
 
 

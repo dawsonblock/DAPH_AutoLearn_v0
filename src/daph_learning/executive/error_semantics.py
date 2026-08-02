@@ -1,4 +1,4 @@
-"""DAPH v0.4.0a2 — Error semantics for experiment execution.
+"""DAPH v0.4.0a3 — Error semantics for experiment execution.
 
 Every execution outcome must have a frozen utility rule. Errors must
 not be silently converted into ordinary wrong answers.

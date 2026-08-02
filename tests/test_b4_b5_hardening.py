@@ -489,7 +489,7 @@ class TestLifecycle:
         assert state.status == ExperimentStatus.FROZEN
 
         state.start_final({"experiment_id": "test", "action_space": {}})
-        assert state.status == ExperimentStatus.RUNNING
+        assert state.status == ExperimentStatus.FINAL_RUNNING
 
         state.mark_qualified()
         assert state.status == ExperimentStatus.QUALIFIED

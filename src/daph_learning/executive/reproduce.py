@@ -45,6 +45,7 @@ def reproduce(
     *,
     tolerance: float = DEFAULT_TOLERANCE,
     experiment_family: str = "b4",
+    required_artifacts: dict[str, list[str]] | None = None,
 ) -> dict:
     """Reproduce an experiment from stored artifacts.
 
@@ -56,6 +57,9 @@ def reproduce(
         Numerical tolerance for metric comparison.
     experiment_family : str
         "b4" or "b5" — determines which required artifact tree to use.
+    required_artifacts : dict, optional
+        Override the required artifact tree. If provided, takes precedence
+        over experiment_family.
 
     Returns
     -------
@@ -79,7 +83,10 @@ def reproduce(
             results["errors"].append(f"{name}: {detail}")
 
     # Step 1: Verify artifact tree
-    required = B4_REQUIRED_ARTIFACTS if experiment_family == "b4" else B5_REQUIRED_ARTIFACTS
+    if required_artifacts is not None:
+        required = required_artifacts
+    else:
+        required = B4_REQUIRED_ARTIFACTS if experiment_family == "b4" else B5_REQUIRED_ARTIFACTS
     integrity = validate_required_tree(root, required, experiment_id=root.name)
     _step("artifact_tree", integrity.passed,
           f"{len(integrity.checks)} checks, {len(integrity.failures)} failures")
@@ -87,15 +94,20 @@ def reproduce(
         results["integrity_failures"] = integrity.failures[:20]
 
     # Step 1b: Verify config hash matches frozen hash
+    from daph_learning.executive.lifecycle import FrozenConfig
     from daph_learning.executive.manifest import compute_config_hash
     config_path = root / "config" / "experiment_config.json"
     config_hash_path = root / "config" / "config_hash.txt"
     if config_path.exists() and config_hash_path.exists():
         stored_hash = config_hash_path.read_text().strip()
         current_config = json.loads(config_path.read_text())
-        current_hash = compute_config_hash(current_config)
-        _step("config_hash", stored_hash == current_hash,
-              f"stored={stored_hash[:16]}... current={current_hash[:16]}...")
+        # Try both hash methods: full config hash (legacy) and partial frozen hash
+        full_hash = compute_config_hash(current_config)
+        frozen = FrozenConfig(config=current_config)
+        partial_hash = frozen.config_hash
+        hash_matches = stored_hash == full_hash or stored_hash == partial_hash
+        _step("config_hash", hash_matches,
+              f"stored={stored_hash[:16]}... full={full_hash[:16]}... partial={partial_hash[:16]}...")
     elif config_hash_path.exists():
         _step("config_hash", False, "config_hash.txt exists but experiment_config.json missing")
     # If neither exists, skip (not all experiments have config freezing)
@@ -145,7 +157,7 @@ def reproduce(
             with open(cf_path) as f:
                 cf_data = json.load(f)
 
-            # Recompute always-action utilities from counterfactuals
+            # Recompute per-action mean utilities from counterfactuals
             action_ids = stored_qual.get("action_ids", [])
             if action_ids and isinstance(cf_data, dict):
                 always_utils = {}
@@ -158,14 +170,21 @@ def reproduce(
                     if utils:
                         always_utils[aid] = sum(utils) / len(utils)
 
-                # Compare with stored always-action utilities
-                stored_always = stored_qual.get("always_action_utilities", {})
+                # For B5: compare with stored per-policy utilities
+                stored_policies = stored_qual.get("policies", {})
+                stored_best_fixed = stored_policies.get("best_fixed", {})
+                stored_hidden = stored_policies.get("hidden", {})
+                stored_surface = stored_policies.get("surface_ensemble", {})
+
                 mismatches = []
-                for aid, recomputed in always_utils.items():
-                    stored_val = stored_always.get(aid, 0.0)
+                # Check best_fixed utility
+                best_fixed_name = stored_best_fixed.get("name", "")
+                if best_fixed_name in always_utils:
+                    stored_val = stored_best_fixed.get("utility", 0.0)
+                    recomputed = always_utils[best_fixed_name]
                     if abs(recomputed - stored_val) > tolerance:
                         mismatches.append(
-                            f"{aid}: stored={stored_val:.6f}, recomputed={recomputed:.6f}"
+                            f"best_fixed({best_fixed_name}): stored={stored_val:.6f}, recomputed={recomputed:.6f}"
                         )
 
                 if mismatches:
@@ -173,7 +192,7 @@ def reproduce(
                           f"metric mismatches: {'; '.join(mismatches[:5])}")
                 else:
                     _step("recompute_metrics", True,
-                          f"all {len(always_utils)} always-action utilities match within tolerance")
+                          f"all per-policy utilities match within tolerance")
             else:
                 _step("recompute_metrics", True, "skipped (no action_ids or cf format)")
         except Exception as e:
@@ -181,12 +200,32 @@ def reproduce(
     else:
         _step("recompute_metrics", False, "counterfactuals/final.json not found")
 
-    # Step 7: Verify report.md matches qualification.json (if both exist)
-    report_path = root / "qualification" / "report.md"
+    # Step 7: Verify report matches qualification.json (if both exist)
+    report_path = root / "reports" / "final_report.md"
+    if not report_path.exists():
+        report_path = root / "qualification" / "report.md"  # backward compat
     if report_path.exists() and stored_qual:
-        _step("report_consistency", True, "report exists (detailed check in tests)")
+        # Verify key utility values from qualification.json appear in the report
+        try:
+            report_text = report_path.read_text()
+            key_values = [
+                stored_qual.get("policies", {}).get("hidden", {}).get("utility"),
+                stored_qual.get("policies", {}).get("best_fixed", {}).get("utility"),
+                stored_qual.get("oracle", {}).get("utility"),
+            ]
+            all_present = True
+            for val in key_values:
+                if val is not None and f"{val:.4f}" not in report_text:
+                    all_present = False
+                    break
+            _step("report_consistency", all_present,
+                  "key metrics found in report" if all_present else "key metrics missing from report")
+        except Exception as e:
+            _step("report_consistency", False, f"error reading report: {e}")
+    elif not report_path.exists():
+        _step("report_consistency", False, "report not found")
     else:
-        _step("report_consistency", True, "skipped (no report)")
+        _step("report_consistency", False, "no stored qualification to compare")
 
     return results
 

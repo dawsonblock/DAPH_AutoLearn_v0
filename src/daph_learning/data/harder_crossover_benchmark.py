@@ -1,4 +1,4 @@
-"""v0.4.0a2 — harder crossover benchmark (magnitude-decoupled).
+"""v0.4.0a3 — harder crossover benchmark (magnitude-decoupled).
 
 The original crossover_benchmark.py has a magnitude leak: large operands
 → symbolic wins (LLM arithmetic errors), small operands → LLM wins
@@ -60,7 +60,7 @@ import math
 import random
 from typing import Any, Mapping
 
-GENERATOR_VERSION = "v0.4.0a2-harder-crossover"
+GENERATOR_VERSION = "v0.4.0a3-harder-crossover"
 
 FAMILY_ID = "structured_math"
 

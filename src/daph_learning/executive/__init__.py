@@ -165,11 +165,26 @@ from daph_learning.executive.lifecycle import (
     ExperimentStatus,
     FrozenConfig,
     ExperimentState,
+    FinalAccessViolation,
     RegistryEntry,
     load_registry,
     save_registry,
     register_experiment,
     invalidate_experiment,
+)
+from daph_learning.executive.atomic_io import (
+    atomic_write_json,
+    atomic_write_text,
+    atomic_write_npz,
+    atomic_write_jsonl,
+    append_jsonl,
+)
+from daph_learning.executive.final_access import (
+    FinalAccessRecord,
+    FinalAccessGuard,
+    FINAL_SPLITS,
+    load_final_access_ledger,
+    check_final_isolation,
 )
 from daph_learning.executive.b5_actions import (
     B5_ACTION_DIRECT_FAST,
@@ -344,11 +359,24 @@ __all__ = [
     "ExperimentStatus",
     "FrozenConfig",
     "ExperimentState",
+    "FinalAccessViolation",
     "RegistryEntry",
     "load_registry",
     "save_registry",
     "register_experiment",
     "invalidate_experiment",
+    # Atomic I/O
+    "atomic_write_json",
+    "atomic_write_text",
+    "atomic_write_npz",
+    "atomic_write_jsonl",
+    "append_jsonl",
+    # Final access guard
+    "FinalAccessRecord",
+    "FinalAccessGuard",
+    "FINAL_SPLITS",
+    "load_final_access_ledger",
+    "check_final_isolation",
     # B5 actions
     "B5_ACTION_DIRECT_FAST",
     "B5_ACTION_DIRECT_THINK",

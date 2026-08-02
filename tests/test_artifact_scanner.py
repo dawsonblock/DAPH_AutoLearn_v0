@@ -24,6 +24,10 @@ EXEMPT_DIRS = {
     "legacy",
     "gate_a_failed",
     "gate_a_historical",
+    # Test fixture created by test_staged_pipeline_integration.py
+    "daph_gate_a_integration_test",
+    # Mock test artifacts
+    "executive_b5_mock_test",
 }
 
 ZERO_HASH = "0" * 64

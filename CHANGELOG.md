@@ -2,10 +2,10 @@
 
 ## What changed
 
-### Scientific integration release (0.4.0a2)
+### Scientific integration release (0.4.0a3)
 
 - **Version normalization**: all surfaces (pyproject, `__version__`, README,
-  CHANGELOG, CLAIMS, configs, tests) consistently report `0.4.0a2`.
+  CHANGELOG, CLAIMS, configs, tests) consistently report `0.4.0a3`.
 - **`PairedPolicyComparison` canonical type** (`stats.py`): standardizes
   statistical comparison results with `point_delta`, `lcb95`, `ucb95`,
   `positive_group_fraction`, `worst_group_delta`, `estimand`, and
@@ -20,17 +20,20 @@
   (subtype one-hot, TF-IDF vocabulary) across train/dev/final splits.
   Resolves `ValueError` from vocabulary mismatch during policy training.
 - **`SurfaceEnsemblePolicy`**: canonical surface-feature baseline with
-  consistent feature extraction.
+  consistent feature extraction. Now has `save()`/`load()` methods for
+  freezing and replay during qualification.
 - **API key placeholder removal**: all fake API keys removed from config
   files. New `check_api_key_placeholder` validator rejects embedded
   credentials.
 - **B4 staged runner cleanup**: legacy inline statistical calculations
   (bootstrap, positive group fraction, sham comparison, gap capture)
-  replaced with calls to canonical `stats.py` functions.
+  replaced with calls to canonical `stats.py` functions. **Legacy sham
+  fallback removed**: qualification now fails if canonical sham evidence
+  is missing, rather than falling back to `np.percentile`.
 - **B4 evidence invalidation**: corrupt historical B4 evidence moved to
   `artifacts/invalidated/` with `invalidation.json` documenting reasons.
 - **Stale artifact cleanup**: zero-hash Gate A artifacts moved to
-  `artifacts/invalid_fixtures/`.
+  `artifacts/invalidated/gate_a_stale/`.
 - **Repo-wide artifact scanner test**: `test_artifact_scanner.py` rejects
   zero hashes, placeholder hashes, SSH/PTY corruption, and fake API keys
   in active artifacts.
@@ -48,15 +51,50 @@
   (winner distribution per family, low-information family flagging),
   THINK-FAST delta analysis (by family, difficulty, prompt length),
   compute budget frontier (Pareto table with oracle regret).
-- **B5 staged runner** (`scripts/run_b5_staged.py`): canonical real-model
-  experiment entrypoint with stages: prepare, counterfactuals (with resume
-  safety and hash verification), representations, train, qualify, reproduce.
+- **B5 staged runner** (`scripts/run_b5_staged.py`): complete rewrite with
+  phase-split architecture:
+  - **9 stages**: prepare → development-counterfactuals →
+    development-representations → train → freeze-policy →
+    final-counterfactuals → final-representations → qualify → reproduce.
+  - **Lifecycle enforcement**: DEVELOPMENT → FROZEN → TRAIN_RUNNING →
+    TRAIN_COMPLETE → FINAL_RUNNING → QUALIFIED. Each stage verifies
+    required state and transitions atomically.
+  - **Final isolation**: `FinalAccessGuard` enforces no FINAL/ FINAL_OOD
+    access during training. All FINAL reads are logged to
+    `final_access_ledger.jsonl` and validated by `final_isolation.json`.
+  - **Policy selection on DEV**: policies are selected by min DEV regret
+    and frozen before any FINAL access. Qualification loads the frozen
+    policy, never retrains.
+  - **Artifact ordering**: compute → persist → manifest → validate →
+    reproduce → report. Integrity validation runs AFTER all artifacts
+    are written.
+  - **Required artifacts**: `B5_REQUIRED_ARTIFACTS` defines the complete
+    artifact tree including `status.json`, `frozen_config.json`,
+    `selection.json`, `frozen_policy_manifest.json`,
+    `final_access_ledger.jsonl`, `final_isolation.json`,
+    `report_consistency.json`, `reports/final_report.md`.
+  - **Resume safety**: counterfactuals and representations support
+    `--resume` with config hash and task hash verification.
+  - **Real execution wiring**: `_real_execute` uses `B5ExecutorRegistry`
+    for DIRECT_FAST, DIRECT_THINK, RETRIEVE, DECOMPOSE actions. Real
+    hidden-state capture via `capture_hidden_states`.
+  - **Mock mode**: `--mock` flag produces synthetic but realistic outcomes
+    through the same orchestration path as real execution.
+- **`atomic_io.py`**: crash-safe atomic writes for JSON, text, and NPZ
+  files. All artifact writes use temp file → fsync → rename.
+- **`final_access.py`**: `FinalAccessGuard` enforces split-level access
+  control based on experiment lifecycle state. `check_final_isolation`
+  validates the access ledger for pre-final-stage violations.
 - **`FAILED_LEAKAGE` and `FAILED_REPRODUCTION` lifecycle statuses**: explicit
   failure states for leakage and reproduction failures.
 - **Reproduction hardening**: `reproduce.py` now verifies config hash
-  matches frozen hash. Tests for corruption, missing files, config changes,
-  and hash mismatches.
-- **1597 collected tests** (up from 1546).
+  matches frozen hash (supports both full and partial hash methods).
+  Tests for corruption, missing files, config changes, and hash mismatches.
+  Supports `required_artifacts` override for synthetic pipeline.
+- **1640 collected tests** (up from 1597). New test file
+  `test_b5_execution_integrity.py` covers lifecycle state machine, final
+  access guard, atomic I/O, B5 mock pipeline (subprocess), B5 resume,
+  B5 config mismatch rejection, B4 regression, and version consistency.
 
 ### B4 hardening + B5 adaptive compute (0.4.0a1)
 
@@ -141,7 +179,7 @@
 - 68 new tests for executive types, qualification, report, and parity.
 - Total: 1376 collected, 1355 passed, 8 skipped, 0 failures.
 
-# 0.4.0a2 (Scientific repair + prompt interface fix + 1.5B experiment)
+# 0.4.0a3 (Scientific repair + prompt interface fix + 1.5B experiment)
 
 ## What changed
 
@@ -162,7 +200,7 @@
 - **Artifact integrity (P1)**: failed runs moved to `gate_a_failed/`; stale
   PASS moved to `gate_a_historical/`; final stage writes to `gate_a_runs/`
   (staging) — only promotion logic moves to `gate_a_qualified/`.
-- **Version normalization (P2)**: all version surfaces agree on 0.4.0a2.
+- **Version normalization (P2)**: all version surfaces agree on 0.4.0a3.
   Removed stale `CURRENT_EXPERIMENT_ID` from package source.
 
 ### Prompt interface fix + 1.5B experiment

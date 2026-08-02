@@ -59,7 +59,7 @@ from daph_learning.executive.stats import (
 from daph_learning.executive.b5_qualification import evaluate_gates, GateThresholds
 from daph_learning.executive.artifact_integrity import (
     validate_required_tree,
-    B5_REQUIRED_ARTIFACTS,
+    B5_SYNTHETIC_REQUIRED_ARTIFACTS,
     detect_corruption,
 )
 from daph_learning.executive.manifest import (
@@ -647,7 +647,7 @@ def run_synthetic_experiment(
     # For the integrity check, we'll use a preliminary check here and
     # re-run after the manifest is written. The final integrity check
     # is stored in checks/artifact_integrity.json below.
-    integrity_report = validate_required_tree(root, B5_REQUIRED_ARTIFACTS, experiment_id=experiment_id)
+    integrity_report = validate_required_tree(root, B5_SYNTHETIC_REQUIRED_ARTIFACTS, experiment_id=experiment_id)
 
     qual_result = evaluate_gates(
         experiment_id=experiment_id,
@@ -787,7 +787,7 @@ def run_synthetic_experiment(
     mlp_policy.save(str(pol_dir / "mlp_policy.json"))
 
     # ── Re-run integrity check now that all artifacts exist ──
-    integrity_report = validate_required_tree(root, B5_REQUIRED_ARTIFACTS, experiment_id=experiment_id)
+    integrity_report = validate_required_tree(root, B5_SYNTHETIC_REQUIRED_ARTIFACTS, experiment_id=experiment_id)
     with open(checks_dir / "artifact_integrity.json", "w") as f:
         json.dump(integrity_report.to_dict(), f, indent=2)
 
@@ -845,7 +845,8 @@ def run_synthetic_experiment(
     # Run reproduction check
     try:
         from daph_learning.executive.reproduce import reproduce
-        repro_result = reproduce(root)
+        repro_result = reproduce(root, experiment_family="b5",
+                                 required_artifacts=B5_SYNTHETIC_REQUIRED_ARTIFACTS)
         reproduction_valid = repro_result.get("passed", False)
     except (OSError, ValueError, KeyError, TypeError):
         reproduction_valid = False

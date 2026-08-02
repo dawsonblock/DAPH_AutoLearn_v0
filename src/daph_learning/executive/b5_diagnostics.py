@@ -1,4 +1,4 @@
-"""DAPH v0.4.0a2 — B5 adaptive compute diagnostics.
+"""DAPH v0.4.0a3 — B5 adaptive compute diagnostics.
 
 Because B5 is specifically about whether more reasoning compute is
 worthwhile, this module provides:

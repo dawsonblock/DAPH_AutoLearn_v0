@@ -1,77 +1,54 @@
 {
-  "implementation_summary": {
-    "schema_version": "1.0",
-    "build_name": "Scientific Integration Release",
-    "package_version": "0.4.0a2",
-    "date": "2026-08-02",
-    "status": "CODE_COMPLETE",
-    "experiment_executed": false,
-    "scientifically_qualified": false,
-    "modules_added": [
-      "src/daph_learning/executive/artifact_integrity.py",
-      "src/daph_learning/executive/manifest.py",
-      "src/daph_learning/executive/leakage.py",
-      "src/daph_learning/executive/stats.py",
-      "src/daph_learning/executive/lifecycle.py",
-      "src/daph_learning/executive/b5_actions.py",
-      "src/daph_learning/executive/b5_dataset.py",
-      "src/daph_learning/executive/b5_policies.py",
-      "src/daph_learning/executive/b5_qualification.py",
-      "src/daph_learning/executive/reproduce.py",
-      "src/daph_learning/executive/synthetic_pipeline.py",
-      "src/daph_learning/executive/error_semantics.py",
-      "src/daph_learning/executive/b5_diagnostics.py"
-    ],
-    "modules_modified": [
-      "src/daph_learning/executive/__init__.py",
-      "src/daph_learning/executive/executors.py",
-      "src/daph_learning/executive/hidden_state.py"
-    ],
-    "scripts_added": [
-      "scripts/run_b5_staged.py"
-    ],
-    "tests_added": [
-      "tests/test_b4_b5_hardening.py",
-      "tests/test_scientific_integration.py",
-      "tests/test_reproduction_hardening.py",
-      "tests/test_artifact_scanner.py"
-    ],
-    "configs_modified": [
-      "configs/executive_b4_hidden_states.yaml",
-      "configs/executive_b1_direct_vs_retrieval_vs_decompose.yaml",
-      "configs/executive_b2_diverse_hidden_states.yaml",
-      "configs/executive_b3_conditional_routing.yaml"
-    ],
-    "key_changes": {
-      "version_normalization": "All surfaces consistently report 0.4.0a2.",
-      "paired_policy_comparison": "PairedPolicyComparison canonical type standardizes statistical comparison results with point_delta, lcb95, ucb95, positive_group_fraction, worst_group_delta, estimand, and to_dict().",
-      "bootstrap_estimand": "paired_group_bootstrap supports task_weighted (default) and group_equal_weight estimands.",
-      "dataset_leakage_fix": "generate_b5_dataset implements global prompt deduplication. template_group_id added to B5TaskSpec.",
-      "surface_feature_extractor": "Consistent surface feature extraction across splits (subtype one-hot, TF-IDF vocabulary).",
-      "api_key_removal": "Fake API keys removed from configs. check_api_key_placeholder validator added.",
-      "b4_legacy_stats_removal": "Inline statistical calculations in run_b4_staged.py replaced with canonical stats.py functions.",
-      "b4_invalidation": "Corrupt B4 evidence moved to artifacts/invalidated/ with invalidation.json.",
-      "artifact_scanner": "Repo-wide test rejecting zero hashes, placeholder hashes, SSH/PTY corruption, and fake API keys.",
-      "positive_negative_controls": "Synthetic pipeline supports control_mode positive (qualifies) and negative (fails). Infrastructure validity separated from scientific qualification.",
-      "error_semantics": "Frozen ExecutionStatus enum with utility rules. ObservedCost dataclass. compute_observed_utility implements U = w_A * A - C - w_F * F.",
-      "b5_diagnostics": "Empirical crossover analysis, THINK-FAST delta analysis, compute budget frontier.",
-      "b5_staged_runner": "Canonical real-model experiment entrypoint with prepare/counterfactuals/representations/train/qualify/reproduce stages and resume safety.",
-      "failed_leakage_reproduction": "FAILED_LEAKAGE and FAILED_REPRODUCTION lifecycle statuses added.",
-      "reproduction_hardening": "reproduce.py verifies config hash. Tests for corruption, missing files, config changes, hash mismatches."
-    },
-    "not_implemented": [
-      "Real Qwen3-8B model execution (requires GPU/vLLM)",
-      "Real B4 reproduction run (requires model execution)",
-      "Real B5 qualification run (requires model execution)",
-      "Cross-model replication (B6+ scope)",
-      "Sequential executive control (B6 scope)",
-      "Capsule integration (explicitly excluded)"
-    ],
-    "test_results": {
-      "total_collected": 1597,
-      "total_passed": 1597,
-      "pre_existing_failures": 0,
-      "regressions": 0
+  "schema_version": "1.0",
+  "build_name": "Executive Execution Integrity Release",
+  "package_version": "0.4.0a3",
+  "date": "2026-08-02",
+  "status": "CODE_COMPLETE",
+  "code_complete": true,
+  "mock_b5_pipeline_passed": true,
+  "b4_reproduction_executed": false,
+  "b5_real_executed": false,
+  "scientifically_qualified": false,
+  "validation": {
+    "version_consistency": true,
+    "artifact_scan": true,
+    "b4_no_legacy_sham": true,
+    "real_b5_execution_path": true,
+    "real_hidden_state_path": true,
+    "mock_b5_pipeline": true,
+    "mock_b5_final_state": "FAILED_QUALIFICATION",
+    "mandatory_tests": {
+      "passed": 1621,
+      "failed": 0,
+      "skipped": 8
     }
+  },
+  "readiness": {
+    "B4_REPRODUCTION_CODE_READY": true,
+    "B4_REPRODUCTION_EXECUTED": false,
+    "B4_REPRODUCTION_QUALIFIED": false,
+    "B5_CODE_READY": true,
+    "B5_MOCK_VALIDATED": true,
+    "B5_REAL_EXECUTED": false,
+    "B5_QUALIFIED": false
+  },
+  "modules": {
+    "new": [
+      "atomic_io.py",
+      "final_access.py"
+    ],
+    "modified": [
+      "lifecycle.py \u2014 TRAIN_RUNNING/TRAIN_COMPLETE states, FinalAccessViolation, freeze accepts FrozenConfig",
+      "artifact_integrity.py \u2014 B5_REQUIRED_ARTIFACTS updated to spec",
+      "reproduce.py \u2014 B5 config hash and metric recomputation fixed",
+      "b5_policies.py \u2014 SurfaceEnsemblePolicy save/load methods",
+      "run_b5_staged.py \u2014 complete rewrite with phase isolation",
+      "run_b4_staged.py \u2014 legacy sham fallback removed"
+    ]
+  },
+  "tests": {
+    "new": [
+      "test_b5_execution_integrity.py \u2014 lifecycle, final isolation, B5 runner, B4 regression"
+    ]
   }
 }

@@ -1,10 +1,14 @@
-"""DAPH v0.4 — Frozen experiment lifecycle management.
+"""DAPH v0.4.0a3 — Frozen experiment lifecycle management.
 
 Implements explicit experiment lifecycle states::
 
     DEVELOPMENT
         ↓
     FROZEN
+        ↓
+    TRAIN_RUNNING
+        ↓
+    TRAIN_COMPLETE
         ↓
     FINAL_RUNNING
         ↓
@@ -27,12 +31,16 @@ Final evaluation must reject execution if these differ from the frozen config.
 Never tune after observing FINAL.
 If modifications are required, create a new experiment ID.
 
-Experiment statuses (Section 43):
+Experiment statuses:
     DEVELOPMENT
     FROZEN
-    RUNNING
+    TRAIN_RUNNING
+    TRAIN_COMPLETE
+    FINAL_RUNNING
     FAILED_EXECUTION
     FAILED_INTEGRITY
+    FAILED_LEAKAGE
+    FAILED_REPRODUCTION
     FAILED_QUALIFICATION
     QUALIFIED
     INVALIDATED
@@ -51,6 +59,16 @@ from daph_learning.executive.artifact_integrity import sha256_json, is_zero_hash
 from daph_learning.executive.manifest import compute_config_hash
 
 
+class FinalAccessViolation(Exception):
+    """Raised when a stage attempts to read FINAL data before FINAL_RUNNING."""
+
+    def __init__(self, stage: str, split: str, message: str = ""):
+        self.stage = stage
+        self.split = split
+        self.message = message or f"stage={stage} attempted to read split={split}"
+        super().__init__(self.message)
+
+
 # ──────────────────────────────────────────────────────────────────────
 # Section 1 — Experiment status
 # ──────────────────────────────────────────────────────────────────────
@@ -60,7 +78,10 @@ class ExperimentStatus(str, Enum):
 
     DEVELOPMENT = "DEVELOPMENT"
     FROZEN = "FROZEN"
-    RUNNING = "RUNNING"
+    TRAIN_RUNNING = "TRAIN_RUNNING"
+    TRAIN_COMPLETE = "TRAIN_COMPLETE"
+    FINAL_RUNNING = "FINAL_RUNNING"
+    RUNNING = "RUNNING"  # backward compat alias for FINAL_RUNNING
     FAILED_EXECUTION = "FAILED_EXECUTION"
     FAILED_INTEGRITY = "FAILED_INTEGRITY"
     FAILED_LEAKAGE = "FAILED_LEAKAGE"
@@ -74,7 +95,29 @@ class ExperimentStatus(str, Enum):
         """Return the set of statuses that can be transitioned to from current."""
         transitions: dict[ExperimentStatus, set[ExperimentStatus]] = {
             cls.DEVELOPMENT: {cls.FROZEN, cls.INVALIDATED},
-            cls.FROZEN: {cls.RUNNING, cls.INVALIDATED},
+            cls.FROZEN: {cls.TRAIN_RUNNING, cls.FINAL_RUNNING, cls.INVALIDATED},
+            cls.TRAIN_RUNNING: {
+                cls.TRAIN_COMPLETE,
+                cls.FAILED_EXECUTION,
+                cls.FAILED_INTEGRITY,
+                cls.FAILED_LEAKAGE,
+                cls.INVALIDATED,
+            },
+            cls.TRAIN_COMPLETE: {
+                cls.FINAL_RUNNING,
+                cls.FAILED_EXECUTION,
+                cls.INVALIDATED,
+            },
+            cls.FINAL_RUNNING: {
+                cls.QUALIFIED,
+                cls.FAILED_EXECUTION,
+                cls.FAILED_INTEGRITY,
+                cls.FAILED_LEAKAGE,
+                cls.FAILED_REPRODUCTION,
+                cls.FAILED_QUALIFICATION,
+                cls.INVALIDATED,
+            },
+            # Backward compat: RUNNING maps to FINAL_RUNNING transitions
             cls.RUNNING: {
                 cls.QUALIFIED,
                 cls.FAILED_EXECUTION,
@@ -96,6 +139,11 @@ class ExperimentStatus(str, Enum):
 
     def can_transition_to(self, target: "ExperimentStatus") -> bool:
         return target in self.valid_transitions(self)
+
+    @property
+    def is_final_accessible(self) -> bool:
+        """True when FINAL split data may be read."""
+        return self in (self.FINAL_RUNNING, self.RUNNING, self.QUALIFIED)
 
 
 # ──────────────────────────────────────────────────────────────────────
@@ -200,6 +248,8 @@ class ExperimentState:
     history: list[dict[str, str]] = field(default_factory=list)
     created_at: str = ""
     updated_at: str = ""
+    failure_reason: str | None = None
+    current_stage: str = ""
 
     def __post_init__(self) -> None:
         if not self.created_at:
@@ -207,14 +257,15 @@ class ExperimentState:
         if not self.updated_at:
             self.updated_at = self.created_at
 
-    def _record_transition(self, old: ExperimentStatus, new: ExperimentStatus) -> None:
+    def _record_transition(self, old: ExperimentStatus, new: ExperimentStatus, stage: str = "") -> None:
         self.history.append({
             "from": old.value,
             "to": new.value,
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+            "stage": stage,
         })
 
-    def transition_to(self, target: ExperimentStatus) -> None:
+    def transition_to(self, target: ExperimentStatus, stage: str = "") -> None:
         """Transition to a new status, validating the transition is allowed."""
         if not self.status.can_transition_to(target):
             raise ValueError(
@@ -223,55 +274,107 @@ class ExperimentState:
         old = self.status
         self.status = target
         self.updated_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
-        self._record_transition(old, target)
+        self.current_stage = stage
+        self._record_transition(old, target, stage)
 
-    def freeze(self, config: Mapping[str, Any]) -> None:
-        """Freeze the experiment with the given config."""
+    def freeze(self, config: Mapping[str, Any] | FrozenConfig) -> None:
+        """Freeze the experiment with the given config.
+
+        Accepts either a raw config dict or a FrozenConfig instance.
+        """
         if self.status != ExperimentStatus.DEVELOPMENT:
             raise ValueError(
                 f"can only freeze from DEVELOPMENT, current={self.status.value}"
             )
-        self.frozen_config = FrozenConfig(config=dict(config))
-        self.transition_to(ExperimentStatus.FROZEN)
+        if isinstance(config, FrozenConfig):
+            self.frozen_config = config
+        else:
+            self.frozen_config = FrozenConfig(config=dict(config))
+        self.transition_to(ExperimentStatus.FROZEN, stage="prepare")
+
+    def start_training(self) -> None:
+        """Start the training phase."""
+        if self.status != ExperimentStatus.FROZEN:
+            raise ValueError(
+                f"can only start training from FROZEN, current={self.status.value}"
+            )
+        self.transition_to(ExperimentStatus.TRAIN_RUNNING, stage="train")
+
+    def complete_training(self) -> None:
+        """Mark training as complete."""
+        if self.status != ExperimentStatus.TRAIN_RUNNING:
+            raise ValueError(
+                f"can only complete training from TRAIN_RUNNING, current={self.status.value}"
+            )
+        self.transition_to(ExperimentStatus.TRAIN_COMPLETE, stage="freeze-policy")
 
     def start_final(self, config: Mapping[str, Any] | None = None) -> None:
         """Start final evaluation. If config is provided, verify it matches frozen."""
-        if self.status != ExperimentStatus.FROZEN:
+        if self.status not in (ExperimentStatus.TRAIN_COMPLETE, ExperimentStatus.FROZEN):
             raise ValueError(
-                f"can only start final from FROZEN, current={self.status.value}"
+                f"can only start final from TRAIN_COMPLETE or FROZEN, current={self.status.value}"
             )
         if config is not None and self.frozen_config is not None:
-            if not self.frozen_config.matches(config):
+            # Accept both raw config and FrozenConfig
+            if isinstance(config, FrozenConfig):
+                if config.config_hash != self.frozen_config.config_hash:
+                    raise ValueError(
+                        "config does not match frozen config — create a new experiment ID"
+                    )
+            elif not self.frozen_config.matches(config):
                 raise ValueError(
                     "config does not match frozen config — create a new experiment ID"
                 )
-        self.transition_to(ExperimentStatus.RUNNING)
+        self.transition_to(ExperimentStatus.FINAL_RUNNING, stage="qualify")
 
     def mark_qualified(self) -> None:
-        self.transition_to(ExperimentStatus.QUALIFIED)
+        self.transition_to(ExperimentStatus.QUALIFIED, stage="qualify")
 
-    def mark_failed(self, reason: str = "qualification") -> None:
+    def mark_failed(self, reason: str = "qualification", stage: str = "") -> None:
+        self.failure_reason = reason
         if reason == "execution":
-            self.transition_to(ExperimentStatus.FAILED_EXECUTION)
+            self.transition_to(ExperimentStatus.FAILED_EXECUTION, stage=stage or "qualify")
         elif reason == "integrity":
-            self.transition_to(ExperimentStatus.FAILED_INTEGRITY)
+            self.transition_to(ExperimentStatus.FAILED_INTEGRITY, stage=stage or "qualify")
         elif reason == "leakage":
-            self.transition_to(ExperimentStatus.FAILED_LEAKAGE)
+            self.transition_to(ExperimentStatus.FAILED_LEAKAGE, stage=stage or "qualify")
         elif reason == "reproduction":
-            self.transition_to(ExperimentStatus.FAILED_REPRODUCTION)
+            self.transition_to(ExperimentStatus.FAILED_REPRODUCTION, stage=stage or "reproduce")
         else:
-            self.transition_to(ExperimentStatus.FAILED_QUALIFICATION)
+            self.transition_to(ExperimentStatus.FAILED_QUALIFICATION, stage=stage or "qualify")
 
     def invalidate(self, reason: str = "") -> None:
         """Mark the experiment as invalidated."""
-        # INVALIDATED can be reached from any non-terminal state
         if self.status == ExperimentStatus.INVALIDATED:
             return
         if not self.status.can_transition_to(ExperimentStatus.INVALIDATED):
-            # Force transition for already-failed experiments
             self.status = ExperimentStatus.INVALIDATED
         else:
             self.transition_to(ExperimentStatus.INVALIDATED)
+        if reason:
+            self.failure_reason = reason
+
+    def verify_config_hash(self, config: Mapping[str, Any]) -> None:
+        """Verify that a config matches the frozen config hash.
+
+        Raises ValueError if the hash does not match.
+        """
+        if self.frozen_config is None:
+            raise ValueError("experiment not frozen — no frozen config to verify against")
+        if not self.frozen_config.matches(config):
+            raise ValueError(
+                f"config hash mismatch — frozen={self.frozen_config.config_hash[:16]}... "
+                f"current does not match. Create a new experiment ID."
+            )
+
+    def assert_can_read_final(self) -> None:
+        """Assert that FINAL split data may be read in the current state."""
+        if not self.status.is_final_accessible:
+            raise FinalAccessViolation(
+                stage=self.current_stage or "unknown",
+                split="final",
+                message=f"FINAL access requires FINAL_RUNNING state, current={self.status.value}",
+            )
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -281,13 +384,14 @@ class ExperimentState:
             "history": list(self.history),
             "created_at": self.created_at,
             "updated_at": self.updated_at,
+            "failure_reason": self.failure_reason,
+            "current_stage": self.current_stage,
         }
 
     def save(self, path: str | Path) -> None:
-        p = Path(path)
-        p.parent.mkdir(parents=True, exist_ok=True)
-        with open(p, "w") as f:
-            json.dump(self.to_dict(), f, indent=2)
+        """Save state using atomic write."""
+        from daph_learning.executive.atomic_io import atomic_write_json
+        atomic_write_json(path, self.to_dict())
 
     @classmethod
     def load(cls, path: str | Path) -> "ExperimentState":
@@ -301,6 +405,8 @@ class ExperimentState:
             history=list(data.get("history", [])),
             created_at=data.get("created_at", ""),
             updated_at=data.get("updated_at", ""),
+            failure_reason=data.get("failure_reason"),
+            current_stage=data.get("current_stage", ""),
         )
         return state
 
@@ -310,7 +416,6 @@ class ExperimentState:
         p = Path(artifact_root) / "status.json"
         if p.exists():
             return cls.load(p)
-        # Infer experiment_id from directory name
         eid = Path(artifact_root).name
         return cls(experiment_id=eid)
 
@@ -391,6 +496,7 @@ __all__ = [
     "FROZEN_CONFIG_FIELDS",
     "FrozenConfig",
     "ExperimentState",
+    "FinalAccessViolation",
     "RegistryEntry",
     "load_registry",
     "save_registry",

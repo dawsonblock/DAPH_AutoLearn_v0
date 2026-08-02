@@ -622,6 +622,49 @@ class SurfaceEnsemblePolicy(QPolicyBase):
     def transform_tasks(self, tasks: list[dict[str, Any]]) -> np.ndarray:
         return self.feature_extractor.transform(tasks)
 
+    def save(self, path: str) -> None:
+        """Save surface ensemble policy to JSON."""
+        import json
+        data = {
+            "policy_type": "surface_ensemble",
+            "action_ids": self.action_ids,
+            "alpha": self.alpha,
+            "feature_types": list(self.feature_extractor.feature_types),
+            "ridge": None,
+        }
+        if self.ridge is not None:
+            # Save ridge weights
+            data["ridge"] = {
+                "weights_": self.ridge.weights_.tolist() if hasattr(self.ridge, 'weights_') else [],
+                "bias_": self.ridge.bias_.tolist() if hasattr(self.ridge, 'bias_') else [],
+                "alpha": self.ridge.alpha,
+                "action_ids": self.ridge.action_ids,
+            }
+        with open(path, "w") as f:
+            json.dump(data, f, indent=2)
+
+    @classmethod
+    def load(cls, path: str) -> "SurfaceEnsemblePolicy":
+        """Load surface ensemble policy from JSON."""
+        import json
+        with open(path) as f:
+            data = json.load(f)
+        policy = cls(
+            action_ids=data.get("action_ids", []),
+            alpha=data.get("alpha", 1.0),
+            feature_types=data.get("feature_types", ("subtype", "prompt_length", "tfidf")),
+        )
+        ridge_data = data.get("ridge")
+        if ridge_data:
+            policy.ridge = RidgeQPolicy(
+                action_ids=ridge_data.get("action_ids", data.get("action_ids", [])),
+                alpha=ridge_data.get("alpha", 1.0),
+            )
+            if ridge_data.get("weights_"):
+                policy.ridge.weights_ = np.array(ridge_data["weights_"], dtype=np.float32)
+                policy.ridge.bias_ = np.array(ridge_data["bias_"], dtype=np.float32)
+        return policy
+
 
 __all__ = [
     "QPolicyBase",

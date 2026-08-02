@@ -780,19 +780,17 @@ def run_stage_c(config: dict, mock: bool = False):
     gates["hidden_gt_surface_pass"] = comp_hs.lcb95 > 0
     print(f"    Hidden > Surface: LCB95={comp_hs.lcb95:.4f} {'PASS' if comp_hs.lcb95 > 0 else 'FAIL'}")
 
-    # Hidden > sham (canonical paired comparison)
-    sham_regrets = np.array(sham_results["sham_regrets"])
-    hidden_regret = ablation_results["hidden"]["final_regret"]
-    # Use the ShamComparisonResult from stats if available, otherwise compute LCB
-    if "hidden_vs_sham_lcb95" in sham_results:
-        sham_lcb = sham_results["hidden_vs_sham_lcb95"]
+    # Hidden > sham (canonical paired comparison — NO legacy fallback)
+    # If canonical sham evidence is missing, FAIL qualification.
+    if "hidden_vs_sham_lcb95" not in sham_results:
+        print("    Hidden > Sham:  FAIL — canonical sham evidence missing")
+        gates["hidden_gt_sham_lcb95"] = float("-inf")
+        gates["hidden_gt_sham_pass"] = False
     else:
-        # Fallback: compute from sham regrets distribution
-        h_vs_sham = sham_regrets - hidden_regret
-        sham_lcb = float(np.percentile(h_vs_sham, 2.5))
-    gates["hidden_gt_sham_lcb95"] = sham_lcb
-    gates["hidden_gt_sham_pass"] = sham_lcb > 0
-    print(f"    Hidden > Sham:  LCB95={sham_lcb:.4f} {'PASS' if sham_lcb > 0 else 'FAIL'}")
+        sham_lcb = sham_results["hidden_vs_sham_lcb95"]
+        gates["hidden_gt_sham_lcb95"] = sham_lcb
+        gates["hidden_gt_sham_pass"] = sham_lcb > 0
+        print(f"    Hidden > Sham:  LCB95={sham_lcb:.4f} {'PASS' if sham_lcb > 0 else 'FAIL'}")
 
     # Gap capture (canonical)
     gap_cap = compute_gap_capture(

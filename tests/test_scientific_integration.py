@@ -1,4 +1,4 @@
-"""DAPH v0.4.0a2 — Scientific integration regression tests.
+"""DAPH v0.4.0a3 — Scientific integration regression tests.
 
 Tests for:
 * Package version consistency
@@ -47,7 +47,7 @@ class TestVersionConsistency:
         from daph_learning import __version__
         from daph_learning.policy.config import ExperimentConfig
         from daph_learning.policy.provenance import ProvenanceRecord
-        expected = "0.4.0a2"
+        expected = "0.4.0a3"
         assert __version__ == expected
         assert ExperimentConfig().autolearn_version == expected
         assert ProvenanceRecord().release_version == expected

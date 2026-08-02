@@ -76,7 +76,7 @@ def main() -> int:
             from importlib.metadata import version
             pkg_version = version("daph-autolearn")
         except Exception:
-            pkg_version = "0.4.0a2"
+            pkg_version = "0.4.0a3"
 
     # Get test count.
     test_info = _get_test_count()

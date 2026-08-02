@@ -1,0 +1,36 @@
+# DAPH B5 Mock Test Configuration
+# Tiny dataset for fast mock pipeline testing
+
+experiment_id: "executive_b5_mock_test"
+output_dir: "artifacts/executive_b5_mock_test"
+
+mock: true
+
+model:
+  model_id: "mock"
+  revision: "mock-v1"
+
+dataset:
+  n_train: 80
+  n_dev: 40
+  n_final: 60
+  n_ood: 30
+  seed: 20260802
+  split_mode: "standard"
+
+representation:
+  layers: ["0.25", "0.50", "0.75", "final"]
+  poolings: ["last_content_token", "mean_content"]
+  pca_dim: 32
+
+qualification:
+  n_shams: 10
+  bootstrap_iterations: 500
+
+utility_weights:
+  quality_weight: 1.0
+  w_prompt: 0.001
+  w_output: 0.001
+  w_compute: 0.01
+  w_latency: 0.001
+  failure_penalty: 0.5

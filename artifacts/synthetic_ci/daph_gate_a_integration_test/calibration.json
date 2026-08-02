@@ -3,8 +3,8 @@
   "ood_threshold": Infinity,
   "calibration_data": "calibration",
   "n_tasks": 336,
-  "mean_delta_u": -0.10682588171031773,
-  "std_delta_u": 0.9738687318710421,
-  "mean_weight": 0.5957741332572355,
+  "mean_delta_u": -0.10682588141158493,
+  "std_delta_u": 0.9738687319022095,
+  "mean_weight": 0.5957741334764953,
   "utility_config_sha256": "9c2c7dd74ca8db552d40c28916f59461e1ad4f4e383a29dafb476c91851bee63"
 }

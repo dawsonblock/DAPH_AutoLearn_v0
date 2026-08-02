@@ -25,7 +25,7 @@ from .harder_crossover_benchmark import (
 )
 from .integrity import normalize_prompt
 
-GENERATOR_VERSION = "v0.4.0a2-harder-grouped"
+GENERATOR_VERSION = "v0.4.0a3-harder-grouped"
 
 N_GROUPS_PER_SUBTYPE = 70
 N_GROUPS_TOTAL = N_GROUPS_PER_SUBTYPE * len(SUBTYPES)  # 560

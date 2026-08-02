@@ -1,6 +1,6 @@
 """Priority 0 scientific-correctness repair tests.
 
-Covers the five fixes from the v0.4.0a2 audit:
+Covers the five fixes from the v0.4.0a3 audit:
 
 1. Sham training permutes the signed continuous ΔU (and matching weights),
    not a binary label derivative — so fit_policy(target_mode="soft") applies

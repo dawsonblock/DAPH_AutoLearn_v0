@@ -201,8 +201,9 @@ class DirectFastExecutor:
 
         if self.generate_fn is not None:
             text, latency_ms = self.generate_fn(prompt, cfg)
+            prompt_tokens, completion_tokens = 0, 0
         else:
-            text, latency_ms = _call_vllm_api(prompt, cfg)
+            text, latency_ms, prompt_tokens, completion_tokens = _call_vllm_api(prompt, cfg)
 
         answer = _parse_final_answer(text)
         verified = _verify_answer(task, answer)
@@ -223,6 +224,8 @@ class DirectFastExecutor:
             latency_ms=latency_ms,
             compute_cost=self.cost_estimate,
             failure_type=failure_type,
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
         )
 
 
@@ -269,8 +272,9 @@ class DirectThinkExecutor:
 
         if self.generate_fn is not None:
             text, latency_ms = self.generate_fn(prompt, cfg)
+            prompt_tokens, completion_tokens = 0, 0
         else:
-            text, latency_ms = _call_vllm_api(prompt, cfg)
+            text, latency_ms, prompt_tokens, completion_tokens = _call_vllm_api(prompt, cfg)
 
         answer = _parse_final_answer(text)
         verified = _verify_answer(task, answer)
@@ -291,6 +295,8 @@ class DirectThinkExecutor:
             latency_ms=latency_ms,
             compute_cost=self.cost_estimate,
             failure_type=failure_type,
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
         )
 
 

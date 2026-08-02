@@ -287,17 +287,50 @@ B4_REQUIRED_ARTIFACTS: dict[str, list[str]] = {
     "checks": ["artifact_integrity.json", "leakage_checks.json", "reproducibility_check.json"],
 }
 
-# B5 adds OOD and abstention artifacts.
+# B5 has its own complete artifact tree (does not inherit B4 paths).
 B5_REQUIRED_ARTIFACTS: dict[str, list[str]] = {
-    **B4_REQUIRED_ARTIFACTS,
+    "root": ["status.json", "manifest.json"],
+    "config": ["experiment_config.json", "frozen_config.json", "config_hash.txt"],
+    "provenance": ["source.json", "environment.json", "model.json"],
     "dataset": ["train.json", "dev.json", "final.json", "final_ood.json",
                 "groups.json", "dataset_manifest.json", "crossover_report.json"],
+    "counterfactuals": ["train.json", "dev.json", "final.json", "final_ood.json",
+                        "summary.json"],
+    "representations": ["train.npz", "dev.npz", "final.npz", "final_ood.npz",
+                        "representation_manifest.json"],
+    "transforms": ["pca_artifact.npz", "pca_manifest.json"],
+    "policies": ["hidden_policy.json", "ridge_policy.json", "mlp_policy.json",
+                 "fixed_baselines.json", "surface_baselines.json",
+                 "policy_manifest.json", "selection.json",
+                 "frozen_policy_manifest.json"],
+    "policies/shams": ["sham_runs.json"],
     "qualification": ["qualification.json", "per_task_results.json",
                       "per_group_results.json", "ood_results.json",
                       "bootstrap_results.npz"],
-    "policies": ["hidden_policy.json", "ridge_policy.json", "mlp_policy.json",
-                 "fixed_baselines.json", "surface_baselines.json",
-                 "policy_manifest.json"],
+    "checks": ["leakage.json", "integrity.json", "final_access_ledger.jsonl",
+               "final_isolation.json", "reproduction.json",
+               "report_consistency.json"],
+    "reports": ["final_report.md"],
+}
+
+# Synthetic pipeline uses a relaxed set (it doesn't produce all B5 runner artifacts).
+B5_SYNTHETIC_REQUIRED_ARTIFACTS: dict[str, list[str]] = {
+    "root": ["manifest.json", "status.json"],
+    "config": ["experiment_config.json", "config_hash.txt"],
+    "dataset": ["train.json", "dev.json", "final.json", "final_ood.json",
+                "groups.json", "dataset_manifest.json"],
+    "counterfactuals": ["train.json", "dev.json", "final.json",
+                        "summary.json"],
+    "representations": ["train.npz", "dev.npz", "final.npz",
+                        "representation_manifest.json"],
+    "pca": ["pca_artifact.npz", "pca_manifest.json"],
+    "policies": ["hidden_policy.json", "fixed_baselines.json",
+                 "surface_baselines.json", "policy_manifest.json"],
+    "sham": ["sham_runs.json"],
+    "qualification": ["qualification.json", "per_task_results.json",
+                      "per_group_results.json", "ood_results.json",
+                      "bootstrap_results.npz"],
+    "checks": ["leakage_checks.json", "artifact_integrity.json", "reproducibility_check.json"],
 }
 
 

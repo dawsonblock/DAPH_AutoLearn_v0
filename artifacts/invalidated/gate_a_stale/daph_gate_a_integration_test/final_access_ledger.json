@@ -1,0 +1,10 @@
+{
+  "max_accesses": 1,
+  "release_version": "0.3.10.4-alpha",
+  "source_hash": "5681bca6b614e0324067ccca4f727b37f1a75eee3aa59e3dde8abf7446535051",
+  "config_hash": "1e95de8b3d12642c901b7a9ae2c90d5fc2533a24a3fbc352083ceb66b282785a",
+  "policy_hash": "",
+  "calibration_hash": "",
+  "n_accesses": 0,
+  "records": []
+}
