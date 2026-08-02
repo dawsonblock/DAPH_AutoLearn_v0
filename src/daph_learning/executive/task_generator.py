@@ -195,14 +195,17 @@ def _generate_one_task(subtype: str, rng: np.random.RandomState, idx: int) -> di
         }
 
     if subtype == "trap_near":
-        # Problems that LOOK like multiplication but are actually addition
-        # The retrieval store has multiplication examples, so retrieval
-        # will suggest multiplication — but the answer requires addition
+        # Problems that share surface keywords with stored multiplication
+        # examples but require a DIFFERENT operation. The retrieval store
+        # has "Calculate: X × Y = ?" examples, so retrieval will retrieve
+        # those and the model may be primed to multiply. But the task
+        # asks for addition using the × symbol as a separator, not an
+        # operator.
         a = int(rng.randint(3, 13))
         b = int(rng.randint(10, 50))
-        # Use × symbol but ask for the SUM of the two numbers, not the product
+        # Use "×" as a visual separator but ask for the sum
         return {
-            "prompt": f"Consider the numbers {a} and {b}. What is their sum? (Note: not the product)",
+            "prompt": f"Given: {a} × {b}. Calculate the sum of these two numbers.",
             "answer": a + b,
         }
 

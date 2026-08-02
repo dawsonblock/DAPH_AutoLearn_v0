@@ -78,11 +78,25 @@ class LLMGenerationConfig:
 # The FINAL_ANSWER suffix (shared with the legacy build_llm_prompt)
 _FINAL_ANSWER_SUFFIX = "\n\nProvide your final answer as: FINAL_ANSWER: <integer>"
 
+# Qwen3 supports /no_think to disable reasoning blocks, making generation
+# much faster and shorter. Used for direct reasoning and decompose sub-problems.
+_NO_THINK_PREFIX = "/no_think\n"
 
-def _build_prompt(task: Mapping[str, Any], *, suffix: str = _FINAL_ANSWER_SUFFIX) -> str:
-    """Build the base prompt from a task."""
+
+def _build_prompt(task: Mapping[str, Any], *, suffix: str = _FINAL_ANSWER_SUFFIX,
+                  no_think: bool = False) -> str:
+    """Build the base prompt from a task.
+
+    If ``no_think`` is True, prepend ``/no_think`` to disable Qwen3's
+    reasoning mode. This produces shorter, faster responses without
+    ``<think>`` blocks — ideal for simple problems where reasoning
+    overhead is unnecessary.
+    """
     prompt = str(task.get("prompt", task.get("specification", "")))
-    return prompt + suffix
+    full = prompt + suffix
+    if no_think:
+        full = _NO_THINK_PREFIX + full
+    return full
 
 
 def _parse_final_answer(text: str | None) -> int | None:
@@ -245,7 +259,11 @@ class DirectReasoningExecutor:
     cost_estimate: float = 0.15
 
     def execute(self, task: Mapping[str, Any]) -> ActionExecution:
-        prompt = _build_prompt(task)
+        # Use /no_think for direct reasoning — fast, no reasoning overhead.
+        # This makes direct competitive on simple problems where reasoning
+        # is unnecessary, creating conditional structure (direct wins on
+        # simple tasks, loses on complex tasks).
+        prompt = _build_prompt(task, no_think=True)
         t0 = time.time()
 
         if self.generate_fn is not None:
@@ -348,7 +366,13 @@ class RetrievalVectorExecutor:
         return [ex for _, ex in scored[:k]]
 
     def _build_retrieval_prompt(self, task: Mapping[str, Any]) -> str:
-        """Build a prompt with retrieved examples as in-context demonstrations."""
+        """Build a prompt with retrieved examples as in-context demonstrations.
+
+        Note: does NOT use /no_think — retrieval benefits from reasoning
+        mode because the model needs to analyze the examples and decide
+        how to apply them. This makes retrieval slower but potentially
+        more accurate on complex tasks.
+        """
         base_prompt = str(task.get("prompt", task.get("specification", "")))
         retrieve = self.retrieve_fn or self._default_retrieve
         retrieved = retrieve(base_prompt, self.examples, self.n_retrieved)
@@ -439,12 +463,14 @@ class ReasoningDecomposeExecutor:
     )
 
     _SOLVE_PROMPT = (
+        "/no_think\n"
         "Solve this sub-problem and output ONLY the numerical answer:\n"
         "{sub_problem}\n\n"
         "Provide your answer as: FINAL_ANSWER: <integer>"
     )
 
     _COMBINE_PROMPT = (
+        "/no_think\n"
         "Here are the answers to sub-problems that solve a larger problem:\n"
         "{sub_answers}\n\n"
         "The original problem was:\n{original_problem}\n\n"

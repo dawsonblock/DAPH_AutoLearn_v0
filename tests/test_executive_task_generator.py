@@ -65,7 +65,6 @@ class TestGenerateDiverseTasks:
         assert len(traps) > 0
         for t in traps:
             # The answer should be a sum, not a product
-            # Extract the two numbers from the prompt
             import re
             nums = re.findall(r"\d+", t["prompt"])
             assert len(nums) >= 2
