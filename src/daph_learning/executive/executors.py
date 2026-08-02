@@ -262,11 +262,10 @@ class DirectReasoningExecutor:
     cost_estimate: float = 0.15
 
     def execute(self, task: Mapping[str, Any]) -> ActionExecution:
-        # Use /no_think for direct reasoning — fast, no reasoning overhead.
-        # This makes direct competitive on simple problems where reasoning
-        # is unnecessary, creating conditional structure (direct wins on
-        # simple tasks, loses on complex tasks).
-        prompt = _build_prompt(task, no_think=True)
+        # Direct reasoning uses thinking mode (default Qwen3 behavior).
+        # This makes direct slower but more capable. The speed/accuracy
+        # tradeoff vs retrieval/decompose is more balanced.
+        prompt = _build_prompt(task, no_think=False)
         t0 = time.time()
 
         if self.generate_fn is not None:

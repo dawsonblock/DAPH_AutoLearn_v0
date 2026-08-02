@@ -130,37 +130,31 @@ def _generate_one_task(subtype: str, rng: np.random.RandomState, idx: int) -> di
         }
 
     if subtype == "pattern_extend":
-        # More complex sequences that benefit from reasoning
-        patterns = ["fibonacci", "two_step", "alternating"]
+        # Sequences that benefit from reasoning mode (thinking) to
+        # identify the pattern. Not too hard — the model should get
+        # these right with thinking, but may struggle without.
+        patterns = ["geometric", "arithmetic", "square", "fibonacci"]
         pat = patterns[idx % len(patterns)]
-        if pat == "fibonacci":
+        if pat == "geometric":
+            start = int(rng.randint(1, 5))
+            ratio = int(rng.randint(2, 4))
+            seq = [start * ratio**k for k in range(4)]
+            answer = start * ratio**4
+        elif pat == "arithmetic":
+            start = int(rng.randint(1, 10))
+            step = int(rng.randint(3, 12))
+            seq = [start + step * k for k in range(4)]
+            answer = start + step * 4
+        elif pat == "square":
+            start_n = int(rng.randint(1, 4))
+            seq = [(start_n + k) ** 2 for k in range(4)]
+            answer = (start_n + 4) ** 2
+        else:  # fibonacci
             a, b = int(rng.randint(1, 5)), int(rng.randint(5, 15))
             seq = [a, b]
             for _ in range(3):
                 seq.append(seq[-1] + seq[-2])
             answer = seq[-1] + seq[-2]
-        elif pat == "two_step":
-            # Multiply then add: a, a*r+c, (a*r+c)*r+c, ...
-            start = int(rng.randint(1, 5))
-            r = int(rng.randint(2, 4))
-            c = int(rng.randint(1, 5))
-            seq = [start]
-            for _ in range(4):
-                seq.append(seq[-1] * r + c)
-            answer = seq[-1] * r + c
-            seq = seq[:4]
-        else:  # alternating
-            # Alternating add/multiply: +a, ×b, +a, ×b, ...
-            start = int(rng.randint(2, 8))
-            a_add = int(rng.randint(3, 10))
-            b_mul = int(rng.randint(2, 4))
-            seq = [start]
-            for k in range(4):
-                if k % 2 == 0:
-                    seq.append(seq[-1] + a_add)
-                else:
-                    seq.append(seq[-1] * b_mul)
-            answer = seq[-1] + a_add if len(seq) % 2 == 1 else seq[-1] * b_mul
             seq = seq[:4]
         seq_str = ", ".join(str(x) for x in seq)
         return {
