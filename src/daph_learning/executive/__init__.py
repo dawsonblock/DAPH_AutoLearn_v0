@@ -90,9 +90,24 @@ from daph_learning.executive.task_generator import (
 )
 from daph_learning.executive.hidden_state import (
     HiddenStateConfig,
+    QWEN3_8B_REVISION,
     load_model_for_capture,
     capture_hidden_states,
     capture_logprob_features,
+)
+from daph_learning.executive.b4_dataset import (
+    B4DatasetSplit,
+    generate_b4_dataset,
+    build_b4_retrieval_store,
+)
+from daph_learning.executive.dim_reduction import (
+    PCAPipeline,
+    select_pca_dimension,
+)
+from daph_learning.executive.q_policy import (
+    QRegressionPolicy,
+    compute_regret,
+    mean_regret,
 )
 
 __all__ = [
@@ -153,7 +168,19 @@ __all__ = [
     "build_retrieval_store",
     # Hidden state capture
     "HiddenStateConfig",
+    "QWEN3_8B_REVISION",
     "load_model_for_capture",
     "capture_hidden_states",
     "capture_logprob_features",
+    # B4 dataset
+    "B4DatasetSplit",
+    "generate_b4_dataset",
+    "build_b4_retrieval_store",
+    # Dimensionality reduction
+    "PCAPipeline",
+    "select_pca_dimension",
+    # Q-regression policy
+    "QRegressionPolicy",
+    "compute_regret",
+    "mean_regret",
 ]
