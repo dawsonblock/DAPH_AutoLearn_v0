@@ -1,6 +1,6 @@
 """Tests for DAPH v0.4 executive action executors.
 
-Tests the DirectReasoningExecutor, RetrievalVectorExecutor,
+Tests the DirectReasoningExecutor, RetrievalLexicalExecutor,
 ReasoningDecomposeExecutor, and ExecutorRegistry with mock generators.
 """
 
@@ -18,7 +18,7 @@ from daph_learning.executive import (
     ExecutiveState,
     LLMGenerationConfig,
     DirectReasoningExecutor,
-    RetrievalVectorExecutor,
+    RetrievalLexicalExecutor,
     ReasoningDecomposeExecutor,
     ExecutorRegistry,
     build_b1_executors,
@@ -117,21 +117,21 @@ class TestDirectReasoningExecutor:
 
 
 # ──────────────────────────────────────────────────────────────────────
-# RetrievalVectorExecutor Tests
+# RetrievalLexicalExecutor Tests
 # ──────────────────────────────────────────────────────────────────────
 
-class TestRetrievalVectorExecutor:
+class TestRetrievalLexicalExecutor:
     def test_correct_with_examples(self):
         gen = _make_mock_generator(42)
         examples = [
             {"prompt": "What is 30+12?", "answer": 42},
             {"prompt": "What is 20+22?", "answer": 42},
         ]
-        executor = RetrievalVectorExecutor(
+        executor = RetrievalLexicalExecutor(
             generate_fn=gen, examples=examples, n_retrieved=2)
         task = {"task_id": "t1", "prompt": "What is 40+2?", "answer": 42}
         result = executor.execute(task)
-        assert result.action_id == "action.retrieval.vector"
+        assert result.action_id == "action.retrieval.lexical"
         assert result.verified_correct is True
 
     def test_prompt_includes_examples(self):
@@ -141,7 +141,7 @@ class TestRetrievalVectorExecutor:
             captured_prompt.append(prompt)
             return "FINAL_ANSWER: 42", 50.0
         examples = [{"prompt": "ex1", "answer": 10}]
-        executor = RetrievalVectorExecutor(
+        executor = RetrievalLexicalExecutor(
             generate_fn=capturing_gen, examples=examples, n_retrieved=1)
         task = {"task_id": "t1", "prompt": "test problem", "answer": 42}
         executor.execute(task)
@@ -151,7 +151,7 @@ class TestRetrievalVectorExecutor:
 
     def test_empty_examples(self):
         gen = _make_mock_generator(42)
-        executor = RetrievalVectorExecutor(
+        executor = RetrievalLexicalExecutor(
             generate_fn=gen, examples=[], n_retrieved=3)
         task = {"task_id": "t1", "prompt": "x", "answer": 42}
         result = executor.execute(task)
@@ -163,7 +163,7 @@ class TestRetrievalVectorExecutor:
         def my_retrieve(query, examples, k):
             retrieved.append(query)
             return examples[:k]
-        executor = RetrievalVectorExecutor(
+        executor = RetrievalLexicalExecutor(
             generate_fn=gen, examples=[{"prompt": "a", "answer": 1}],
             retrieve_fn=my_retrieve, n_retrieved=1)
         task = {"task_id": "t1", "prompt": "x", "answer": 42}
@@ -234,7 +234,7 @@ class TestExecutorRegistry:
         )
         space = ActionSpace(actions=(
             ActionDescriptor(action_id="action.reasoning.direct"),
-            ActionDescriptor(action_id="action.retrieval.vector"),
+            ActionDescriptor(action_id="action.retrieval.lexical"),
             ActionDescriptor(action_id="action.reasoning.decompose"),
         ))
         task = {"task_id": "t1", "prompt": "What is 40+2?", "answer": 42}
@@ -250,7 +250,7 @@ class TestExecutorRegistry:
         registry = ExecutorRegistry()
         space = ActionSpace(actions=(
             ActionDescriptor(action_id="action.reasoning.direct"),
-            ActionDescriptor(action_id="action.retrieval.vector"),
+            ActionDescriptor(action_id="action.retrieval.lexical"),
         ))
         task = {"task_id": "t1", "prompt": "x", "answer": 42}
         cf_set = registry.execute_all(task, space)
@@ -271,7 +271,7 @@ class TestB1Factory:
             generate_fn=_make_mock_generator(42),
         )
         assert "action.reasoning.direct" in registry.action_ids
-        assert "action.retrieval.vector" in registry.action_ids
+        assert "action.retrieval.lexical" in registry.action_ids
         assert "action.reasoning.decompose" in registry.action_ids
 
     def test_b1_end_to_end_with_mock(self):
@@ -301,7 +301,7 @@ class TestB1Factory:
 
         space = ActionSpace(actions=(
             ActionDescriptor(action_id="action.reasoning.direct", cost_estimate=0.15),
-            ActionDescriptor(action_id="action.retrieval.vector", cost_estimate=0.10),
+            ActionDescriptor(action_id="action.retrieval.lexical", cost_estimate=0.10),
             ActionDescriptor(action_id="action.reasoning.decompose", cost_estimate=0.30),
         ))
 

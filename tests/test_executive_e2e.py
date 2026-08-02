@@ -70,7 +70,7 @@ def _generate_3action_experiment(
 
     action_space = ActionSpace(actions=(
         ActionDescriptor(action_id="action.reasoning.direct", cost_estimate=0.15),
-        ActionDescriptor(action_id="action.retrieval.vector", cost_estimate=0.10),
+        ActionDescriptor(action_id="action.retrieval.lexical", cost_estimate=0.10),
         ActionDescriptor(action_id="action.reasoning.decompose", cost_estimate=0.30),
     ))
 
@@ -223,7 +223,7 @@ class TestThreeActionEndToEnd:
         assert "Executive Qualification Report" in md
         assert "b1_integration_test" in md
         assert "action.reasoning.direct" in md
-        assert "action.retrieval.vector" in md
+        assert "action.retrieval.lexical" in md
         assert "action.reasoning.decompose" in md
         assert "P1 - P0" in md
         assert "Per-Group" in md

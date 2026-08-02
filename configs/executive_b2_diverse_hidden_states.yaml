@@ -9,7 +9,7 @@ action_space:
       description: "Direct LLM generation without decomposition or retrieval."
       cost_estimate: 0.15
       tags: ["reasoning", "direct", "neural"]
-    - action_id: "action.retrieval.vector"
+    - action_id: "action.retrieval.lexical"
       display_name: "Vector Retrieval"
       description: "Retrieve similar examples from a vector store, then generate."
       cost_estimate: 0.10

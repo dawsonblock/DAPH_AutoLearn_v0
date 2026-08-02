@@ -1,0 +1,65 @@
+{
+  "implementation_summary": {
+    "schema_version": "1.0",
+    "build_name": "B4 Hardening + B5 Adaptive Compute",
+    "package_version": "0.4.0a1",
+    "date": "2026-08-02",
+    "status": "CODE_COMPLETE",
+    "experiment_executed": false,
+    "scientifically_qualified": false,
+    "modules_added": [
+      "src/daph_learning/executive/artifact_integrity.py",
+      "src/daph_learning/executive/manifest.py",
+      "src/daph_learning/executive/leakage.py",
+      "src/daph_learning/executive/stats.py",
+      "src/daph_learning/executive/lifecycle.py",
+      "src/daph_learning/executive/b5_actions.py",
+      "src/daph_learning/executive/b5_dataset.py",
+      "src/daph_learning/executive/b5_policies.py",
+      "src/daph_learning/executive/b5_qualification.py",
+      "src/daph_learning/executive/reproduce.py",
+      "src/daph_learning/executive/synthetic_pipeline.py"
+    ],
+    "modules_modified": [
+      "src/daph_learning/executive/__init__.py",
+      "src/daph_learning/executive/executors.py"
+    ],
+    "tests_added": [
+      "tests/test_b4_b5_hardening.py"
+    ],
+    "configs_modified": [
+      "configs/executive_b4_hidden_states.yaml",
+      "configs/executive_b1_direct_vs_retrieval_vs_decompose.yaml",
+      "configs/executive_b2_diverse_hidden_states.yaml",
+      "configs/executive_b3_conditional_routing.yaml"
+    ],
+    "key_changes": {
+      "artifact_integrity": "Validator that rejects SSH/PTY errors, malformed JSON, placeholders, zeroed hashes, and missing artifacts. The exact corruption that invalidated B4 ('Error: Your SSH client doesn't support PTY') is now detected and rejected.",
+      "manifest_system": "Versioned manifest with SHA-256 hashing, byte sizes, schema versions, and provenance. ManifestBuilder creates manifest.json with model, dataset, counterfactuals, representations, PCA, policies, shams, qualification, and environment sections.",
+      "leakage_checks": "Framework checking task ID overlap, exact prompt overlap, retrieval store contamination, PCA train-only fit, policy selection leakage, group/template cross-split leakage, and representation sanity (NaN/inf/variance/dimensionality).",
+      "corrected_stats": "Group-local paired positive-group computation (not global baseline). Paired group bootstrap with full statistics (mean, median, 2.5/97.5 percentiles, SE, P>0). Matched sham evaluation with paired comparison (not percentile of regret differences).",
+      "frozen_lifecycle": "Explicit experiment states: DEVELOPMENT → FROZEN → RUNNING → QUALIFIED/FAILED. Config hash enforcement prevents tuning after observing FINAL. Experiment registry tracks all experiments with invalidation support.",
+      "action_rename": "action.retrieval.vector renamed to action.retrieval.lexical (it was keyword overlap, not vector retrieval). Backward-compatible alias retained.",
+      "b5_action_space": "Four actions: direct_fast (/no_think, 512 tokens), direct_think (thinking on, 2048 tokens), retrieval.examples (lexical), reasoning.decompose. FAST vs THINK differs in inference compute, not model.",
+      "b5_dataset": "12 task families with within-family crossovers (easy/medium/hard tiers). Winner distribution diagnostics verify ≥2 actions each win ≥15% per family. OOD split included.",
+      "b5_policies": "LinearQPolicy, RidgeQPolicy (DEV-tuned alpha), MLPQPolicy (128→128→64→4). All train on full counterfactual utility regression, not winner classification. Surface-feature baselines (subtype, prompt_length, TF-IDF).",
+      "b5_qualification": "Seven frozen gates: beats best fixed, beats surface, beats sham, positive oracle capture (≥25%), breadth (≥65% positive groups), no leakage, artifact integrity. Any hard gate failure = NOT QUALIFIED.",
+      "reproduction_command": "python -m daph_learning.executive.reproduce --artifact-root <path> verifies artifact hashes, reloads data, recomputes metrics, and compares to stored qualification JSON.",
+      "synthetic_pipeline": "End-to-end integration test with fake executors and synthetic hidden features. Runs dataset generation → counterfactual execution → representation → PCA → policy training → sham → qualification → manifest → verification. No GPU required."
+    },
+    "not_implemented": [
+      "Real Qwen3-8B model execution (requires GPU/vLLM)",
+      "Real B4 reproduction run (requires model execution)",
+      "Real B5 qualification run (requires model execution)",
+      "Cross-model replication (B6+ scope)",
+      "Sequential executive control (B6 scope)",
+      "Capsule integration (explicitly excluded)"
+    ],
+    "test_results": {
+      "new_tests": 74,
+      "new_tests_passed": 74,
+      "pre_existing_failures": 3,
+      "regressions": 0
+    }
+  }
+}

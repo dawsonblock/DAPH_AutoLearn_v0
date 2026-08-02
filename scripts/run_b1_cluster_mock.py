@@ -64,7 +64,7 @@ def make_cluster_aware_generators():
 
     return {
         "action.reasoning.direct": direct_gen,
-        "action.retrieval.vector": retrieval_gen,
+        "action.retrieval.lexical": retrieval_gen,
         "action.reasoning.decompose": decompose_gen,
     }
 
@@ -103,7 +103,7 @@ def main():
     # Build action space
     space = ActionSpace(actions=(
         ActionDescriptor(action_id="action.reasoning.direct", cost_estimate=0.15),
-        ActionDescriptor(action_id="action.retrieval.vector", cost_estimate=0.10),
+        ActionDescriptor(action_id="action.retrieval.lexical", cost_estimate=0.10),
         ActionDescriptor(action_id="action.reasoning.decompose", cost_estimate=0.30),
     ))
 
@@ -122,7 +122,7 @@ def main():
         config=config, generate_fn=gen_map["action.reasoning.direct"]))
     registry.register(RetrievalVectorExecutor(
         config=config, examples=[],
-        generate_fn=gen_map["action.retrieval.vector"]))
+        generate_fn=gen_map["action.retrieval.lexical"]))
     registry.register(ReasoningDecomposeExecutor(
         config=config, generate_fn=gen_map["action.reasoning.decompose"]))
 

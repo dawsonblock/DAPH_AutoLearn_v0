@@ -115,8 +115,8 @@ implemented as a per-forward hook constraint in this release.
 
 **Status: ESTABLISHED as engineering.**
 
-The main repository contains 1453 collected tests in the release build
-(collected on macOS Darwin 25.2.0, Python 3.12.0, pytest 8.4.2; 1422 passed,
+The main repository contains 1546 collected tests in the release build
+(collected on macOS Darwin 25.2.0, Python 3.12.0, pytest 8.4.2; 1513 passed,
 8 skipped). Tests that require explicitly enabled model downloads or
 unavailable hardware may skip. The bundled GDN2/ExFusion extension has a
 separate test suite.

@@ -2,6 +2,52 @@
 
 ## What changed
 
+### B4 hardening + B5 adaptive compute (0.4.0a1)
+
+- **Artifact integrity validator** (`artifact_integrity.py`): rejects SSH/PTY
+  errors, malformed JSON, placeholders, zeroed hashes, and missing artifacts.
+  The exact corruption that invalidated B4 ("Error: Your SSH client doesn't
+  support PTY") is now detected and rejected.
+- **Manifest system** (`manifest.py`): versioned manifest with SHA-256 hashing,
+  byte sizes, schema versions, and provenance. `ManifestBuilder` creates
+  `manifest.json` with model, dataset, counterfactuals, representations, PCA,
+  policies, shams, qualification, and environment sections.
+- **Leakage checks** (`leakage.py`): task ID overlap, exact prompt overlap,
+  retrieval store contamination, PCA train-only fit, policy selection leakage,
+  group/template cross-split leakage, and representation sanity (NaN/inf/
+  variance/dimensionality).
+- **Corrected statistics** (`stats.py`): group-local paired positive-group
+  computation (not global baseline). Paired group bootstrap with full
+  statistics (mean, median, 2.5/97.5 percentiles, SE, P>0). Matched sham
+  evaluation with paired comparison (not percentile of regret differences).
+- **Frozen experiment lifecycle** (`lifecycle.py`): explicit states
+  DEVELOPMENT → FROZEN → RUNNING → QUALIFIED/FAILED. Config hash enforcement
+  prevents tuning after observing FINAL. Experiment registry with invalidation.
+- **Action rename**: `action.retrieval.vector` → `action.retrieval.lexical`
+  (it was keyword overlap, not vector retrieval). Backward-compatible alias.
+- **B5 action space** (`b5_actions.py`): four actions — `direct_fast`
+  (/no_think, 512 tokens), `direct_think` (thinking on, 2048 tokens),
+  `retrieval.examples` (lexical), `reasoning.decompose`. FAST vs THINK differs
+  in inference compute, not model.
+- **B5 dataset** (`b5_dataset.py`): 12 task families with within-family
+  crossovers (easy/medium/hard tiers). Winner distribution diagnostics verify
+  ≥2 actions each win ≥15% per family. OOD split included.
+- **B5 policies** (`b5_policies.py`): `LinearQPolicy`, `RidgeQPolicy`
+  (DEV-tuned alpha), `MLPQPolicy` (128→128→64→4). All train on full
+  counterfactual utility regression, not winner classification. Surface-feature
+  baselines (subtype, prompt_length, TF-IDF).
+- **B5 qualification gates** (`b5_qualification.py`): seven frozen gates —
+  beats best fixed, beats surface, beats sham, positive oracle capture (≥25%),
+  breadth (≥65% positive groups), no leakage, artifact integrity. Any hard
+  gate failure = NOT QUALIFIED.
+- **Reproduction command** (`reproduce.py`):
+  `python -m daph_learning.executive.reproduce --artifact-root <path>` verifies
+  artifact hashes, reloads data, recomputes metrics, and compares to stored
+  qualification JSON.
+- **Synthetic integration test** (`synthetic_pipeline.py`): end-to-end pipeline
+  with fake executors and synthetic hidden features. No GPU required.
+- **74 new unit tests** covering all new modules.
+
 ### Generic executive qualification
 
 - **New `daph_learning.executive` package**: introduces generic N-action

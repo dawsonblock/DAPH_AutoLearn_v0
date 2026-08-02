@@ -301,7 +301,7 @@ class DirectReasoningExecutor:
 # ──────────────────────────────────────────────────────────────────────
 
 @dataclass
-class RetrievalVectorExecutor:
+class RetrievalLexicalExecutor:
     """Execute retrieval-augmented LLM reasoning.
 
     Retrieves similar examples from a provided example store, appends
@@ -310,7 +310,7 @@ class RetrievalVectorExecutor:
     Attributes
     ----------
     action_id : str
-        Must be ``"action.retrieval.vector"``.
+        Must be ``"action.retrieval.lexical"``.
     config : LLMGenerationConfig
     examples : list[dict]
         The retrieval store — list of example tasks with ``prompt``
@@ -325,7 +325,7 @@ class RetrievalVectorExecutor:
         Number of examples to retrieve.
     """
 
-    action_id: str = "action.retrieval.vector"
+    action_id: str = "action.retrieval.lexical"
     config: LLMGenerationConfig = field(default_factory=LLMGenerationConfig)
     examples: list[dict] = field(default_factory=list)
     retrieve_fn: Callable[[str, list[dict], int], list[dict]] | None = None
@@ -334,14 +334,15 @@ class RetrievalVectorExecutor:
     n_retrieved: int = 3
 
     def _default_retrieve(self, query: str, examples: list[dict], k: int) -> list[dict]:
-        """Default retrieval: keyword-based selection.
+        """Default retrieval: lexical keyword overlap.
 
         Uses simple keyword matching to find examples that share words
-        with the query. This is a lightweight stand-in for vector
-        similarity search — sufficient to create conditional structure
-        where retrieval helps on matching subtypes and hurts on
-        trap subtypes (which share keywords with stored examples but
-        require different operations).
+        with the query. This is lexical retrieval (keyword overlap),
+        NOT vector/embedding retrieval. The action is named
+        ``action.retrieval.lexical`` to reflect this accurately.
+
+        For real vector retrieval, use a pinned embedding model with
+        cosine similarity (see ``RetrievalEmbeddingExecutor``).
         """
         if not examples:
             return []
@@ -698,18 +699,23 @@ def build_b1_executors(
     registry = ExecutorRegistry()
     registry.register(DirectReasoningExecutor(
         config=config, generate_fn=generate_fn))
-    registry.register(RetrievalVectorExecutor(
+    registry.register(RetrievalLexicalExecutor(
         config=config, examples=examples or [], generate_fn=generate_fn))
     registry.register(ReasoningDecomposeExecutor(
         config=config, generate_fn=generate_fn))
     return registry
 
 
+# Backward-compatible alias for code that references the old name.
+RetrievalVectorExecutor = RetrievalLexicalExecutor
+
+
 __all__ = [
     "ActionExecutor",
     "LLMGenerationConfig",
     "DirectReasoningExecutor",
-    "RetrievalVectorExecutor",
+    "RetrievalLexicalExecutor",
+    "RetrievalVectorExecutor",  # backward-compat alias
     "ReasoningDecomposeExecutor",
     "ExecutorRegistry",
     "build_b1_executors",
