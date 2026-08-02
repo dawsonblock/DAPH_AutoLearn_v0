@@ -459,25 +459,30 @@ class ReasoningDecomposeExecutor:
     _DECOMPOSE_PROMPT = (
         "/no_think\n"
         "{problem}\n\n"
-        "Break this problem into at most {n} simpler sub-problems. "
+        "Break this problem into {n} sequential sub-problems. "
+        "Each sub-problem should be a single simple calculation. "
         "Output each sub-problem on its own line in this exact format:\n"
         "SUB: <sub-problem description>\n"
-        "Do not solve the sub-problems yet. Just list them."
+        "Do not solve the sub-problems yet. Just list them.\n"
+        "Example:\n"
+        "SUB: Calculate 234 + 567\n"
+        "SUB: Multiply the result by 5\n"
+        "SUB: Subtract 100 from the result"
     )
 
     _SOLVE_PROMPT = (
         "/no_think\n"
-        "Solve this sub-problem and output ONLY the numerical answer:\n"
+        "Solve this sub-problem step by step and output the numerical answer:\n"
         "{sub_problem}\n\n"
         "Provide your answer as: FINAL_ANSWER: <integer>"
     )
 
     _COMBINE_PROMPT = (
         "/no_think\n"
-        "Here are the answers to sub-problems that solve a larger problem:\n"
-        "{sub_answers}\n\n"
         "The original problem was:\n{original_problem}\n\n"
-        "Combine these sub-answers to get the final answer. "
+        "The sub-problems and their answers are:\n{sub_answers}\n\n"
+        "Use these sub-answers to determine the final answer to the original problem. "
+        "If the sub-problems are sequential, use each answer as input to the next step. "
         "Provide your answer as: FINAL_ANSWER: <integer>"
     )
 
