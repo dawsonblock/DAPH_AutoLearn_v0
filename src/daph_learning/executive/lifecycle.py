@@ -63,6 +63,8 @@ class ExperimentStatus(str, Enum):
     RUNNING = "RUNNING"
     FAILED_EXECUTION = "FAILED_EXECUTION"
     FAILED_INTEGRITY = "FAILED_INTEGRITY"
+    FAILED_LEAKAGE = "FAILED_LEAKAGE"
+    FAILED_REPRODUCTION = "FAILED_REPRODUCTION"
     FAILED_QUALIFICATION = "FAILED_QUALIFICATION"
     QUALIFIED = "QUALIFIED"
     INVALIDATED = "INVALIDATED"
@@ -77,11 +79,15 @@ class ExperimentStatus(str, Enum):
                 cls.QUALIFIED,
                 cls.FAILED_EXECUTION,
                 cls.FAILED_INTEGRITY,
+                cls.FAILED_LEAKAGE,
+                cls.FAILED_REPRODUCTION,
                 cls.FAILED_QUALIFICATION,
                 cls.INVALIDATED,
             },
             cls.FAILED_EXECUTION: {cls.INVALIDATED},
             cls.FAILED_INTEGRITY: {cls.INVALIDATED},
+            cls.FAILED_LEAKAGE: {cls.INVALIDATED},
+            cls.FAILED_REPRODUCTION: {cls.INVALIDATED},
             cls.FAILED_QUALIFICATION: {cls.INVALIDATED},
             cls.QUALIFIED: {cls.INVALIDATED},
             cls.INVALIDATED: set(),
@@ -249,6 +255,10 @@ class ExperimentState:
             self.transition_to(ExperimentStatus.FAILED_EXECUTION)
         elif reason == "integrity":
             self.transition_to(ExperimentStatus.FAILED_INTEGRITY)
+        elif reason == "leakage":
+            self.transition_to(ExperimentStatus.FAILED_LEAKAGE)
+        elif reason == "reproduction":
+            self.transition_to(ExperimentStatus.FAILED_REPRODUCTION)
         else:
             self.transition_to(ExperimentStatus.FAILED_QUALIFICATION)
 

@@ -365,7 +365,7 @@ def capture_logprob_features(
                 float(valid_lps[0]),
                 float(valid_lps[-1]),
             ], dtype=np.float32)
-        except Exception:
+        except (ValueError, IndexError, TypeError):
             return np.zeros(10, dtype=np.float32)
 
     features = []

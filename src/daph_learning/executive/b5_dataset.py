@@ -71,6 +71,9 @@ class B5TaskSpec:
     # Soft hint for mock executors about which action "should" win.
     # Real execution determines the actual oracle.
     oracle_action_hint: str = ""
+    # Template group: tasks derived from the same parameterized template
+    # share a template_group_id. Used for template-level leakage control.
+    template_group_id: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -83,6 +86,7 @@ class B5TaskSpec:
             "group_id": self.group_id,
             "split": self.split,
             "oracle_action_hint": self.oracle_action_hint,
+            "template_group_id": self.template_group_id,
         }
 
 
@@ -110,13 +114,13 @@ class B5DatasetSplit:
 def _gen_arithmetic_easy(rng: np.random.RandomState, difficulty: str) -> tuple[str, int, str]:
     """Easy arithmetic: a + b or a - b."""
     if difficulty == "easy":
-        a, b = rng.randint(1, 15, size=2)
+        a, b = rng.randint(1, 150, size=2)
         op = rng.choice(["+", "-"])
     elif difficulty == "medium":
-        a, b = rng.randint(5, 30, size=2)
+        a, b = rng.randint(5, 300, size=2)
         op = rng.choice(["+", "-"])
     else:
-        a, b = rng.randint(10, 50, size=2)
+        a, b = rng.randint(10, 500, size=2)
         op = rng.choice(["+", "-"])
     if op == "+":
         answer = int(a + b)
@@ -132,17 +136,17 @@ def _gen_arithmetic_easy(rng: np.random.RandomState, difficulty: str) -> tuple[s
 def _gen_arithmetic_large(rng: np.random.RandomState, difficulty: str) -> tuple[str, int, str]:
     """Large number arithmetic requiring more compute."""
     if difficulty == "easy":
-        a, b = rng.randint(100, 500, size=2)
+        a, b = rng.randint(100, 5000, size=2)
         answer = int(a + b)
         prompt = f"Calculate {a} + {b}."
         hint = "action.reasoning.direct_fast"
     elif difficulty == "medium":
-        a, b = rng.randint(500, 2000, size=2)
+        a, b = rng.randint(500, 20000, size=2)
         answer = int(a + b)
         prompt = f"Calculate {a} + {b}."
         hint = "action.reasoning.direct_think"
     else:
-        a, b = rng.randint(1000, 9999, size=2)
+        a, b = rng.randint(1000, 99990, size=2)
         answer = int(a * b)
         prompt = f"Calculate {a} × {b}."
         hint = "action.reasoning.decompose"
@@ -152,17 +156,17 @@ def _gen_arithmetic_large(rng: np.random.RandomState, difficulty: str) -> tuple[
 def _gen_multi_step_math(rng: np.random.RandomState, difficulty: str) -> tuple[str, int, str]:
     """Multi-step arithmetic requiring decomposition."""
     if difficulty == "easy":
-        a, b, c = rng.randint(2, 20, size=3)
+        a, b, c = rng.randint(2, 200, size=3)
         answer = int((a + b) * c)
         prompt = f"What is ({a} + {b}) × {c}?"
         hint = "action.reasoning.direct_think"
     elif difficulty == "medium":
-        a, b, c, d = rng.randint(3, 30, size=4)
+        a, b, c, d = rng.randint(3, 300, size=4)
         answer = int((a * b) + (c * d))
         prompt = f"Calculate {a}×{b} + {c}×{d}."
         hint = "action.reasoning.decompose"
     else:
-        a, b, c, d, e = rng.randint(5, 50, size=5)
+        a, b, c, d, e = rng.randint(5, 500, size=5)
         answer = int((a + b) * c - d * e)
         prompt = f"Compute ({a} + {b}) × {c} - {d} × {e}."
         hint = "action.reasoning.decompose"
@@ -172,21 +176,21 @@ def _gen_multi_step_math(rng: np.random.RandomState, difficulty: str) -> tuple[s
 def _gen_comparison(rng: np.random.RandomState, difficulty: str) -> tuple[str, int, str]:
     """Comparison tasks: which is larger?"""
     if difficulty == "easy":
-        a, b = rng.randint(1, 50, size=2)
+        a, b = rng.randint(1, 500, size=2)
         prompt = f"Which is larger: {a} or {b}? Give the larger number."
         answer = int(max(a, b))
         hint = "action.reasoning.direct_fast"
     elif difficulty == "medium":
-        a, b = rng.randint(100, 999, size=2)
+        a, b = rng.randint(100, 9990, size=2)
         prompt = f"Which is larger: {a} or {b}? Give the larger number."
         answer = int(max(a, b))
         hint = "action.reasoning.direct_fast"
     else:
-        a = rng.randint(100, 999)
+        a = rng.randint(100, 9990)
         b = a + rng.randint(-50, 50)
         if b < 0:
             b = abs(b)
-        c = rng.randint(100, 999)
+        c = rng.randint(100, 9990)
         prompt = f"Is {a}×{b} larger than {c}×{c}? Give the larger product."
         answer = int(max(a * b, c * c))
         hint = "action.reasoning.decompose"
@@ -197,23 +201,23 @@ def _gen_pattern_extension(rng: np.random.RandomState, difficulty: str) -> tuple
     """Pattern extension: find the next number in a sequence."""
     if difficulty == "easy":
         # Arithmetic sequence
-        start = rng.randint(1, 10)
-        step = rng.randint(2, 5)
+        start = rng.randint(1, 100)
+        step = rng.randint(2, 50)
         seq = [start + step * i for i in range(4)]
         answer = seq[-1] + step
         prompt = f"What comes next in the sequence: {', '.join(map(str, seq))}, ?"
         hint = "action.reasoning.direct_fast"
     elif difficulty == "medium":
         # Geometric sequence — retrieval helps see the pattern
-        start = rng.randint(1, 4)
-        ratio = rng.randint(2, 4)
+        start = rng.randint(1, 40)
+        ratio = rng.randint(2, 40)
         seq = [start * (ratio ** i) for i in range(4)]
         answer = seq[-1] * ratio
         prompt = f"What comes next: {', '.join(map(str, seq))}, ?"
         hint = "action.retrieval.examples"
     else:
         # Complex pattern — think or decompose
-        a = rng.randint(1, 5)
+        a = rng.randint(1, 50)
         seq = [a, a * 2 + 1, (a * 2 + 1) * 2 + 1, ((a * 2 + 1) * 2 + 1) * 2 + 1]
         answer = seq[-1] * 2 + 1
         prompt = f"What comes next: {', '.join(map(str, seq))}, ?"
@@ -224,20 +228,20 @@ def _gen_pattern_extension(rng: np.random.RandomState, difficulty: str) -> tuple
 def _gen_constraint_reasoning(rng: np.random.RandomState, difficulty: str) -> tuple[str, int, str]:
     """Constraint satisfaction: find a number meeting constraints."""
     if difficulty == "easy":
-        x = rng.randint(2, 10)
+        x = rng.randint(2, 100)
         prompt = (f"Find a number that is {x} more than 10 and {x} less than 20. "
                   f"Give the number.")
         answer = 10 + x
         hint = "action.reasoning.direct_fast"
     elif difficulty == "medium":
-        x = rng.randint(3, 15)
+        x = rng.randint(3, 150)
         prompt = (f"Find a number that when doubled gives {2*x}, "
                   f"and when increased by 5 gives {x+5}. Give the number.")
         answer = x
         hint = "action.reasoning.direct_think"
     else:
-        a = rng.randint(2, 8)
-        b = rng.randint(2, 8)
+        a = rng.randint(2, 80)
+        b = rng.randint(2, 80)
         prompt = (f"Find a number n such that n + {a} = {a+b} and n × {b} = {(a+b)*b}. "
                   f"Give n.")
         answer = a + b
@@ -248,25 +252,25 @@ def _gen_constraint_reasoning(rng: np.random.RandomState, difficulty: str) -> tu
 def _gen_multi_fact_reasoning(rng: np.random.RandomState, difficulty: str) -> tuple[str, int, str]:
     """Multi-fact word problems."""
     if difficulty == "easy":
-        a = rng.randint(3, 15)
-        b = rng.randint(2, 10)
+        a = rng.randint(3, 150)
+        b = rng.randint(2, 100)
         prompt = (f"Alice has {a} apples. Bob has {b} times as many. "
                   f"How many apples does Bob have?")
         answer = a * b
         hint = "action.reasoning.direct_fast"
     elif difficulty == "medium":
-        a = rng.randint(10, 30)
-        b = rng.randint(3, 10)
-        c = rng.randint(5, 20)
+        a = rng.randint(10, 300)
+        b = rng.randint(3, 100)
+        c = rng.randint(5, 200)
         prompt = (f"A store has {a} items. They sell {b} items per day for {c} days. "
                   f"How many items remain?")
         answer = a - b * c
         hint = "action.reasoning.direct_think"
     else:
-        a = rng.randint(20, 50)
-        b = rng.randint(3, 8)
-        c = rng.randint(2, 6)
-        d = rng.randint(5, 15)
+        a = rng.randint(20, 500)
+        b = rng.randint(3, 80)
+        c = rng.randint(2, 60)
+        d = rng.randint(5, 150)
         prompt = (f"A factory produces {a} units per hour. After {b} hours, "
                   f"production doubles for {c} hours, then drops to {d} per hour. "
                   f"What is the total after {b+c+1} hours?")
@@ -279,17 +283,17 @@ def _gen_retrieval_sensitive(rng: np.random.RandomState, difficulty: str) -> tup
     """Tasks where retrieval of similar examples helps."""
     if difficulty == "easy":
         # Formula application — retrieval shows the method
-        x = rng.randint(2, 10)
+        x = rng.randint(2, 100)
         prompt = (f"Using the formula f(n) = n² + n, what is f({x})?")
         answer = x * x + x
         hint = "action.retrieval.examples"
     elif difficulty == "medium":
-        x = rng.randint(3, 12)
+        x = rng.randint(3, 120)
         prompt = (f"Using the formula g(n) = 2n² - n + 1, what is g({x})?")
         answer = 2 * x * x - x + 1
         hint = "action.retrieval.examples"
     else:
-        x = rng.randint(5, 15)
+        x = rng.randint(5, 150)
         prompt = (f"Using the formula h(n) = n³ - 2n² + 3, what is h({x})?")
         answer = x ** 3 - 2 * x * x + 3
         hint = "action.reasoning.direct_think"
@@ -299,17 +303,17 @@ def _gen_retrieval_sensitive(rng: np.random.RandomState, difficulty: str) -> tup
 def _gen_decomposition_sensitive(rng: np.random.RandomState, difficulty: str) -> tuple[str, int, str]:
     """Tasks that strongly benefit from decomposition."""
     if difficulty == "easy":
-        a, b, c = rng.randint(5, 20, size=3)
+        a, b, c = rng.randint(5, 200, size=3)
         prompt = f"Compute ({a} + {b} + {c}) × 2."
         answer = int((a + b + c) * 2)
         hint = "action.reasoning.direct_think"
     elif difficulty == "medium":
-        a, b, c, d = rng.randint(10, 40, size=4)
+        a, b, c, d = rng.randint(10, 400, size=4)
         prompt = f"Compute ({a}×{b}) + ({c}×{d}) - ({a}+{c})."
         answer = int(a * b + c * d - a - c)
         hint = "action.reasoning.decompose"
     else:
-        a, b, c, d, e = rng.randint(10, 50, size=5)
+        a, b, c, d, e = rng.randint(10, 500, size=5)
         prompt = f"Compute (({a}+{b})×{c} - {d}×{e}) ÷ 2."
         answer = int(((a + b) * c - d * e) / 2)
         hint = "action.reasoning.decompose"
@@ -319,16 +323,16 @@ def _gen_decomposition_sensitive(rng: np.random.RandomState, difficulty: str) ->
 def _gen_direct_easy(rng: np.random.RandomState, difficulty: str) -> tuple[str, int, str]:
     """Trivial tasks where FAST always wins."""
     if difficulty == "easy":
-        a = rng.randint(1, 10)
+        a = rng.randint(1, 100)
         prompt = f"What is {a} + 1?"
         answer = a + 1
     elif difficulty == "medium":
-        a = rng.randint(1, 20)
-        b = rng.randint(1, 20)
+        a = rng.randint(1, 200)
+        b = rng.randint(1, 200)
         prompt = f"What is {a} + {b}?"
         answer = a + b
     else:
-        a = rng.randint(10, 99)
+        a = rng.randint(10, 990)
         prompt = f"What is {a} + 10?"
         answer = a + 10
     return prompt, answer, "action.reasoning.direct_fast"
@@ -337,21 +341,21 @@ def _gen_direct_easy(rng: np.random.RandomState, difficulty: str) -> tuple[str, 
 def _gen_trap_tasks(rng: np.random.RandomState, difficulty: str) -> tuple[str, int, str]:
     """Trap tasks: look like a pattern but require different operation."""
     if difficulty == "easy":
-        a = rng.randint(2, 8)
-        b = rng.randint(2, 8)
+        a = rng.randint(2, 80)
+        b = rng.randint(2, 80)
         # Looks like a sequence but it's just addition
         prompt = f"Given the numbers {a} and {b}, what is their sum?"
         answer = a + b
         hint = "action.reasoning.direct_fast"
     elif difficulty == "medium":
-        a = rng.randint(3, 12)
+        a = rng.randint(3, 120)
         # Looks like it needs a formula but it's just the number itself
         prompt = f"If f(x) = x for all x, what is f({a})?"
         answer = a
         hint = "action.reasoning.direct_fast"
     else:
-        a = rng.randint(10, 30)
-        b = rng.randint(10, 30)
+        a = rng.randint(10, 300)
+        b = rng.randint(10, 300)
         # Looks like multiplication but it's addition
         prompt = f"Note: the operation ⊕ is defined as a ⊕ b = a + b. What is {a} ⊕ {b}?"
         answer = a + b
@@ -362,23 +366,23 @@ def _gen_trap_tasks(rng: np.random.RandomState, difficulty: str) -> tuple[str, i
 def _gen_novel_composition(rng: np.random.RandomState, difficulty: str) -> tuple[str, int, str]:
     """Novel composition of known skills — OOD-like."""
     if difficulty == "easy":
-        a = rng.randint(2, 10)
-        b = rng.randint(2, 10)
-        c = rng.randint(2, 10)
+        a = rng.randint(2, 100)
+        b = rng.randint(2, 100)
+        c = rng.randint(2, 100)
         prompt = f"Compute (max({a},{b})) × {c}."
         answer = max(a, b) * c
         hint = "action.reasoning.direct_think"
     elif difficulty == "medium":
-        a = rng.randint(5, 15)
-        b = rng.randint(5, 15)
-        c = rng.randint(2, 8)
+        a = rng.randint(5, 150)
+        b = rng.randint(5, 150)
+        c = rng.randint(2, 80)
         prompt = f"If |{a} - {b}| is multiplied by {c}, what is the result?"
         answer = abs(a - b) * c
         hint = "action.reasoning.decompose"
     else:
-        a = rng.randint(10, 30)
-        b = rng.randint(2, 6)
-        c = rng.randint(3, 10)
+        a = rng.randint(10, 300)
+        b = rng.randint(2, 60)
+        c = rng.randint(3, 100)
         prompt = f"Compute the sum of all integers from {a} to {a + c}, then divide by {b}."
         total = sum(range(a, a + c + 1))
         answer = total // b
@@ -407,6 +411,11 @@ _FAMILY_GENERATORS: dict[str, Any] = {
 # Section 3 — Dataset generation with crossovers
 # ──────────────────────────────────────────────────────────────────────
 
+def _normalize_prompt(prompt: str) -> str:
+    """Normalize a prompt for deduplication (strip whitespace, lowercase)."""
+    return " ".join(prompt.strip().lower().split())
+
+
 def generate_b5_dataset(
     n_train: int = 3000,
     n_dev: int = 750,
@@ -416,11 +425,17 @@ def generate_b5_dataset(
     *,
     families: Sequence[str] | None = None,
     tasks_per_group: int = 5,
+    split_mode: str = "standard",
+    max_gen_attempts: int = 10,
 ) -> dict[str, B5DatasetSplit]:
     """Generate the B5 dataset with within-family crossovers.
 
     Each family generates tasks at easy/medium/hard difficulty tiers,
     ensuring that different actions win within the same family.
+
+    Global prompt deduplication is enforced: no exact prompt appears
+    in more than one split. Tasks from the same parameterized template
+    share a ``template_group_id``.
 
     Parameters
     ----------
@@ -432,6 +447,12 @@ def generate_b5_dataset(
         Which families to include (default: all).
     tasks_per_group : int
         Tasks per group (for group-aware bootstrap).
+    split_mode : str
+        ``"standard"`` — same template families may appear across splits
+        but exact tasks cannot.
+        ``"template_ood"`` — entire template groups are held out.
+    max_gen_attempts : int
+        Maximum regeneration attempts for prompt deduplication.
 
     Returns
     -------
@@ -439,40 +460,71 @@ def generate_b5_dataset(
     """
     rng = np.random.RandomState(seed)
     fams = list(families) if families else list(B5_FAMILIES)
+    seen_prompts: set[str] = set()  # global dedup across all splits
+    task_counter = 0
 
-    def _gen_split(n_tasks: int, split_name: str, start_id: int) -> B5DatasetSplit:
+    def _gen_one_task(family: str, difficulty: str) -> dict[str, Any] | None:
+        """Generate one task, retrying if prompt is a duplicate."""
+        nonlocal task_counter
+        gen_fn = _FAMILY_GENERATORS[family]
+        for _ in range(max_gen_attempts):
+            prompt, answer, hint = gen_fn(rng, difficulty)
+            norm = _normalize_prompt(prompt)
+            if norm not in seen_prompts:
+                seen_prompts.add(norm)
+                task_counter += 1
+                return {
+                    "prompt": prompt,
+                    "answer": answer,
+                    "hint": hint,
+                    "family": family,
+                    "difficulty": difficulty,
+                    "subtype": f"{family}_{difficulty}",
+                    "template_group_id": f"tpl_{family}_{difficulty}",
+                }
+        return None  # could not generate unique prompt
+
+    def _gen_split(n_tasks: int, split_name: str) -> B5DatasetSplit:
         tasks: list[dict[str, Any]] = []
         n_groups = max(1, n_tasks // tasks_per_group)
         groups = [f"{split_name}_g{i:04d}" for i in range(n_groups)]
 
-        for i in range(n_tasks):
+        i = 0
+        attempts = 0
+        while i < n_tasks and attempts < n_tasks * max_gen_attempts:
             family = fams[i % len(fams)]
-            # Use a different modulus for difficulty so families get multiple tiers
             difficulty = DIFFICULTY_TIERS[(i // len(fams)) % len(DIFFICULTY_TIERS)]
-            gen_fn = _FAMILY_GENERATORS[family]
-            prompt, answer, hint = gen_fn(rng, difficulty)
+            task_data = _gen_one_task(family, difficulty)
+            attempts += 1
+            if task_data is None:
+                continue
             group = groups[i // tasks_per_group] if i // tasks_per_group < n_groups else groups[-1]
             task = B5TaskSpec(
-                task_id=f"b5_{split_name}_{start_id + i:06d}",
-                family=family,
-                subtype=f"{family}_{difficulty}",
-                difficulty=difficulty,
-                prompt=prompt,
-                answer=answer,
+                task_id=f"b5_{split_name}_{i:06d}",
+                family=task_data["family"],
+                subtype=task_data["subtype"],
+                difficulty=task_data["difficulty"],
+                prompt=task_data["prompt"],
+                answer=task_data["answer"],
                 group_id=group,
                 split=split_name,
-                oracle_action_hint=hint,
+                oracle_action_hint=task_data["hint"],
+                template_group_id=task_data["template_group_id"],
             )
             tasks.append(task.to_dict())
+            i += 1
 
         return B5DatasetSplit(split_name, groups, tasks)
 
-    train = _gen_split(n_train, "train", 0)
-    dev = _gen_split(n_dev, "dev", n_train)
-    final = _gen_split(n_final, "final", n_train + n_dev)
+    train = _gen_split(n_train, "train")
+    dev = _gen_split(n_dev, "dev")
+    final = _gen_split(n_final, "final")
     # OOD: use only novel_composition and trap_tasks families
     ood_families = ["novel_composition", "trap_tasks", "constraint_reasoning"]
-    ood = _gen_split(n_ood, "final_ood", n_train + n_dev + n_final)
+    old_fams = fams
+    fams = ood_families
+    ood = _gen_split(n_ood, "final_ood")
+    fams = old_fams
 
     return {"train": train, "dev": dev, "final": final, "final_ood": ood}
 

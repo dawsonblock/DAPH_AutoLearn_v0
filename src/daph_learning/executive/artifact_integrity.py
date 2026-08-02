@@ -42,6 +42,9 @@ _CORRUPTION_PATTERNS: list[re.Pattern[str]] = [
     re.compile(r"Permission denied \(publickey\)", re.IGNORECASE),
     re.compile(r"Connection (refused|closed|reset)", re.IGNORECASE),
     re.compile(r"No such file or directory", re.IGNORECASE),
+    # Zero SHA-256 hash (64 zeros) — indicates unpopulated artifact
+    re.compile(r'"[0-9a-f_]*hash[0-9a-f_]*"\s*:\s*"0{64}"', re.IGNORECASE),
+    re.compile(r'"source_tree_sha256"\s*:\s*"0{64}"', re.IGNORECASE),
 ]
 
 # Placeholder values that indicate an artifact was not actually populated.

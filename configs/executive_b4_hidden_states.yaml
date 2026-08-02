@@ -45,7 +45,7 @@ model:
   max_tokens: 1024
   temperature: 0.0
   vllm_port: 8000
-  vllm_api_key: "sk-placeholder"
+  vllm_api_key_env: "VLLM_API_KEY"
   vllm_max_concurrent: 24
   capture_hidden_states: true
   feature_mode: "hf_model"

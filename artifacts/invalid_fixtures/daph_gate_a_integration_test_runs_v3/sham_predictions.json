@@ -1,0 +1,7058 @@
+[
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g285_0000",
+    "symbolic_probability": 0.48449844121932983,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g285_0001",
+    "symbolic_probability": 0.5331766605377197,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g285_0002",
+    "symbolic_probability": 0.49588143825531006,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g285_0003",
+    "symbolic_probability": 0.5152707695960999,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g525_0000",
+    "symbolic_probability": 0.5017290115356445,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g525_0001",
+    "symbolic_probability": 0.4779762923717499,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g525_0002",
+    "symbolic_probability": 0.609579861164093,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g525_0003",
+    "symbolic_probability": 0.5221526026725769,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g327_0000",
+    "symbolic_probability": 0.5491571426391602,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g327_0001",
+    "symbolic_probability": 0.4955390393733978,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g327_0002",
+    "symbolic_probability": 0.4525618553161621,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g327_0003",
+    "symbolic_probability": 0.5871647000312805,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g473_0000",
+    "symbolic_probability": 0.5281680822372437,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g473_0001",
+    "symbolic_probability": 0.5485875010490417,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g473_0002",
+    "symbolic_probability": 0.479221910238266,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g473_0003",
+    "symbolic_probability": 0.4642942249774933,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g138_0000",
+    "symbolic_probability": 0.4571298062801361,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g138_0001",
+    "symbolic_probability": 0.5781972408294678,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g138_0002",
+    "symbolic_probability": 0.5021386742591858,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g138_0003",
+    "symbolic_probability": 0.4877854287624359,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g506_0000",
+    "symbolic_probability": 0.574941873550415,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g506_0001",
+    "symbolic_probability": 0.5335910320281982,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g506_0002",
+    "symbolic_probability": 0.513457715511322,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g506_0003",
+    "symbolic_probability": 0.5481669306755066,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g236_0000",
+    "symbolic_probability": 0.5408172607421875,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g236_0001",
+    "symbolic_probability": 0.4480379819869995,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g236_0002",
+    "symbolic_probability": 0.47079339623451233,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g236_0003",
+    "symbolic_probability": 0.5692146420478821,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g500_0000",
+    "symbolic_probability": 0.3324311375617981,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g500_0001",
+    "symbolic_probability": 0.41395971179008484,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g500_0002",
+    "symbolic_probability": 0.4738134741783142,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g500_0003",
+    "symbolic_probability": 0.43547892570495605,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g125_0000",
+    "symbolic_probability": 0.421895295381546,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g125_0001",
+    "symbolic_probability": 0.5210895538330078,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g125_0002",
+    "symbolic_probability": 0.4618644714355469,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g125_0003",
+    "symbolic_probability": 0.5104383826255798,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g373_0000",
+    "symbolic_probability": 0.4634208083152771,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g373_0001",
+    "symbolic_probability": 0.41449132561683655,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g373_0002",
+    "symbolic_probability": 0.46320727467536926,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g373_0003",
+    "symbolic_probability": 0.48526549339294434,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g273_0000",
+    "symbolic_probability": 0.4821355938911438,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g273_0001",
+    "symbolic_probability": 0.5563139319419861,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g273_0002",
+    "symbolic_probability": 0.4657382369041443,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g273_0003",
+    "symbolic_probability": 0.5655195713043213,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g87_0000",
+    "symbolic_probability": 0.5672072172164917,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g87_0001",
+    "symbolic_probability": 0.5057359933853149,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g87_0002",
+    "symbolic_probability": 0.48742514848709106,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g87_0003",
+    "symbolic_probability": 0.3900119662284851,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g503_0000",
+    "symbolic_probability": 0.410995751619339,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g503_0001",
+    "symbolic_probability": 0.5528758764266968,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g503_0002",
+    "symbolic_probability": 0.5153205394744873,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g503_0003",
+    "symbolic_probability": 0.40938735008239746,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g311_0000",
+    "symbolic_probability": 0.5535950660705566,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g311_0001",
+    "symbolic_probability": 0.48606500029563904,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g311_0002",
+    "symbolic_probability": 0.4437069296836853,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g311_0003",
+    "symbolic_probability": 0.5328474044799805,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g36_0000",
+    "symbolic_probability": 0.49600306153297424,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g36_0001",
+    "symbolic_probability": 0.5806183815002441,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g36_0002",
+    "symbolic_probability": 0.49809032678604126,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g36_0003",
+    "symbolic_probability": 0.4359670579433441,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g331_0000",
+    "symbolic_probability": 0.4592221975326538,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g331_0001",
+    "symbolic_probability": 0.5000860691070557,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g331_0002",
+    "symbolic_probability": 0.5297133326530457,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g331_0003",
+    "symbolic_probability": 0.38394445180892944,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g349_0000",
+    "symbolic_probability": 0.40091776847839355,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g349_0001",
+    "symbolic_probability": 0.4860663414001465,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g349_0002",
+    "symbolic_probability": 0.5264765024185181,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g349_0003",
+    "symbolic_probability": 0.5247849822044373,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g479_0000",
+    "symbolic_probability": 0.44369077682495117,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g479_0001",
+    "symbolic_probability": 0.501031756401062,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g479_0002",
+    "symbolic_probability": 0.518085241317749,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g479_0003",
+    "symbolic_probability": 0.5155227184295654,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g359_0000",
+    "symbolic_probability": 0.4813767671585083,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g359_0001",
+    "symbolic_probability": 0.6026263236999512,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g359_0002",
+    "symbolic_probability": 0.4340454936027527,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g359_0003",
+    "symbolic_probability": 0.5614374876022339,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g136_0000",
+    "symbolic_probability": 0.562446117401123,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g136_0001",
+    "symbolic_probability": 0.3545752763748169,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g136_0002",
+    "symbolic_probability": 0.4334617853164673,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g136_0003",
+    "symbolic_probability": 0.613399088382721,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g343_0000",
+    "symbolic_probability": 0.4789920151233673,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g343_0001",
+    "symbolic_probability": 0.532764196395874,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g343_0002",
+    "symbolic_probability": 0.5691371560096741,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g343_0003",
+    "symbolic_probability": 0.5033958554267883,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g107_0000",
+    "symbolic_probability": 0.4064607620239258,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g107_0001",
+    "symbolic_probability": 0.38853636384010315,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g107_0002",
+    "symbolic_probability": 0.5128889083862305,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g107_0003",
+    "symbolic_probability": 0.4094190001487732,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g181_0000",
+    "symbolic_probability": 0.646477222442627,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g181_0001",
+    "symbolic_probability": 0.5503960251808167,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g181_0002",
+    "symbolic_probability": 0.51493901014328,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g181_0003",
+    "symbolic_probability": 0.49677109718322754,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g189_0000",
+    "symbolic_probability": 0.6390869617462158,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g189_0001",
+    "symbolic_probability": 0.4047899842262268,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g189_0002",
+    "symbolic_probability": 0.5557705760002136,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g189_0003",
+    "symbolic_probability": 0.5348221063613892,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g83_0000",
+    "symbolic_probability": 0.35257622599601746,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g83_0001",
+    "symbolic_probability": 0.39411890506744385,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g83_0002",
+    "symbolic_probability": 0.4045819342136383,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g83_0003",
+    "symbolic_probability": 0.3391999304294586,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g186_0000",
+    "symbolic_probability": 0.5089338421821594,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g186_0001",
+    "symbolic_probability": 0.5653220415115356,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g186_0002",
+    "symbolic_probability": 0.638969361782074,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g186_0003",
+    "symbolic_probability": 0.5372268557548523,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g427_0000",
+    "symbolic_probability": 0.5003523230552673,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g427_0001",
+    "symbolic_probability": 0.5146166086196899,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g427_0002",
+    "symbolic_probability": 0.3262673020362854,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g427_0003",
+    "symbolic_probability": 0.31609398126602173,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g325_0000",
+    "symbolic_probability": 0.3802882730960846,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g325_0001",
+    "symbolic_probability": 0.4326922297477722,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g325_0002",
+    "symbolic_probability": 0.4324950873851776,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g325_0003",
+    "symbolic_probability": 0.45720773935317993,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g232_0000",
+    "symbolic_probability": 0.6642913222312927,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g232_0001",
+    "symbolic_probability": 0.49505460262298584,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g232_0002",
+    "symbolic_probability": 0.4413619041442871,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g232_0003",
+    "symbolic_probability": 0.436628133058548,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g554_0000",
+    "symbolic_probability": 0.5149597525596619,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g554_0001",
+    "symbolic_probability": 0.5075327157974243,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g554_0002",
+    "symbolic_probability": 0.4996975064277649,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g554_0003",
+    "symbolic_probability": 0.5156089663505554,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g194_0000",
+    "symbolic_probability": 0.5199054479598999,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g194_0001",
+    "symbolic_probability": 0.5853378176689148,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g194_0002",
+    "symbolic_probability": 0.48553141951560974,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g194_0003",
+    "symbolic_probability": 0.4065360426902771,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g51_0000",
+    "symbolic_probability": 0.4437664747238159,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g51_0001",
+    "symbolic_probability": 0.440725177526474,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g51_0002",
+    "symbolic_probability": 0.4152897000312805,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g51_0003",
+    "symbolic_probability": 0.40004998445510864,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g443_0000",
+    "symbolic_probability": 0.39149951934814453,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g443_0001",
+    "symbolic_probability": 0.4938916862010956,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g443_0002",
+    "symbolic_probability": 0.4011342525482178,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g443_0003",
+    "symbolic_probability": 0.4367542564868927,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g119_0000",
+    "symbolic_probability": 0.4932699501514435,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g119_0001",
+    "symbolic_probability": 0.582005500793457,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g119_0002",
+    "symbolic_probability": 0.5455834269523621,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g119_0003",
+    "symbolic_probability": 0.5111989974975586,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g437_0000",
+    "symbolic_probability": 0.43514251708984375,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g437_0001",
+    "symbolic_probability": 0.4922845661640167,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g437_0002",
+    "symbolic_probability": 0.45099857449531555,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g437_0003",
+    "symbolic_probability": 0.4291688799858093,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g81_0000",
+    "symbolic_probability": 0.3958534002304077,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g81_0001",
+    "symbolic_probability": 0.47003069519996643,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g81_0002",
+    "symbolic_probability": 0.4936075806617737,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g81_0003",
+    "symbolic_probability": 0.46921756863594055,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g296_0000",
+    "symbolic_probability": 0.38940852880477905,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g296_0001",
+    "symbolic_probability": 0.4643728733062744,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g296_0002",
+    "symbolic_probability": 0.378510981798172,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g296_0003",
+    "symbolic_probability": 0.4182092249393463,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g233_0000",
+    "symbolic_probability": 0.5598845481872559,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g233_0001",
+    "symbolic_probability": 0.4567295014858246,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g233_0002",
+    "symbolic_probability": 0.5140081644058228,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g233_0003",
+    "symbolic_probability": 0.5753774046897888,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g46_0000",
+    "symbolic_probability": 0.4890076220035553,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g46_0001",
+    "symbolic_probability": 0.42620596289634705,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g46_0002",
+    "symbolic_probability": 0.4729568064212799,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g46_0003",
+    "symbolic_probability": 0.5853137969970703,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g71_0000",
+    "symbolic_probability": 0.4652164578437805,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g71_0001",
+    "symbolic_probability": 0.43462181091308594,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g71_0002",
+    "symbolic_probability": 0.4964154064655304,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g71_0003",
+    "symbolic_probability": 0.5360240340232849,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g196_0000",
+    "symbolic_probability": 0.5143262147903442,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g196_0001",
+    "symbolic_probability": 0.47810372710227966,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g196_0002",
+    "symbolic_probability": 0.48384663462638855,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g196_0003",
+    "symbolic_probability": 0.5273129343986511,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g370_0000",
+    "symbolic_probability": 0.5071227550506592,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g370_0001",
+    "symbolic_probability": 0.4846815764904022,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g370_0002",
+    "symbolic_probability": 0.4665635824203491,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g370_0003",
+    "symbolic_probability": 0.49936434626579285,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g300_0000",
+    "symbolic_probability": 0.4574786126613617,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g300_0001",
+    "symbolic_probability": 0.5171970129013062,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g300_0002",
+    "symbolic_probability": 0.5192553997039795,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g300_0003",
+    "symbolic_probability": 0.5292695760726929,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g80_0000",
+    "symbolic_probability": 0.4164666533470154,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g80_0001",
+    "symbolic_probability": 0.5134152173995972,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g80_0002",
+    "symbolic_probability": 0.5002641677856445,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g80_0003",
+    "symbolic_probability": 0.4933629631996155,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g387_0000",
+    "symbolic_probability": 0.36344319581985474,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g387_0001",
+    "symbolic_probability": 0.4243224263191223,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g387_0002",
+    "symbolic_probability": 0.3809106945991516,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g387_0003",
+    "symbolic_probability": 0.5282365083694458,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g127_0000",
+    "symbolic_probability": 0.3874844014644623,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g127_0001",
+    "symbolic_probability": 0.456746906042099,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g127_0002",
+    "symbolic_probability": 0.5090445876121521,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g127_0003",
+    "symbolic_probability": 0.5982206463813782,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g470_0000",
+    "symbolic_probability": 0.38413360714912415,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g470_0001",
+    "symbolic_probability": 0.3892354369163513,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g470_0002",
+    "symbolic_probability": 0.47378307580947876,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g470_0003",
+    "symbolic_probability": 0.39280563592910767,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g44_0000",
+    "symbolic_probability": 0.502760648727417,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g44_0001",
+    "symbolic_probability": 0.5747514963150024,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g44_0002",
+    "symbolic_probability": 0.4739518165588379,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g44_0003",
+    "symbolic_probability": 0.5291900038719177,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g270_0000",
+    "symbolic_probability": 0.35933205485343933,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g270_0001",
+    "symbolic_probability": 0.43425607681274414,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g270_0002",
+    "symbolic_probability": 0.5076802372932434,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g270_0003",
+    "symbolic_probability": 0.414153516292572,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g352_0000",
+    "symbolic_probability": 0.5997255444526672,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g352_0001",
+    "symbolic_probability": 0.5109793543815613,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g352_0002",
+    "symbolic_probability": 0.49959596991539,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g352_0003",
+    "symbolic_probability": 0.49808257818222046,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g367_0000",
+    "symbolic_probability": 0.3432541787624359,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g367_0001",
+    "symbolic_probability": 0.4517006576061249,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g367_0002",
+    "symbolic_probability": 0.47353455424308777,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g367_0003",
+    "symbolic_probability": 0.5138305425643921,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g99_0000",
+    "symbolic_probability": 0.4276748299598694,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g99_0001",
+    "symbolic_probability": 0.4346901476383209,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g99_0002",
+    "symbolic_probability": 0.5456706285476685,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g99_0003",
+    "symbolic_probability": 0.42747417092323303,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g389_0000",
+    "symbolic_probability": 0.3589526116847992,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g389_0001",
+    "symbolic_probability": 0.5564670562744141,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g389_0002",
+    "symbolic_probability": 0.4316622018814087,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g389_0003",
+    "symbolic_probability": 0.4914160668849945,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g94_0000",
+    "symbolic_probability": 0.4379633367061615,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g94_0001",
+    "symbolic_probability": 0.4261488914489746,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g94_0002",
+    "symbolic_probability": 0.4347904622554779,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g94_0003",
+    "symbolic_probability": 0.432343453168869,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g553_0000",
+    "symbolic_probability": 0.4808586537837982,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g553_0001",
+    "symbolic_probability": 0.4599144756793976,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g553_0002",
+    "symbolic_probability": 0.4838316738605499,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g553_0003",
+    "symbolic_probability": 0.45240840315818787,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g344_0000",
+    "symbolic_probability": 0.3923652768135071,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g344_0001",
+    "symbolic_probability": 0.5373421311378479,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g344_0002",
+    "symbolic_probability": 0.6473303437232971,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g344_0003",
+    "symbolic_probability": 0.542913019657135,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g220_0000",
+    "symbolic_probability": 0.40155890583992004,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g220_0001",
+    "symbolic_probability": 0.3723970353603363,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g220_0002",
+    "symbolic_probability": 0.4519613981246948,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g220_0003",
+    "symbolic_probability": 0.5453709959983826,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g159_0000",
+    "symbolic_probability": 0.4808683395385742,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g159_0001",
+    "symbolic_probability": 0.6587910056114197,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g159_0002",
+    "symbolic_probability": 0.5511900782585144,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g159_0003",
+    "symbolic_probability": 0.43180155754089355,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g539_0000",
+    "symbolic_probability": 0.4134671688079834,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g539_0001",
+    "symbolic_probability": 0.4277852177619934,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g539_0002",
+    "symbolic_probability": 0.40268051624298096,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g539_0003",
+    "symbolic_probability": 0.4574005603790283,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g348_0000",
+    "symbolic_probability": 0.3738967180252075,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g348_0001",
+    "symbolic_probability": 0.47374770045280457,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g348_0002",
+    "symbolic_probability": 0.44282886385917664,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g348_0003",
+    "symbolic_probability": 0.5469554662704468,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g551_0000",
+    "symbolic_probability": 0.6060255169868469,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g551_0001",
+    "symbolic_probability": 0.558130145072937,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g551_0002",
+    "symbolic_probability": 0.5092853307723999,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g551_0003",
+    "symbolic_probability": 0.5143067836761475,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g163_0000",
+    "symbolic_probability": 0.4451884627342224,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g163_0001",
+    "symbolic_probability": 0.42805999517440796,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g163_0002",
+    "symbolic_probability": 0.3279264569282532,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g163_0003",
+    "symbolic_probability": 0.4490784704685211,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g06_0000",
+    "symbolic_probability": 0.5825637578964233,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g06_0001",
+    "symbolic_probability": 0.5340755581855774,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g06_0002",
+    "symbolic_probability": 0.5874350070953369,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g06_0003",
+    "symbolic_probability": 0.5812191963195801,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g284_0000",
+    "symbolic_probability": 0.2907596528530121,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g284_0001",
+    "symbolic_probability": 0.38421136140823364,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g284_0002",
+    "symbolic_probability": 0.5202344655990601,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g284_0003",
+    "symbolic_probability": 0.4354858100414276,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g459_0000",
+    "symbolic_probability": 0.41253426671028137,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g459_0001",
+    "symbolic_probability": 0.49741727113723755,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g459_0002",
+    "symbolic_probability": 0.4815598130226135,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g459_0003",
+    "symbolic_probability": 0.35046228766441345,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g225_0000",
+    "symbolic_probability": 0.38657885789871216,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g225_0001",
+    "symbolic_probability": 0.4601743221282959,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g225_0002",
+    "symbolic_probability": 0.4644232988357544,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g225_0003",
+    "symbolic_probability": 0.5674464106559753,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g429_0000",
+    "symbolic_probability": 0.5331448316574097,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g429_0001",
+    "symbolic_probability": 0.37844815850257874,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g429_0002",
+    "symbolic_probability": 0.5781551599502563,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g429_0003",
+    "symbolic_probability": 0.5552927851676941,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g203_0000",
+    "symbolic_probability": 0.47675299644470215,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g203_0001",
+    "symbolic_probability": 0.44410720467567444,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g203_0002",
+    "symbolic_probability": 0.4216974973678589,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g203_0003",
+    "symbolic_probability": 0.3708093762397766,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g27_0000",
+    "symbolic_probability": 0.37687158584594727,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g27_0001",
+    "symbolic_probability": 0.4079309403896332,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g27_0002",
+    "symbolic_probability": 0.4140516221523285,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_D_g27_0003",
+    "symbolic_probability": 0.4676837623119354,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g517_0000",
+    "symbolic_probability": 0.5081707835197449,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g517_0001",
+    "symbolic_probability": 0.3582668602466583,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g517_0002",
+    "symbolic_probability": 0.5283068418502808,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_F_g517_0003",
+    "symbolic_probability": 0.45025908946990967,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g238_0000",
+    "symbolic_probability": 0.39758601784706116,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g238_0001",
+    "symbolic_probability": 0.4321063756942749,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g238_0002",
+    "symbolic_probability": 0.40815943479537964,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g238_0003",
+    "symbolic_probability": 0.4943789541721344,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g223_0000",
+    "symbolic_probability": 0.41315555572509766,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g223_0001",
+    "symbolic_probability": 0.5782593488693237,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g223_0002",
+    "symbolic_probability": 0.46701762080192566,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g223_0003",
+    "symbolic_probability": 0.5023305416107178,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g95_0000",
+    "symbolic_probability": 0.5797997117042542,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g95_0001",
+    "symbolic_probability": 0.44099000096321106,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g95_0002",
+    "symbolic_probability": 0.4891044497489929,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_H_g95_0003",
+    "symbolic_probability": 0.631214439868927,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g30_0000",
+    "symbolic_probability": 0.5055058598518372,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g30_0001",
+    "symbolic_probability": 0.5487655401229858,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g30_0002",
+    "symbolic_probability": 0.5082535147666931,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g30_0003",
+    "symbolic_probability": 0.4480116665363312,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g32_0000",
+    "symbolic_probability": 0.48614808917045593,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g32_0001",
+    "symbolic_probability": 0.471243679523468,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g32_0002",
+    "symbolic_probability": 0.45457160472869873,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g32_0003",
+    "symbolic_probability": 0.4597296118736267,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g432_0000",
+    "symbolic_probability": 0.5352890491485596,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g432_0001",
+    "symbolic_probability": 0.5073615908622742,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g432_0002",
+    "symbolic_probability": 0.42890772223472595,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g432_0003",
+    "symbolic_probability": 0.42526450753211975,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g89_0000",
+    "symbolic_probability": 0.46907830238342285,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g89_0001",
+    "symbolic_probability": 0.5013584494590759,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g89_0002",
+    "symbolic_probability": 0.40953466296195984,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g89_0003",
+    "symbolic_probability": 0.48283180594444275,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g104_0000",
+    "symbolic_probability": 0.41934266686439514,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g104_0001",
+    "symbolic_probability": 0.4780077040195465,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g104_0002",
+    "symbolic_probability": 0.47267165780067444,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_A_g104_0003",
+    "symbolic_probability": 0.4880456030368805,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g142_0000",
+    "symbolic_probability": 0.4385540783405304,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g142_0001",
+    "symbolic_probability": 0.42955073714256287,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g142_0002",
+    "symbolic_probability": 0.4982847571372986,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_G_g142_0003",
+    "symbolic_probability": 0.31189054250717163,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g228_0000",
+    "symbolic_probability": 0.46400028467178345,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g228_0001",
+    "symbolic_probability": 0.47484973073005676,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g228_0002",
+    "symbolic_probability": 0.48220473527908325,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_E_g228_0003",
+    "symbolic_probability": 0.48994186520576477,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g250_0000",
+    "symbolic_probability": 0.6230182647705078,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g250_0001",
+    "symbolic_probability": 0.4485447108745575,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g250_0002",
+    "symbolic_probability": 0.5469309687614441,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g250_0003",
+    "symbolic_probability": 0.5854134559631348,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g281_0000",
+    "symbolic_probability": 0.3965218961238861,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g281_0001",
+    "symbolic_probability": 0.4662919044494629,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g281_0002",
+    "symbolic_probability": 0.4801706373691559,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g281_0003",
+    "symbolic_probability": 0.6051574349403381,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g25_0000",
+    "symbolic_probability": 0.5057990550994873,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g25_0001",
+    "symbolic_probability": 0.3498894274234772,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g25_0002",
+    "symbolic_probability": 0.4890844225883484,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_B_g25_0003",
+    "symbolic_probability": 0.46050789952278137,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g114_0000",
+    "symbolic_probability": 0.5193266868591309,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g114_0001",
+    "symbolic_probability": 0.5612720847129822,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g114_0002",
+    "symbolic_probability": 0.4729689657688141,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 42,
+    "task_id": "final_C_g114_0003",
+    "symbolic_probability": 0.5088726282119751,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g285_0000",
+    "symbolic_probability": 0.545294463634491,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g285_0001",
+    "symbolic_probability": 0.5066996812820435,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g285_0002",
+    "symbolic_probability": 0.5502739548683167,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g285_0003",
+    "symbolic_probability": 0.5614606142044067,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g525_0000",
+    "symbolic_probability": 0.4882911741733551,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g525_0001",
+    "symbolic_probability": 0.562382161617279,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g525_0002",
+    "symbolic_probability": 0.6213647723197937,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g525_0003",
+    "symbolic_probability": 0.48113736510276794,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g327_0000",
+    "symbolic_probability": 0.5462821125984192,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g327_0001",
+    "symbolic_probability": 0.4573439955711365,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g327_0002",
+    "symbolic_probability": 0.5444939732551575,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g327_0003",
+    "symbolic_probability": 0.4834103286266327,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g473_0000",
+    "symbolic_probability": 0.49772077798843384,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g473_0001",
+    "symbolic_probability": 0.5418485403060913,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g473_0002",
+    "symbolic_probability": 0.4764636754989624,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g473_0003",
+    "symbolic_probability": 0.5437110066413879,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g138_0000",
+    "symbolic_probability": 0.4943532943725586,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g138_0001",
+    "symbolic_probability": 0.5293574333190918,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g138_0002",
+    "symbolic_probability": 0.40817615389823914,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g138_0003",
+    "symbolic_probability": 0.5126499533653259,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g506_0000",
+    "symbolic_probability": 0.5958903431892395,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g506_0001",
+    "symbolic_probability": 0.5087912678718567,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g506_0002",
+    "symbolic_probability": 0.5979713201522827,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g506_0003",
+    "symbolic_probability": 0.5158450603485107,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g236_0000",
+    "symbolic_probability": 0.5566492080688477,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g236_0001",
+    "symbolic_probability": 0.48285382986068726,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g236_0002",
+    "symbolic_probability": 0.5355381965637207,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g236_0003",
+    "symbolic_probability": 0.49760952591896057,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g500_0000",
+    "symbolic_probability": 0.4218655824661255,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g500_0001",
+    "symbolic_probability": 0.43762949109077454,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g500_0002",
+    "symbolic_probability": 0.38471218943595886,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g500_0003",
+    "symbolic_probability": 0.4689328372478485,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g125_0000",
+    "symbolic_probability": 0.5371383428573608,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g125_0001",
+    "symbolic_probability": 0.5327954292297363,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g125_0002",
+    "symbolic_probability": 0.36612826585769653,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g125_0003",
+    "symbolic_probability": 0.6132615804672241,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g373_0000",
+    "symbolic_probability": 0.446768581867218,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g373_0001",
+    "symbolic_probability": 0.49111512303352356,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g373_0002",
+    "symbolic_probability": 0.6027295589447021,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g373_0003",
+    "symbolic_probability": 0.48466527462005615,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g273_0000",
+    "symbolic_probability": 0.5909971594810486,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g273_0001",
+    "symbolic_probability": 0.4574882984161377,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g273_0002",
+    "symbolic_probability": 0.5688960552215576,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g273_0003",
+    "symbolic_probability": 0.5321947336196899,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g87_0000",
+    "symbolic_probability": 0.408512681722641,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g87_0001",
+    "symbolic_probability": 0.5195411443710327,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g87_0002",
+    "symbolic_probability": 0.5423282384872437,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g87_0003",
+    "symbolic_probability": 0.38452425599098206,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g503_0000",
+    "symbolic_probability": 0.47244665026664734,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g503_0001",
+    "symbolic_probability": 0.5702372193336487,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g503_0002",
+    "symbolic_probability": 0.5360795855522156,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g503_0003",
+    "symbolic_probability": 0.5739959478378296,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g311_0000",
+    "symbolic_probability": 0.4501168429851532,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g311_0001",
+    "symbolic_probability": 0.49595895409584045,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g311_0002",
+    "symbolic_probability": 0.4832056164741516,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g311_0003",
+    "symbolic_probability": 0.5516583919525146,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g36_0000",
+    "symbolic_probability": 0.5498632192611694,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g36_0001",
+    "symbolic_probability": 0.5231112837791443,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g36_0002",
+    "symbolic_probability": 0.44446149468421936,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g36_0003",
+    "symbolic_probability": 0.5424660444259644,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g331_0000",
+    "symbolic_probability": 0.41823238134384155,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g331_0001",
+    "symbolic_probability": 0.4269668757915497,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g331_0002",
+    "symbolic_probability": 0.3825412094593048,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g331_0003",
+    "symbolic_probability": 0.44250836968421936,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g349_0000",
+    "symbolic_probability": 0.5466139912605286,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g349_0001",
+    "symbolic_probability": 0.4656146168708801,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g349_0002",
+    "symbolic_probability": 0.5239201784133911,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g349_0003",
+    "symbolic_probability": 0.48356667160987854,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g479_0000",
+    "symbolic_probability": 0.44686785340309143,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g479_0001",
+    "symbolic_probability": 0.4812815189361572,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g479_0002",
+    "symbolic_probability": 0.5684148073196411,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g479_0003",
+    "symbolic_probability": 0.449118971824646,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g359_0000",
+    "symbolic_probability": 0.4138307273387909,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g359_0001",
+    "symbolic_probability": 0.536837637424469,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g359_0002",
+    "symbolic_probability": 0.45805633068084717,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g359_0003",
+    "symbolic_probability": 0.42746931314468384,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g136_0000",
+    "symbolic_probability": 0.5042610764503479,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g136_0001",
+    "symbolic_probability": 0.4370429813861847,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g136_0002",
+    "symbolic_probability": 0.5055100917816162,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g136_0003",
+    "symbolic_probability": 0.557937502861023,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g343_0000",
+    "symbolic_probability": 0.546823263168335,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g343_0001",
+    "symbolic_probability": 0.5628242492675781,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g343_0002",
+    "symbolic_probability": 0.5381121635437012,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g343_0003",
+    "symbolic_probability": 0.5115565061569214,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g107_0000",
+    "symbolic_probability": 0.3762851357460022,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g107_0001",
+    "symbolic_probability": 0.5108181834220886,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g107_0002",
+    "symbolic_probability": 0.3665902614593506,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g107_0003",
+    "symbolic_probability": 0.4456542134284973,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g181_0000",
+    "symbolic_probability": 0.5321921110153198,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g181_0001",
+    "symbolic_probability": 0.4979981780052185,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g181_0002",
+    "symbolic_probability": 0.4862538278102875,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g181_0003",
+    "symbolic_probability": 0.42251598834991455,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g189_0000",
+    "symbolic_probability": 0.4296934902667999,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g189_0001",
+    "symbolic_probability": 0.43956446647644043,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g189_0002",
+    "symbolic_probability": 0.4585619568824768,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g189_0003",
+    "symbolic_probability": 0.5058649778366089,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g83_0000",
+    "symbolic_probability": 0.2944251298904419,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g83_0001",
+    "symbolic_probability": 0.4550014138221741,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g83_0002",
+    "symbolic_probability": 0.4061475396156311,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g83_0003",
+    "symbolic_probability": 0.4944525957107544,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g186_0000",
+    "symbolic_probability": 0.5006725192070007,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g186_0001",
+    "symbolic_probability": 0.4788520038127899,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g186_0002",
+    "symbolic_probability": 0.5766847729682922,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g186_0003",
+    "symbolic_probability": 0.47278621792793274,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g427_0000",
+    "symbolic_probability": 0.36098361015319824,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g427_0001",
+    "symbolic_probability": 0.5172329545021057,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g427_0002",
+    "symbolic_probability": 0.3074144124984741,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g427_0003",
+    "symbolic_probability": 0.3626774251461029,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g325_0000",
+    "symbolic_probability": 0.5114040970802307,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g325_0001",
+    "symbolic_probability": 0.5058896541595459,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g325_0002",
+    "symbolic_probability": 0.4866929054260254,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g325_0003",
+    "symbolic_probability": 0.5092537999153137,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g232_0000",
+    "symbolic_probability": 0.4971400499343872,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g232_0001",
+    "symbolic_probability": 0.5575064420700073,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g232_0002",
+    "symbolic_probability": 0.49700209498405457,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g232_0003",
+    "symbolic_probability": 0.4134717285633087,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g554_0000",
+    "symbolic_probability": 0.6311346888542175,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g554_0001",
+    "symbolic_probability": 0.5258855819702148,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g554_0002",
+    "symbolic_probability": 0.5821796655654907,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g554_0003",
+    "symbolic_probability": 0.5306445360183716,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g194_0000",
+    "symbolic_probability": 0.4377548098564148,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g194_0001",
+    "symbolic_probability": 0.5525248646736145,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g194_0002",
+    "symbolic_probability": 0.51939857006073,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g194_0003",
+    "symbolic_probability": 0.5721825957298279,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g51_0000",
+    "symbolic_probability": 0.4798266589641571,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g51_0001",
+    "symbolic_probability": 0.3709358870983124,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g51_0002",
+    "symbolic_probability": 0.44705939292907715,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g51_0003",
+    "symbolic_probability": 0.33361372351646423,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g443_0000",
+    "symbolic_probability": 0.3499945104122162,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g443_0001",
+    "symbolic_probability": 0.4268973171710968,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g443_0002",
+    "symbolic_probability": 0.48197245597839355,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g443_0003",
+    "symbolic_probability": 0.46689701080322266,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g119_0000",
+    "symbolic_probability": 0.5155046582221985,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g119_0001",
+    "symbolic_probability": 0.4970141053199768,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g119_0002",
+    "symbolic_probability": 0.5172275304794312,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g119_0003",
+    "symbolic_probability": 0.5434684753417969,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g437_0000",
+    "symbolic_probability": 0.4843379855155945,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g437_0001",
+    "symbolic_probability": 0.4667853116989136,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g437_0002",
+    "symbolic_probability": 0.48670196533203125,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g437_0003",
+    "symbolic_probability": 0.49129387736320496,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g81_0000",
+    "symbolic_probability": 0.4924103915691376,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g81_0001",
+    "symbolic_probability": 0.5425798296928406,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g81_0002",
+    "symbolic_probability": 0.500675618648529,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g81_0003",
+    "symbolic_probability": 0.47383081912994385,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g296_0000",
+    "symbolic_probability": 0.4437134265899658,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g296_0001",
+    "symbolic_probability": 0.336593359708786,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g296_0002",
+    "symbolic_probability": 0.4571794271469116,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g296_0003",
+    "symbolic_probability": 0.4968051016330719,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g233_0000",
+    "symbolic_probability": 0.42628544569015503,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g233_0001",
+    "symbolic_probability": 0.5208171606063843,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g233_0002",
+    "symbolic_probability": 0.4412415325641632,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g233_0003",
+    "symbolic_probability": 0.5460429191589355,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g46_0000",
+    "symbolic_probability": 0.5292797088623047,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g46_0001",
+    "symbolic_probability": 0.5209755897521973,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g46_0002",
+    "symbolic_probability": 0.4391486644744873,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g46_0003",
+    "symbolic_probability": 0.5527150630950928,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g71_0000",
+    "symbolic_probability": 0.5882416367530823,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g71_0001",
+    "symbolic_probability": 0.4438183009624481,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g71_0002",
+    "symbolic_probability": 0.5228626132011414,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g71_0003",
+    "symbolic_probability": 0.4939230978488922,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g196_0000",
+    "symbolic_probability": 0.4137573838233948,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g196_0001",
+    "symbolic_probability": 0.5696370005607605,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g196_0002",
+    "symbolic_probability": 0.4181484282016754,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g196_0003",
+    "symbolic_probability": 0.5556629300117493,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g370_0000",
+    "symbolic_probability": 0.4805617034435272,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g370_0001",
+    "symbolic_probability": 0.5885903835296631,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g370_0002",
+    "symbolic_probability": 0.5171684622764587,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g370_0003",
+    "symbolic_probability": 0.5170722007751465,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g300_0000",
+    "symbolic_probability": 0.4883365333080292,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g300_0001",
+    "symbolic_probability": 0.5164946913719177,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g300_0002",
+    "symbolic_probability": 0.4784274995326996,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g300_0003",
+    "symbolic_probability": 0.5028337836265564,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g80_0000",
+    "symbolic_probability": 0.45387643575668335,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g80_0001",
+    "symbolic_probability": 0.4579077959060669,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g80_0002",
+    "symbolic_probability": 0.4827534556388855,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g80_0003",
+    "symbolic_probability": 0.40011879801750183,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g387_0000",
+    "symbolic_probability": 0.3133268654346466,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g387_0001",
+    "symbolic_probability": 0.4811280071735382,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g387_0002",
+    "symbolic_probability": 0.3809094727039337,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g387_0003",
+    "symbolic_probability": 0.3900335729122162,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g127_0000",
+    "symbolic_probability": 0.4928089678287506,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g127_0001",
+    "symbolic_probability": 0.42521339654922485,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g127_0002",
+    "symbolic_probability": 0.5164878964424133,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g127_0003",
+    "symbolic_probability": 0.46763527393341064,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g470_0000",
+    "symbolic_probability": 0.5728729367256165,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g470_0001",
+    "symbolic_probability": 0.4221789836883545,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g470_0002",
+    "symbolic_probability": 0.5643345713615417,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g470_0003",
+    "symbolic_probability": 0.569149374961853,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g44_0000",
+    "symbolic_probability": 0.5786057114601135,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g44_0001",
+    "symbolic_probability": 0.5139467716217041,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g44_0002",
+    "symbolic_probability": 0.4571726620197296,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g44_0003",
+    "symbolic_probability": 0.5641939043998718,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g270_0000",
+    "symbolic_probability": 0.4316613972187042,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g270_0001",
+    "symbolic_probability": 0.49197691679000854,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g270_0002",
+    "symbolic_probability": 0.501912534236908,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g270_0003",
+    "symbolic_probability": 0.565822422504425,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g352_0000",
+    "symbolic_probability": 0.43809133768081665,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g352_0001",
+    "symbolic_probability": 0.5744608640670776,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g352_0002",
+    "symbolic_probability": 0.4186514914035797,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g352_0003",
+    "symbolic_probability": 0.4160906970500946,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g367_0000",
+    "symbolic_probability": 0.4216007888317108,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g367_0001",
+    "symbolic_probability": 0.5167014598846436,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g367_0002",
+    "symbolic_probability": 0.4979078471660614,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g367_0003",
+    "symbolic_probability": 0.5279089212417603,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g99_0000",
+    "symbolic_probability": 0.44941678643226624,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g99_0001",
+    "symbolic_probability": 0.416219562292099,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g99_0002",
+    "symbolic_probability": 0.35294783115386963,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g99_0003",
+    "symbolic_probability": 0.35808560252189636,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g389_0000",
+    "symbolic_probability": 0.4796714782714844,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g389_0001",
+    "symbolic_probability": 0.5500007271766663,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g389_0002",
+    "symbolic_probability": 0.5757598876953125,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g389_0003",
+    "symbolic_probability": 0.546538233757019,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g94_0000",
+    "symbolic_probability": 0.49624353647232056,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g94_0001",
+    "symbolic_probability": 0.3899655342102051,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g94_0002",
+    "symbolic_probability": 0.5498844981193542,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g94_0003",
+    "symbolic_probability": 0.48360106348991394,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g553_0000",
+    "symbolic_probability": 0.4771885275840759,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g553_0001",
+    "symbolic_probability": 0.5260298252105713,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g553_0002",
+    "symbolic_probability": 0.38646161556243896,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g553_0003",
+    "symbolic_probability": 0.4754021465778351,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g344_0000",
+    "symbolic_probability": 0.46693798899650574,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g344_0001",
+    "symbolic_probability": 0.5196586847305298,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g344_0002",
+    "symbolic_probability": 0.48070478439331055,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g344_0003",
+    "symbolic_probability": 0.4948510527610779,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g220_0000",
+    "symbolic_probability": 0.5169883966445923,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g220_0001",
+    "symbolic_probability": 0.5658355355262756,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g220_0002",
+    "symbolic_probability": 0.391955703496933,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g220_0003",
+    "symbolic_probability": 0.5395764112472534,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g159_0000",
+    "symbolic_probability": 0.5742159485816956,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g159_0001",
+    "symbolic_probability": 0.5348671078681946,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g159_0002",
+    "symbolic_probability": 0.4841015636920929,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g159_0003",
+    "symbolic_probability": 0.4151224195957184,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g539_0000",
+    "symbolic_probability": 0.40330520272254944,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g539_0001",
+    "symbolic_probability": 0.4099160134792328,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g539_0002",
+    "symbolic_probability": 0.42328324913978577,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g539_0003",
+    "symbolic_probability": 0.48326441645622253,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g348_0000",
+    "symbolic_probability": 0.45232173800468445,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g348_0001",
+    "symbolic_probability": 0.42894119024276733,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g348_0002",
+    "symbolic_probability": 0.4809659421443939,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g348_0003",
+    "symbolic_probability": 0.4065495729446411,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g551_0000",
+    "symbolic_probability": 0.5250627994537354,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g551_0001",
+    "symbolic_probability": 0.48536279797554016,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g551_0002",
+    "symbolic_probability": 0.5991518497467041,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g551_0003",
+    "symbolic_probability": 0.48540398478507996,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g163_0000",
+    "symbolic_probability": 0.4305850565433502,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g163_0001",
+    "symbolic_probability": 0.41383931040763855,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g163_0002",
+    "symbolic_probability": 0.41486576199531555,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g163_0003",
+    "symbolic_probability": 0.4004793167114258,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g06_0000",
+    "symbolic_probability": 0.5251290202140808,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g06_0001",
+    "symbolic_probability": 0.4388059973716736,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g06_0002",
+    "symbolic_probability": 0.5296725034713745,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g06_0003",
+    "symbolic_probability": 0.4590674936771393,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g284_0000",
+    "symbolic_probability": 0.48303189873695374,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g284_0001",
+    "symbolic_probability": 0.5252227187156677,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g284_0002",
+    "symbolic_probability": 0.5211469531059265,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g284_0003",
+    "symbolic_probability": 0.502077043056488,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g459_0000",
+    "symbolic_probability": 0.41219648718833923,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g459_0001",
+    "symbolic_probability": 0.4133473038673401,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g459_0002",
+    "symbolic_probability": 0.3942357301712036,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g459_0003",
+    "symbolic_probability": 0.40413856506347656,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g225_0000",
+    "symbolic_probability": 0.5090306401252747,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g225_0001",
+    "symbolic_probability": 0.4385691285133362,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g225_0002",
+    "symbolic_probability": 0.4756968319416046,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g225_0003",
+    "symbolic_probability": 0.49580615758895874,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g429_0000",
+    "symbolic_probability": 0.5526682138442993,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g429_0001",
+    "symbolic_probability": 0.45572221279144287,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g429_0002",
+    "symbolic_probability": 0.534798264503479,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g429_0003",
+    "symbolic_probability": 0.48632001876831055,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g203_0000",
+    "symbolic_probability": 0.44967904686927795,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g203_0001",
+    "symbolic_probability": 0.3864198625087738,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g203_0002",
+    "symbolic_probability": 0.49294355511665344,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g203_0003",
+    "symbolic_probability": 0.374062716960907,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g27_0000",
+    "symbolic_probability": 0.4629969298839569,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g27_0001",
+    "symbolic_probability": 0.4664705991744995,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g27_0002",
+    "symbolic_probability": 0.3791089653968811,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_D_g27_0003",
+    "symbolic_probability": 0.4154905080795288,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g517_0000",
+    "symbolic_probability": 0.48738735914230347,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g517_0001",
+    "symbolic_probability": 0.45551058650016785,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g517_0002",
+    "symbolic_probability": 0.5371630787849426,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_F_g517_0003",
+    "symbolic_probability": 0.4676656126976013,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g238_0000",
+    "symbolic_probability": 0.47976553440093994,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g238_0001",
+    "symbolic_probability": 0.4695563316345215,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g238_0002",
+    "symbolic_probability": 0.5005220770835876,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g238_0003",
+    "symbolic_probability": 0.5270684957504272,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g223_0000",
+    "symbolic_probability": 0.5348109602928162,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g223_0001",
+    "symbolic_probability": 0.5202586650848389,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g223_0002",
+    "symbolic_probability": 0.40398454666137695,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g223_0003",
+    "symbolic_probability": 0.497254878282547,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g95_0000",
+    "symbolic_probability": 0.4300305247306824,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g95_0001",
+    "symbolic_probability": 0.5934480428695679,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g95_0002",
+    "symbolic_probability": 0.4920705556869507,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_H_g95_0003",
+    "symbolic_probability": 0.48626047372817993,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g30_0000",
+    "symbolic_probability": 0.513149619102478,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g30_0001",
+    "symbolic_probability": 0.5114530324935913,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g30_0002",
+    "symbolic_probability": 0.44164764881134033,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g30_0003",
+    "symbolic_probability": 0.561907172203064,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g32_0000",
+    "symbolic_probability": 0.597774088382721,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g32_0001",
+    "symbolic_probability": 0.42203813791275024,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g32_0002",
+    "symbolic_probability": 0.49975425004959106,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g32_0003",
+    "symbolic_probability": 0.490614652633667,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g432_0000",
+    "symbolic_probability": 0.4554573595523834,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g432_0001",
+    "symbolic_probability": 0.5255537629127502,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g432_0002",
+    "symbolic_probability": 0.5268886685371399,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g432_0003",
+    "symbolic_probability": 0.4630787670612335,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g89_0000",
+    "symbolic_probability": 0.5682451128959656,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g89_0001",
+    "symbolic_probability": 0.4480246305465698,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g89_0002",
+    "symbolic_probability": 0.5262314081192017,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g89_0003",
+    "symbolic_probability": 0.4202243685722351,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g104_0000",
+    "symbolic_probability": 0.4332045614719391,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g104_0001",
+    "symbolic_probability": 0.41992753744125366,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g104_0002",
+    "symbolic_probability": 0.5146735906600952,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_A_g104_0003",
+    "symbolic_probability": 0.5548852682113647,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g142_0000",
+    "symbolic_probability": 0.4522225856781006,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g142_0001",
+    "symbolic_probability": 0.462113618850708,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g142_0002",
+    "symbolic_probability": 0.47585436701774597,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_G_g142_0003",
+    "symbolic_probability": 0.4136081337928772,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g228_0000",
+    "symbolic_probability": 0.5105790495872498,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g228_0001",
+    "symbolic_probability": 0.4921363592147827,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g228_0002",
+    "symbolic_probability": 0.5070480108261108,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_E_g228_0003",
+    "symbolic_probability": 0.4837436378002167,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g250_0000",
+    "symbolic_probability": 0.5608590841293335,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g250_0001",
+    "symbolic_probability": 0.5430760979652405,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g250_0002",
+    "symbolic_probability": 0.5158883333206177,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g250_0003",
+    "symbolic_probability": 0.45013922452926636,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g281_0000",
+    "symbolic_probability": 0.5032151341438293,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g281_0001",
+    "symbolic_probability": 0.5713379979133606,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g281_0002",
+    "symbolic_probability": 0.42254599928855896,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g281_0003",
+    "symbolic_probability": 0.4589717388153076,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g25_0000",
+    "symbolic_probability": 0.48833346366882324,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g25_0001",
+    "symbolic_probability": 0.3883938193321228,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g25_0002",
+    "symbolic_probability": 0.517604649066925,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_B_g25_0003",
+    "symbolic_probability": 0.403103768825531,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g114_0000",
+    "symbolic_probability": 0.4647480249404907,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g114_0001",
+    "symbolic_probability": 0.5107055902481079,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g114_0002",
+    "symbolic_probability": 0.5281293392181396,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 43,
+    "task_id": "final_C_g114_0003",
+    "symbolic_probability": 0.5254176259040833,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g285_0000",
+    "symbolic_probability": 0.6153038740158081,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g285_0001",
+    "symbolic_probability": 0.4183776080608368,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g285_0002",
+    "symbolic_probability": 0.6205792427062988,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g285_0003",
+    "symbolic_probability": 0.471810519695282,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g525_0000",
+    "symbolic_probability": 0.46726933121681213,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g525_0001",
+    "symbolic_probability": 0.4555117189884186,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g525_0002",
+    "symbolic_probability": 0.46246033906936646,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g525_0003",
+    "symbolic_probability": 0.39619776606559753,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g327_0000",
+    "symbolic_probability": 0.5273565649986267,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g327_0001",
+    "symbolic_probability": 0.5273334383964539,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g327_0002",
+    "symbolic_probability": 0.3896448612213135,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g327_0003",
+    "symbolic_probability": 0.5210578441619873,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g473_0000",
+    "symbolic_probability": 0.48094266653060913,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g473_0001",
+    "symbolic_probability": 0.42704537510871887,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g473_0002",
+    "symbolic_probability": 0.4921981692314148,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g473_0003",
+    "symbolic_probability": 0.5003106594085693,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g138_0000",
+    "symbolic_probability": 0.39043882489204407,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g138_0001",
+    "symbolic_probability": 0.5114903450012207,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g138_0002",
+    "symbolic_probability": 0.45529705286026,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g138_0003",
+    "symbolic_probability": 0.5000194907188416,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g506_0000",
+    "symbolic_probability": 0.46790289878845215,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g506_0001",
+    "symbolic_probability": 0.42914217710494995,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g506_0002",
+    "symbolic_probability": 0.570762574672699,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g506_0003",
+    "symbolic_probability": 0.5000395178794861,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g236_0000",
+    "symbolic_probability": 0.4730220437049866,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g236_0001",
+    "symbolic_probability": 0.44768762588500977,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g236_0002",
+    "symbolic_probability": 0.45798686146736145,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g236_0003",
+    "symbolic_probability": 0.4734165370464325,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g500_0000",
+    "symbolic_probability": 0.3216385841369629,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g500_0001",
+    "symbolic_probability": 0.4385080933570862,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g500_0002",
+    "symbolic_probability": 0.5540478229522705,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g500_0003",
+    "symbolic_probability": 0.5055269002914429,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g125_0000",
+    "symbolic_probability": 0.5149306058883667,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g125_0001",
+    "symbolic_probability": 0.49507591128349304,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g125_0002",
+    "symbolic_probability": 0.5711938142776489,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g125_0003",
+    "symbolic_probability": 0.5173873901367188,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g373_0000",
+    "symbolic_probability": 0.5544177889823914,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g373_0001",
+    "symbolic_probability": 0.4280863106250763,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g373_0002",
+    "symbolic_probability": 0.4309931695461273,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g373_0003",
+    "symbolic_probability": 0.40449047088623047,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g273_0000",
+    "symbolic_probability": 0.5176346898078918,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g273_0001",
+    "symbolic_probability": 0.5059006810188293,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g273_0002",
+    "symbolic_probability": 0.5302063822746277,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g273_0003",
+    "symbolic_probability": 0.6382653713226318,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g87_0000",
+    "symbolic_probability": 0.5001214146614075,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g87_0001",
+    "symbolic_probability": 0.527456521987915,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g87_0002",
+    "symbolic_probability": 0.4346112906932831,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g87_0003",
+    "symbolic_probability": 0.39156198501586914,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g503_0000",
+    "symbolic_probability": 0.5209260582923889,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g503_0001",
+    "symbolic_probability": 0.5017428994178772,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g503_0002",
+    "symbolic_probability": 0.44439226388931274,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g503_0003",
+    "symbolic_probability": 0.45334917306900024,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g311_0000",
+    "symbolic_probability": 0.5276837944984436,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g311_0001",
+    "symbolic_probability": 0.3532516658306122,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g311_0002",
+    "symbolic_probability": 0.4847220182418823,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g311_0003",
+    "symbolic_probability": 0.4126070737838745,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g36_0000",
+    "symbolic_probability": 0.4426328241825104,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g36_0001",
+    "symbolic_probability": 0.42832744121551514,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g36_0002",
+    "symbolic_probability": 0.3504043221473694,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g36_0003",
+    "symbolic_probability": 0.6216790080070496,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g331_0000",
+    "symbolic_probability": 0.4593248665332794,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g331_0001",
+    "symbolic_probability": 0.5149755477905273,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g331_0002",
+    "symbolic_probability": 0.3594268560409546,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g331_0003",
+    "symbolic_probability": 0.30403968691825867,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g349_0000",
+    "symbolic_probability": 0.5195780992507935,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g349_0001",
+    "symbolic_probability": 0.6189485192298889,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g349_0002",
+    "symbolic_probability": 0.41495099663734436,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g349_0003",
+    "symbolic_probability": 0.4997687339782715,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g479_0000",
+    "symbolic_probability": 0.6135610342025757,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g479_0001",
+    "symbolic_probability": 0.35986948013305664,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g479_0002",
+    "symbolic_probability": 0.44774532318115234,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g479_0003",
+    "symbolic_probability": 0.6864626407623291,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g359_0000",
+    "symbolic_probability": 0.5276368260383606,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g359_0001",
+    "symbolic_probability": 0.5429141521453857,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g359_0002",
+    "symbolic_probability": 0.4566647410392761,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g359_0003",
+    "symbolic_probability": 0.4190833270549774,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g136_0000",
+    "symbolic_probability": 0.48353907465934753,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g136_0001",
+    "symbolic_probability": 0.45059314370155334,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g136_0002",
+    "symbolic_probability": 0.522408127784729,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g136_0003",
+    "symbolic_probability": 0.4054189920425415,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g343_0000",
+    "symbolic_probability": 0.491180419921875,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g343_0001",
+    "symbolic_probability": 0.3453535735607147,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g343_0002",
+    "symbolic_probability": 0.5707614421844482,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g343_0003",
+    "symbolic_probability": 0.5604692101478577,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g107_0000",
+    "symbolic_probability": 0.42310038208961487,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g107_0001",
+    "symbolic_probability": 0.3614298701286316,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g107_0002",
+    "symbolic_probability": 0.43631359934806824,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g107_0003",
+    "symbolic_probability": 0.4504883885383606,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g181_0000",
+    "symbolic_probability": 0.47288984060287476,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g181_0001",
+    "symbolic_probability": 0.4988144338130951,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g181_0002",
+    "symbolic_probability": 0.37121808528900146,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g181_0003",
+    "symbolic_probability": 0.6053739190101624,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g189_0000",
+    "symbolic_probability": 0.4910852313041687,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g189_0001",
+    "symbolic_probability": 0.5390517115592957,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g189_0002",
+    "symbolic_probability": 0.491611510515213,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g189_0003",
+    "symbolic_probability": 0.4825890362262726,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g83_0000",
+    "symbolic_probability": 0.4647063612937927,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g83_0001",
+    "symbolic_probability": 0.2764309048652649,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g83_0002",
+    "symbolic_probability": 0.4745316505432129,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g83_0003",
+    "symbolic_probability": 0.40090781450271606,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g186_0000",
+    "symbolic_probability": 0.4085772931575775,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g186_0001",
+    "symbolic_probability": 0.6195846199989319,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g186_0002",
+    "symbolic_probability": 0.458347350358963,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g186_0003",
+    "symbolic_probability": 0.5320297479629517,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g427_0000",
+    "symbolic_probability": 0.381736159324646,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g427_0001",
+    "symbolic_probability": 0.485073447227478,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g427_0002",
+    "symbolic_probability": 0.45748430490493774,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g427_0003",
+    "symbolic_probability": 0.47157806158065796,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g325_0000",
+    "symbolic_probability": 0.40784570574760437,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g325_0001",
+    "symbolic_probability": 0.5007883906364441,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g325_0002",
+    "symbolic_probability": 0.5004642009735107,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g325_0003",
+    "symbolic_probability": 0.5443629622459412,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g232_0000",
+    "symbolic_probability": 0.42283958196640015,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g232_0001",
+    "symbolic_probability": 0.513925313949585,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g232_0002",
+    "symbolic_probability": 0.5157053470611572,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g232_0003",
+    "symbolic_probability": 0.5070222616195679,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g554_0000",
+    "symbolic_probability": 0.5859926342964172,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g554_0001",
+    "symbolic_probability": 0.43990010023117065,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g554_0002",
+    "symbolic_probability": 0.5278668999671936,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g554_0003",
+    "symbolic_probability": 0.5404320359230042,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g194_0000",
+    "symbolic_probability": 0.6271804571151733,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g194_0001",
+    "symbolic_probability": 0.4780975580215454,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g194_0002",
+    "symbolic_probability": 0.37890520691871643,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g194_0003",
+    "symbolic_probability": 0.48233288526535034,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g51_0000",
+    "symbolic_probability": 0.28879019618034363,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g51_0001",
+    "symbolic_probability": 0.3906644582748413,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g51_0002",
+    "symbolic_probability": 0.4500056803226471,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g51_0003",
+    "symbolic_probability": 0.3213893175125122,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g443_0000",
+    "symbolic_probability": 0.4123724102973938,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g443_0001",
+    "symbolic_probability": 0.35198864340782166,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g443_0002",
+    "symbolic_probability": 0.39735862612724304,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g443_0003",
+    "symbolic_probability": 0.39959871768951416,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g119_0000",
+    "symbolic_probability": 0.4830741584300995,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g119_0001",
+    "symbolic_probability": 0.5172532200813293,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g119_0002",
+    "symbolic_probability": 0.5409291982650757,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g119_0003",
+    "symbolic_probability": 0.4340340495109558,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g437_0000",
+    "symbolic_probability": 0.5042480230331421,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g437_0001",
+    "symbolic_probability": 0.4892319142818451,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g437_0002",
+    "symbolic_probability": 0.5019433498382568,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g437_0003",
+    "symbolic_probability": 0.4247802197933197,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g81_0000",
+    "symbolic_probability": 0.6017740964889526,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g81_0001",
+    "symbolic_probability": 0.5988042950630188,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g81_0002",
+    "symbolic_probability": 0.42265117168426514,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g81_0003",
+    "symbolic_probability": 0.5070953369140625,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g296_0000",
+    "symbolic_probability": 0.5107689499855042,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g296_0001",
+    "symbolic_probability": 0.4473380446434021,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g296_0002",
+    "symbolic_probability": 0.3463788330554962,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g296_0003",
+    "symbolic_probability": 0.44914790987968445,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g233_0000",
+    "symbolic_probability": 0.4155663847923279,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g233_0001",
+    "symbolic_probability": 0.39777323603630066,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g233_0002",
+    "symbolic_probability": 0.3877553641796112,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g233_0003",
+    "symbolic_probability": 0.4593964219093323,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g46_0000",
+    "symbolic_probability": 0.4445692002773285,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g46_0001",
+    "symbolic_probability": 0.37288621068000793,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g46_0002",
+    "symbolic_probability": 0.5605737566947937,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g46_0003",
+    "symbolic_probability": 0.45843109488487244,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g71_0000",
+    "symbolic_probability": 0.5959393978118896,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g71_0001",
+    "symbolic_probability": 0.4746086895465851,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g71_0002",
+    "symbolic_probability": 0.49664321541786194,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g71_0003",
+    "symbolic_probability": 0.5322997570037842,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g196_0000",
+    "symbolic_probability": 0.3886686861515045,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g196_0001",
+    "symbolic_probability": 0.4708689749240875,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g196_0002",
+    "symbolic_probability": 0.35428324341773987,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g196_0003",
+    "symbolic_probability": 0.5834312438964844,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g370_0000",
+    "symbolic_probability": 0.5194544792175293,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g370_0001",
+    "symbolic_probability": 0.6180681586265564,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g370_0002",
+    "symbolic_probability": 0.47026291489601135,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g370_0003",
+    "symbolic_probability": 0.4107792377471924,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g300_0000",
+    "symbolic_probability": 0.4454214870929718,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g300_0001",
+    "symbolic_probability": 0.3590942919254303,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g300_0002",
+    "symbolic_probability": 0.5155843496322632,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g300_0003",
+    "symbolic_probability": 0.6645849347114563,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g80_0000",
+    "symbolic_probability": 0.6218574047088623,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g80_0001",
+    "symbolic_probability": 0.4637828767299652,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g80_0002",
+    "symbolic_probability": 0.5958796739578247,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g80_0003",
+    "symbolic_probability": 0.5190131664276123,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g387_0000",
+    "symbolic_probability": 0.41023674607276917,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g387_0001",
+    "symbolic_probability": 0.4037185609340668,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g387_0002",
+    "symbolic_probability": 0.45784521102905273,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g387_0003",
+    "symbolic_probability": 0.42186295986175537,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g127_0000",
+    "symbolic_probability": 0.4997027516365051,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g127_0001",
+    "symbolic_probability": 0.509948194026947,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g127_0002",
+    "symbolic_probability": 0.5528022050857544,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g127_0003",
+    "symbolic_probability": 0.5451034307479858,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g470_0000",
+    "symbolic_probability": 0.4736054539680481,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g470_0001",
+    "symbolic_probability": 0.4832771122455597,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g470_0002",
+    "symbolic_probability": 0.5055532455444336,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g470_0003",
+    "symbolic_probability": 0.5073511600494385,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g44_0000",
+    "symbolic_probability": 0.519729733467102,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g44_0001",
+    "symbolic_probability": 0.47060608863830566,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g44_0002",
+    "symbolic_probability": 0.5196775794029236,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g44_0003",
+    "symbolic_probability": 0.48287540674209595,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g270_0000",
+    "symbolic_probability": 0.3845371603965759,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g270_0001",
+    "symbolic_probability": 0.4349503815174103,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g270_0002",
+    "symbolic_probability": 0.4383840262889862,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g270_0003",
+    "symbolic_probability": 0.3768421411514282,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g352_0000",
+    "symbolic_probability": 0.5790126323699951,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g352_0001",
+    "symbolic_probability": 0.33972230553627014,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g352_0002",
+    "symbolic_probability": 0.4333369731903076,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g352_0003",
+    "symbolic_probability": 0.4748503863811493,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g367_0000",
+    "symbolic_probability": 0.6209501624107361,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g367_0001",
+    "symbolic_probability": 0.43372610211372375,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g367_0002",
+    "symbolic_probability": 0.5127863883972168,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g367_0003",
+    "symbolic_probability": 0.3330309987068176,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g99_0000",
+    "symbolic_probability": 0.45329776406288147,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g99_0001",
+    "symbolic_probability": 0.31286248564720154,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g99_0002",
+    "symbolic_probability": 0.40805143117904663,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g99_0003",
+    "symbolic_probability": 0.3711915910243988,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g389_0000",
+    "symbolic_probability": 0.4028932452201843,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g389_0001",
+    "symbolic_probability": 0.4308813214302063,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g389_0002",
+    "symbolic_probability": 0.527732789516449,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g389_0003",
+    "symbolic_probability": 0.4403591752052307,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g94_0000",
+    "symbolic_probability": 0.4494366943836212,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g94_0001",
+    "symbolic_probability": 0.3530386686325073,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g94_0002",
+    "symbolic_probability": 0.5801162719726562,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g94_0003",
+    "symbolic_probability": 0.4758121967315674,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g553_0000",
+    "symbolic_probability": 0.481178343296051,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g553_0001",
+    "symbolic_probability": 0.5264278650283813,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g553_0002",
+    "symbolic_probability": 0.5672264695167542,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g553_0003",
+    "symbolic_probability": 0.42835456132888794,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g344_0000",
+    "symbolic_probability": 0.5088094472885132,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g344_0001",
+    "symbolic_probability": 0.4624978303909302,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g344_0002",
+    "symbolic_probability": 0.4085860252380371,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g344_0003",
+    "symbolic_probability": 0.3984672725200653,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g220_0000",
+    "symbolic_probability": 0.5538747310638428,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g220_0001",
+    "symbolic_probability": 0.49180760979652405,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g220_0002",
+    "symbolic_probability": 0.45700010657310486,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g220_0003",
+    "symbolic_probability": 0.636050283908844,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g159_0000",
+    "symbolic_probability": 0.42671945691108704,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g159_0001",
+    "symbolic_probability": 0.47805821895599365,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g159_0002",
+    "symbolic_probability": 0.38949528336524963,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g159_0003",
+    "symbolic_probability": 0.4993774890899658,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g539_0000",
+    "symbolic_probability": 0.36158809065818787,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g539_0001",
+    "symbolic_probability": 0.3971637785434723,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g539_0002",
+    "symbolic_probability": 0.35140934586524963,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g539_0003",
+    "symbolic_probability": 0.4566383957862854,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g348_0000",
+    "symbolic_probability": 0.4620468318462372,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g348_0001",
+    "symbolic_probability": 0.44003596901893616,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g348_0002",
+    "symbolic_probability": 0.3853699862957001,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g348_0003",
+    "symbolic_probability": 0.39943793416023254,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g551_0000",
+    "symbolic_probability": 0.5613189935684204,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g551_0001",
+    "symbolic_probability": 0.523922324180603,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g551_0002",
+    "symbolic_probability": 0.3568531572818756,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g551_0003",
+    "symbolic_probability": 0.45167773962020874,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g163_0000",
+    "symbolic_probability": 0.32397571206092834,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g163_0001",
+    "symbolic_probability": 0.4139835834503174,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g163_0002",
+    "symbolic_probability": 0.28863298892974854,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g163_0003",
+    "symbolic_probability": 0.3786179721355438,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g06_0000",
+    "symbolic_probability": 0.5805246829986572,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g06_0001",
+    "symbolic_probability": 0.5193995833396912,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g06_0002",
+    "symbolic_probability": 0.46712955832481384,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g06_0003",
+    "symbolic_probability": 0.5783464908599854,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g284_0000",
+    "symbolic_probability": 0.38768720626831055,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g284_0001",
+    "symbolic_probability": 0.4117108881473541,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g284_0002",
+    "symbolic_probability": 0.538683295249939,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g284_0003",
+    "symbolic_probability": 0.4652041494846344,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g459_0000",
+    "symbolic_probability": 0.4308810234069824,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g459_0001",
+    "symbolic_probability": 0.35203203558921814,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g459_0002",
+    "symbolic_probability": 0.39579346776008606,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g459_0003",
+    "symbolic_probability": 0.4433140456676483,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g225_0000",
+    "symbolic_probability": 0.46007177233695984,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g225_0001",
+    "symbolic_probability": 0.5145672559738159,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g225_0002",
+    "symbolic_probability": 0.4840641915798187,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g225_0003",
+    "symbolic_probability": 0.48721009492874146,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g429_0000",
+    "symbolic_probability": 0.5198491215705872,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g429_0001",
+    "symbolic_probability": 0.5079188346862793,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g429_0002",
+    "symbolic_probability": 0.4538729190826416,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g429_0003",
+    "symbolic_probability": 0.44681793451309204,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g203_0000",
+    "symbolic_probability": 0.3221450746059418,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g203_0001",
+    "symbolic_probability": 0.33097973465919495,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g203_0002",
+    "symbolic_probability": 0.4556552767753601,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g203_0003",
+    "symbolic_probability": 0.46424299478530884,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g27_0000",
+    "symbolic_probability": 0.3296172320842743,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g27_0001",
+    "symbolic_probability": 0.4434365928173065,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g27_0002",
+    "symbolic_probability": 0.45576974749565125,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_D_g27_0003",
+    "symbolic_probability": 0.41035398840904236,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g517_0000",
+    "symbolic_probability": 0.43263813853263855,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g517_0001",
+    "symbolic_probability": 0.5711564421653748,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g517_0002",
+    "symbolic_probability": 0.49918314814567566,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_F_g517_0003",
+    "symbolic_probability": 0.5330565571784973,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g238_0000",
+    "symbolic_probability": 0.3911624848842621,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g238_0001",
+    "symbolic_probability": 0.4293577969074249,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g238_0002",
+    "symbolic_probability": 0.41719216108322144,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g238_0003",
+    "symbolic_probability": 0.4815071225166321,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g223_0000",
+    "symbolic_probability": 0.46606433391571045,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g223_0001",
+    "symbolic_probability": 0.3823484778404236,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g223_0002",
+    "symbolic_probability": 0.6109256744384766,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g223_0003",
+    "symbolic_probability": 0.5377228856086731,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g95_0000",
+    "symbolic_probability": 0.5872894525527954,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g95_0001",
+    "symbolic_probability": 0.49802497029304504,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g95_0002",
+    "symbolic_probability": 0.5198867917060852,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_H_g95_0003",
+    "symbolic_probability": 0.5516695976257324,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g30_0000",
+    "symbolic_probability": 0.5048167109489441,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g30_0001",
+    "symbolic_probability": 0.5052008032798767,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g30_0002",
+    "symbolic_probability": 0.5029396414756775,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g30_0003",
+    "symbolic_probability": 0.4497734308242798,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g32_0000",
+    "symbolic_probability": 0.4284855127334595,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g32_0001",
+    "symbolic_probability": 0.4324616491794586,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g32_0002",
+    "symbolic_probability": 0.4046078026294708,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g32_0003",
+    "symbolic_probability": 0.49782925844192505,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g432_0000",
+    "symbolic_probability": 0.46003612875938416,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g432_0001",
+    "symbolic_probability": 0.4140390455722809,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g432_0002",
+    "symbolic_probability": 0.4526726007461548,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g432_0003",
+    "symbolic_probability": 0.3786972761154175,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g89_0000",
+    "symbolic_probability": 0.36247241497039795,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g89_0001",
+    "symbolic_probability": 0.46066275238990784,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g89_0002",
+    "symbolic_probability": 0.5040057301521301,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g89_0003",
+    "symbolic_probability": 0.41775861382484436,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g104_0000",
+    "symbolic_probability": 0.5240094065666199,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g104_0001",
+    "symbolic_probability": 0.4584054946899414,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g104_0002",
+    "symbolic_probability": 0.3042147159576416,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_A_g104_0003",
+    "symbolic_probability": 0.4779941439628601,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g142_0000",
+    "symbolic_probability": 0.47304877638816833,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g142_0001",
+    "symbolic_probability": 0.5355606079101562,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g142_0002",
+    "symbolic_probability": 0.4765257239341736,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_G_g142_0003",
+    "symbolic_probability": 0.3919561505317688,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g228_0000",
+    "symbolic_probability": 0.4577190577983856,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g228_0001",
+    "symbolic_probability": 0.5190954208374023,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g228_0002",
+    "symbolic_probability": 0.454057514667511,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_E_g228_0003",
+    "symbolic_probability": 0.41856101155281067,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g250_0000",
+    "symbolic_probability": 0.5526896715164185,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g250_0001",
+    "symbolic_probability": 0.5036013722419739,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g250_0002",
+    "symbolic_probability": 0.5674129724502563,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g250_0003",
+    "symbolic_probability": 0.5526195764541626,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g281_0000",
+    "symbolic_probability": 0.5023972988128662,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g281_0001",
+    "symbolic_probability": 0.45380455255508423,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g281_0002",
+    "symbolic_probability": 0.49190375208854675,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g281_0003",
+    "symbolic_probability": 0.5480841994285583,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g25_0000",
+    "symbolic_probability": 0.5484909415245056,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g25_0001",
+    "symbolic_probability": 0.5094899535179138,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g25_0002",
+    "symbolic_probability": 0.603949785232544,
+    "selected_action": "symbolic",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_B_g25_0003",
+    "symbolic_probability": 0.4941049814224243,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g114_0000",
+    "symbolic_probability": 0.5944752097129822,
+    "selected_action": "symbolic",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g114_0001",
+    "symbolic_probability": 0.48138228058815,
+    "selected_action": "llm",
+    "realized_utility": 1.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g114_0002",
+    "symbolic_probability": 0.48295775055885315,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  },
+  {
+    "sham_seed": 44,
+    "task_id": "final_C_g114_0003",
+    "symbolic_probability": 0.43462732434272766,
+    "selected_action": "llm",
+    "realized_utility": 0.0
+  }
+]

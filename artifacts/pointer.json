@@ -5,7 +5,7 @@
   "status": "NOT_YET_REQUALIFIED",
   "qualification_status": "NOT_YET_REQUALIFIED",
   "evidence_level": "NOT_YET_REQUALIFIED",
-  "source_hash": "",
+  "source_hash": "none",
   "generated_at": "2026-08-01T00:00:00Z",
   "note": "No current Gate A PASS exists. real_007_harder FAILED. real_005_requal is historical. See artifacts/current/pointer.json for the canonical pointer."
 }

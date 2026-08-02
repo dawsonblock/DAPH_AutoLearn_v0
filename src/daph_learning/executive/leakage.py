@@ -333,6 +333,99 @@ def check_group_leakage(
 
 
 # ──────────────────────────────────────────────────────────────────────
+# Section 7b — Template group leakage (for template_ood split mode)
+# ──────────────────────────────────────────────────────────────────────
+
+def check_template_group_leakage(
+    train_template_groups: Sequence[str],
+    dev_template_groups: Sequence[str],
+    final_template_groups: Sequence[str],
+) -> LeakageCheck:
+    """Verify no template_group_id appears in multiple splits.
+
+    This is the stricter check for ``template_ood`` split mode where
+    entire template groups are held out.
+    """
+    train_tg = set(train_template_groups)
+    dev_tg = set(dev_template_groups)
+    final_tg = set(final_template_groups)
+
+    td = train_tg & dev_tg
+    tf = train_tg & final_tg
+    df = dev_tg & final_tg
+    overlap = td | tf | df
+
+    passed = len(overlap) == 0
+    detail = ""
+    if not passed:
+        detail = f"template_group leakage: {len(overlap)} template groups in multiple splits"
+
+    return LeakageCheck(
+        check_name="template_group_no_cross_split",
+        passed=passed,
+        severity="hard",
+        detail=detail or "no template group appears in multiple splits",
+        evidence={
+            "n_train_template_groups": len(train_tg),
+            "n_dev_template_groups": len(dev_tg),
+            "n_final_template_groups": len(final_tg),
+            "overlap_count": len(overlap),
+            "overlap_sample": sorted(overlap)[:10],
+        },
+    )
+
+
+# ──────────────────────────────────────────────────────────────────────
+# Section 7c — API key placeholder check
+# ──────────────────────────────────────────────────────────────────────
+
+_CREDENTIAL_PATTERNS = [
+    "sk-placeholder",
+    "sk-placeholder-",
+    "sk-6cbxgk04y6hyvm",  # known leaked key
+]
+
+_CREDENTIAL_REGEXES = [
+    "sk-[a-zA-Z0-9]{20,}",  # OpenAI-style key
+]
+
+
+def check_api_key_placeholder(config: Mapping[str, Any] | str) -> LeakageCheck:
+    """Verify no fake/placeholder API keys are embedded in config.
+
+    Configuration should use ``vllm_api_key_env`` to reference an
+    environment variable, never freeze credentials.
+    """
+    import re
+    text = config if isinstance(config, str) else json.dumps(config)
+
+    issues = []
+    for pattern in _CREDENTIAL_PATTERNS:
+        if pattern in text:
+            issues.append(f"found embedded credential: {pattern[:20]}...")
+
+    for regex in _CREDENTIAL_REGEXES:
+        matches = re.findall(regex, text)
+        for m in matches:
+            # Allow env var references like VLLM_API_KEY
+            if "ENV" in text or "env" in text:
+                # Still flag if the key itself appears (not just the env var name)
+                if m not in ("VLLM_API_KEY", "OPENAI_API_KEY"):
+                    issues.append(f"found credential-like string: {m[:15]}...")
+            else:
+                issues.append(f"found credential-like string: {m[:15]}...")
+
+    passed = len(issues) == 0
+    return LeakageCheck(
+        check_name="no_embedded_credentials",
+        passed=passed,
+        severity="hard",
+        detail="; ".join(issues) if issues else "no embedded credentials found",
+        evidence={"n_issues": len(issues)},
+    )
+
+
+# ──────────────────────────────────────────────────────────────────────
 # Section 8 — Representation sanity check
 # ──────────────────────────────────────────────────────────────────────
 
@@ -459,6 +552,8 @@ __all__ = [
     "check_pca_train_only",
     "check_policy_leakage",
     "check_group_leakage",
+    "check_template_group_leakage",
+    "check_api_key_placeholder",
     "check_representation_sanity",
     "run_leakage_checks_from_artifacts",
 ]

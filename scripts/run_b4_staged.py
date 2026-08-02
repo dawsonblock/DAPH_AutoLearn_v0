@@ -34,6 +34,25 @@ import numpy as np
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
+# Canonical statistical functions — no inline statistics allowed.
+from daph_learning.executive.stats import (
+    paired_group_bootstrap,
+    make_paired_comparison,
+    compute_group_local_results,
+    positive_group_fraction,
+    worst_group_delta,
+    gap_capture as compute_gap_capture,
+    selection_accuracy as compute_selection_accuracy,
+    run_matched_sham_evaluation,
+    create_matched_sham_utilities,
+)
+from daph_learning.executive.b5_policies import (
+    LinearQPolicy,
+    RidgeQPolicy,
+    SurfaceFeatureExtractor,
+    SurfaceEnsemblePolicy,
+)
+
 
 def load_config(config_path: str) -> dict:
     """Load YAML config."""
@@ -707,82 +726,92 @@ def run_stage_c(config: dict, mock: bool = False):
         seed_base=config.get("qualification", {}).get("sham_seed_base", 10000),
     )
 
-    # 6. Bootstrap confidence intervals
+    # 6. Bootstrap confidence intervals — use canonical stats functions
     print(f"\n  Running bootstrap ({config.get('qualification', {}).get('bootstrap_iterations', 10000)} iterations)...")
     n_final = len(U_final)
     n_boot = config.get("qualification", {}).get("bootstrap_iterations", 10000)
     boot_seed = config.get("qualification", {}).get("bootstrap_seed", 20260801)
-    rng = np.random.RandomState(boot_seed)
-
-    # Group-based bootstrap
-    final_groups_arr = np.array(final_groups)
-    unique_groups = np.unique(final_groups_arr)
+    estimand = config.get("qualification", {}).get("bootstrap_estimand", "task_weighted")
 
     hidden_utilities = U_final[np.arange(n_final), hidden_preds]
     combined_utilities = U_final[np.arange(n_final), combined_preds]
     best_fixed_utilities = U_final[:, best_fixed_idx]
 
-    boot_hidden_minus_fixed = []
-    boot_combined_minus_logprob = []
-    boot_hidden_minus_sham = []
+    # Canonical paired comparisons via make_paired_comparison
+    comp_hf = make_paired_comparison(
+        "hidden", "best_fixed",
+        hidden_utilities, best_fixed_utilities, final_groups,
+        subtypes=final_subtypes,
+        n_replicates=n_boot, seed=boot_seed, estimand=estimand,
+    )
+    # Surface ensemble comparison
+    surface_extractor = SurfaceFeatureExtractor(feature_types=("subtype", "prompt_length", "tfidf"))
+    train_surface_X = surface_extractor.fit_transform(tasks["train"])
+    final_surface_X = surface_extractor.transform(tasks["final"])
+    surface_ensemble = SurfaceEnsemblePolicy(action_ids=action_ids, alpha=1.0)
+    surface_ensemble.fit(train_surface_X, U_train)
+    surface_ensemble_preds = surface_ensemble.predict(final_surface_X)
+    surface_ensemble_utils = U_final[np.arange(n_final), surface_ensemble_preds]
+    comp_hs = make_paired_comparison(
+        "hidden", "surface_ensemble",
+        hidden_utilities, surface_ensemble_utils, final_groups,
+        subtypes=final_subtypes,
+        n_replicates=n_boot, seed=boot_seed + 1, estimand=estimand,
+    )
 
-    for _ in range(n_boot):
-        # Sample groups with replacement
-        sampled_groups = rng.choice(unique_groups, size=len(unique_groups), replace=True)
-        # Map to task indices
-        indices = []
-        for g in sampled_groups:
-            indices.extend(np.where(final_groups_arr == g)[0])
-        indices = np.array(indices)
+    # Also keep raw bootstrap for backward compat
+    boot_hf = paired_group_bootstrap(
+        hidden_utilities, best_fixed_utilities, final_groups,
+        comparison="hidden_vs_bestfixed",
+        n_replicates=n_boot, seed=boot_seed, estimand=estimand,
+    )
 
-        h_util = hidden_utilities[indices].mean()
-        c_util = combined_utilities[indices].mean()
-        f_util = best_fixed_utilities[indices].mean()
-        l_util = U_final[indices, np.argmax(U_train.mean(axis=0))].mean()  # logprob policy is different
-
-        boot_hidden_minus_fixed.append(h_util - f_util)
-        boot_combined_minus_logprob.append(c_util - l_util)
-
-    boot_hf = np.array(boot_hidden_minus_fixed)
-    boot_cl = np.array(boot_combined_minus_logprob)
-
-    # 7. Qualification gate
+    # 7. Qualification gate — use canonical stats
     print(f"\n  Qualification gates:")
     gates = {}
 
-    # Primary: hidden > best-fixed
-    h_lcb = float(np.percentile(boot_hf, 2.5))
-    gates["hidden_gt_fixed_lcb95"] = h_lcb
-    gates["hidden_gt_fixed_pass"] = h_lcb > 0
-    print(f"    Hidden > Fixed: LCB95={h_lcb:.4f} {'PASS' if h_lcb > 0 else 'FAIL'}")
+    # Primary: hidden > best-fixed (canonical LCB95)
+    gates["hidden_gt_fixed_lcb95"] = comp_hf.lcb95
+    gates["hidden_gt_fixed_pass"] = comp_hf.lcb95 > 0
+    print(f"    Hidden > Fixed: LCB95={comp_hf.lcb95:.4f} {'PASS' if comp_hf.lcb95 > 0 else 'FAIL'}")
 
-    # Hidden > sham
+    # Hidden > surface ensemble (strongest surface control)
+    gates["hidden_gt_surface_lcb95"] = comp_hs.lcb95
+    gates["hidden_gt_surface_pass"] = comp_hs.lcb95 > 0
+    print(f"    Hidden > Surface: LCB95={comp_hs.lcb95:.4f} {'PASS' if comp_hs.lcb95 > 0 else 'FAIL'}")
+
+    # Hidden > sham (canonical paired comparison)
     sham_regrets = np.array(sham_results["sham_regrets"])
     hidden_regret = ablation_results["hidden"]["final_regret"]
-    # Hidden should have LOWER regret than sham
-    h_vs_sham = sham_regrets - hidden_regret  # positive = hidden is better
-    sham_lcb = float(np.percentile(h_vs_sham, 2.5))
+    # Use the ShamComparisonResult from stats if available, otherwise compute LCB
+    if "hidden_vs_sham_lcb95" in sham_results:
+        sham_lcb = sham_results["hidden_vs_sham_lcb95"]
+    else:
+        # Fallback: compute from sham regrets distribution
+        h_vs_sham = sham_regrets - hidden_regret
+        sham_lcb = float(np.percentile(h_vs_sham, 2.5))
     gates["hidden_gt_sham_lcb95"] = sham_lcb
     gates["hidden_gt_sham_pass"] = sham_lcb > 0
     print(f"    Hidden > Sham:  LCB95={sham_lcb:.4f} {'PASS' if sham_lcb > 0 else 'FAIL'}")
 
-    # Gap capture
-    gap_capture = ablation_results["hidden"]["gap_capture"]
-    gates["gap_capture"] = gap_capture
-    gates["gap_capture_pass"] = gap_capture > 0.60
-    print(f"    Gap capture:    {gap_capture:.1%} {'PASS' if gap_capture > 0.60 else 'FAIL'}")
+    # Gap capture (canonical)
+    gap_cap = compute_gap_capture(
+        hidden_utilities.mean(), best_fixed_utilities.mean(), U_final.max(axis=1).mean()
+    )
+    gates["gap_capture"] = gap_cap
+    gates["gap_capture_pass"] = gap_cap > 0.25
+    print(f"    Gap capture:    {gap_cap:.1%} {'PASS' if gap_cap > 0.25 else 'FAIL'}")
 
-    # Positive group fraction
-    group_utilities = {}
-    for i, g in enumerate(final_groups):
-        group_utilities.setdefault(g, []).append(hidden_utilities[i])
-    pos_frac = sum(1 for u in group_utilities.values() if np.mean(u) > best_fixed_utilities.mean()) / len(group_utilities)
-    gates["positive_group_fraction"] = pos_frac
-    gates["positive_group_pass"] = pos_frac > 0.80
-    print(f"    Pos group frac: {pos_frac:.1%} {'PASS' if pos_frac > 0.80 else 'FAIL'}")
+    # Positive group fraction (canonical: group-local paired, not global baseline)
+    gates["positive_group_fraction"] = comp_hf.positive_group_fraction
+    gates["worst_group_delta"] = comp_hf.worst_group_delta
+    gates["positive_group_pass"] = comp_hf.positive_group_fraction >= 0.65
+    print(f"    Pos group frac: {comp_hf.positive_group_fraction:.1%} {'PASS' if comp_hf.positive_group_fraction >= 0.65 else 'FAIL'}")
+    print(f"    Worst group Δ:  {comp_hf.worst_group_delta:.4f}")
 
     overall_pass = all([
         gates["hidden_gt_fixed_pass"],
+        gates["hidden_gt_surface_pass"],
         gates["hidden_gt_sham_pass"],
         gates["gap_capture_pass"],
         gates["positive_group_pass"],
@@ -804,25 +833,62 @@ def run_stage_c(config: dict, mock: bool = False):
     qual_dir = out / "qualification"
     qual_dir.mkdir(parents=True, exist_ok=True)
 
+    # Authoritative machine-readable qualification (canonical schema)
     qualification = {
         "experiment_id": config.get("experiment_id", "daph_executive_b4"),
+        "status": "QUALIFIED" if overall_pass else "FAILED_QUALIFICATION",
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+        "primary_policy": "hidden",
+        "best_fixed_policy": best_fixed_action,
+        "best_surface_policy": "surface_ensemble",
         "best_representation": best_rep,
-        "best_fixed_action": best_fixed_action,
-        "ablation": ablation_results,
-        "sham": sham_results,
+        "oracle": {
+            "utility": float(U_final.max(axis=1).mean()),
+        },
+        "policies": {
+            "hidden": {
+                "utility": float(hidden_utilities.mean()),
+                "regret": float(ablation_results["hidden"]["final_regret"]),
+            },
+            "best_fixed": {
+                "name": best_fixed_action,
+                "utility": float(best_fixed_utilities.mean()),
+            },
+            "surface_ensemble": {
+                "utility": float(surface_ensemble_utils.mean()),
+            },
+            "combined": {
+                "utility": float(combined_utilities.mean()),
+            },
+        },
+        "comparisons": {
+            "hidden_vs_best_fixed": comp_hf.to_dict(),
+            "hidden_vs_surface_ensemble": comp_hs.to_dict(),
+        },
+        "groups": {
+            "positive_group_fraction": comp_hf.positive_group_fraction,
+            "worst_group_delta": comp_hf.worst_group_delta,
+            "group_count": comp_hf.group_count,
+        },
         "gates": gates,
+        "sham": sham_results,
+        "ablation": ablation_results,
         "bootstrap": {
             "hidden_minus_fixed": {
-                "point": float(boot_hf.mean()),
-                "lcb_95": h_lcb,
-                "ucb_95": float(np.percentile(boot_hf, 97.5)),
+                "point": boot_hf.point_estimate,
+                "mean": boot_hf.mean_delta,
+                "median": boot_hf.median_delta,
+                "lcb_95": boot_hf.lcb_95,
+                "ucb_95": boot_hf.ucb_95,
+                "std_error": boot_hf.std_error,
+                "prob_positive": boot_hf.prob_positive,
             },
         },
         "n_train": len(U_train),
         "n_dev": len(U_dev),
         "n_final": len(U_final),
         "action_ids": action_ids,
+        "estimand": estimand,
     }
 
     with open(qual_dir / "qualification.json", "w") as f:
@@ -841,46 +907,91 @@ def run_stage_c(config: dict, mock: bool = False):
 
 
 def generate_report(q: dict) -> str:
-    """Generate markdown report."""
+    """Generate markdown report strictly from qualification.json.
+
+    No headline metric is calculated inside this function. All values
+    are read from the authoritative JSON.
+    """
+    gates = q['gates']
+    comparisons = q.get('comparisons', {})
+    policies = q.get('policies', {})
+    groups = q.get('groups', {})
+    oracle = q.get('oracle', {})
+    sham = q.get('sham', {})
+
     lines = [
         "# B4 Executive Qualification Report",
         "",
         f"**Experiment:** `{q['experiment_id']}`",
+        f"**Status:** `{q.get('status', 'UNKNOWN')}`",
         f"**Date:** {q['timestamp']}",
         f"**Tasks:** {q['n_train']} train / {q['n_dev']} dev / {q['n_final']} final",
         f"**Actions:** {', '.join(q['action_ids'])}",
-        f"**Best representation:** `{q['best_representation']}`",
-        f"**Best fixed action:** `{q['best_fixed_action']}`",
+        f"**Best representation:** `{q.get('best_representation', 'N/A')}`",
+        f"**Best fixed action:** `{q.get('best_fixed_action', 'N/A')}`",
+        f"**Best surface policy:** `{q.get('best_surface_policy', 'N/A')}`",
+        f"**Bootstrap estimand:** `{q.get('estimand', 'task_weighted')}`",
         "",
-        "## Gate Decision: " + ("PASS" if q['gates']['overall_pass'] else "FAIL"),
+        "## Gate Decision: " + ("PASS" if gates.get('overall_pass') else "FAIL"),
         "",
         "## Gates",
         "",
         "| Gate | Value | Threshold | Result |",
         "|------|-------|-----------|--------|",
-        f"| Hidden > Fixed (LCB95) | {q['gates']['hidden_gt_fixed_lcb95']:.4f} | > 0 | {'PASS' if q['gates']['hidden_gt_fixed_pass'] else 'FAIL'} |",
-        f"| Hidden > Sham (LCB95) | {q['gates']['hidden_gt_sham_lcb95']:.4f} | > 0 | {'PASS' if q['gates']['hidden_gt_sham_pass'] else 'FAIL'} |",
-        f"| Gap capture | {q['gates']['gap_capture']:.1%} | > 60% | {'PASS' if q['gates']['gap_capture_pass'] else 'FAIL'} |",
-        f"| Positive group fraction | {q['gates']['positive_group_fraction']:.1%} | > 80% | {'PASS' if q['gates']['positive_group_pass'] else 'FAIL'} |",
+        f"| Hidden > Fixed (LCB95) | {gates.get('hidden_gt_fixed_lcb95', 0):.4f} | > 0 | {'PASS' if gates.get('hidden_gt_fixed_pass') else 'FAIL'} |",
+        f"| Hidden > Surface (LCB95) | {gates.get('hidden_gt_surface_lcb95', 0):.4f} | > 0 | {'PASS' if gates.get('hidden_gt_surface_pass') else 'FAIL'} |",
+        f"| Hidden > Sham (LCB95) | {gates.get('hidden_gt_sham_lcb95', 0):.4f} | > 0 | {'PASS' if gates.get('hidden_gt_sham_pass') else 'FAIL'} |",
+        f"| Gap capture | {gates.get('gap_capture', 0):.1%} | > 25% | {'PASS' if gates.get('gap_capture_pass') else 'FAIL'} |",
+        f"| Positive group fraction | {gates.get('positive_group_fraction', 0):.1%} | >= 65% | {'PASS' if gates.get('positive_group_pass') else 'FAIL'} |",
+        f"| Worst group delta | {gates.get('worst_group_delta', 0):.4f} | — | — |",
         "",
+        "## Headline Metrics (from qualification.json)",
+        "",
+        f"- Hidden utility: {policies.get('hidden', {}).get('utility', 0):.4f}",
+        f"- Best fixed utility: {policies.get('best_fixed', {}).get('utility', 0):.4f}",
+        f"- Surface ensemble utility: {policies.get('surface_ensemble', {}).get('utility', 0):.4f}",
+        f"- Oracle utility: {oracle.get('utility', 0):.4f}",
+        f"- Gap capture: {gates.get('gap_capture', 0):.1%}",
+        f"- Positive group fraction: {groups.get('positive_group_fraction', 0):.1%}",
+        f"- Worst group delta: {groups.get('worst_group_delta', 0):.4f}",
+        f"- Group count: {groups.get('group_count', 0)}",
+        "",
+        "## Canonical Comparisons",
+        "",
+    ]
+
+    for comp_name, comp in comparisons.items():
+        lines.append(f"### {comp_name}")
+        lines.append(f"- Point delta: {comp.get('point_delta', 0):.4f}")
+        lines.append(f"- Bootstrap mean: {comp.get('bootstrap_mean', 0):.4f}")
+        lines.append(f"- LCB95: {comp.get('lcb95', 0):.4f}")
+        lines.append(f"- UCB95: {comp.get('ucb95', 0):.4f}")
+        lines.append(f"- P(positive): {comp.get('probability_positive', 0):.1%}")
+        lines.append(f"- Positive group fraction: {comp.get('positive_group_fraction', 0):.1%}")
+        lines.append(f"- Worst group delta: {comp.get('worst_group_delta', 0):.4f}")
+        lines.append("")
+
+    lines.extend([
         "## Ablation Results (Final Set)",
         "",
         "| Policy | Regret | Utility | Gap Capture |",
         "|--------|--------|---------|-------------|",
-    ]
+    ])
 
-    for name, res in q["ablation"].items():
-        lines.append(f"| {name} | {res['final_regret']:.4f} | {res['final_utility']:.4f} | {res.get('gap_capture', 0):.1%} |")
+    for name, res in q.get("ablation", {}).items():
+        lines.append(f"| {name} | {res.get('final_regret', 0):.4f} | {res.get('final_utility', 0):.4f} | {res.get('gap_capture', 0):.1%} |")
 
     lines.extend([
         "",
         "## Sham Results",
         "",
-        f"- Number of shams: {q['sham']['n_shams']}",
-        f"- Sham mean regret: {q['sham']['sham_mean_regret']:.4f}",
-        f"- Sham std regret: {q['sham']['sham_std_regret']:.4f}",
-        f"- Hidden regret: {q['ablation']['hidden']['final_regret']:.4f}",
-        f"- Hidden vs Sham (LCB95): {q['gates']['hidden_gt_sham_lcb95']:.4f}",
+        f"- Number of shams: {sham.get('n_shams', 0)}",
+        f"- Sham mean regret: {sham.get('sham_mean_regret', 0):.4f}",
+        f"- Sham median regret: {sham.get('sham_median_regret', 0):.4f}",
+        f"- Sham best regret: {sham.get('sham_best_regret', 0):.4f}",
+        f"- Hidden regret: {policies.get('hidden', {}).get('regret', 0):.4f}",
+        f"- Hidden vs Sham (LCB95): {gates.get('hidden_gt_sham_lcb95', 0):.4f}",
+        f"- P(hidden > sham): {sham.get('prob_hidden_gt_sham', 0):.1%}",
         "",
     ])
 

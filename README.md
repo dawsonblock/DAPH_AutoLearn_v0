@@ -1,13 +1,13 @@
-# DAPH AutoLearn v0.3.10.6-alpha
+# DAPH AutoLearn v0.4.0a2
 
 <div align="center">
 
 **Counterfactual compute-selection learning for auditable LLM tool-routing research.**
 
-`v0.3.10.6-alpha` · Python ≥ 3.10 · MIT-style research software
+`v0.4.0a2` · Python ≥ 3.10 · MIT-style research software
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/version-0.3.10.6--alpha-orange.svg)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.4.0a2-orange.svg)](./CHANGELOG.md)
 [![Tests](https://img.shields.io/badge/tests-1269%2B-brightgreen.svg)](#testing)
 [![Status](https://img.shields.io/badge/status-research%20alpha-lightgrey.svg)](./CLAIMS.md)
 
@@ -631,8 +631,41 @@ result.**
 
 ## Changelog
 
-### v0.3.10.6-alpha
+### v0.4.0a2
 
+- **Scientific integration release** — integrates all executive components
+  into a single canonical scientific pipeline:
+  - **`PairedPolicyComparison` canonical type**: standardizes statistical
+    comparison results across all reports and qualification JSON.
+  - **Explicit bootstrap estimand**: `task_weighted` (default) and
+    `group_equal_weight` estimands prevent silent weighting changes.
+  - **Synthetic dataset leakage fix**: global prompt deduplication across
+    all splits; `template_group_id` for template-level leakage control.
+  - **`SurfaceFeatureExtractor`**: consistent surface feature extraction
+    across train/dev/final splits.
+  - **API key placeholder removal**: all fake API keys removed from configs;
+    `check_api_key_placeholder` validator added.
+  - **B4 staged runner cleanup**: legacy inline statistical calculations
+    replaced with canonical `stats.py` functions.
+  - **B4 evidence invalidation**: corrupt historical B4 evidence moved to
+    `artifacts/invalidated/` with documented reasons.
+  - **Repo-wide artifact scanner**: test rejecting zero hashes, placeholder
+    hashes, SSH/PTY corruption, and fake API keys in active artifacts.
+  - **Positive/negative controls**: synthetic pipeline supports
+    `control_mode="positive"` (expected to qualify) and
+    `control_mode="negative"` (expected to fail). Infrastructure validity
+    separated from scientific qualification.
+  - **Error semantics**: frozen `ExecutionStatus` enum with utility rules;
+    `ObservedCost` dataclass; `compute_observed_utility` implements
+    `U = w_A * A - C - w_F * F`.
+  - **B5 diagnostics**: empirical crossover analysis, THINK-FAST delta
+    analysis, compute budget frontier.
+  - **B5 staged runner** (`scripts/run_b5_staged.py`): canonical real-model
+    experiment entrypoint with resume safety and hash verification.
+  - **`FAILED_LEAKAGE`/`FAILED_REPRODUCTION` lifecycle statuses**: explicit
+    failure states for leakage and reproduction failures.
+  - **Reproduction hardening**: `reproduce.py` verifies config hash;
+    tests for corruption, missing files, config changes, hash mismatches.
 - **Scientific repair release** — fixes five Priority 0 correctness issues
   from the external audit:
   - **Matched sham control**: permutes signed continuous ΔU (and matching
@@ -655,7 +688,7 @@ result.**
   final stage writes to `gate_a_runs/` (staging) — only promotion logic
   moves to `gate_a_qualified/`.
 - **Version normalization**: all version surfaces now agree on
-  0.3.10.6-alpha. Removed stale `CURRENT_EXPERIMENT_ID` from package source.
+  0.4.0a2. Removed stale `CURRENT_EXPERIMENT_ID` from package source.
 
 ### v0.3.10.5-alpha
 

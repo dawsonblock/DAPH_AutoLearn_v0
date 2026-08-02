@@ -1,4 +1,4 @@
-__version__ = "0.3.10.6-alpha"
+__version__ = "0.4.0a2"
 
 # v0.4 — The "Gate A" benchmark is now known as "benchmark B0" (the
 # binary compatibility benchmark). The artifact directory name

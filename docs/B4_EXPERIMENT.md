@@ -512,7 +512,7 @@ python -m vllm.entrypoints.openai.api_server \
     --max-model-len 8128 &
 
 # 3. Run Stage A (execute actions)
-VLLM_API_KEY=sk-placeholder python scripts/run_b4_staged.py \
+VLLM_API_KEY=$VLLM_API_KEY python scripts/run_b4_staged.py \
     --stage A --config configs/executive_b4_hidden_states.yaml
 
 # 4. Kill vLLM, run Stage B (capture hidden states)

@@ -167,13 +167,28 @@ def paired_group_bootstrap(
     comparison: str = "A_vs_B",
     n_replicates: int = 10000,
     seed: int = 20260731,
+    estimand: str = "task_weighted",
 ) -> BootstrapResult:
     """Paired group-aware bootstrap of mean(U_A - U_B).
 
     For each bootstrap replicate b:
     1. Sample groups with replacement.
     2. Include all tasks belonging to selected groups.
-    3. Calculate Δ_b = mean(U_A - U_B) over the resampled tasks.
+    3. Calculate Δ_b over the resampled tasks.
+
+    Two estimands are supported:
+
+    ``task_weighted`` (default, recommended primary):
+        Each replicate samples groups with replacement, includes every
+        task belonging to each sampled group, and calculates the
+        task-weighted mean paired utility delta. This preserves the
+        task-level utility target while respecting grouped dependence.
+
+    ``group_equal_weight``:
+        Each replicate samples groups with replacement and calculates
+        the unweighted mean of per-group mean deltas. This gives each
+        group equal influence regardless of size. Use for research
+        diagnostics only.
 
     Parameters
     ----------
@@ -187,6 +202,8 @@ def paired_group_bootstrap(
         Number of bootstrap replicates (default 10000, final ≥ 5000).
     seed : int
         Random seed.
+    estimand : str
+        ``"task_weighted"`` or ``"group_equal_weight"``.
 
     Returns
     -------
@@ -211,6 +228,7 @@ def paired_group_bootstrap(
         groups.setdefault(str(g), []).append(i)
     group_keys = list(groups.keys())
     group_indices = [np.array(groups[g], dtype=int) for g in group_keys]
+    group_sizes = np.array([len(idx) for idx in group_indices], dtype=np.float64)
     n_groups = len(group_keys)
 
     # Per-group mean differences
@@ -218,16 +236,27 @@ def paired_group_bootstrap(
         float(np.mean(diffs[idx])) for idx in group_indices
     ])
 
-    point_estimate = float(np.mean(group_diffs))
+    if estimand == "group_equal_weight":
+        # Each group contributes equally
+        point_estimate = float(np.mean(group_diffs))
+    else:
+        # task_weighted: weight each group by its size
+        point_estimate = float(np.average(group_diffs, weights=group_sizes))
 
-    # Bootstrap: sample groups with replacement, include all tasks
+    # Bootstrap: sample groups with replacement
     rng = np.random.RandomState(seed)
     boot_deltas = np.empty(n_replicates, dtype=np.float64)
 
     for b in range(n_replicates):
         sampled = rng.choice(n_groups, size=n_groups, replace=True)
-        # Each sampled group contributes its mean diff
-        boot_deltas[b] = np.mean(group_diffs[sampled])
+        if estimand == "group_equal_weight":
+            boot_deltas[b] = np.mean(group_diffs[sampled])
+        else:
+            # task_weighted: weight by group sizes
+            sampled_sizes = group_sizes[sampled]
+            boot_deltas[b] = np.average(
+                group_diffs[sampled], weights=sampled_sizes
+            )
 
     return BootstrapResult(
         comparison=comparison,
@@ -523,6 +552,137 @@ def margin_analysis(
     return {"buckets": buckets}
 
 
+# ──────────────────────────────────────────────────────────────────────
+# Section 7 — Canonical PairedPolicyComparison
+# ──────────────────────────────────────────────────────────────────────
+
+@dataclass(frozen=True)
+class PairedPolicyComparison:
+    """Canonical comparison between two policies.
+
+    All policy comparisons (hidden vs fixed, hidden vs surface,
+    hidden vs sham, ridge vs linear, etc.) must use this common
+    representation so that different experiments cannot quietly
+    define confidence differently.
+    """
+
+    policy_a: str
+    policy_b: str
+    point_delta: float
+    bootstrap_mean: float
+    bootstrap_median: float
+    lcb95: float
+    ucb95: float
+    standard_error: float
+    probability_positive: float
+    positive_group_fraction: float
+    worst_group_delta: float
+    group_count: int
+    task_count: int
+    estimand: str = "task_weighted"
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "policy_a": self.policy_a,
+            "policy_b": self.policy_b,
+            "point_delta": self.point_delta,
+            "bootstrap_mean": self.bootstrap_mean,
+            "bootstrap_median": self.bootstrap_median,
+            "lcb95": self.lcb95,
+            "ucb95": self.ucb95,
+            "standard_error": self.standard_error,
+            "probability_positive": self.probability_positive,
+            "positive_group_fraction": self.positive_group_fraction,
+            "worst_group_delta": self.worst_group_delta,
+            "group_count": self.group_count,
+            "task_count": self.task_count,
+            "estimand": self.estimand,
+        }
+
+
+def make_paired_comparison(
+    policy_a: str,
+    policy_b: str,
+    utilities_a: np.ndarray,
+    utilities_b: np.ndarray,
+    group_ids: Sequence[str],
+    subtypes: Sequence[str] | None = None,
+    *,
+    n_replicates: int = 10000,
+    seed: int = 20260731,
+    estimand: str = "task_weighted",
+) -> PairedPolicyComparison:
+    """Build a canonical PairedPolicyComparison from per-task utilities.
+
+    This is the single entry point for all policy-vs-policy comparisons.
+    It runs the paired group bootstrap and computes group-local
+    statistics in one call.
+    """
+    boot = paired_group_bootstrap(
+        utilities_a, utilities_b, group_ids,
+        comparison=f"{policy_a}_vs_{policy_b}",
+        n_replicates=n_replicates,
+        seed=seed,
+        estimand=estimand,
+    )
+    if subtypes is None:
+        subtypes = ["unknown"] * len(utilities_a)
+    group_results = compute_group_local_results(
+        task_ids=[f"t{i}" for i in range(len(utilities_a))],
+        group_ids=group_ids,
+        subtypes=subtypes,
+        hidden_utilities=utilities_a,
+        baseline_utilities=utilities_b,
+    )
+    return PairedPolicyComparison(
+        policy_a=policy_a,
+        policy_b=policy_b,
+        point_delta=boot.point_estimate,
+        bootstrap_mean=boot.mean_delta,
+        bootstrap_median=boot.median_delta,
+        lcb95=boot.lcb_95,
+        ucb95=boot.ucb_95,
+        standard_error=boot.std_error,
+        probability_positive=boot.prob_positive,
+        positive_group_fraction=positive_group_fraction(group_results),
+        worst_group_delta=worst_group_delta(group_results),
+        group_count=len(group_results),
+        task_count=len(utilities_a),
+        estimand=estimand,
+    )
+
+
+# ──────────────────────────────────────────────────────────────────────
+# Section 8 — Action advantage margin
+# ──────────────────────────────────────────────────────────────────────
+
+def action_advantage_margin(utilities: np.ndarray) -> dict[str, Any]:
+    """Compute the per-task advantage margin M_i = U_best - U_second.
+
+    Reports distribution statistics and threshold fractions.
+    """
+    n = len(utilities)
+    if n == 0:
+        return {"mean": 0.0, "median": 0.0, "p25": 0.0, "p75": 0.0,
+                "frac_gt_0.01": 0.0, "frac_gt_0.02": 0.0,
+                "frac_gt_0.05": 0.0, "frac_gt_0.10": 0.0}
+    sorted_u = np.sort(utilities, axis=1)
+    if utilities.shape[1] < 2:
+        margins = np.zeros(n)
+    else:
+        margins = sorted_u[:, -1] - sorted_u[:, -2]
+    return {
+        "mean": float(np.mean(margins)),
+        "median": float(np.median(margins)),
+        "p25": float(np.percentile(margins, 25)),
+        "p75": float(np.percentile(margins, 75)),
+        "frac_gt_0.01": float(np.mean(margins > 0.01)),
+        "frac_gt_0.02": float(np.mean(margins > 0.02)),
+        "frac_gt_0.05": float(np.mean(margins > 0.05)),
+        "frac_gt_0.10": float(np.mean(margins > 0.10)),
+    }
+
+
 __all__ = [
     "GroupResult",
     "compute_group_local_results",
@@ -530,10 +690,13 @@ __all__ = [
     "worst_group_delta",
     "BootstrapResult",
     "paired_group_bootstrap",
+    "PairedPolicyComparison",
+    "make_paired_comparison",
     "ShamComparisonResult",
     "create_matched_sham_utilities",
     "run_matched_sham_evaluation",
     "gap_capture",
     "selection_accuracy",
     "margin_analysis",
+    "action_advantage_margin",
 ]

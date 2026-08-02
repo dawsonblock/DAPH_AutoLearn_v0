@@ -2,51 +2,88 @@
   "experiments": [
     {
       "experiment_id": "daph_executive_b1_qwen3_8b_runpod",
+      "experiment_family": "B1",
       "version": "0.3.x",
       "status": "QUALIFIED",
       "artifact_root": "artifacts/executive_b1_runpod",
-      "qualification_summary": {},
-      "invalidated_reason": null
+      "config_hash": null,
+      "source_hash": null,
+      "created_at": "",
+      "supersedes": null,
+      "superseded_by": null,
+      "summary": {}
     },
     {
       "experiment_id": "daph_executive_b2_qwen3_8b_diverse",
+      "experiment_family": "B2",
       "version": "0.3.x",
       "status": "QUALIFIED",
       "artifact_root": "artifacts/executive_b2_runpod",
-      "qualification_summary": {},
-      "invalidated_reason": null
+      "config_hash": null,
+      "source_hash": null,
+      "created_at": "",
+      "supersedes": null,
+      "superseded_by": null,
+      "summary": {}
     },
     {
       "experiment_id": "daph_executive_b3_qwen3_8b_conditional",
+      "experiment_family": "B3",
       "version": "0.3.x",
       "status": "QUALIFIED",
       "artifact_root": "artifacts/executive_b3_runpod",
-      "qualification_summary": {},
-      "invalidated_reason": null
+      "config_hash": null,
+      "source_hash": null,
+      "created_at": "",
+      "supersedes": null,
+      "superseded_by": null,
+      "summary": {}
     },
     {
-      "experiment_id": "daph_executive_b4_qwen3_8b_hidden_states",
+      "experiment_id": "executive_b4_original",
+      "experiment_family": "B4",
       "version": "0.3.x",
       "status": "INVALIDATED",
-      "artifact_root": "artifacts/executive_b4",
-      "qualification_summary": {},
-      "invalidated_reason": "machine-readable evidence corrupted/missing \u2014 SSH PTY error in qualification.json and representation_sweep.json"
+      "artifact_root": "artifacts/invalidated/executive_b4_original",
+      "config_hash": null,
+      "source_hash": null,
+      "created_at": "",
+      "supersedes": null,
+      "superseded_by": "executive_b4_reproduction_v1",
+      "summary": {
+        "invalidation_reasons": [
+          "qualification.json corrupted by SSH/PTTY error",
+          "representation_sweep.json corrupted",
+          "required raw artifacts missing",
+          "historical qualification used superseded statistical logic"
+        ]
+      }
     },
     {
       "experiment_id": "executive_b4_reproduction_v1",
-      "version": "0.4.0a1",
+      "experiment_family": "B4",
+      "version": "0.4.0a2",
       "status": "DEVELOPMENT",
       "artifact_root": "artifacts/executive_b4_reproduction_v1",
-      "qualification_summary": {},
-      "invalidated_reason": null
+      "config_hash": null,
+      "source_hash": null,
+      "created_at": "",
+      "supersedes": "executive_b4_original",
+      "superseded_by": null,
+      "summary": {}
     },
     {
       "experiment_id": "executive_b5_adaptive_compute",
-      "version": "0.4.0a1",
+      "experiment_family": "B5",
+      "version": "0.4.0a2",
       "status": "DEVELOPMENT",
       "artifact_root": "artifacts/executive_b5_adaptive_compute",
-      "qualification_summary": {},
-      "invalidated_reason": null
+      "config_hash": null,
+      "source_hash": null,
+      "created_at": "",
+      "supersedes": null,
+      "superseded_by": null,
+      "summary": {}
     }
   ]
 }

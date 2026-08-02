@@ -1,0 +1,13 @@
+{
+  "experiment_id": "executive_b4_original",
+  "status": "INVALIDATED",
+  "reason": [
+    "qualification.json corrupted by SSH/PTTY error",
+    "representation_sweep.json corrupted",
+    "required raw artifacts missing",
+    "historical qualification used superseded statistical logic"
+  ],
+  "superseded_by": "executive_b4_reproduction_v1",
+  "invalidated_at": "2025-01-01T00:00:00+0000",
+  "invalidated_by": "v0.4.0a2 executive scientific integration"
+}

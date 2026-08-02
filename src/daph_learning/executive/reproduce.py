@@ -86,6 +86,20 @@ def reproduce(
     if integrity.failures:
         results["integrity_failures"] = integrity.failures[:20]
 
+    # Step 1b: Verify config hash matches frozen hash
+    from daph_learning.executive.manifest import compute_config_hash
+    config_path = root / "config" / "experiment_config.json"
+    config_hash_path = root / "config" / "config_hash.txt"
+    if config_path.exists() and config_hash_path.exists():
+        stored_hash = config_hash_path.read_text().strip()
+        current_config = json.loads(config_path.read_text())
+        current_hash = compute_config_hash(current_config)
+        _step("config_hash", stored_hash == current_hash,
+              f"stored={stored_hash[:16]}... current={current_hash[:16]}...")
+    elif config_hash_path.exists():
+        _step("config_hash", False, "config_hash.txt exists but experiment_config.json missing")
+    # If neither exists, skip (not all experiments have config freezing)
+
     # Step 2: Verify manifest hashes
     manifest_path = root / "manifest.json"
     if manifest_path.exists():

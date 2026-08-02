@@ -430,6 +430,7 @@ def compute_surface_features(
     tasks: list[dict[str, Any]],
     *,
     feature_types: Sequence[str] = ("subtype", "prompt_length", "tfidf"),
+    vocabulary: dict | None = None,
 ) -> np.ndarray:
     """Compute surface-information features for baseline policies.
 
@@ -437,6 +438,10 @@ def compute_surface_features(
     ----------
     tasks : list of task dicts
     feature_types : which features to include
+    vocabulary : dict | None
+        If provided, use this fitted vocabulary (from train) for
+        consistent feature dimensions across splits. If None,
+        vocabulary is built from the current tasks (train-only use).
 
     Returns
     -------
@@ -445,49 +450,74 @@ def compute_surface_features(
     features: list[np.ndarray] = []
 
     if "subtype" in feature_types or "family" in feature_types:
-        # One-hot encode subtype/family
-        all_types = sorted(set(
-            t.get("subtype", t.get("family", "unknown")) for t in tasks
-        ))
+        # Use fitted vocabulary or build from current tasks
+        if vocabulary and "subtypes" in vocabulary:
+            all_types = vocabulary["subtypes"]
+        else:
+            all_types = sorted(set(
+                t.get("subtype", t.get("family", "unknown")) for t in tasks
+            ))
         type_to_idx = {s: i for i, s in enumerate(all_types)}
         n_types = len(all_types)
         onehot = np.zeros((len(tasks), n_types), dtype=np.float32)
         for i, t in enumerate(tasks):
             s = t.get("subtype", t.get("family", "unknown"))
-            onehot[i, type_to_idx[s]] = 1.0
+            if s in type_to_idx:
+                onehot[i, type_to_idx[s]] = 1.0
         features.append(onehot)
 
     if "prompt_length" in feature_types:
         lengths = np.array([
             len(t.get("prompt", "")) for t in tasks
         ], dtype=np.float32).reshape(-1, 1)
-        # Normalize
-        if lengths.max() > 0:
+        max_len = vocabulary.get("max_prompt_length", 0) if vocabulary else 0
+        if max_len > 0:
+            lengths = lengths / max_len
+        elif lengths.max() > 0:
             lengths = lengths / lengths.max()
         features.append(lengths)
 
+    if "char_count" in feature_types:
+        chars = np.array([
+            len(t.get("prompt", "")) for t in tasks
+        ], dtype=np.float32).reshape(-1, 1)
+        features.append(chars)
+
+    if "digit_count" in feature_types:
+        digits = np.array([
+            sum(c.isdigit() for c in t.get("prompt", "")) for t in tasks
+        ], dtype=np.float32).reshape(-1, 1)
+        features.append(digits)
+
+    if "operator_count" in feature_types:
+        ops = np.array([
+            sum(c in "+-×÷*/" for c in t.get("prompt", "")) for t in tasks
+        ], dtype=np.float32).reshape(-1, 1)
+        features.append(ops)
+
     if "tfidf" in feature_types:
-        # Simple TF-IDF on prompt words
         from collections import Counter
         import math
-        # Build vocabulary
         docs = [t.get("prompt", "").lower().split() for t in tasks]
-        vocab = sorted(set(w for doc in docs for w in doc))
+        if vocabulary and "tfidf_vocab" in vocabulary:
+            vocab = vocabulary["tfidf_vocab"]
+            idf = vocabulary["tfidf_idf"]
+        else:
+            vocab = sorted(set(w for doc in docs for w in doc))
+            n_docs = len(docs)
+            df = Counter()
+            for doc in docs:
+                for w in set(doc):
+                    df[w] += 1
+            idf = {w: math.log(n_docs / (df[w] + 1)) for w in vocab}
         vocab_idx = {w: i for i, w in enumerate(vocab)}
-        # IDF
-        n_docs = len(docs)
-        df = Counter()
-        for doc in docs:
-            for w in set(doc):
-                df[w] += 1
-        idf = {w: math.log(n_docs / (df[w] + 1)) for w in vocab}
-        # TF-IDF matrix
         tfidf = np.zeros((len(tasks), len(vocab)), dtype=np.float32)
         for i, doc in enumerate(docs):
             counts = Counter(doc)
             total = sum(counts.values()) or 1
             for w, c in counts.items():
-                tfidf[i, vocab_idx[w]] = (c / total) * idf[w]
+                if w in vocab_idx:
+                    tfidf[i, vocab_idx[w]] = (c / total) * idf.get(w, 0.0)
         features.append(tfidf)
 
     if not features:
@@ -496,10 +526,109 @@ def compute_surface_features(
     return np.concatenate(features, axis=1)
 
 
+class SurfaceFeatureExtractor:
+    """Fitted surface feature extractor for consistent train/dev/final features.
+
+    Fit on TRAIN only, then transform any split.
+    """
+
+    def __init__(self, feature_types: Sequence[str] = ("subtype", "prompt_length", "tfidf")):
+        self.feature_types = tuple(feature_types)
+        self.vocabulary_: dict = {}
+        self.n_features_: int = 0
+
+    def fit(self, tasks: list[dict[str, Any]]) -> "SurfaceFeatureExtractor":
+        """Fit vocabulary on training tasks."""
+        from collections import Counter
+        import math
+
+        self.vocabulary_ = {}
+        if "subtype" in self.feature_types or "family" in self.feature_types:
+            self.vocabulary_["subtypes"] = sorted(set(
+                t.get("subtype", t.get("family", "unknown")) for t in tasks
+            ))
+        if "prompt_length" in self.feature_types:
+            self.vocabulary_["max_prompt_length"] = max(
+                len(t.get("prompt", "")) for t in tasks
+            ) or 1
+        if "tfidf" in self.feature_types:
+            docs = [t.get("prompt", "").lower().split() for t in tasks]
+            vocab = sorted(set(w for doc in docs for w in doc))
+            n_docs = len(docs)
+            df = Counter()
+            for doc in docs:
+                for w in set(doc):
+                    df[w] += 1
+            self.vocabulary_["tfidf_vocab"] = vocab
+            self.vocabulary_["tfidf_idf"] = {
+                w: math.log(n_docs / (df[w] + 1)) for w in vocab
+            }
+        # Compute n_features
+        X = self.transform(tasks)
+        self.n_features_ = X.shape[1]
+        return self
+
+    def transform(self, tasks: list[dict[str, Any]]) -> np.ndarray:
+        return compute_surface_features(
+            tasks, feature_types=self.feature_types, vocabulary=self.vocabulary_
+        )
+
+    def fit_transform(self, tasks: list[dict[str, Any]]) -> np.ndarray:
+        self.fit(tasks)
+        return self.transform(tasks)
+
+
+class SurfaceEnsemblePolicy(QPolicyBase):
+    """Canonical surface-ensemble baseline.
+
+    Uses no hidden-state vectors. Combines multiple surface features
+    (subtype, prompt TF-IDF, prompt length, digit count, operator count)
+    with a ridge Q-regression model.
+
+    This is the strongest surface-only control. Scientific comparison
+    should prioritize Hidden > SurfaceEnsemble, not merely
+    Hidden > SubtypeOnly.
+    """
+
+    def __init__(
+        self,
+        action_ids: list[str] | None = None,
+        alpha: float = 1.0,
+        feature_types: Sequence[str] = ("subtype", "prompt_length", "tfidf"),
+    ):
+        self.action_ids = list(action_ids) if action_ids else []
+        self.alpha = alpha
+        self.feature_extractor = SurfaceFeatureExtractor(feature_types=feature_types)
+        self.ridge: RidgeQPolicy | None = None
+
+    def fit(self, X: np.ndarray, utilities: np.ndarray) -> "SurfaceEnsemblePolicy":
+        self.ridge = RidgeQPolicy(action_ids=self.action_ids, alpha=self.alpha)
+        self.ridge.fit(X, utilities)
+        return self
+
+    def fit_with_tasks(
+        self, train_tasks: list[dict[str, Any]], utilities: np.ndarray
+    ) -> "SurfaceEnsemblePolicy":
+        X = self.feature_extractor.fit_transform(train_tasks)
+        self.fit(X, utilities)
+        return self
+
+    def predict_utilities(self, X: np.ndarray) -> np.ndarray:
+        return self.ridge.predict_utilities(X)
+
+    def predict(self, X: np.ndarray) -> np.ndarray:
+        return self.ridge.predict(X)
+
+    def transform_tasks(self, tasks: list[dict[str, Any]]) -> np.ndarray:
+        return self.feature_extractor.transform(tasks)
+
+
 __all__ = [
     "QPolicyBase",
     "LinearQPolicy",
     "RidgeQPolicy",
     "MLPQPolicy",
     "compute_surface_features",
+    "SurfaceFeatureExtractor",
+    "SurfaceEnsemblePolicy",
 ]

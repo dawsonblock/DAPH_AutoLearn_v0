@@ -2,6 +2,62 @@
 
 ## What changed
 
+### Scientific integration release (0.4.0a2)
+
+- **Version normalization**: all surfaces (pyproject, `__version__`, README,
+  CHANGELOG, CLAIMS, configs, tests) consistently report `0.4.0a2`.
+- **`PairedPolicyComparison` canonical type** (`stats.py`): standardizes
+  statistical comparison results with `point_delta`, `lcb95`, `ucb95`,
+  `positive_group_fraction`, `worst_group_delta`, `estimand`, and
+  `to_dict()` for serialization.
+- **Explicit bootstrap estimand**: `paired_group_bootstrap` now supports
+  `task_weighted` (default) and `group_equal_weight` estimands, preventing
+  silent weighting changes between analysis and report.
+- **Synthetic dataset leakage fix**: `generate_b5_dataset` now implements
+  global prompt deduplication across all splits. Added `template_group_id`
+  to `B5TaskSpec` for template-level leakage control.
+- **`SurfaceFeatureExtractor`**: ensures consistent surface feature extraction
+  (subtype one-hot, TF-IDF vocabulary) across train/dev/final splits.
+  Resolves `ValueError` from vocabulary mismatch during policy training.
+- **`SurfaceEnsemblePolicy`**: canonical surface-feature baseline with
+  consistent feature extraction.
+- **API key placeholder removal**: all fake API keys removed from config
+  files. New `check_api_key_placeholder` validator rejects embedded
+  credentials.
+- **B4 staged runner cleanup**: legacy inline statistical calculations
+  (bootstrap, positive group fraction, sham comparison, gap capture)
+  replaced with calls to canonical `stats.py` functions.
+- **B4 evidence invalidation**: corrupt historical B4 evidence moved to
+  `artifacts/invalidated/` with `invalidation.json` documenting reasons.
+- **Stale artifact cleanup**: zero-hash Gate A artifacts moved to
+  `artifacts/invalid_fixtures/`.
+- **Repo-wide artifact scanner test**: `test_artifact_scanner.py` rejects
+  zero hashes, placeholder hashes, SSH/PTY corruption, and fake API keys
+  in active artifacts.
+- **Synthetic pipeline positive/negative controls**: `run_synthetic_experiment`
+  now supports `control_mode="positive"` (hidden features contain signal,
+  expected to qualify) and `control_mode="negative"` (random features,
+  expected to fail). Infrastructure validity separated from scientific
+  qualification.
+- **Error semantics** (`error_semantics.py`): frozen `ExecutionStatus` enum
+  with utility rules for each outcome (CORRECT, INCORRECT, UNVERIFIABLE,
+  EXECUTION_ERROR, TIMEOUT, INVALID_OUTPUT, MODEL_ERROR, RETRIEVAL_ERROR).
+  `ObservedCost` dataclass for real execution cost metrics.
+  `compute_observed_utility` implements `U = w_A * A - C - w_F * F`.
+- **B5 diagnostics** (`b5_diagnostics.py`): empirical crossover analysis
+  (winner distribution per family, low-information family flagging),
+  THINK-FAST delta analysis (by family, difficulty, prompt length),
+  compute budget frontier (Pareto table with oracle regret).
+- **B5 staged runner** (`scripts/run_b5_staged.py`): canonical real-model
+  experiment entrypoint with stages: prepare, counterfactuals (with resume
+  safety and hash verification), representations, train, qualify, reproduce.
+- **`FAILED_LEAKAGE` and `FAILED_REPRODUCTION` lifecycle statuses**: explicit
+  failure states for leakage and reproduction failures.
+- **Reproduction hardening**: `reproduce.py` now verifies config hash
+  matches frozen hash. Tests for corruption, missing files, config changes,
+  and hash mismatches.
+- **1597 collected tests** (up from 1546).
+
 ### B4 hardening + B5 adaptive compute (0.4.0a1)
 
 - **Artifact integrity validator** (`artifact_integrity.py`): rejects SSH/PTY
@@ -85,7 +141,7 @@
 - 68 new tests for executive types, qualification, report, and parity.
 - Total: 1376 collected, 1355 passed, 8 skipped, 0 failures.
 
-# 0.3.10.6-alpha (Scientific repair + prompt interface fix + 1.5B experiment)
+# 0.4.0a2 (Scientific repair + prompt interface fix + 1.5B experiment)
 
 ## What changed
 
@@ -106,7 +162,7 @@
 - **Artifact integrity (P1)**: failed runs moved to `gate_a_failed/`; stale
   PASS moved to `gate_a_historical/`; final stage writes to `gate_a_runs/`
   (staging) — only promotion logic moves to `gate_a_qualified/`.
-- **Version normalization (P2)**: all version surfaces agree on 0.3.10.6-alpha.
+- **Version normalization (P2)**: all version surfaces agree on 0.4.0a2.
   Removed stale `CURRENT_EXPERIMENT_ID` from package source.
 
 ### Prompt interface fix + 1.5B experiment

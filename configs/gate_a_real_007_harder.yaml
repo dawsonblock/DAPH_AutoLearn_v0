@@ -8,7 +8,7 @@
 # every required criterion passes.
 
 experiment_id: daph_gate_a_real_007_harder
-release_version: 0.3.10.6-alpha
+release_version: 0.4.0a2
 
 primary_endpoint:
   name: verified_utility

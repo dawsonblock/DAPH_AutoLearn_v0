@@ -139,6 +139,8 @@ from daph_learning.executive.leakage import (
     check_pca_train_only,
     check_policy_leakage,
     check_group_leakage,
+    check_template_group_leakage,
+    check_api_key_placeholder,
     check_representation_sanity,
     run_leakage_checks_from_artifacts,
 )
@@ -149,12 +151,15 @@ from daph_learning.executive.stats import (
     worst_group_delta,
     BootstrapResult,
     paired_group_bootstrap,
+    PairedPolicyComparison,
+    make_paired_comparison,
     ShamComparisonResult,
     create_matched_sham_utilities,
     run_matched_sham_evaluation,
     gap_capture,
     selection_accuracy,
     margin_analysis,
+    action_advantage_margin,
 )
 from daph_learning.executive.lifecycle import (
     ExperimentStatus,
@@ -192,6 +197,8 @@ from daph_learning.executive.b5_policies import (
     RidgeQPolicy,
     MLPQPolicy,
     compute_surface_features,
+    SurfaceFeatureExtractor,
+    SurfaceEnsemblePolicy,
 )
 from daph_learning.executive.b5_qualification import (
     GateResult,
@@ -199,6 +206,18 @@ from daph_learning.executive.b5_qualification import (
     GateThresholds,
     DEFAULT_THRESHOLDS,
     evaluate_gates,
+)
+
+from daph_learning.executive.error_semantics import (
+    ExecutionStatus,
+    ObservedCost,
+    compute_normalized_cost,
+    compute_observed_utility,
+)
+from daph_learning.executive.b5_diagnostics import (
+    empirical_crossover_analysis,
+    think_fast_delta_analysis,
+    compute_budget_frontier,
 )
 
 __all__ = [
@@ -301,6 +320,8 @@ __all__ = [
     "check_pca_train_only",
     "check_policy_leakage",
     "check_group_leakage",
+    "check_template_group_leakage",
+    "check_api_key_placeholder",
     "check_representation_sanity",
     "run_leakage_checks_from_artifacts",
     # Corrected stats
@@ -316,6 +337,9 @@ __all__ = [
     "gap_capture",
     "selection_accuracy",
     "margin_analysis",
+    "PairedPolicyComparison",
+    "make_paired_comparison",
+    "action_advantage_margin",
     # Lifecycle
     "ExperimentStatus",
     "FrozenConfig",
@@ -349,10 +373,21 @@ __all__ = [
     "RidgeQPolicy",
     "MLPQPolicy",
     "compute_surface_features",
+    "SurfaceFeatureExtractor",
+    "SurfaceEnsemblePolicy",
     # B5 qualification
     "GateResult",
     "QualificationResult",
     "GateThresholds",
     "DEFAULT_THRESHOLDS",
     "evaluate_gates",
+    # Error semantics
+    "ExecutionStatus",
+    "ObservedCost",
+    "compute_normalized_cost",
+    "compute_observed_utility",
+    # B5 diagnostics
+    "empirical_crossover_analysis",
+    "think_fast_delta_analysis",
+    "compute_budget_frontier",
 ]
