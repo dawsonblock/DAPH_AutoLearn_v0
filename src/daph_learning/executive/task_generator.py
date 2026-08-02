@@ -1,46 +1,39 @@
-"""DAPH v0.4 — B4-v3 task generator with wide difficulty spread.
+"""DAPH v0.4 — B4-Redesigned task generator for /no_think conditional structure.
 
-With /no_think mode, Qwen3-8B can handle simple-to-medium arithmetic but
-fails on problems requiring multi-step tracking or large computations.
-This generator creates tasks with a WIDE difficulty spread AND
-within-subtype difficulty variation so that:
+With /no_think mode, Qwen3-8B can handle simple arithmetic but fails on
+problems requiring multi-step reasoning or large computations. This
+generator creates tasks with a WIDER difficulty spread so that:
 
-  - DIRECT (/no_think) wins on easy tasks it can solve in one shot
+  - DIRECT (/no_think) wins on simple tasks it can solve in one shot
   - DECOMPOSE wins on multi-step tasks (each sub-step is simple enough
     for /no_think, but the full problem requires tracking intermediates)
   - RETRIEVAL wins on pattern tasks (examples help model see the pattern)
   - RETRIEVAL HURTS on trap tasks (misleading examples)
 
-Key v3 changes vs v2:
-  - Wider difficulty within each subtype (easy/medium/hard variants)
-  - Harder multi-step problems (4-5 steps, larger numbers)
-  - 3-digit multiplication (direct fails, decompose can break down)
-  - More complex word problems (5 steps, larger quantities)
-  - Within-subtype difficulty variation creates the signal that hidden
-    states should detect: same subtype, different difficulty, different
-    winning action
-
 Subtype design (expected action advantage with /no_think):
-  - simple_add:       a + b, a,b < 20 (easy) or < 50 (hard variant)
+  - simple_add:       a + b, a,b < 20
                       → DIRECT wins (trivial)
   - simple_compare:   "is a > b?" a,b < 50
                       → DIRECT wins (trivial)
-  - digit_manip:      digit sum/count of various length numbers
+  - digit_manip:      digit sum or digit count of a number
                       → DIRECT wins (simple, no retrieval match)
   - pattern_extend:   number sequence "2, 4, 8, 16, ?"
                       → RETRIEVAL wins (examples help see the pattern)
   - formula_apply:    apply a formula shown in examples
                       → RETRIEVAL wins (examples show the method)
-  - multi_step_arith: 4-5 step arithmetic with large numbers
+  - multi_step_arith: 3-4 step arithmetic with medium numbers
                       → DECOMPOSE wins (each step simple, full problem
-                        requires tracking intermediates; direct loses
-                        track without thinking)
-  - multi_step_word:  5 step word problems with large numbers
+                        requires tracking intermediates)
+  - multi_step_word:  3-4 step word problems with medium numbers
                       → DECOMPOSE wins (same logic)
-  - hard_mul:         2-3 digit × 2-3 digit multiplication
+  - hard_mul:         2-digit × 2-digit multiplication
                       → DECOMPOSE wins (break into partial products)
   - trap_near:        looks like stored pattern but different operation
                       → DIRECT wins, RETRIEVAL HURTS
+
+Within-subtype difficulty variation creates the conditional structure
+that hidden states need to detect: same subtype, different difficulty,
+different winning action.
 """
 
 from __future__ import annotations
@@ -69,7 +62,10 @@ def generate_diverse_tasks(
     n_groups: int = 40,
     seed: int = 42,
 ) -> list[dict[str, Any]]:
-    """Generate diverse arithmetic tasks across 9 subtypes with difficulty variation.
+    """Generate diverse arithmetic tasks across 9 subtypes.
+
+    Each subtype is designed so that a different action has an advantage,
+    creating the conditional structure needed for executive routing.
 
     Parameters
     ----------
@@ -105,16 +101,10 @@ def generate_diverse_tasks(
 
 
 def _generate_one_task(subtype: str, rng: np.random.RandomState, idx: int) -> dict:
-    """Generate a single task of the given subtype with difficulty variation."""
+    """Generate a single task of the given subtype."""
     if subtype == "simple_add":
-        # Easy variant: a,b < 20 (direct always wins)
-        # Hard variant: a,b < 50 (direct sometimes makes mistakes)
-        if idx % 3 == 0:
-            a = int(rng.randint(20, 50))
-            b = int(rng.randint(20, 50))
-        else:
-            a = int(rng.randint(1, 20))
-            b = int(rng.randint(1, 20))
+        a = int(rng.randint(1, 20))
+        b = int(rng.randint(1, 20))
         return {
             "prompt": f"Calculate: {a} + {b} = ?",
             "answer": a + b,
@@ -129,34 +119,22 @@ def _generate_one_task(subtype: str, rng: np.random.RandomState, idx: int) -> di
         }
 
     if subtype == "digit_manip":
-        # Vary difficulty: small numbers (easy) vs large numbers (harder)
-        ops = ["digit_sum", "digit_count", "digit_product"]
+        # Simple digit operations that /no_think can handle
+        # but retrieval store has no matching examples for
+        ops = ["digit_sum", "digit_count"]
         op = ops[idx % len(ops)]
         if op == "digit_sum":
-            if idx % 3 == 0:
-                n = int(rng.randint(10000, 999999))  # harder variant
-            else:
-                n = int(rng.randint(100, 9999))
+            n = int(rng.randint(100, 9999))
             answer = sum(int(d) for d in str(abs(n)))
             return {
                 "prompt": f"What is the sum of all digits in the number {n}?",
                 "answer": answer,
             }
-        elif op == "digit_count":
+        else:
             n = int(rng.randint(100, 1000000))
             return {
                 "prompt": f"How many digits are in the number {n}?",
                 "answer": len(str(abs(n))),
-            }
-        else:  # digit_product
-            n = int(rng.randint(100, 9999))
-            digits = [int(d) for d in str(abs(n))]
-            prod = 1
-            for d in digits:
-                prod *= d
-            return {
-                "prompt": f"What is the product of all digits in the number {n}?",
-                "answer": prod,
             }
 
     if subtype == "pattern_extend":
@@ -193,6 +171,8 @@ def _generate_one_task(subtype: str, rng: np.random.RandomState, idx: int) -> di
 
     if subtype == "formula_apply":
         # Apply a formula/method shown in retrieval examples
+        # Triangular numbers: T(n) = n*(n+1)/2
+        # The store has examples showing the formula
         formulas = ["triangular", "double_sum", "power_sum"]
         fmt = formulas[idx % len(formulas)]
         if fmt == "triangular":
@@ -215,82 +195,66 @@ def _generate_one_task(subtype: str, rng: np.random.RandomState, idx: int) -> di
             }
 
     if subtype == "multi_step_arith":
-        # 4-5 step arithmetic with LARGE numbers
-        # Each step is simple enough for /no_think decompose
-        # But tracking all steps at once is very hard without thinking
-        ops = rng.choice(["add_mul_sub_div", "mul_add_sub_mul", "add_add_mul_sub", "sub_mul_add_div"])
-        if ops == "add_mul_sub_div":
-            # 4 steps: add, multiply, subtract, divide
-            a = int(rng.randint(200, 800))
-            b = int(rng.randint(200, 800))
-            c = int(rng.randint(3, 12))
+        # 3-4 step arithmetic with MEDIUM numbers
+        # Each step is simple enough for /no_think
+        # But tracking all steps at once is hard without thinking
+        ops = rng.choice(["add_mul_sub", "mul_add_div", "add_add_mul", "sub_mul_add"])
+        if ops == "add_mul_sub":
+            a = int(rng.randint(100, 500))
+            b = int(rng.randint(100, 500))
+            c = int(rng.randint(2, 12))
             d = int(rng.randint(50, 300))
-            e = int(rng.randint(2, 10))
-            step1 = a + b
-            step2 = step1 * c
-            step3 = step2 - d
-            step3 = (step3 // e) * e  # ensure even division
             return {
                 "prompt": (
                     f"First calculate {a} + {b}, then multiply the result by {c}, "
-                    f"then subtract {d}, then divide by {e} (integer division). "
-                    f"What is the final answer?"
+                    f"then subtract {d}. What is the final answer?"
                 ),
-                "answer": step3 // e,
+                "answer": (a + b) * c - d,
             }
-        elif ops == "mul_add_sub_mul":
-            # 4 steps: multiply, add, subtract, multiply
-            a = int(rng.randint(15, 80))
-            b = int(rng.randint(3, 12))
-            c = int(rng.randint(100, 500))
-            d = int(rng.randint(50, 200))
-            e = int(rng.randint(2, 9))
+        elif ops == "mul_add_div":
+            a = int(rng.randint(20, 80))
+            c = int(rng.randint(3, 12))
+            b = int(rng.randint(100, 500))
+            d = int(rng.randint(2, 10))
+            product = a * c
+            total = product + b
+            total = (total // d) * d  # ensure even division
             return {
                 "prompt": (
-                    f"First calculate {a} × {b}, then add {c}, "
-                    f"then subtract {d}, then multiply the result by {e}. "
+                    f"First calculate {a} × {c}, then add {b}, "
+                    f"then divide the result by {d} (integer division). "
                     f"What is the final answer?"
                 ),
-                "answer": (a * b + c - d) * e,
+                "answer": total // d,
             }
-        elif ops == "add_add_mul_sub":
-            # 4 steps: add, add, multiply, subtract
-            a = int(rng.randint(200, 800))
-            b = int(rng.randint(200, 800))
-            d = int(rng.randint(50, 200))
-            c = int(rng.randint(3, 12))
-            e = int(rng.randint(100, 500))
+        elif ops == "add_add_mul":
+            a = int(rng.randint(100, 500))
+            b = int(rng.randint(100, 500))
+            d = int(rng.randint(10, 100))
+            c = int(rng.randint(2, 12))
             return {
                 "prompt": (
                     f"First calculate {a} + {b}, then add {d}, "
-                    f"then multiply the result by {c}, then subtract {e}. "
-                    f"What is the final answer?"
+                    f"then multiply the result by {c}. What is the final answer?"
                 ),
-                "answer": (a + b + d) * c - e,
+                "answer": (a + b + d) * c,
             }
-        else:  # sub_mul_add_div
-            # 4 steps: subtract, multiply, add, divide
-            a = int(rng.randint(500, 999))
-            b = int(rng.randint(50, 300))
-            c = int(rng.randint(3, 12))
+        else:  # sub_mul_add
+            a = int(rng.randint(300, 800))
+            b = int(rng.randint(50, 200))
+            c = int(rng.randint(2, 9))
             d = int(rng.randint(100, 500))
-            e = int(rng.randint(2, 10))
-            step1 = a - b
-            step2 = step1 * c
-            step3 = step2 + d
-            step3 = (step3 // e) * e  # ensure even division
             return {
                 "prompt": (
                     f"First calculate {a} - {b}, then multiply the result by {c}, "
-                    f"then add {d}, then divide by {e} (integer division). "
-                    f"What is the final answer?"
+                    f"then add {d}. What is the final answer?"
                 ),
-                "answer": step3 // e,
+                "answer": (a - b) * c + d,
             }
 
     if subtype == "multi_step_word":
-        # 5 step word problems with larger numbers
-        # Each step is simple but tracking all 5 steps is very hard
+        # 3-4 step word problems with medium numbers
+        # Each step is simple but the full problem requires tracking
         templates = [
             ("apples", "bought", "gave away", "sold", "has"),
             ("books", "read", "borrowed", "returned", "has"),
@@ -298,41 +262,28 @@ def _generate_one_task(subtype: str, rng: np.random.RandomState, idx: int) -> di
             ("stickers", "collected", "gave away", "bought", "has"),
         ]
         tpl = templates[idx % len(templates)]
-        a = int(rng.randint(100, 300))
-        b = int(rng.randint(20, 80))
-        c = int(rng.randint(10, 50))
-        d = int(rng.randint(5, 30))
-        e = int(rng.randint(10, 50))
-        f = int(rng.randint(1, 15))
+        a = int(rng.randint(50, 200))
+        b = int(rng.randint(10, 50))
+        c = int(rng.randint(5, 30))
+        d = int(rng.randint(2, 20))
+        e = int(rng.randint(1, 10))
         return {
             "prompt": (
                 f"Sarah {tpl[1]} {a} {tpl[0]}. "
                 f"Then she {tpl[2]} {b} of them. "
                 f"Later she {tpl[1]} {c} more and her friend gave her {d} more. "
-                f"Then she {tpl[3]} {e} of them. "
-                f"Finally her brother gave her {f} more. "
+                f"Finally she {tpl[3]} {e} of them. "
                 f"How many {tpl[0]} does Sarah {tpl[4]} now?"
             ),
-            "answer": a - b + c + d - e + f,
+            "answer": a - b + c + d - e,
         }
 
     if subtype == "hard_mul":
-        # Multiplication with varying difficulty
-        # Easy variant: 2-digit × 2-digit (direct sometimes gets it)
-        # Hard variant: 3-digit × 2-digit (direct almost always fails)
-        # This within-subtype variation is key for hidden states
-        if idx % 3 == 0:
-            # Hard: 3-digit × 2-digit
-            a = int(rng.randint(100, 999))
-            b = int(rng.randint(12, 99))
-        elif idx % 3 == 1:
-            # Medium: 2-digit × 2-digit
-            a = int(rng.randint(12, 99))
-            b = int(rng.randint(12, 99))
-        else:
-            # Very hard: 3-digit × 3-digit
-            a = int(rng.randint(100, 999))
-            b = int(rng.randint(100, 999))
+        # 2-digit × 2-digit multiplication
+        # /no_think direct struggles with this
+        # Decompose can break into: a×10 + a×units, then sum
+        a = int(rng.randint(12, 98))
+        b = int(rng.randint(12, 98))
         return {
             "prompt": f"Calculate: {a} × {b} = ?",
             "answer": a * b,
