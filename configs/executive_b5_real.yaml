@@ -1,0 +1,84 @@
+# DAPH B5 Real Experiment Configuration
+# Canonical launch configuration for the real B5 adaptive compute experiment.
+#
+# This experiment tests whether Qwen3-8B's hidden states can predict which
+# inference action (FAST, THINK, RETRIEVE, DECOMPOSE) has highest net utility.
+#
+# Requirements:
+#   - vLLM server running with Qwen3-8B at the pinned revision
+#   - GPU with enough memory for HF model loading (after vLLM shutdown)
+#   - Model revision MUST match between vLLM and HF capture
+
+experiment_id: "executive_b5_adaptive_compute_v1"
+output_dir: "artifacts/executive_b5_adaptive_compute_v1"
+
+mock: false
+
+model:
+  model_id: "Qwen/Qwen3-8B"
+  revision: "b968826d9c46dd6066d109eabc6255188de91218"
+  device: "cuda"
+  dtype: "bfloat16"
+  # vLLM server configuration
+  vllm_port: 8000
+  vllm_api_key_env: "VLLM_API_KEY"
+  vllm_base_url: ""
+  vllm_max_concurrent: 24
+
+dataset:
+  n_train: 3000
+  n_dev: 750
+  n_final: 1000
+  n_ood: 500
+  seed: 20260802
+  split_mode: "standard"
+
+representation:
+  # Layer positions as fractions of total layers (0=embedding, 1=output)
+  # "final" is normalized to 1.0 (last hidden layer)
+  layers: ["0.25", "0.50", "0.75", "final"]
+  # Pooling strategies to evaluate on DEV
+  # "last_content_token" maps to "last_token" in hidden_state.py
+  # "mean_content" is supported directly
+  poolings: ["last_content_token", "mean_content"]
+  pca_dim: 64
+  max_length: 512
+  batch_size: 8
+
+qualification:
+  n_shams: 50
+  bootstrap_iterations: 10000
+  # Gate thresholds
+  gates:
+    minimum_hidden_vs_fixed_lcb95: 0.0
+    minimum_hidden_vs_surface_lcb95: 0.0
+    minimum_hidden_vs_sham_lcb95: 0.0
+    minimum_gap_capture: 0.10
+    minimum_positive_group_fraction: 0.60
+
+utility_weights:
+  quality_weight: 1.0
+  w_prompt: 0.001
+  w_output: 0.001
+  w_compute: 0.01
+  w_latency: 0.001
+  failure_penalty: 0.5
+
+# Action presets (override defaults if needed)
+actions:
+  action.reasoning.direct_fast:
+    max_tokens: 512
+    temperature: 0.0
+    no_think_prefix: true
+  action.reasoning.direct_think:
+    max_tokens: 2048
+    temperature: 0.0
+    no_think_prefix: false
+  action.retrieval.examples:
+    max_tokens: 1024
+    temperature: 0.0
+    n_examples: 3
+  action.reasoning.decompose:
+    max_tokens: 1024
+    temperature: 0.0
+    max_subproblems: 4

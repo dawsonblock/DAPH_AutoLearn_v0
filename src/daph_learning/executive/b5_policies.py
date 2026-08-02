@@ -25,6 +25,7 @@ from __future__ import annotations
 import json
 import numpy as np
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Sequence
 
 
@@ -576,6 +577,24 @@ class SurfaceFeatureExtractor:
     def fit_transform(self, tasks: list[dict[str, Any]]) -> np.ndarray:
         self.fit(tasks)
         return self.transform(tasks)
+
+    def save(self, path: str) -> None:
+        """Save fitted vocabulary to JSON for exact reproduction."""
+        data = {
+            "feature_types": list(self.feature_types),
+            "vocabulary": self.vocabulary_,
+            "n_features": self.n_features_,
+        }
+        Path(path).write_text(json.dumps(data, indent=2, default=str))
+
+    @classmethod
+    def load(cls, path: str) -> "SurfaceFeatureExtractor":
+        """Load fitted vocabulary from JSON."""
+        data = json.loads(Path(path).read_text())
+        ext = cls(feature_types=data["feature_types"])
+        ext.vocabulary_ = data["vocabulary"]
+        ext.n_features_ = data["n_features"]
+        return ext
 
 
 class SurfaceEnsemblePolicy(QPolicyBase):

@@ -1,0 +1,49 @@
+# DAPH B5 Real Smoke Test Configuration
+# Pilot run for execution validation (NOT scientific qualification).
+#
+# Goal: verify real FAST/THINK/RETRIEVE/DECOMPOSE work, hidden capture works,
+# task IDs align, costs are accurate, shams run, reproduction works.
+#
+# This is explicitly non-qualifying. Run this before the full experiment.
+
+experiment_id: "executive_b5_real_smoke"
+output_dir: "artifacts/executive_b5_real_smoke"
+
+mock: false
+
+model:
+  model_id: "Qwen/Qwen3-8B"
+  revision: "b968826d9c46dd6066d109eabc6255188de91218"
+  device: "cuda"
+  dtype: "bfloat16"
+  vllm_port: 8000
+  vllm_api_key_env: "VLLM_API_KEY"
+  vllm_base_url: ""
+  vllm_max_concurrent: 8
+
+dataset:
+  n_train: 500
+  n_dev: 150
+  n_final: 200
+  n_ood: 100
+  seed: 20260802
+  split_mode: "standard"
+
+representation:
+  layers: ["0.50", "final"]
+  poolings: ["last_content_token"]
+  pca_dim: 32
+  max_length: 512
+  batch_size: 4
+
+qualification:
+  n_shams: 10
+  bootstrap_iterations: 500
+
+utility_weights:
+  quality_weight: 1.0
+  w_prompt: 0.001
+  w_output: 0.001
+  w_compute: 0.01
+  w_latency: 0.001
+  failure_penalty: 0.5

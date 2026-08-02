@@ -237,6 +237,9 @@ class ActionExecution:
     failure_type: str | None = None
     prompt_tokens: int = 0
     completion_tokens: int = 0
+    llm_call_count: int = 1
+    retrieval_call_count: int = 0
+    aggregate_inference_latency_ms: float = 0.0
 
     def __post_init__(self) -> None:
         # Protocol invariant: unexecuted → not correct.
@@ -284,6 +287,9 @@ class ActionExecution:
             "failure_type": self.failure_type,
             "prompt_tokens": self.prompt_tokens,
             "completion_tokens": self.completion_tokens,
+            "llm_call_count": self.llm_call_count,
+            "retrieval_call_count": self.retrieval_call_count,
+            "aggregate_inference_latency_ms": self.aggregate_inference_latency_ms,
         }
 
 

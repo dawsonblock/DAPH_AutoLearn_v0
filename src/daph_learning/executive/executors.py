@@ -299,6 +299,7 @@ class DirectReasoningExecutor:
             failure_type=failure_type,
             prompt_tokens=prompt_tokens,
             completion_tokens=completion_tokens,
+            aggregate_inference_latency_ms=latency_ms,
         )
 
 
@@ -430,6 +431,8 @@ class RetrievalLexicalExecutor:
             failure_type=failure_type,
             prompt_tokens=prompt_tokens,
             completion_tokens=completion_tokens,
+            retrieval_call_count=1,
+            aggregate_inference_latency_ms=latency_ms,
         )
 
 
@@ -595,6 +598,8 @@ class ReasoningDecomposeExecutor:
             failure_type=failure_type,
             prompt_tokens=total_prompt_tokens,
             completion_tokens=total_completion_tokens,
+            llm_call_count=1 + len(sub_problems) + (1 if sub_problems else 0),
+            aggregate_inference_latency_ms=total_latency,
         )
 
 

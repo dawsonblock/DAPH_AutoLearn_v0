@@ -226,6 +226,7 @@ class DirectFastExecutor:
             failure_type=failure_type,
             prompt_tokens=prompt_tokens,
             completion_tokens=completion_tokens,
+            aggregate_inference_latency_ms=latency_ms,
         )
 
 
@@ -297,6 +298,7 @@ class DirectThinkExecutor:
             failure_type=failure_type,
             prompt_tokens=prompt_tokens,
             completion_tokens=completion_tokens,
+            aggregate_inference_latency_ms=latency_ms,
         )
 
 

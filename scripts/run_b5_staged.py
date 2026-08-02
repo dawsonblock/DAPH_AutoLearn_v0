@@ -72,6 +72,7 @@ from daph_learning.executive.stats import (
     compute_group_local_results, positive_group_fraction,
     worst_group_delta, gap_capture, selection_accuracy,
     action_advantage_margin, run_matched_sham_evaluation,
+    create_matched_sham_utilities,
 )
 from daph_learning.executive.leakage import (
     check_task_id_overlap, check_exact_prompt_leakage,
@@ -281,7 +282,8 @@ def _real_execute(task: dict, action_id: str, config: dict,
     cost = ObservedCost(
         prompt_tokens=result.prompt_tokens,
         completion_tokens=result.completion_tokens,
-        llm_call_count=1,
+        llm_call_count=result.llm_call_count,
+        retrieval_calls=result.retrieval_call_count,
         wall_latency_ms=latency_ms,
     )
     return status, cost
@@ -394,11 +396,22 @@ def stage_prepare(config: dict) -> None:
         "package_version": "0.4.0a3",
         "config_hash": frozen.config_hash,
     })
-    atomic_write_json(prov_dir / "model.json", config.get("model", {}))
+    model_cfg = config.get("model", {})
+    atomic_write_json(prov_dir / "model.json", model_cfg)
     atomic_write_json(prov_dir / "environment.json", {
         "python_version": sys.version,
         "platform": sys.platform,
     })
+
+    # Enforce model revision parity: vLLM and HF capture must use the same revision.
+    # This prevents learning from hidden states of a model that doesn't match
+    # the model whose action utilities generated the labels.
+    model_revision = model_cfg.get("revision", "")
+    if model_revision:
+        atomic_write_text(prov_dir / "model_revision_pinned.txt", model_revision)
+        print(f"  Model revision pinned: {model_revision[:16]}...")
+        print(f"  WARNING: vLLM server MUST use the same revision. "
+              f"Hidden-state capture will verify this.")
 
     print(f"  Dataset: {len(dataset['train'].tasks)} train, "
           f"{len(dataset['dev'].tasks)} dev, "
@@ -646,15 +659,46 @@ def _run_representations(config: dict, splits: list[str],
         from daph_learning.executive.hidden_state import (
             HiddenStateConfig, load_model_for_capture, capture_hidden_states,
         )
+
+        def _normalize_layer(layer: str | float) -> float:
+            """Normalize layer spec to fractional float. 'final' → 1.0."""
+            if isinstance(layer, (int, float)):
+                return float(layer)
+            s = str(layer).lower()
+            if s in ("final", "last"):
+                return 1.0
+            return float(s)
+
+        def _normalize_pooling(pooling: str) -> str:
+            """Normalize pooling name to hidden_state.py's canonical names."""
+            mapping = {
+                "last_content_token": "last_token",
+                "last_token": "last_token",
+                "mean_prompt": "mean_prompt",
+                "mean_content": "mean_content",
+            }
+            return mapping.get(pooling, pooling)
+
         model_cfg = config.get("model", {})
-        model, tokenizer = load_model_for_capture(
-            model_id=model_cfg.get("model_id", ""),
+        # FIX: correct keyword args and unpack 3 return values
+        model, tokenizer, capture_info = load_model_for_capture(
+            model_name=model_cfg.get("model_id", ""),
             revision=model_cfg.get("revision", ""),
             device=model_cfg.get("device", "cuda"),
+            dtype=model_cfg.get("dtype", "bfloat16"),
         )
+        # FIX: normalize layer specs ('final' → 1.0)
+        normalized_layers = [_normalize_layer(l) for l in layers]
+        normalized_poolings = [_normalize_pooling(p) for p in poolings]
+
+        # FIX: capture ALL layer × pooling combinations, not just the first
+        # Use "all" to capture every pooling strategy, then select on DEV
         hs_config = HiddenStateConfig(
-            layers=[float(l) for l in layers],
-            pooling=poolings[0] if len(poolings) == 1 else "all",
+            model_name=model_cfg.get("model_id", ""),
+            revision=model_cfg.get("revision", ""),
+            layers=normalized_layers,
+            pooling="all" if len(normalized_poolings) > 1 else normalized_poolings[0],
+            dtype=model_cfg.get("dtype", "bfloat16"),
         )
         for split_name in splits:
             if split_name in ("final", "final_ood"):
@@ -674,23 +718,25 @@ def _run_representations(config: dict, splits: list[str],
                 tasks=tasks, model=model, tokenizer=tokenizer,
                 config=hs_config, device=model_cfg.get("device", "cuda"),
             )
-            # Flatten to single feature matrix (use first layer × first pooling)
-            key = list(results.keys())[0]
-            features = results[key]
+            # FIX: persist ALL representations, not just the first
+            # Store each layer × pooling as a separate key in the NPZ
             task_ids = np.array([t["task_id"] for t in tasks], dtype=object)
-            atomic_write_npz(
-                rep_file,
-                features=features,
-                task_ids=task_ids,
-                layer=layers[0],
-                pooling=poolings[0],
-                original_dim=features.shape[1],
-                transformed_dim=features.shape[1],
-                model_revision=model_cfg.get("revision", ""),
-                tokenizer_revision=getattr(tokenizer, "name_or_path", ""),
-                chat_template_hash="",
-            )
-            print(f"  {split_name}: {len(tasks)} tasks, {features.shape[1]} dims")
+            npz_dict = {
+                "task_ids": task_ids,
+                "model_revision": model_cfg.get("revision", ""),
+                "tokenizer_revision": getattr(tokenizer, "name_or_path", ""),
+                "chat_template_hash": "",
+                "n_representations": len(results),
+            }
+            for key, features in results.items():
+                npz_dict[key.replace("/", "__")] = features
+            # Also store the first one as 'features' for backward compat
+            first_key = list(results.keys())[0]
+            npz_dict["features"] = results[first_key]
+            npz_dict["selected_representation"] = first_key
+            atomic_write_npz(rep_file, **npz_dict)
+            print(f"  {split_name}: {len(tasks)} tasks, {len(results)} representations "
+                  f"({features.shape[1]} dims each)")
 
     # Representation manifest
     atomic_write_json(rep_dir / "representation_manifest.json", {
@@ -698,6 +744,8 @@ def _run_representations(config: dict, splits: list[str],
         "poolings": poolings,
         "model_id": config.get("model", {}).get("model_id", ""),
         "model_revision": config.get("model", {}).get("revision", ""),
+        "capture_info": capture_info if not mock else {},
+        "n_representations": len(normalized_layers) * len(normalized_poolings) if not mock else 1,
     })
     print(f"  Representations complete.")
 
@@ -794,11 +842,13 @@ def stage_train(config: dict) -> None:
     mlp.save(str(pol_dir / "mlp_policy.json"))
 
     # Surface baseline — fit on TRAIN, select on DEV
+    # Save the fitted extractor so FINAL never needs to refit (exact reproduction)
     surface_extractor = SurfaceFeatureExtractor(
         feature_types=("subtype", "prompt_length", "tfidf")
     )
     train_surface = surface_extractor.fit_transform(train_tasks)
     dev_surface = surface_extractor.transform(dev_tasks)
+    surface_extractor.save(str(pol_dir / "surface_feature_extractor.json"))
 
     surface_ensemble = SurfaceEnsemblePolicy(action_ids=action_ids, alpha=1.0)
     surface_ensemble.fit(train_surface, U_train)
@@ -814,35 +864,19 @@ def stage_train(config: dict) -> None:
         "best_fixed_idx": best_fixed_idx,
     })
 
-    # Shams — train on TRAIN, evaluate on DEV (NOT FINAL)
+    # Save TRAIN data needed for sham training in freeze-policy stage.
+    # Shams must be trained AFTER policy class selection (to match the
+    # selected class) and evaluated on FINAL (not DEV).
     sham_dir = out / "policies" / "shams"
     sham_dir.mkdir(parents=True, exist_ok=True)
-    n_shams = config.get("qualification", {}).get("n_shams", 50)
-
-    train_subtypes = [t.get("subtype", "unknown") for t in train_tasks]
-    dev_subtypes = [t.get("subtype", "unknown") for t in dev_tasks]
-    dev_groups = [t.get("group_id", "g0") for t in dev_tasks]
-    train_split_ids = np.zeros(len(train_tasks), dtype=int)
-    dev_split_ids = np.ones(len(dev_tasks), dtype=int)
-
-    hidden_preds_dev = linear.predict(dev_reduced)
-    sham_result = run_matched_sham_evaluation(
+    atomic_write_npz(
+        sham_dir / "train_for_shams.npz",
         train_features=train_reduced,
         train_utilities=U_train,
-        test_features=dev_reduced,
-        test_utilities=U_dev,
-        test_group_ids=dev_groups,
-        train_subtypes=train_subtypes,
-        test_subtypes=dev_subtypes,
-        train_split_ids=train_split_ids,
-        test_split_ids=dev_split_ids,
-        real_hidden_predictions=hidden_preds_dev,
-        policy_cls=LinearQPolicy,
-        policy_kwargs={"action_ids": action_ids, "n_iter": 500, "l2": 0.01},
-        n_shams=n_shams,
+        train_split_ids=np.zeros(len(train_tasks), dtype=int),
     )
-
-    atomic_write_json(sham_dir / "sham_runs.json", sham_result.to_dict())
+    train_subtypes = [t.get("subtype", "unknown") for t in train_tasks]
+    atomic_write_json(sham_dir / "train_subtypes.json", train_subtypes)
 
     # Policy manifest
     atomic_write_json(pol_dir / "policy_manifest.json", {
@@ -853,7 +887,7 @@ def stage_train(config: dict) -> None:
     })
 
     print(f"  Policies trained: linear, ridge, MLP, surface_ensemble")
-    print(f"  Shams: {n_shams} (trained on TRAIN, evaluated on DEV)")
+    print(f"  Shams: deferred to freeze-policy (matched to selected class)")
     print(f"  Best fixed: {action_ids[best_fixed_idx]}")
     print(f"  FINAL data NOT accessed during training")
 
@@ -946,6 +980,9 @@ def stage_freeze_policy(config: dict) -> None:
     surface_path = out / "policies" / "surface_baselines.json"
     surface_hash = hashlib.sha256(surface_path.read_bytes()).hexdigest()
 
+    surface_extractor_path = out / "policies" / "surface_feature_extractor.json"
+    surface_extractor_hash = hashlib.sha256(surface_extractor_path.read_bytes()).hexdigest()
+
     pca_path = out / "transforms" / "pca_artifact.npz"
     pca_hash = hashlib.sha256(pca_path.read_bytes()).hexdigest()
 
@@ -954,10 +991,59 @@ def stage_freeze_policy(config: dict) -> None:
         "selected_policy_file": selected_file,
         "selected_policy_hash": selected_hash,
         "surface_ensemble_hash": surface_hash,
+        "surface_extractor_hash": surface_extractor_hash,
         "pca_hash": pca_hash,
         "utility_weights": config.get("utility_weights", {}),
         "action_definitions": list(action_ids),
         "frozen_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+    })
+
+    # Train matched shams using the SELECTED policy class (not always LinearQPolicy).
+    # Shams are trained on TRAIN with shuffled utilities, then saved.
+    # They will be evaluated on FINAL during the qualify stage.
+    n_shams = config.get("qualification", {}).get("n_shams", 50)
+    sham_dir = out / "policies" / "shams"
+    sham_dir.mkdir(parents=True, exist_ok=True)
+
+    # Load saved TRAIN data for sham training
+    sham_train_data = np.load(sham_dir / "train_for_shams.npz", allow_pickle=True)
+    sham_train_features = sham_train_data["train_features"]
+    sham_train_utilities = sham_train_data["train_utilities"]
+    sham_train_split_ids = sham_train_data["train_split_ids"]
+    train_subtypes = json.loads((sham_dir / "train_subtypes.json").read_text())
+
+    # Match sham policy class to selected hidden policy class
+    sham_policy_cls = {
+        "linear": LinearQPolicy,
+        "ridge": RidgeQPolicy,
+        "mlp": MLPQPolicy,
+    }[selected]
+    sham_policy_kwargs = {
+        "linear": {"action_ids": action_ids, "n_iter": 500, "l2": 0.01},
+        "ridge": {"action_ids": action_ids, "alpha": 1.0},
+        "mlp": {"action_ids": action_ids, "hidden1": 128, "hidden2": 64,
+                "dropout": 0.1, "n_iter": 200, "learning_rate": 0.001},
+    }[selected]
+
+    # Train and save each sham policy (not evaluated yet — FINAL eval in qualify)
+    sham_hashes = []
+    for s in range(n_shams):
+        seed = 10000 + s
+        sham_utils = create_matched_sham_utilities(
+            sham_train_utilities, train_subtypes, sham_train_split_ids, seed)
+        sham_policy = sham_policy_cls(**sham_policy_kwargs)
+        sham_policy.fit(sham_train_features, sham_utils)
+        sham_file = sham_dir / f"sham_{s:03d}.json"
+        sham_policy.save(str(sham_file))
+        sham_hashes.append(hashlib.sha256(sham_file.read_bytes()).hexdigest())
+
+    atomic_write_json(sham_dir / "sham_manifest.json", {
+        "n_shams": n_shams,
+        "policy_cls": selected,
+        "policy_kwargs": sham_policy_kwargs,
+        "sham_hashes": sham_hashes,
+        "trained_on": "train",
+        "seed_base": 10000,
     })
 
     # Transition to TRAIN_COMPLETE
@@ -966,6 +1052,7 @@ def stage_freeze_policy(config: dict) -> None:
 
     print(f"  Candidates: {candidates}")
     print(f"  Selected: {selected} (DEV regret={candidates[selected]['regret']:.4f})")
+    print(f"  Shams: {n_shams} matched ({selected} class), trained on TRAIN, saved for FINAL eval")
     print(f"  Policy frozen. Status: TRAIN_COMPLETE")
 
 
@@ -1058,6 +1145,14 @@ def stage_qualify(config: dict) -> None:
             print(f"  ERROR: Surface ensemble file hash mismatch — "
                   f"file may have been modified after freeze")
             sys.exit(1)
+        # Verify surface feature extractor hash
+        extractor_path = out / "policies" / "surface_feature_extractor.json"
+        if extractor_path.exists():
+            actual_extractor_hash = hashlib.sha256(extractor_path.read_bytes()).hexdigest()
+            if actual_extractor_hash != frozen_manifest.get("surface_extractor_hash"):
+                print(f"  ERROR: Surface feature extractor file hash mismatch — "
+                      f"file may have been modified after freeze")
+                sys.exit(1)
 
     # Load selected policy (NOT retrain)
     if selected_name == "linear":
@@ -1097,15 +1192,11 @@ def stage_qualify(config: dict) -> None:
     best_fixed_utils = U_final[:, best_fixed_idx]
 
     # Surface ensemble (loaded, not retrained)
-    # The surface feature extractor must be fitted on TRAIN to produce
-    # the same feature space. The ridge weights are loaded from the saved policy.
+    # Load the frozen surface feature extractor (saved during training)
+    # so FINAL uses the exact same vocabulary/idf/feature space as TRAIN.
     surface_ensemble = SurfaceEnsemblePolicy.load(str(out / "policies" / "surface_baselines.json"))
-    # Refit the feature extractor on TRAIN (this is deterministic and doesn't
-    # change the frozen ridge weights)
-    surface_extractor = SurfaceFeatureExtractor(
-        feature_types=("subtype", "prompt_length", "tfidf")
-    )
-    train_surface = surface_extractor.fit_transform(train_tasks)
+    surface_extractor = SurfaceFeatureExtractor.load(
+        str(out / "policies" / "surface_feature_extractor.json"))
     final_surface = surface_extractor.transform(final_tasks)
     surface_preds = surface_ensemble.predict(final_surface)
     surface_utils = U_final[np.arange(len(U_final)), surface_preds]
@@ -1135,10 +1226,45 @@ def stage_qualify(config: dict) -> None:
         comparison="hidden_vs_surface", n_replicates=n_boot,
     )
 
-    # Sham — load persisted (trained during development)
-    sham_data = json.loads(
-        (out / "policies" / "shams" / "sham_runs.json").read_text()
+    # Sham — evaluate on FINAL (NOT loading DEV results)
+    # Load saved sham policies and run predictions on FINAL representations
+    sham_dir = out / "policies" / "shams"
+    sham_manifest = json.loads((sham_dir / "sham_manifest.json").read_text())
+    n_shams = sham_manifest["n_shams"]
+    sham_policy_cls_name = sham_manifest["policy_cls"]
+    sham_policy_cls = {
+        "linear": LinearQPolicy,
+        "ridge": RidgeQPolicy,
+        "mlp": MLPQPolicy,
+    }[sham_policy_cls_name]
+
+    sham_per_task_utils = []
+    sham_regrets = []
+    for s in range(n_shams):
+        sham_policy = sham_policy_cls.load(str(sham_dir / f"sham_{s:03d}.json"))
+        sham_preds = sham_policy.predict(final_reduced)
+        sham_utils = U_final[np.arange(len(U_final)), sham_preds]
+        sham_per_task_utils.append(sham_utils)
+        from daph_learning.executive.q_policy import mean_regret
+        sham_regrets.append(mean_regret(sham_preds, U_final))
+
+    # Compute FINAL paired comparison: hidden vs mean sham
+    sham_per_task_arr = np.array(sham_per_task_utils)  # [n_shams, n_final]
+    mean_sham_utils = sham_per_task_arr.mean(axis=0)  # [n_final]
+    sham_boot = paired_group_bootstrap(
+        hidden_utils, mean_sham_utils, final_groups,
+        comparison="hidden_vs_sham_final", n_replicates=n_boot,
     )
+
+    sham_data = {
+        "n_shams": n_shams,
+        "policy_cls": sham_policy_cls_name,
+        "sham_regrets": sham_regrets,
+        "hidden_vs_sham_lcb95": sham_boot.lcb_95,
+        "hidden_vs_sham_ucb95": sham_boot.ucb_95,
+        "prob_hidden_gt_sham": sham_boot.prob_positive,
+        "evaluated_on": "final",
+    }
 
     # Wrap sham dict as object with attributes for evaluate_gates
     class _ShamWrapper:
@@ -1276,6 +1402,9 @@ def stage_qualify(config: dict) -> None:
 
     # Leakage and integrity checks
     leakage_report = run_leakage_checks_from_artifacts(out, experiment_id=experiment_id)
+
+    # Save FINAL sham evaluation results
+    atomic_write_json(sham_dir / "sham_final_results.json", sham_data)
 
     # Write qualification artifacts FIRST, then validate
     qual_dir = out / "qualification"
