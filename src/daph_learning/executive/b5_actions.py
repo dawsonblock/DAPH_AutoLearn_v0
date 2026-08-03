@@ -314,6 +314,8 @@ def build_b5_executors(
     retrieval_examples: list[dict] | None = None,
     generate_fn: Callable[[str, LLMGenerationConfig], tuple[str, float]] | None = None,
     presets: dict[str, InferencePreset] | None = None,
+    n_retrieved: int = 3,
+    max_subproblems: int = 4,
 ) -> "B5ExecutorRegistry":
     """Build the B5 four-action executor registry.
 
@@ -327,6 +329,10 @@ def build_b5_executors(
         Optional mock generation function.
     presets : dict | None
         Optional override of inference presets.
+    n_retrieved : int
+        Number of examples to retrieve for the retrieval action.
+    max_subproblems : int
+        Maximum number of subproblems for decomposition.
     """
     presets = presets or B5_DEFAULT_PRESETS
     registry = B5ExecutorRegistry()
@@ -342,12 +348,13 @@ def build_b5_executors(
     retrieve = RetrievalLexicalExecutor(
         action_id=B5_ACTION_RETRIEVE,
         config=config, examples=retrieval_examples or [],
-        generate_fn=generate_fn, n_retrieved=3,
+        generate_fn=generate_fn, n_retrieved=n_retrieved,
         cost_estimate=0.15,
     )
     decompose = ReasoningDecomposeExecutor(
         action_id=B5_ACTION_DECOMPOSE,
         config=config, generate_fn=generate_fn,
+        max_subproblems=max_subproblems,
         cost_estimate=0.50,
     )
 

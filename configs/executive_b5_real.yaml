@@ -48,13 +48,13 @@ representation:
 qualification:
   n_shams: 50
   bootstrap_iterations: 10000
-  # Gate thresholds
+  # Gate thresholds — canonical qualification thresholds
   gates:
     minimum_hidden_vs_fixed_lcb95: 0.0
     minimum_hidden_vs_surface_lcb95: 0.0
     minimum_hidden_vs_sham_lcb95: 0.0
-    minimum_gap_capture: 0.10
-    minimum_positive_group_fraction: 0.60
+    minimum_gap_capture: 0.25
+    minimum_positive_group_fraction: 0.65
 
 utility_weights:
   quality_weight: 1.0

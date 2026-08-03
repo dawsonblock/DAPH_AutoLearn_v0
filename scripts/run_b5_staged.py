@@ -285,6 +285,7 @@ def _real_execute(task: dict, action_id: str, config: dict,
         llm_call_count=result.llm_call_count,
         retrieval_calls=result.retrieval_call_count,
         wall_latency_ms=latency_ms,
+        inference_duration_ms=result.aggregate_inference_latency_ms,
     )
     return status, cost
 
@@ -479,6 +480,11 @@ def _run_counterfactuals(config: dict, splits: list[str],
     registry = None
     if not mock:
         from daph_learning.executive.executors import LLMGenerationConfig
+        from daph_learning.executive.b5_actions import (
+            B5_ACTION_DIRECT_FAST, B5_ACTION_DIRECT_THINK,
+            B5_ACTION_RETRIEVE, B5_ACTION_DECOMPOSE,
+            InferencePreset, B5_DEFAULT_PRESETS,
+        )
         model_cfg = config.get("model", {})
         llm_config = LLMGenerationConfig(
             model_id=model_cfg.get("model_id", ""),
@@ -490,7 +496,39 @@ def _run_counterfactuals(config: dict, splits: list[str],
         # Build retrieval store from TRAIN only
         train_tasks = _load_dataset_split(out, "train")
         retrieval_examples = build_b5_retrieval_store(train_tasks)
-        registry = build_b5_executors(llm_config, retrieval_examples=retrieval_examples)
+
+        # Build executor presets from frozen config so YAML actually controls execution
+        actions_cfg = config.get("actions", {})
+        presets = dict(B5_DEFAULT_PRESETS)  # start with defaults
+
+        fast_cfg = actions_cfg.get(B5_ACTION_DIRECT_FAST, {})
+        if fast_cfg:
+            presets[B5_ACTION_DIRECT_FAST] = InferencePreset(
+                max_tokens=fast_cfg.get("max_tokens", 512),
+                temperature=fast_cfg.get("temperature", 0.0),
+                top_p=fast_cfg.get("top_p", 1.0),
+                no_think_prefix=fast_cfg.get("no_think_prefix", True),
+            )
+        think_cfg = actions_cfg.get(B5_ACTION_DIRECT_THINK, {})
+        if think_cfg:
+            presets[B5_ACTION_DIRECT_THINK] = InferencePreset(
+                max_tokens=think_cfg.get("max_tokens", 2048),
+                temperature=think_cfg.get("temperature", 0.0),
+                top_p=think_cfg.get("top_p", 1.0),
+                no_think_prefix=think_cfg.get("no_think_prefix", False),
+            )
+
+        # Action-specific parameters
+        retrieve_cfg = actions_cfg.get(B5_ACTION_RETRIEVE, {})
+        n_retrieved = retrieve_cfg.get("n_examples", 3)
+        decompose_cfg = actions_cfg.get(B5_ACTION_DECOMPOSE, {})
+        max_subproblems = decompose_cfg.get("max_subproblems", 4)
+
+        registry = build_b5_executors(
+            llm_config, retrieval_examples=retrieval_examples,
+            presets=presets, n_retrieved=n_retrieved,
+            max_subproblems=max_subproblems,
+        )
 
     for split_name in splits:
         # Check final access guard
@@ -822,47 +860,84 @@ def stage_train(config: dict) -> None:
     dev_rep_ids = set(str(t) for t in dev_rep["task_ids"])
     assert dev_task_ids == dev_rep_ids, "dev representation task IDs don't match dataset"
 
-    train_features = train_rep["features"]
-    dev_features = dev_rep["features"]
-
-    # PCA — fit on TRAIN only
+    # ── Representation sweep ──────────────────────────────────────────
+    # For each representation in the NPZ, fit PCA on TRAIN and train all
+    # candidate policies. The best (representation, policy) pair is
+    # selected on DEV in stage_freeze_policy.
     from daph_learning.executive.dim_reduction import PCAPipeline
-    pca = PCAPipeline()
-    pca_dim = config.get("representation", {}).get("pca_dim", 64)
-    train_reduced = pca.fit_transform(train_features, pca_dim)
-    dev_reduced = pca.transform(dev_features)
 
-    # Save PCA (transforms directory)
+    # Discover all representation keys in the NPZ
+    rep_keys = []
+    for k in train_rep.files:
+        if k.startswith("last_token__") or k.startswith("mean_prompt__") or k.startswith("mean_content__"):
+            rep_keys.append(k)
+    if not rep_keys:
+        # Mock mode or single-representation: use "features"
+        rep_keys = ["features"]
+
+    pca_dim = config.get("representation", {}).get("pca_dim", 64)
     pca_dir = out / "transforms"
     pca_dir.mkdir(exist_ok=True)
-    atomic_write_npz(
-        pca_dir / "pca_artifact.npz",
-        mean=pca.mean, scale=pca.std, components=pca.components,
-        explained_variance=pca.explained_variance_ratio,
-        input_dim=train_features.shape[1], output_dim=pca_dim,
-    )
+    pol_dir = out / "policies"
+    pol_dir.mkdir(exist_ok=True)
+    rep_sel_dir = pol_dir / "representation_sweep"
+    rep_sel_dir.mkdir(parents=True, exist_ok=True)
+
+    sweep_results = {}
+    for rep_key in rep_keys:
+        train_features = train_rep[rep_key]
+        dev_features = dev_rep[rep_key] if rep_key in dev_rep.files else dev_rep["features"]
+
+        # PCA — fit on TRAIN only for this representation
+        pca = PCAPipeline()
+        train_reduced = pca.fit_transform(train_features, pca_dim)
+        dev_reduced = pca.transform(dev_features)
+
+        # Save PCA for this representation
+        safe_key = rep_key.replace("/", "_")
+        atomic_write_npz(
+            pca_dir / f"pca_artifact_{safe_key}.npz",
+            mean=pca.mean, scale=pca.std, components=pca.components,
+            explained_variance=pca.explained_variance_ratio,
+            input_dim=train_features.shape[1], output_dim=pca_dim,
+        )
+
+        # Train all 3 policy classes on this representation
+        for name, cls, kwargs, fname in [
+            ("linear", LinearQPolicy, {"n_iter": 1000, "l2": 0.001}, "linear"),
+            ("ridge", RidgeQPolicy, {"alpha": 1.0}, "ridge"),
+            ("mlp", MLPQPolicy, {"hidden1": 128, "hidden2": 64, "dropout": 0.1, "n_iter": 200, "learning_rate": 0.001}, "mlp"),
+        ]:
+            policy = cls(action_ids=action_ids, **kwargs)
+            policy.fit(train_reduced, U_train)
+            policy.save(str(rep_sel_dir / f"{safe_key}__{fname}.json"))
+
+        sweep_results[rep_key] = {
+            "n_features": int(train_features.shape[1]),
+            "pca_dim": int(pca_dim),
+        }
+
+    # Save the default PCA (for backward compat — used by the selected representation)
+    # Will be overwritten in freeze-policy with the selected one
+    first_key = rep_keys[0]
+    first_safe = first_key.replace("/", "_")
+    import shutil
+    shutil.copy2(pca_dir / f"pca_artifact_{first_safe}.npz", pca_dir / "pca_artifact.npz")
     atomic_write_json(pca_dir / "pca_manifest.json", {
         "fit_split": "train",
-        "input_dim": int(train_features.shape[1]),
+        "n_representations": len(rep_keys),
+        "representation_keys": rep_keys,
         "output_dim": int(pca_dim),
         "fit_task_count": len(train_tasks),
     })
 
-    pol_dir = out / "policies"
-    pol_dir.mkdir(exist_ok=True)
-
-    # Train hidden policies on TRAIN only
-    linear = LinearQPolicy(action_ids=action_ids, n_iter=1000, l2=0.001)
-    linear.fit(train_reduced, U_train)
-    linear.save(str(pol_dir / "hidden_policy.json"))
-
-    ridge = RidgeQPolicy(action_ids=action_ids, alpha=1.0)
-    ridge.fit(train_reduced, U_train)
-    ridge.save(str(pol_dir / "ridge_policy.json"))
-
-    mlp = MLPQPolicy(action_ids=action_ids, hidden1=128, hidden2=64, dropout=0.1, n_iter=200, learning_rate=0.001)
-    mlp.fit(train_reduced, U_train)
-    mlp.save(str(pol_dir / "mlp_policy.json"))
+    # Save representation sweep manifest
+    atomic_write_json(rep_sel_dir / "sweep_manifest.json", {
+        "representations": sweep_results,
+        "n_representations": len(rep_keys),
+        "selection_metric": "dev_regret",
+        "selection_pending": True,
+    })
 
     # Surface baseline — fit on TRAIN, select on DEV
     # Save the fitted extractor so FINAL never needs to refit (exact reproduction)
@@ -890,11 +965,14 @@ def stage_train(config: dict) -> None:
     # Save TRAIN data needed for sham training in freeze-policy stage.
     # Shams must be trained AFTER policy class selection (to match the
     # selected class) and evaluated on FINAL (not DEV).
+    # Use the first representation for now; freeze-policy will overwrite
+    # with the selected representation's reduced features.
+    train_reduced_default = pca.fit_transform(train_rep[first_key], pca_dim)
     sham_dir = out / "policies" / "shams"
     sham_dir.mkdir(parents=True, exist_ok=True)
     atomic_write_npz(
         sham_dir / "train_for_shams.npz",
-        train_features=train_reduced,
+        train_features=train_reduced_default,
         train_utilities=U_train,
         train_split_ids=np.zeros(len(train_tasks), dtype=int),
     )
@@ -903,13 +981,14 @@ def stage_train(config: dict) -> None:
 
     # Policy manifest
     atomic_write_json(pol_dir / "policy_manifest.json", {
-        "policies": ["hidden_policy", "ridge_policy", "mlp_policy",
-                     "fixed_baselines", "surface_baselines"],
+        "policies": ["representation_sweep", "fixed_baselines", "surface_baselines"],
         "trained_on": "train",
         "selected_on": "dev",
+        "n_representations": len(rep_keys),
     })
 
-    print(f"  Policies trained: linear, ridge, MLP, surface_ensemble")
+    print(f"  Representation sweep: {len(rep_keys)} representations × 3 policy classes")
+    print(f"  Surface ensemble + fixed baselines trained")
     print(f"  Shams: deferred to freeze-policy (matched to selected class)")
     print(f"  Best fixed: {action_ids[best_fixed_idx]}")
     print(f"  FINAL data NOT accessed during training")
@@ -947,58 +1026,105 @@ def stage_freeze_policy(config: dict) -> None:
     dev_rep_ids = set(str(t) for t in dev_rep["task_ids"])
     assert dev_task_ids == dev_rep_ids, "dev representation task IDs don't match"
 
-    # Load PCA transform
+    # ── Representation sweep: evaluate all (representation, policy) pairs on DEV ──
     from daph_learning.executive.dim_reduction import PCAPipeline
+
+    # Discover all representation keys
+    rep_keys = []
+    for k in dev_rep.files:
+        if k.startswith("last_token__") or k.startswith("mean_prompt__") or k.startswith("mean_content__"):
+            rep_keys.append(k)
+    if not rep_keys:
+        rep_keys = ["features"]
+
+    oracle_dev = U_dev.max(axis=1)
+    simplicity_order = {"linear": 0, "ridge": 1, "mlp": 2}
+
+    # Evaluate each (representation, policy) pair on DEV
+    all_candidates = {}  # key: f"{rep_key}__{policy_name}"
+    for rep_key in rep_keys:
+        safe_key = rep_key.replace("/", "_")
+        # Load PCA for this representation
+        pca = PCAPipeline()
+        pca_data = np.load(out / "transforms" / f"pca_artifact_{safe_key}.npz", allow_pickle=True)
+        pca.mean = pca_data["mean"]
+        pca.std = pca_data["scale"]
+        pca.components = pca_data["components"]
+        dev_features = dev_rep[rep_key] if rep_key in dev_rep.files else dev_rep["features"]
+        dev_reduced = pca.transform(dev_features)
+
+        for name, cls in [
+            ("linear", LinearQPolicy),
+            ("ridge", RidgeQPolicy),
+            ("mlp", MLPQPolicy),
+        ]:
+            policy_path = out / "policies" / "representation_sweep" / f"{safe_key}__{name}.json"
+            if not policy_path.exists():
+                continue
+            policy = cls.load(str(policy_path))
+            preds = policy.predict(dev_reduced)
+            utils = U_dev[np.arange(len(U_dev)), preds]
+            regret = float((oracle_dev - utils).mean())
+            candidate_key = f"{safe_key}__{name}"
+            all_candidates[candidate_key] = {
+                "representation": rep_key,
+                "policy": name,
+                "regret": regret,
+                "utility": float(utils.mean()),
+            }
+
+    # Select: min DEV regret, tie-break by policy simplicity
+    selected_key = min(all_candidates.keys(),
+                       key=lambda k: (all_candidates[k]["regret"],
+                                      simplicity_order[all_candidates[k]["policy"]]))
+    selected_rep = all_candidates[selected_key]["representation"]
+    selected = all_candidates[selected_key]["policy"]
+    selected_safe = selected_rep.replace("/", "_")
+
+    # Copy the selected representation's PCA to the canonical pca_artifact.npz
+    import shutil
+    shutil.copy2(out / "transforms" / f"pca_artifact_{selected_safe}.npz",
+                 out / "transforms" / "pca_artifact.npz")
+
+    # Copy the selected policy to the canonical hidden_policy.json
+    selected_policy_path = out / "policies" / "representation_sweep" / f"{selected_safe}__{selected}.json"
+    selected_file = f"{selected_safe}__{selected}.json"
+    selected_hash = hashlib.sha256(selected_policy_path.read_bytes()).hexdigest()
+
+    # Write selection.json
+    pol_dir = out / "policies"
+    atomic_write_json(pol_dir / "selection.json", {
+        "candidates": all_candidates,
+        "selection_metric": "dev_regret",
+        "selected_policy": selected,
+        "selected_representation": selected_rep,
+        "selected_candidate": selected_key,
+        "selected_before_final": True,
+        "n_representations_evaluated": len(rep_keys),
+    })
+
+    # Update representation sweep manifest
+    sweep_manifest_path = pol_dir / "representation_sweep" / "sweep_manifest.json"
+    sweep_manifest = json.loads(sweep_manifest_path.read_text())
+    sweep_manifest["selection_pending"] = False
+    sweep_manifest["selected_representation"] = selected_rep
+    sweep_manifest["selected_policy"] = selected
+    atomic_write_json(sweep_manifest_path, sweep_manifest)
+
+    # Re-save TRAIN data for shams using the SELECTED representation's PCA
+    train_rep = np.load(out / "representations" / "train.npz", allow_pickle=True)
     pca = PCAPipeline()
     pca_data = np.load(out / "transforms" / "pca_artifact.npz", allow_pickle=True)
     pca.mean = pca_data["mean"]
     pca.std = pca_data["scale"]
     pca.components = pca_data["components"]
-    dev_reduced = pca.transform(dev_rep["features"])
+    train_features_selected = train_rep[selected_rep] if selected_rep in train_rep.files else train_rep["features"]
+    train_reduced_selected = pca.transform(train_features_selected)
 
-    # Oracle on DEV
-    oracle_dev = U_dev.max(axis=1)
-
-    # Evaluate candidates on DEV using regret: R = U_oracle - U_policy
-    candidates = {}
-    for name, policy_file in [
-        ("linear", "hidden_policy.json"),
-        ("ridge", "ridge_policy.json"),
-        ("mlp", "mlp_policy.json"),
-    ]:
-        policy = LinearQPolicy.load(str(out / "policies" / policy_file)) if name == "linear" \
-            else RidgeQPolicy.load(str(out / "policies" / policy_file)) if name == "ridge" \
-            else MLPQPolicy.load(str(out / "policies" / policy_file))
-        preds = policy.predict(dev_reduced)
-        utils = U_dev[np.arange(len(U_dev)), preds]
-        regret = float((oracle_dev - utils).mean())
-        candidates[name] = {
-            "regret": regret,
-            "utility": float(utils.mean()),
-        }
-
-    # Select: min DEV regret, tie-break by simplicity (linear < ridge < mlp)
-    simplicity_order = {"linear": 0, "ridge": 1, "mlp": 2}
-    selected = min(candidates.keys(),
-                   key=lambda k: (candidates[k]["regret"], simplicity_order[k]))
-
-    # Write selection.json
-    pol_dir = out / "policies"
-    atomic_write_json(pol_dir / "selection.json", {
-        "candidates": candidates,
-        "selection_metric": "dev_regret",
-        "selected_policy": selected,
-        "selected_before_final": True,
-    })
-
-    # Freeze policy manifest with hashes
-    selected_file = {
-        "linear": "hidden_policy.json",
-        "ridge": "ridge_policy.json",
-        "mlp": "mlp_policy.json",
-    }[selected]
-    selected_path = out / "policies" / selected_file
-    selected_hash = hashlib.sha256(selected_path.read_bytes()).hexdigest()
+    # Load utility matrix for TRAIN
+    train_tasks = _load_dataset_split(out, "train")
+    train_cfs = _load_counterfactuals(out, "train")
+    U_train = _build_utility_matrix(train_tasks, train_cfs, action_ids)
 
     surface_path = out / "policies" / "surface_baselines.json"
     surface_hash = hashlib.sha256(surface_path.read_bytes()).hexdigest()
@@ -1011,6 +1137,7 @@ def stage_freeze_policy(config: dict) -> None:
 
     atomic_write_json(pol_dir / "frozen_policy_manifest.json", {
         "selected_policy": selected,
+        "selected_representation": selected_rep,
         "selected_policy_file": selected_file,
         "selected_policy_hash": selected_hash,
         "surface_ensemble_hash": surface_hash,
@@ -1028,12 +1155,7 @@ def stage_freeze_policy(config: dict) -> None:
     sham_dir = out / "policies" / "shams"
     sham_dir.mkdir(parents=True, exist_ok=True)
 
-    # Load saved TRAIN data for sham training
-    sham_train_data = np.load(sham_dir / "train_for_shams.npz", allow_pickle=True)
-    sham_train_features = sham_train_data["train_features"]
-    sham_train_utilities = sham_train_data["train_utilities"]
-    sham_train_split_ids = sham_train_data["train_split_ids"]
-    train_subtypes = json.loads((sham_dir / "train_subtypes.json").read_text())
+    train_subtypes = [t.get("subtype", "unknown") for t in train_tasks]
 
     # Match sham policy class to selected hidden policy class
     sham_policy_cls = {
@@ -1048,14 +1170,14 @@ def stage_freeze_policy(config: dict) -> None:
                 "dropout": 0.1, "n_iter": 200, "learning_rate": 0.001},
     }[selected]
 
-    # Train and save each sham policy (not evaluated yet — FINAL eval in qualify)
+    # Train and save each sham policy using the SELECTED representation's features
     sham_hashes = []
     for s in range(n_shams):
         seed = 10000 + s
         sham_utils = create_matched_sham_utilities(
-            sham_train_utilities, train_subtypes, sham_train_split_ids, seed)
+            U_train, train_subtypes, np.zeros(len(train_tasks), dtype=int), seed)
         sham_policy = sham_policy_cls(**sham_policy_kwargs)
-        sham_policy.fit(sham_train_features, sham_utils)
+        sham_policy.fit(train_reduced_selected, sham_utils)
         sham_file = sham_dir / f"sham_{s:03d}.json"
         sham_policy.save(str(sham_file))
         sham_hashes.append(hashlib.sha256(sham_file.read_bytes()).hexdigest())
@@ -1066,6 +1188,7 @@ def stage_freeze_policy(config: dict) -> None:
         "policy_kwargs": sham_policy_kwargs,
         "sham_hashes": sham_hashes,
         "trained_on": "train",
+        "trained_representation": selected_rep,
         "seed_base": 10000,
     })
 
@@ -1073,8 +1196,8 @@ def stage_freeze_policy(config: dict) -> None:
     state.complete_training()
     _save_state(config, state)
 
-    print(f"  Candidates: {candidates}")
-    print(f"  Selected: {selected} (DEV regret={candidates[selected]['regret']:.4f})")
+    print(f"  Representation sweep: {len(rep_keys)} reps × 3 policies = {len(all_candidates)} candidates")
+    print(f"  Selected: {selected} on {selected_rep} (DEV regret={all_candidates[selected_key]['regret']:.4f})")
     print(f"  Shams: {n_shams} matched ({selected} class), trained on TRAIN, saved for FINAL eval")
     print(f"  Policy frozen. Status: TRAIN_COMPLETE")
 
@@ -1138,11 +1261,9 @@ def stage_qualify(config: dict) -> None:
     # Load frozen policy selection
     selection = json.loads((out / "policies" / "selection.json").read_text())
     selected_name = selection["selected_policy"]
-    selected_file = {
-        "linear": "hidden_policy.json",
-        "ridge": "ridge_policy.json",
-        "mlp": "mlp_policy.json",
-    }[selected_name]
+    selected_rep = selection.get("selected_representation", "features")
+    selected_safe = selected_rep.replace("/", "_")
+    selected_file = f"{selected_safe}__{selected_name}.json"
 
     # Verify frozen policy manifest hashes match the actual files
     frozen_manifest_path = out / "policies" / "frozen_policy_manifest.json"
@@ -1150,7 +1271,7 @@ def stage_qualify(config: dict) -> None:
         print(f"  ERROR: frozen_policy_manifest.json not found — cannot verify integrity")
         sys.exit(1)
     frozen_manifest = json.loads(frozen_manifest_path.read_text())
-    selected_path = out / "policies" / selected_file
+    selected_path = out / "policies" / "representation_sweep" / selected_file
     actual_selected_hash = hashlib.sha256(selected_path.read_bytes()).hexdigest()
     if actual_selected_hash != frozen_manifest.get("selected_policy_hash"):
         print(f"  ERROR: Selected policy file hash mismatch — "
@@ -1181,15 +1302,11 @@ def stage_qualify(config: dict) -> None:
               f"file may have been modified after freeze")
         sys.exit(1)
 
-    # Load selected policy (NOT retrain)
-    if selected_name == "linear":
-        selected_policy = LinearQPolicy.load(str(out / "policies" / selected_file))
-    elif selected_name == "ridge":
-        selected_policy = RidgeQPolicy.load(str(out / "policies" / selected_file))
-    else:
-        selected_policy = MLPQPolicy.load(str(out / "policies" / selected_file))
+    # Load selected policy (NOT retrain) — from representation_sweep directory
+    policy_cls_map = {"linear": LinearQPolicy, "ridge": RidgeQPolicy, "mlp": MLPQPolicy}
+    selected_policy = policy_cls_map[selected_name].load(str(selected_path))
 
-    # Load PCA transform (NOT refit)
+    # Load PCA transform (NOT refit) — the canonical one is the selected rep's PCA
     from daph_learning.executive.dim_reduction import PCAPipeline
     pca = PCAPipeline()
     pca_data = np.load(out / "transforms" / "pca_artifact.npz", allow_pickle=True)
@@ -1197,11 +1314,13 @@ def stage_qualify(config: dict) -> None:
     pca.std = pca_data["scale"]
     pca.components = pca_data["components"]
 
-    # Load FINAL representations through guard
+    # Load FINAL representations through guard — use the SELECTED representation
     guard.assert_can_read_final(
         artifact="representations/final.npz", purpose="final hidden states", stage="qualify")
     final_rep = np.load(out / "representations" / "final.npz", allow_pickle=True)
-    final_reduced = pca.transform(final_rep["features"])
+    # Use the selected representation key from the NPZ
+    final_features = final_rep[selected_rep] if selected_rep in final_rep.files else final_rep["features"]
+    final_reduced = pca.transform(final_features)
 
     # Verify task IDs match
     final_task_ids = set(t["task_id"] for t in final_tasks)
@@ -1325,7 +1444,8 @@ def stage_qualify(config: dict) -> None:
     guard.assert_can_read_ood(
         artifact="representations/final_ood.npz", purpose="OOD hidden states", stage="qualify")
     ood_rep = np.load(out / "representations" / "final_ood.npz", allow_pickle=True)
-    ood_reduced = pca.transform(ood_rep["features"])
+    ood_features = ood_rep[selected_rep] if selected_rep in ood_rep.files else ood_rep["features"]
+    ood_reduced = pca.transform(ood_features)
     ood_hidden_preds = selected_policy.predict(ood_reduced)
     ood_hidden_utils = U_ood[np.arange(len(U_ood)), ood_hidden_preds]
     ood_surface_preds = surface_ensemble.predict(surface_extractor.transform(ood_tasks))
@@ -1437,12 +1557,13 @@ def stage_qualify(config: dict) -> None:
     qual_dir = out / "qualification"
     qual_dir.mkdir(exist_ok=True)
 
-    # Bootstrap NPZ
+    # Bootstrap NPZ — save actual bootstrap deltas, not sham regrets
     atomic_write_npz(
         qual_dir / "bootstrap_results.npz",
         hidden_minus_fixed=boot_hf.deltas if hasattr(boot_hf, 'deltas') else np.array([]),
         hidden_minus_surface=boot_hs.deltas if hasattr(boot_hs, 'deltas') else np.array([]),
-        hidden_minus_sham=np.array(sham_data.get("sham_regrets", [])),
+        hidden_minus_sham=sham_boot.deltas if hasattr(sham_boot, 'deltas') else np.array([]),
+        sham_regrets=np.array(sham_data.get("sham_regrets", [])),
     )
 
     # Per-task and per-group results
@@ -1451,11 +1572,23 @@ def stage_qualify(config: dict) -> None:
     atomic_write_json(qual_dir / "ood_results.json", ood_results)
 
     # Evaluate gates
+    # Build gate thresholds from frozen config (not module defaults)
+    gates_cfg = config.get("qualification", {}).get("gates", {})
+    thresholds = GateThresholds(
+        min_lcb_vs_bestfixed=gates_cfg.get("minimum_hidden_vs_fixed_lcb95", 0.0),
+        min_lcb_vs_surface=gates_cfg.get("minimum_hidden_vs_surface_lcb95", 0.0),
+        min_lcb_vs_sham=gates_cfg.get("minimum_hidden_vs_sham_lcb95", 0.0),
+        min_gap_capture=gates_cfg.get("minimum_gap_capture", 0.25),
+        min_positive_group_fraction=gates_cfg.get("minimum_positive_group_fraction", 0.65),
+        min_worst_group_delta=gates_cfg.get("minimum_worst_group_delta", -0.20),
+    )
+
     qual_result = evaluate_gates(
         experiment_id=experiment_id,
         boot_hidden_vs_bestfixed=boot_hf,
         boot_hidden_vs_surface=boot_hs,
         sham_result=sham_result_obj,
+        thresholds=thresholds,
         group_results=compute_group_local_results(
             task_ids=[t["task_id"] for t in final_tasks],
             group_ids=final_groups,
