@@ -428,6 +428,11 @@ def stage_prepare(config: dict) -> None:
 
 def stage_development_counterfactuals(config: dict, resume: bool = False) -> None:
     """Execute all actions on TRAIN + DEV only."""
+    state = _load_state(config)
+    if state.status != ExperimentStatus.FROZEN:
+        print(f"  ERROR: development-counterfactuals requires FROZEN, "
+              f"current={state.status.value}")
+        sys.exit(1)
     _run_counterfactuals(config, splits=["train", "dev"],
                          stage_name="development-counterfactuals", resume=resume)
 
@@ -514,7 +519,8 @@ def _run_counterfactuals(config: dict, splits: list[str],
                                     and tid in task_map
                                     and result.get("task_hash") == _task_hash(task_map[tid])):
                                 existing_records[(tid, aid)] = result
-                except (json.JSONDecodeError, KeyError):
+                except (json.JSONDecodeError, KeyError) as e:
+                    print(f"  WARNING: Failed to load resume data from {cf_file}: {e}")
                     pass
 
         results = {}
@@ -572,6 +578,11 @@ def _run_counterfactuals(config: dict, splits: list[str],
 
 def stage_development_representations(config: dict, resume: bool = False) -> None:
     """Capture hidden states for TRAIN + DEV only."""
+    state = _load_state(config)
+    if state.status != ExperimentStatus.FROZEN:
+        print(f"  ERROR: development-representations requires FROZEN, "
+              f"current={state.status.value}")
+        sys.exit(1)
     _run_representations(config, splits=["train", "dev"],
                          stage_name="development-representations", resume=resume)
 
@@ -579,10 +590,14 @@ def stage_development_representations(config: dict, resume: bool = False) -> Non
 def stage_final_representations(config: dict, resume: bool = False) -> None:
     """Capture hidden states for FINAL + FINAL_OOD."""
     state = _load_state(config)
-    if state.status != ExperimentStatus.FINAL_RUNNING:
-        print(f"  ERROR: final-representations requires FINAL_RUNNING, "
+    if state.status not in (ExperimentStatus.TRAIN_COMPLETE, ExperimentStatus.FINAL_RUNNING):
+        print(f"  ERROR: final-representations requires TRAIN_COMPLETE or FINAL_RUNNING, "
               f"current={state.status.value}")
         sys.exit(1)
+    # Transition to FINAL_RUNNING if coming from TRAIN_COMPLETE
+    if state.status == ExperimentStatus.TRAIN_COMPLETE:
+        state.start_final(config)
+        _save_state(config, state)
     _run_representations(config, splits=["final", "final_ood"],
                          stage_name="final-representations", resume=resume)
 
@@ -677,7 +692,12 @@ def _run_representations(config: dict, splits: list[str],
                 "mean_prompt": "mean_prompt",
                 "mean_content": "mean_content",
             }
-            return mapping.get(pooling, pooling)
+            normalized = mapping.get(pooling)
+            if normalized is None:
+                raise ValueError(
+                    f"Unknown pooling strategy: {pooling!r}. "
+                    f"Valid options: {list(mapping.keys())}")
+            return normalized
 
         model_cfg = config.get("model", {})
         # FIX: correct keyword args and unpack 3 return values
@@ -769,6 +789,9 @@ def stage_train(config: dict) -> None:
 
     # Load state and transition to TRAIN_RUNNING
     state = _load_state(config)
+    if state.status != ExperimentStatus.FROZEN:
+        print(f"  ERROR: train requires FROZEN, current={state.status.value}")
+        sys.exit(1)
     state.start_training()
     _save_state(config, state)
 
@@ -1123,36 +1146,40 @@ def stage_qualify(config: dict) -> None:
 
     # Verify frozen policy manifest hashes match the actual files
     frozen_manifest_path = out / "policies" / "frozen_policy_manifest.json"
-    if frozen_manifest_path.exists():
-        frozen_manifest = json.loads(frozen_manifest_path.read_text())
-        selected_path = out / "policies" / selected_file
-        actual_selected_hash = hashlib.sha256(selected_path.read_bytes()).hexdigest()
-        if actual_selected_hash != frozen_manifest.get("selected_policy_hash"):
-            print(f"  ERROR: Selected policy file hash mismatch — "
-                  f"file may have been modified after freeze")
-            sys.exit(1)
-        # Verify PCA hash
-        pca_path = out / "transforms" / "pca_artifact.npz"
-        actual_pca_hash = hashlib.sha256(pca_path.read_bytes()).hexdigest()
-        if actual_pca_hash != frozen_manifest.get("pca_hash"):
-            print(f"  ERROR: PCA transform file hash mismatch — "
-                  f"file may have been modified after freeze")
-            sys.exit(1)
-        # Verify surface ensemble hash
-        surface_path = out / "policies" / "surface_baselines.json"
-        actual_surface_hash = hashlib.sha256(surface_path.read_bytes()).hexdigest()
-        if actual_surface_hash != frozen_manifest.get("surface_ensemble_hash"):
-            print(f"  ERROR: Surface ensemble file hash mismatch — "
-                  f"file may have been modified after freeze")
-            sys.exit(1)
-        # Verify surface feature extractor hash
-        extractor_path = out / "policies" / "surface_feature_extractor.json"
-        if extractor_path.exists():
-            actual_extractor_hash = hashlib.sha256(extractor_path.read_bytes()).hexdigest()
-            if actual_extractor_hash != frozen_manifest.get("surface_extractor_hash"):
-                print(f"  ERROR: Surface feature extractor file hash mismatch — "
-                      f"file may have been modified after freeze")
-                sys.exit(1)
+    if not frozen_manifest_path.exists():
+        print(f"  ERROR: frozen_policy_manifest.json not found — cannot verify integrity")
+        sys.exit(1)
+    frozen_manifest = json.loads(frozen_manifest_path.read_text())
+    selected_path = out / "policies" / selected_file
+    actual_selected_hash = hashlib.sha256(selected_path.read_bytes()).hexdigest()
+    if actual_selected_hash != frozen_manifest.get("selected_policy_hash"):
+        print(f"  ERROR: Selected policy file hash mismatch — "
+              f"file may have been modified after freeze")
+        sys.exit(1)
+    # Verify PCA hash
+    pca_path = out / "transforms" / "pca_artifact.npz"
+    actual_pca_hash = hashlib.sha256(pca_path.read_bytes()).hexdigest()
+    if actual_pca_hash != frozen_manifest.get("pca_hash"):
+        print(f"  ERROR: PCA transform file hash mismatch — "
+              f"file may have been modified after freeze")
+        sys.exit(1)
+    # Verify surface ensemble hash
+    surface_path = out / "policies" / "surface_baselines.json"
+    actual_surface_hash = hashlib.sha256(surface_path.read_bytes()).hexdigest()
+    if actual_surface_hash != frozen_manifest.get("surface_ensemble_hash"):
+        print(f"  ERROR: Surface ensemble file hash mismatch — "
+              f"file may have been modified after freeze")
+        sys.exit(1)
+    # Verify surface feature extractor hash
+    extractor_path = out / "policies" / "surface_feature_extractor.json"
+    if not extractor_path.exists():
+        print(f"  ERROR: surface_feature_extractor.json not found")
+        sys.exit(1)
+    actual_extractor_hash = hashlib.sha256(extractor_path.read_bytes()).hexdigest()
+    if actual_extractor_hash != frozen_manifest.get("surface_extractor_hash"):
+        print(f"  ERROR: Surface feature extractor file hash mismatch — "
+              f"file may have been modified after freeze")
+        sys.exit(1)
 
     # Load selected policy (NOT retrain)
     if selected_name == "linear":

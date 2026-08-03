@@ -186,6 +186,24 @@ def reproduce(
                         mismatches.append(
                             f"best_fixed({best_fixed_name}): stored={stored_val:.6f}, recomputed={recomputed:.6f}"
                         )
+                # Check hidden utility
+                hidden_name = stored_hidden.get("name", "")
+                if hidden_name in always_utils:
+                    stored_val = stored_hidden.get("utility", 0.0)
+                    recomputed = always_utils[hidden_name]
+                    if abs(recomputed - stored_val) > tolerance:
+                        mismatches.append(
+                            f"hidden({hidden_name}): stored={stored_val:.6f}, recomputed={recomputed:.6f}"
+                        )
+                # Check surface_ensemble utility
+                surface_name = stored_surface.get("name", "")
+                if surface_name in always_utils:
+                    stored_val = stored_surface.get("utility", 0.0)
+                    recomputed = always_utils[surface_name]
+                    if abs(recomputed - stored_val) > tolerance:
+                        mismatches.append(
+                            f"surface({surface_name}): stored={stored_val:.6f}, recomputed={recomputed:.6f}"
+                        )
 
                 if mismatches:
                     _step("recompute_metrics", False,

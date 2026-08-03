@@ -418,8 +418,9 @@ class MLPQPolicy(QPolicyBase):
             seed=data["seed"],
         )
         for attr in ["W1_", "b1_", "W2_", "b2_", "W3_", "b3_"]:
-            if data.get(attr) is not None:
-                setattr(policy, attr, np.array(data[attr], dtype=np.float32))
+            if data.get(attr) is None:
+                raise ValueError(f"MLPQPolicy.load: required weight {attr} is missing from {path}")
+            setattr(policy, attr, np.array(data[attr], dtype=np.float32))
         return policy
 
 
@@ -643,7 +644,6 @@ class SurfaceEnsemblePolicy(QPolicyBase):
 
     def save(self, path: str) -> None:
         """Save surface ensemble policy to JSON."""
-        import json
         data = {
             "policy_type": "surface_ensemble",
             "action_ids": self.action_ids,
@@ -665,7 +665,6 @@ class SurfaceEnsemblePolicy(QPolicyBase):
     @classmethod
     def load(cls, path: str) -> "SurfaceEnsemblePolicy":
         """Load surface ensemble policy from JSON."""
-        import json
         with open(path) as f:
             data = json.load(f)
         policy = cls(
