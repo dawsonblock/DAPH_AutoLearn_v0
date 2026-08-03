@@ -38,6 +38,7 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 import sys
 import time
 from pathlib import Path
@@ -504,6 +505,7 @@ def _run_counterfactuals(config: dict, splits: list[str],
         fast_cfg = actions_cfg.get(B5_ACTION_DIRECT_FAST, {})
         if fast_cfg:
             presets[B5_ACTION_DIRECT_FAST] = InferencePreset(
+                reasoning_mode=fast_cfg.get("reasoning_mode", "off"),
                 max_tokens=fast_cfg.get("max_tokens", 512),
                 temperature=fast_cfg.get("temperature", 0.0),
                 top_p=fast_cfg.get("top_p", 1.0),
@@ -512,6 +514,7 @@ def _run_counterfactuals(config: dict, splits: list[str],
         think_cfg = actions_cfg.get(B5_ACTION_DIRECT_THINK, {})
         if think_cfg:
             presets[B5_ACTION_DIRECT_THINK] = InferencePreset(
+                reasoning_mode=think_cfg.get("reasoning_mode", "on"),
                 max_tokens=think_cfg.get("max_tokens", 2048),
                 temperature=think_cfg.get("temperature", 0.0),
                 top_p=think_cfg.get("top_p", 1.0),
@@ -787,7 +790,7 @@ def _run_representations(config: dict, splits: list[str],
                 "n_representations": len(results),
             }
             for key, features in results.items():
-                npz_dict[key.replace("/", "__")] = features
+                npz_dict[key] = features
             # Also store the first one as 'features' for backward compat
             first_key = list(results.keys())[0]
             npz_dict["features"] = results[first_key]
@@ -869,7 +872,7 @@ def stage_train(config: dict) -> None:
     # Discover all representation keys in the NPZ
     rep_keys = []
     for k in train_rep.files:
-        if k.startswith("last_token__") or k.startswith("mean_prompt__") or k.startswith("mean_content__"):
+        if k.startswith("last_token/") or k.startswith("mean_prompt/") or k.startswith("mean_content/"):
             rep_keys.append(k)
     if not rep_keys:
         # Mock mode or single-representation: use "features"
@@ -921,7 +924,6 @@ def stage_train(config: dict) -> None:
     # Will be overwritten in freeze-policy with the selected one
     first_key = rep_keys[0]
     first_safe = first_key.replace("/", "_")
-    import shutil
     shutil.copy2(pca_dir / f"pca_artifact_{first_safe}.npz", pca_dir / "pca_artifact.npz")
     atomic_write_json(pca_dir / "pca_manifest.json", {
         "fit_split": "train",
@@ -1032,7 +1034,7 @@ def stage_freeze_policy(config: dict) -> None:
     # Discover all representation keys
     rep_keys = []
     for k in dev_rep.files:
-        if k.startswith("last_token__") or k.startswith("mean_prompt__") or k.startswith("mean_content__"):
+        if k.startswith("last_token/") or k.startswith("mean_prompt/") or k.startswith("mean_content/"):
             rep_keys.append(k)
     if not rep_keys:
         rep_keys = ["features"]
@@ -1082,7 +1084,6 @@ def stage_freeze_policy(config: dict) -> None:
     selected_safe = selected_rep.replace("/", "_")
 
     # Copy the selected representation's PCA to the canonical pca_artifact.npz
-    import shutil
     shutil.copy2(out / "transforms" / f"pca_artifact_{selected_safe}.npz",
                  out / "transforms" / "pca_artifact.npz")
 

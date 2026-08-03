@@ -55,6 +55,7 @@ qualification:
     minimum_hidden_vs_sham_lcb95: 0.0
     minimum_gap_capture: 0.25
     minimum_positive_group_fraction: 0.65
+    minimum_worst_group_delta: -0.20
 
 utility_weights:
   quality_weight: 1.0

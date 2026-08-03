@@ -144,6 +144,7 @@ class BootstrapResult:
     std_error: float
     prob_positive: float
     point_estimate: float
+    deltas: np.ndarray = field(default_factory=lambda: np.array([]))
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -268,6 +269,7 @@ def paired_group_bootstrap(
         ucb_95=float(np.percentile(boot_deltas, 97.5)),
         std_error=float(np.std(boot_deltas, ddof=1)) if n_replicates > 1 else 0.0,
         prob_positive=float(np.mean(boot_deltas > 0)),
+        deltas=boot_deltas,
     )
 
 
