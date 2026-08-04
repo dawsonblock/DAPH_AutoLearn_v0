@@ -61,7 +61,7 @@ from daph_learning.interventions.kl_gate import (
 )
 from daph_learning.replay import PrioritizedReplayBuffer, ReplayExperience, replay_priority
 from daph_learning.bandit import log_policy_decision, doubly_robust_utility
-from daph_learning.lowrank import interference_matrix, orthogonality_loss
+from daph_learning.lowrank import interference_matrix
 from daph_learning.latent_verifier import LatentVerifier
 
 
@@ -787,12 +787,14 @@ class TestBanditLogging:
 class TestLowRankController:
     def test_orthogonality_loss_zero_for_orthogonal(self):
         import torch
+        from daph_learning.lowrank import orthogonality_loss
         v = torch.eye(5)  # perfectly orthogonal
         loss = orthogonality_loss(v)
         assert float(loss) < 1e-6
 
     def test_orthogonality_loss_positive_for_non_orthogonal(self):
         import torch
+        from daph_learning.lowrank import orthogonality_loss
         v = torch.ones(5, 3)  # all parallel
         loss = orthogonality_loss(v)
         assert float(loss) > 0.1
