@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 import numpy as np
-import torch
+import pytest
+
+torch = pytest.importorskip("torch")
 from torch import nn
 
 from daph_learning.steering.hooks import residual_addition_hook
