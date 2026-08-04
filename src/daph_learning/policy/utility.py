@@ -310,7 +310,6 @@ __all__ = [
     "backend_utility",
     "compute_utility",
     "get_protocol",
-    "utility_config_hash",
     "utility_for_route",
     "utility_formula",
 ]

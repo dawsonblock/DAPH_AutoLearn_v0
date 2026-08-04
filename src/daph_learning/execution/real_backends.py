@@ -39,7 +39,7 @@ import re
 import time
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Mapping
+from typing import Any, Mapping, TYPE_CHECKING
 
 import numpy as np
 
@@ -47,6 +47,9 @@ from ..policy.types import BackendOutcome, CounterfactualExperience, Route
 from ..policy.config import ExperimentConfig
 from ..policy.utility import backend_utility as _utility
 from ..policy.utility import compute_utility, UtilityConfig
+
+if TYPE_CHECKING:
+    from ..evaluation.canonical_verifier import VerificationStatus
 
 
 # ------------------------------------------------------------------
