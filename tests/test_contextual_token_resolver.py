@@ -153,7 +153,6 @@ def test_contextual_resolver_returns_continuation_token():
     tok = _ContextAwareTokenizer("ACTION:")
     sym_id, llm_id = resolve_route_token_ids_contextual(tok, "ACTION:")
     assert sym_id == 10
-    assert llm == 20 if False else True  # llm_id
     assert llm_id == 20
 
 
