@@ -47,7 +47,10 @@ def test_package_importable_without_pythonpath():
     """If this test runs, the package is installed (pip install -e .)."""
     import daph_learning
     # Read canonical version from pyproject.toml instead of hard-coding.
-    import tomllib
+    try:
+        import tomllib
+    except ModuleNotFoundError:
+        import tomli as tomllib
     from pathlib import Path
     pp = Path(__file__).resolve().parent.parent / "pyproject.toml"
     with open(pp, "rb") as f:
