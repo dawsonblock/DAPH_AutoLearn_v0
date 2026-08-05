@@ -1,0 +1,10 @@
+{
+  "package_version": "0.3.10.6-alpha",
+  "gate_a_status": "NOT_YET_REQUALIFIED",
+  "qualified_experiment_id": null,
+  "evidence_level": "NOT_YET_REQUALIFIED",
+  "source_hash": "02e46ff46a05c1695c5a0eb5d1e6c08bba5f9d78bea801a51cf587663cffa9d9",
+  "test_status": "UNKNOWN",
+  "test_count": 0,
+  "generated_at": "2026-08-01T21:15:35.002131+00:00"
+}

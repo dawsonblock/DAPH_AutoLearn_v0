@@ -53,6 +53,10 @@ def main() -> None:
     ap.add_argument("--configuration-frozen", action="store_true")
     ap.add_argument("--leakage-report-sha256")
     ap.add_argument("--final-test-access-sha256")
+    ap.add_argument(
+        "--stage", default="train",
+        help="Experiment stage (train/dev/calibration/frozen/final). "
+             "v0.3.10.3.1: final split requires stage=frozen.")
     args = ap.parse_args()
 
     assert_split_access(
@@ -67,6 +71,24 @@ def main() -> None:
         raise ProtocolViolation(
             "test/final_test evaluation requires --final-test-access-sha256"
         )
+    # v0.3.10.3.1 — Section 14: enforce StageGuard for final access.
+    if args.dataset_split in {"test", "final_test"}:
+        from daph_learning.policy.stage import (
+            ExperimentStage, StageGuard, FinalAccessError,
+        )
+        try:
+            stage = ExperimentStage.from_str(args.stage)
+        except ValueError:
+            raise ProtocolViolation(
+                f"unknown stage {args.stage!r}; expected one of "
+                f"[train, dev, calibration, frozen, final]")
+        guard = StageGuard(stage=stage)
+        try:
+            guard.request_final_access(
+                command="daph-evaluate-routes",
+                reason=f"split={args.dataset_split}")
+        except FinalAccessError as exc:
+            raise ProtocolViolation(str(exc))
 
     task_rows = load(Path(args.tasks))
     route_rows = load(Path(args.routes))

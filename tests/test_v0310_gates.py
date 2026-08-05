@@ -61,7 +61,7 @@ from daph_learning.interventions.kl_gate import (
 )
 from daph_learning.replay import PrioritizedReplayBuffer, ReplayExperience, replay_priority
 from daph_learning.bandit import log_policy_decision, doubly_robust_utility
-from daph_learning.lowrank import interference_matrix, orthogonality_loss
+from daph_learning.lowrank import interference_matrix
 from daph_learning.latent_verifier import LatentVerifier
 
 
@@ -571,10 +571,13 @@ class TestTaskIDAlignment:
 
 class TestVersionConsistency:
     def test_version_is_0310_alpha(self):
-        assert __version__ == "0.3.10", f"version is {__version__}, expected 0.3.10"
+        assert __version__ == "0.3.10.6-alpha", f"version is {__version__}, expected 0.3.10.6-alpha"
 
     def test_pyproject_version_matches(self):
-        import tomllib
+        try:
+            import tomllib
+        except ModuleNotFoundError:
+            import tomli as tomllib
         from pathlib import Path
         pp = Path(__file__).resolve().parent.parent / "pyproject.toml"
         with open(pp, "rb") as f:
@@ -583,7 +586,7 @@ class TestVersionConsistency:
 
     def test_experiment_config_has_version(self):
         cfg = ExperimentConfig()
-        assert cfg.autolearn_version == "0.3.10"
+        assert cfg.autolearn_version == "0.3.10.6-alpha"
 
     def test_experiment_config_freeze_is_idempotent(self):
         cfg = ExperimentConfig(random_seed=42)
@@ -787,12 +790,14 @@ class TestBanditLogging:
 class TestLowRankController:
     def test_orthogonality_loss_zero_for_orthogonal(self):
         import torch
+        from daph_learning.lowrank import orthogonality_loss
         v = torch.eye(5)  # perfectly orthogonal
         loss = orthogonality_loss(v)
         assert float(loss) < 1e-6
 
     def test_orthogonality_loss_positive_for_non_orthogonal(self):
         import torch
+        from daph_learning.lowrank import orthogonality_loss
         v = torch.ones(5, 3)  # all parallel
         loss = orthogonality_loss(v)
         assert float(loss) > 0.1

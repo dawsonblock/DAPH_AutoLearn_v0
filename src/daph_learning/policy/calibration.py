@@ -174,10 +174,249 @@ def selective_risk_curve(
 
 
 __all__ = [
+    "CalibrationArtifact",
     "ReliabilityBin",
     "SelectiveRiskPoint",
+    "action_confidence_ece",
     "brier_score",
     "expected_calibration_error",
+    "preference_brier_soft",
+    "predicted_action_correctness_target",
     "reliability_bins",
     "selective_risk_curve",
+    "soft_calibration_error",
 ]
+
+
+# ------------------------------------------------------------------
+# v0.3.10.1 — Section 8: correct calibration math for soft/tie labels.
+# ------------------------------------------------------------------
+
+def predicted_action_correctness_target(
+    p_symbolic: np.ndarray | Sequence[float],
+    target_symbolic_prob: np.ndarray | Sequence[float],
+) -> np.ndarray:
+    """Expected correctness probability of the predicted action under a
+    soft target (Section 8B).
+
+    Predicted action::
+
+        a_hat_i = S  if p_i >= 0.5
+                  L  otherwise
+
+    Expected correctness probability under the soft target::
+
+        c*_i = q_i      if a_hat_i = S
+               1 - q_i  if a_hat_i = L
+
+    For hard labels (``q_i ∈ {0, 1}``), ``c*_i`` reduces to ordinary
+    0/1 correctness (1 if the predicted action matches the hard label,
+    0 otherwise).
+
+    Parameters
+    ----------
+    p_symbolic : array-like
+        Predicted ``P(S | h)``. Shape ``[N]``.
+    target_symbolic_prob : array-like
+        Soft target ``q_i = P(S)`` (e.g. ``σ(ΔU / τ)``) or hard label
+        (``0/1``). Shape ``[N]``.
+
+    Returns
+    -------
+    np.ndarray
+        Shape ``[N]`` expected correctness probabilities in ``[0, 1]``.
+    """
+    p = np.asarray(p_symbolic, dtype=np.float64)
+    q = np.asarray(target_symbolic_prob, dtype=np.float64)
+    if p.shape != q.shape:
+        raise ValueError(
+            "p_symbolic and target_symbolic_prob must have the same shape")
+    if len(p) == 0:
+        raise ValueError("empty input")
+    choose_symbolic = p >= 0.5
+    return np.where(choose_symbolic, q, 1.0 - q)
+
+
+def preference_brier_soft(
+    p_symbolic: np.ndarray | Sequence[float],
+    target_symbolic_prob: np.ndarray | Sequence[float],
+) -> float:
+    """Soft Brier score against the symbolic preference probability
+    (Section 8A).
+
+    ``B_soft = (1/N) Σ (p_i - q_i)^2``
+
+    Compares the predicted ``P(S | h)`` directly against the soft
+    target ``q = σ(ΔU / τ)``. Lower is better. This is the correct
+    probability-calibration metric when targets are soft; the legacy
+    :func:`brier_score` against hard 0/1 labels silently throws away
+    the continuous preference information.
+    """
+    p = np.asarray(p_symbolic, dtype=np.float64)
+    q = np.asarray(target_symbolic_prob, dtype=np.float64)
+    if p.shape != q.shape:
+        raise ValueError(
+            "p_symbolic and target_symbolic_prob must have the same shape")
+    if len(p) == 0:
+        raise ValueError("empty input")
+    return float(np.mean((p - q) ** 2))
+
+
+def soft_calibration_error(
+    p_symbolic: np.ndarray | Sequence[float],
+    target_symbolic_prob: np.ndarray | Sequence[float],
+    n_bins: int = 10,
+) -> float:
+    """Soft calibration error (Section 8A): bin ``p_i`` against ``q_i``.
+
+    Bins predictions by predicted probability ``p`` (NOT by confidence
+    ``max(p, 1-p)``), and within each bin compares the mean predicted
+    probability against the mean soft target. This is the
+    probability-calibration analogue of ECE for soft targets::
+
+        SCE = Σ_b (n_b / N) |mean(p_b) - mean(q_b)|
+    """
+    p = np.asarray(p_symbolic, dtype=np.float64)
+    q = np.asarray(target_symbolic_prob, dtype=np.float64)
+    if p.shape != q.shape:
+        raise ValueError(
+            "p_symbolic and target_symbolic_prob must have the same shape")
+    if len(p) == 0:
+        raise ValueError("empty input")
+    if n_bins < 1:
+        raise ValueError("n_bins must be >= 1")
+    edges = np.linspace(0.0, 1.0, n_bins + 1)
+    n = len(p)
+    sce = 0.0
+    for i in range(n_bins):
+        lower, upper = edges[i], edges[i + 1]
+        if i == n_bins - 1:
+            mask = (p >= lower) & (p <= upper)
+        else:
+            mask = (p >= lower) & (p < upper)
+        count = int(mask.sum())
+        if count == 0:
+            continue
+        sce += (count / n) * abs(float(p[mask].mean() - q[mask].mean()))
+    return float(sce)
+
+
+def action_confidence_ece(
+    p_symbolic: np.ndarray | Sequence[float],
+    target_symbolic_prob: np.ndarray | Sequence[float],
+    n_bins: int = 10,
+) -> float:
+    """Action-confidence ECE (Section 8B).
+
+    For each example:
+    * predicted action ``a_hat_i = S if p_i >= 0.5 else L``
+    * predicted confidence ``c_hat_i = max(p_i, 1 - p_i)``
+    * expected correctness under soft target ``c*_i`` (see
+      :func:`predicted_action_correctness_target`)
+
+    ECE = ``Σ_b (n_b / N) |mean(c_hat_b) - mean(c*_b)|`` where bins are
+    over ``c_hat`` (confidence). For hard labels, ``c*_i`` reduces to
+    ordinary 0/1 correctness, so this reduces to the standard ECE.
+    """
+    p = np.asarray(p_symbolic, dtype=np.float64)
+    q = np.asarray(target_symbolic_prob, dtype=np.float64)
+    if p.shape != q.shape:
+        raise ValueError(
+            "p_symbolic and target_symbolic_prob must have the same shape")
+    if len(p) == 0:
+        raise ValueError("empty input")
+    if n_bins < 1:
+        raise ValueError("n_bins must be >= 1")
+    confidences = np.maximum(p, 1.0 - p)
+    correctness = predicted_action_correctness_target(p, q)
+    edges = np.linspace(0.5, 1.0, n_bins + 1)
+    n = len(p)
+    ece = 0.0
+    for i in range(n_bins):
+        lower, upper = edges[i], edges[i + 1]
+        if i == n_bins - 1:
+            mask = (confidences >= lower) & (confidences <= upper)
+        else:
+            mask = (confidences >= lower) & (confidences < upper)
+        count = int(mask.sum())
+        if count == 0:
+            continue
+        ece += (count / n) * abs(
+            float(confidences[mask].mean() - correctness[mask].mean()))
+    return float(ece)
+
+
+# ------------------------------------------------------------------
+# v0.3.10.2 — Section 29: CalibrationArtifact
+# ------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class CalibrationArtifact:
+    """Frozen calibration artifact (Section 18 / v0.3.10.3.1).
+
+    After calibration, the tuned thresholds are saved as this artifact.
+    Policy inference must load this artifact — it must NOT recompute
+    thresholds on the final test set.
+
+    v0.3.10.3.1 — expanded with ``feature_transform_hash``,
+    ``ood_model_hash``, ``brier``, ``action_ece``, and
+    ``source_tree_hash`` so the artifact is fully bound to the exact
+    source tree that generated it (Section 33).
+
+    Attributes
+    ----------
+    policy_id : str
+        Identifier of the policy this calibration applies to.
+    policy_hash : str
+        Hash of the policy parameters (for binding calibration to policy).
+    calibration_dataset_sha256 : str
+        Hash of the calibration dataset used.
+    feature_transform_hash : str
+        Hash of the frozen feature transform (PCA etc.).
+    ood_model_hash : str
+        Hash of the frozen OOD model.
+    confidence_threshold : float
+        Tuned ``τ_conf`` for abstention.
+    ood_threshold : float
+        Tuned ``τ_ood`` for OOD abstention.
+    temperature_scale : float | None
+        Temperature scaling parameter (if applied).
+    brier : float
+        Brier score on the calibration set.
+    action_ece : float
+        Action-level expected calibration error.
+    source_tree_hash : str
+        SHA-256 of the source tree that generated this artifact.
+    calibration_metrics : dict
+        Additional calibration metrics.
+    """
+
+    policy_id: str
+    policy_hash: str
+    calibration_dataset_sha256: str
+    confidence_threshold: float
+    ood_threshold: float
+    temperature_scale: float | None
+    calibration_metrics: dict[str, float]
+    # v0.3.10.3.1 fields (defaults preserve backward compatibility).
+    feature_transform_hash: str = ""
+    ood_model_hash: str = ""
+    brier: float = 0.0
+    action_ece: float = 0.0
+    source_tree_hash: str = ""
+
+    def to_dict(self) -> dict:
+        return {
+            "policy_id": self.policy_id,
+            "policy_hash": self.policy_hash,
+            "calibration_dataset_sha256": self.calibration_dataset_sha256,
+            "feature_transform_hash": self.feature_transform_hash,
+            "ood_model_hash": self.ood_model_hash,
+            "confidence_threshold": self.confidence_threshold,
+            "ood_threshold": self.ood_threshold,
+            "temperature_scale": self.temperature_scale,
+            "brier": self.brier,
+            "action_ece": self.action_ece,
+            "source_tree_hash": self.source_tree_hash,
+            "calibration_metrics": dict(self.calibration_metrics),
+        }

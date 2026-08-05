@@ -1,0 +1,208 @@
+{
+  "release": "0.3.10.3.2-alpha",
+  "timestamp": 1785372566.9198358,
+  "source_tree_sha256": "fd4d47e3b6af7373a70142469cce6532ee3a90eff505cd4c622f575b3ccb2374",
+  "config_sha256": "efb98b1e12c931e52b58ac8c98676af5f65897464b9305c56fd87c8ecfddd72e",
+  "evidence_level": "SYNTHETIC",
+  "split": "dev",
+  "n_tasks": 180,
+  "n_subtypes": 6,
+  "baseline_matrix": {
+    "always_symbolic": {
+      "mean_utility": 0.9963332549691201,
+      "mean_regret": 0.0015124633828267342,
+      "n_tasks": 180
+    },
+    "always_llm": {
+      "mean_utility": 0.4054355555555555,
+      "mean_regret": 0.5924101627963914,
+      "n_tasks": 180
+    },
+    "hand_router": {
+      "mean_utility": 0.9092879929043982,
+      "mean_regret": 0.08855772544754859,
+      "n_tasks": 180
+    },
+    "random": {
+      "mean_utility": 0.6868822153968281,
+      "mean_regret": 0.31096350295511865,
+      "n_tasks": 180
+    },
+    "oracle": {
+      "mean_utility": 0.9978457183519468,
+      "mean_regret": 0.0,
+      "n_tasks": 180
+    }
+  },
+  "crossover_table": [
+    {
+      "subtype": "A",
+      "n": 30,
+      "s_wins": 17,
+      "l_wins": 13,
+      "ties": 0,
+      "symbolic_win_fraction": 0.5666666666666667,
+      "always_s_regret": 0.0003813382368087777,
+      "always_l_regret": 0.5661679932686489
+    },
+    {
+      "subtype": "B",
+      "n": 30,
+      "s_wins": 14,
+      "l_wins": 16,
+      "ties": 0,
+      "symbolic_win_fraction": 0.4666666666666667,
+      "always_s_regret": 0.002602671832402548,
+      "always_l_regret": 0.4643893290576935
+    },
+    {
+      "subtype": "C",
+      "n": 30,
+      "s_wins": 20,
+      "l_wins": 10,
+      "ties": 0,
+      "symbolic_win_fraction": 0.6666666666666666,
+      "always_s_regret": 0.0016266702985763529,
+      "always_l_regret": 0.6634133260933558
+    },
+    {
+      "subtype": "D",
+      "n": 30,
+      "s_wins": 22,
+      "l_wins": 8,
+      "ties": 0,
+      "symbolic_win_fraction": 0.7333333333333333,
+      "always_s_regret": 0.00023466940053303852,
+      "always_l_regret": 0.7326879922116597
+    },
+    {
+      "subtype": "E",
+      "n": 30,
+      "s_wins": 15,
+      "l_wins": 15,
+      "ties": 0,
+      "symbolic_win_fraction": 0.5,
+      "always_s_regret": 0.002440008034706113,
+      "always_l_regret": 0.49755999373753873
+    },
+    {
+      "subtype": "F",
+      "n": 30,
+      "s_wins": 19,
+      "l_wins": 11,
+      "ties": 0,
+      "symbolic_win_fraction": 0.6333333333333333,
+      "always_s_regret": 0.0017893389997482281,
+      "always_l_regret": 0.630242657058398
+    }
+  ],
+  "crossover_distribution": {
+    "n": 180,
+    "n_symbolic_optimal": 107,
+    "n_llm_optimal": 73,
+    "n_ties": 0,
+    "n_decisive": 180,
+    "p_symbolic_optimal": 0.5944444444444444,
+    "p_llm_optimal": 0.40555555555555556,
+    "per_subtype": {
+      "A": {
+        "symbolic": 17,
+        "llm": 13,
+        "tie": 0
+      },
+      "B": {
+        "symbolic": 14,
+        "llm": 16,
+        "tie": 0
+      },
+      "C": {
+        "symbolic": 20,
+        "llm": 10,
+        "tie": 0
+      },
+      "D": {
+        "symbolic": 22,
+        "llm": 8,
+        "tie": 0
+      },
+      "E": {
+        "symbolic": 15,
+        "llm": 15,
+        "tie": 0
+      },
+      "F": {
+        "symbolic": 19,
+        "llm": 11,
+        "tie": 0
+      }
+    },
+    "per_subtype_summary": {
+      "A": {
+        "symbolic": 17,
+        "llm": 13,
+        "tie": 0,
+        "n_decisive": 30,
+        "p_symbolic": 0.5666666666666667,
+        "has_crossover": true
+      },
+      "B": {
+        "symbolic": 14,
+        "llm": 16,
+        "tie": 0,
+        "n_decisive": 30,
+        "p_symbolic": 0.4666666666666667,
+        "has_crossover": true
+      },
+      "C": {
+        "symbolic": 20,
+        "llm": 10,
+        "tie": 0,
+        "n_decisive": 30,
+        "p_symbolic": 0.6666666666666666,
+        "has_crossover": true
+      },
+      "D": {
+        "symbolic": 22,
+        "llm": 8,
+        "tie": 0,
+        "n_decisive": 30,
+        "p_symbolic": 0.7333333333333333,
+        "has_crossover": true
+      },
+      "E": {
+        "symbolic": 15,
+        "llm": 15,
+        "tie": 0,
+        "n_decisive": 30,
+        "p_symbolic": 0.5,
+        "has_crossover": true
+      },
+      "F": {
+        "symbolic": 19,
+        "llm": 11,
+        "tie": 0,
+        "n_decisive": 30,
+        "p_symbolic": 0.6333333333333333,
+        "has_crossover": true
+      }
+    },
+    "crossover_subtypes": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "n_crossover_subtypes": 6
+  },
+  "oracle_gap": 0.5924101627963914,
+  "u_oracle": 0.9978457183519468,
+  "u_baseline": 0.4054355555555555,
+  "n_crossover_subtypes": 6,
+  "notes": [
+    "Synthetic evidence \u2014 real Qwen model integration is G29/G30 (SKIP in CI).",
+    "All 6 subtypes have within-subtype crossover (symbolic_win_fraction in (0,1)).",
+    "Hand router uses operand magnitude awareness for NL tasks."
+  ]
+}

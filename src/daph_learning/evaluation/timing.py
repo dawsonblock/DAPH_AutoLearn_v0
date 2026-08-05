@@ -28,7 +28,7 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from typing import Callable, Iterator
+from typing import Any, Callable, Iterator
 
 
 def _torch_cuda_available() -> bool:
@@ -176,3 +176,132 @@ def cuda_timed_accumulator() -> Iterator[tuple[TimingAccumulator, Callable]]:
             yield r
 
     yield acc, _bound
+
+
+# ------------------------------------------------------------------
+# Section 11: TimingProtocol + measure_backend_latency
+# ------------------------------------------------------------------
+
+import statistics
+import time as _time
+
+
+@dataclass(frozen=True)
+class TimingProtocol:
+    """Section 11 — frozen latency measurement protocol.
+
+    Attributes
+    ----------
+    warmup_runs : int
+        Number of warm-up runs (results discarded).
+    measured_runs : int
+        Number of measured runs (results aggregated).
+    aggregation : str
+        ``"median"`` (default) or ``"mean"``.
+    synchronize_cuda : bool
+        If True, call ``torch.cuda.synchronize()`` before each measurement.
+    include_tokenization : bool
+        If True, include tokenization time in the measurement.
+    include_verification : bool
+        If False (default), verification time is excluded.
+    """
+
+    warmup_runs: int = 2
+    measured_runs: int = 5
+    aggregation: str = "median"
+    synchronize_cuda: bool = True
+    include_tokenization: bool = False
+    include_verification: bool = False
+
+    def __post_init__(self) -> None:
+        if self.warmup_runs < 0:
+            raise ValueError("warmup_runs must be >= 0")
+        if self.measured_runs < 1:
+            raise ValueError("measured_runs must be >= 1")
+        if self.aggregation not in ("median", "mean"):
+            raise ValueError("aggregation must be 'median' or 'mean'")
+
+
+@dataclass
+class LatencyMeasurement:
+    """Section 11 — result of a backend latency measurement."""
+
+    median_ms: float
+    mean_ms: float
+    std_ms: float
+    min_ms: float
+    max_ms: float
+    n_runs: int
+    device: str
+    aggregation: str
+    raw_ms: list[float] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, float | int | str | list[float]]:
+        return {
+            "median_ms": self.median_ms,
+            "mean_ms": self.mean_ms,
+            "std_ms": self.std_ms,
+            "min_ms": self.min_ms,
+            "max_ms": self.max_ms,
+            "n_runs": self.n_runs,
+            "device": self.device,
+            "aggregation": self.aggregation,
+            "raw_ms": list(self.raw_ms),
+        }
+
+
+def measure_backend_latency(
+    execute_fn: Callable[[], Any],
+    protocol: TimingProtocol | None = None,
+) -> LatencyMeasurement:
+    """Section 11 — measure backend latency with warm-up + aggregation.
+
+    Parameters
+    ----------
+    execute_fn : callable
+        A function that executes one backend call and returns its output.
+        Called ``warmup_runs + measured_runs`` times.
+    protocol : TimingProtocol | None
+        Measurement protocol. Defaults to :class:`TimingProtocol()`.
+
+    Returns
+    -------
+    LatencyMeasurement
+        Aggregated latency statistics. The ``median_ms`` (or ``mean_ms``
+        if aggregation="mean") is the canonical reported latency.
+    """
+    proto = protocol or TimingProtocol()
+    device = "cuda" if _torch_cuda_available() else "cpu"
+
+    # Warm-up runs (results discarded).
+    for _ in range(proto.warmup_runs):
+        execute_fn()
+
+    # Measured runs.
+    raw_ms: list[float] = []
+    for _ in range(proto.measured_runs):
+        if proto.synchronize_cuda and device == "cuda":
+            import torch
+            torch.cuda.synchronize()
+        t0 = _time.perf_counter()
+        execute_fn()
+        if proto.synchronize_cuda and device == "cuda":
+            import torch
+            torch.cuda.synchronize()
+        t1 = _time.perf_counter()
+        raw_ms.append((t1 - t0) * 1000.0)
+
+    median_ms = statistics.median(raw_ms)
+    mean_ms = statistics.mean(raw_ms)
+    std_ms = statistics.stdev(raw_ms) if len(raw_ms) > 1 else 0.0
+    return LatencyMeasurement(
+        median_ms=median_ms,
+        mean_ms=mean_ms,
+        std_ms=std_ms,
+        min_ms=min(raw_ms),
+        max_ms=max(raw_ms),
+        n_runs=len(raw_ms),
+        device=device,
+        aggregation=proto.aggregation,
+        raw_ms=raw_ms,
+    )

@@ -26,7 +26,6 @@ from .experience import CaptureResult, CapturedActivation
 from .route_policy import (
     PolicyRouteDecision,
     RoutePolicyFn,
-    SafetyClampTelemetry,
     SteeringPolicyConfig,
 )
 

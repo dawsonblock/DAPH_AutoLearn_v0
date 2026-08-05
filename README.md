@@ -1,19 +1,32 @@
-# DAPH AutoLearn v0.3.10-alpha
+# DAPH AutoLearn v0.3.10.6-alpha
 
 <div align="center">
 
 **Counterfactual compute-selection learning for auditable LLM tool-routing research.**
 
-`v0.3.10-alpha` · Python ≥ 3.10 · MIT-style research software
+`v0.3.10.6-alpha` · Python ≥ 3.10 · MIT-style research software
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/version-0.3.10--alpha-orange.svg)](./CHANGELOG.md)
-[![Tests](https://img.shields.io/badge/tests-655%2B-brightgreen.svg)](#testing)
+[![Version](https://img.shields.io/badge/version-0.3.10.6--alpha-orange.svg)](./CHANGELOG.md)
+[![Tests](https://img.shields.io/badge/tests-1269%2B-brightgreen.svg)](#testing)
 [![Status](https://img.shields.io/badge/status-research%20alpha-lightgrey.svg)](./CLAIMS.md)
 
 </div>
 
 ---
+
+> **Gate A status: FAIL (daph_gate_a_real_007_harder).** This repository implements an
+> experimental counterfactual routing learner. The latest Gate A run uses a
+> **harder magnitude-decoupled benchmark** with **Qwen2.5-7B-Instruct**.
+> The primary endpoint passes (P1 - best_fixed = 0.129, LCB = 0.074 > 0),
+> and the **hidden-state contribution claim is SUPPORTED** (P1 - surface_only
+> = 0.222, LCB = 0.173 > 0). The gate fails only on positive-group-fraction
+> (50% < 60% threshold). Only a validated bundle under
+> `artifacts/gate_a_qualified/` constitutes current Gate A evidence.
+> The earlier real-model run (`daph_gate_a_real_001_failed`) is archived under
+> `artifacts/legacy/` after failing its group-aware confidence-bound gate
+> (LCB95% for P1−P0 = −0.041 < 0); it is retained for audit history only.
+> No synthetic artifact is presented as Gate A qualification evidence.
 
 DAPH AutoLearn connects **capability assessment**, **bounded symbolic
 execution**, **residual activation steering**, and **outcome evaluation** into a
@@ -552,7 +565,7 @@ cd extensions/daph_gdn2_repobrain_v1_11_1
 python -m pytest -q
 ```
 
-The main repository contains 655+ collected tests in the release build,
+The main repository contains 1229+ collected tests in the release build,
 covering symbolic-executor safety, routing, full-sequence scoring, typed
 verification, steering hooks and clamps, leakage checks, protocol guards,
 manifests, command packaging, empirical null calculations, regression
@@ -582,7 +595,8 @@ effects — see [`CLAIMS.md`](./CLAIMS.md) §6.
 | [`docs/EXPERIMENT_PLAN.md`](./docs/EXPERIMENT_PLAN.md) | Experiment planning template. |
 | [`AUDIT_REPORT_V0_3_9.md`](./AUDIT_REPORT_V0_3_9.md) | Independent audit of the v0.3.9 causal-chain repair. |
 | [`TEST_REPORT_V0_3_10.md`](./TEST_REPORT_V0_3_10.md) | v0.3.10 release-gate test report. |
-| [`MACHINE_READABLE_RESULTS.json`](./MACHINE_READABLE_RESULTS.json) | Machine-readable result summary. |
+| [`release_gates.json`](./release_gates.json) | Machine-readable release-gate results (source-tree hashed). |
+| [`experiment_results.json`](./experiment_results.json) | Machine-readable experiment results (source-tree hashed). |
 
 ## Licensed claims
 
@@ -616,6 +630,161 @@ test-set tuning, and leaky splits. **Its reported z-score is not a licensed
 result.**
 
 ## Changelog
+
+### v0.3.10.6-alpha
+
+- **Scientific repair release** — fixes five Priority 0 correctness issues
+  from the external audit:
+  - **Matched sham control**: permutes signed continuous ΔU (and matching
+    weights) within strata, not binary labels — so `fit_policy` applies the
+    identical `sigmoid(ΔU/τ)` transform the real P1 model received.
+  - **Ablation pipeline parity**: all ablation policies (surface-only,
+    hidden-only, TF-IDF, negative controls) now traverse the same
+    calibration + frozen thresholds + abstention pipeline as P1.
+  - **Real pooling**: `last_prompt_token`, `mean_prompt_tokens`, and
+    `mean_content_tokens` are now independently computed (previously
+    identical due to unimplemented pooling).
+  - **Proper negative controls**: replaced the invalid square
+    random-projection with orthogonal-rotation invariance, dimension-reduced
+    JL projection, Gaussian noise, coordinate permutation, and
+    subtype-stratified shuffled-hidden.
+  - **Subtype-only dev freeze**: the subtype-only baseline is now frozen on
+    development data, never derived from final labels.
+- **Artifact integrity repair**: failed runs moved from `gate_a_qualified/`
+  to `gate_a_failed/`; stale PASS runs moved to `gate_a_historical/`;
+  final stage writes to `gate_a_runs/` (staging) — only promotion logic
+  moves to `gate_a_qualified/`.
+- **Version normalization**: all version surfaces now agree on
+  0.3.10.6-alpha. Removed stale `CURRENT_EXPERIMENT_ID` from package source.
+
+### v0.3.10.5-alpha
+
+- **Gate A statistical correctness repair** — the prior Gate A PASS
+  (daph_gate_a_real_002) is **INVALIDATED**. Primary CIs were placeholders,
+  P1-minus-sham used the wrong interval, and P1 utility was computed from
+  soft probabilities rather than hard routing actions.
+- **Hard routing**: P1 utility uses selected actions, not probability-weighted
+  surrogates.
+- **Real group bootstrap**: 20,000 iterations with group-weighted estimand.
+- **P1-minus-sham**: Nested bootstrap of the actual difference distribution.
+- **Frozen policy evaluation**: Final stage loads, hashes, and executes the
+  frozen policy artifact — no retraining.
+- **Operational calibration**: Frozen thresholds applied to raw probabilities.
+- **Precondition gates**: Checked before statistical gates (NOT_EVALUABLE).
+- **Prediction artifacts**: final_predictions, final_task_metrics, sham_predictions.
+- **Independent validator**: Recomputes all metrics from task-level records.
+- **Portable pointer**: Relative paths only, no machine-local paths.
+  `daph_gate_a_real_001_failed` under `artifacts/legacy/` with
+  `LEGACY_NOTICE.md`; new experiment ID `daph_gate_a_real_002`.
+- `eval()` removed from symbolic execution paths; bounded AST evaluator
+  `safe_eval_int_expr` extended with explicitly enumerated permitted nodes.
+- Canonical `FINAL_ANSWER: <integer>` verifier
+  (`parse_canonical_integer_answer`); qualification fails closed on
+  ambiguity; legacy permissive extraction can no longer award credit.
+- New `artifacts/` layout + `validate_artifact_bundle()` recursive validator
+  + `tests/test_artifact_integrity.py` CI gate.
+- **Gate A status: NOT YET REQUALIFIED.** No new full real-model run
+  executed; no synthetic artifact presented as qualification evidence.
+
+### v0.3.10.3.2-alpha
+
+- **Qualification integrity release** (not architecture expansion). Mission:
+  prove or falsify that AutoLearn can choose the better computation between
+  two available backends for individual tasks that share the same family and
+  subtype. See `CHANGELOG_V0_3_10_3_2.md`.
+- **Within-subtype crossover** (Sections 12-17): at least 1 subtype must
+  individually contain both symbolic-preferred and LLM-preferred examples,
+  with the optimal backend emerging from actual executed utilities — not
+  taxonomy classification. The benchmark now has 8 subtypes (A-H) including
+  unit conversion (G) and number theory (H).
+- **Canonical source-tree hash** (Section 2): one
+  `compute_source_tree_sha256()` implementation; all components delegate to
+  it. Full 64-char SHA-256 in artifacts.
+- **Artifact integrity** (Sections 3-4): current artifacts must match current
+  source tree; stale artifacts archived to `artifacts/archive/`.
+- **32-gate framework executed** (Sections 48-50): G01-G32 actually run
+  against the current source tree.
+- **Real CLI paths completed** (Sections 22-27): evaluate, calibrate,
+  intervene use real frozen pipelines with zero fitting on final.
+- **Real steering utility** (Sections 28-31): `ΔU(α)` measured via executed
+  backend utility, not symbolic probability. Beneficial/harmful flip
+  analysis; matched random controls.
+
+### v0.3.10.3.1-alpha
+
+- **Qualification repair release** (not architecture expansion). Mission:
+  make the evidence trustworthy. See `CHANGELOG_V0_3_10_3_1.md`.
+- **Within-family crossover benchmark** (Section 10-12): structured +
+  natural-language mathematics where both symbolic and LLM win on different
+  instances inside the same family. The central scientific question is
+  whether AutoLearn can choose the better computation for an individual
+  task, not merely classify the task family.
+- **Steering optimizes verified utility** (Section 21-25): `ΔU(α)` not
+  `P(symbolic)`. Per-alpha beneficial/harmful flip analysis; random
+  direction controls; neutral KL release gate.
+- **Frozen evaluation** (Section 14-19): `ExperimentStage` access control,
+  final-test access ledger, zero fitting on final, real
+  evaluate/calibrate/intervene CLIs.
+- **Source-hash enforcement** (Section 32-35): current artifacts must share
+  `source_tree_sha256`; mismatched artifacts archived and excluded from
+  headline claims.
+
+### v0.3.10.3-alpha
+
+- **P0 repairs**: verified symbolic output (not just execution success),
+  expanded `BackendOutcome` with execution/error semantics, fixed
+  confidence semantics (unsupported ≠ zero confidence), removed silent
+  zero-class-weight fallback, true unweighted ablation (w=1), ΔU-based
+  calibration targets, disjoint word pools across splits, deferred final
+  set execution until freeze, `max_vector_norm` only shrinks, one
+  canonical `backend_utility()` function, verified steering utility,
+  G16/G21/G23/G25 literally test their names, tie-aware routing accuracy.
+- **Real-model loop completion**: actual symbolic + LLM backend
+  execution, real verification, real utility, real regret. No more
+  `symbolic_correct` / `llm_correct` placeholder labels.
+- **Release-gate integrity**: G10 is now a true superiority gate
+  (multi-seed); G16-G25 actually execute what they claim.
+- **Calibration repair**: uses `policy.predict_proba`, not `p=0.5`.
+- **Near-tie env redesign**: weighting now has a real expected
+  advantage (decisive vs ambiguous with nuisance direction).
+- **Real steering utility test**: dose-response with verified utility,
+  route-flip analysis, random controls.
+- **Evidence labels**: finer categories
+  (latent/behavioral/utility intervention).
+- **Source-tree hash + pytest collection hash** in all artifacts.
+
+### v0.3.10.1-alpha
+
+- **Correctness repair pass**: focused on implementation integrity and
+  scientific validity. The release answers whether AutoLearn reduces
+  held-out regret and improves held-out utility on non-trivial tasks.
+- **P0-1 / G1**: `soft_targets: bool` replaced by explicit
+  `TargetMode.SOFT` | `TargetMode.HARD` with validity mask; hard-mode
+  ties ignored, not coerced to 0.5.
+- **P0-2 / G2**: `weight_mode` made real — four modes
+  (`UNIFORM`, `ABSOLUTE_GAP`, `CLIPPED_GAP`, `SNR`) via
+  `compute_weight(...)`. Clean break: old `"gap"` string raises.
+- **P0-3 / G3**: `policy_type` made real — `centroid` / `logistic` /
+  `mlp_experimental` select different implementations.
+- **P0-4 / G4**: held-out evaluation fails closed on missing
+  `utility_fn`; no zero-utility synthesis.
+- **P0-5/6 / G5**: strict task-ID alignment — `FeatureRecord` +
+  `join_by_task_id`; no silent zip truncation.
+- **P0-7 / G6**: `weighted_mean` rejects negative weights, NaN, Inf,
+  all-zero effective weights.
+- **P0-8 / G7**: calibration math fixed — `preference_brier_soft` and
+  `action_confidence_ece` replace the wrong soft-label ECE.
+- **P0-9 / G8**: dev early stopping selectable
+  (`dev_loss` | `dev_regret` | `dev_utility`), default `dev_regret`.
+- **P10 / G9-G13**: synthetic benchmark redesigned — four environments
+  (linear, near-tie/heteroskedastic, multimodal, XOR) + random control.
+- **P11/G14, P22/G21, P24/G22**: comparative gates literally compare;
+  promotion uses real policy decisions; capability + neutral KL gates.
+- **P13-20 / G16-G20**: real intervention pipeline + real
+  train/evaluate/calibrate CLI + OOD threshold calibration + PCA safety.
+- **P30 / G13**: small MLP router for nonlinear diagnostic.
+- **P43 / G24**: version unified to `0.3.10.3-alpha` across all
+  surfaces.
 
 ### v0.3.10
 

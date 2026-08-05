@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import re
 
-_FINAL_RE = re.compile(r"\bFINAL:\s*(-?\d+)\b", re.IGNORECASE)
+# Accept both "FINAL: <int>" (legacy) and "FINAL_ANSWER: <int>" (canonical).
+_FINAL_RE = re.compile(r"\bFINAL(?:_ANSWER)?\s*:\s*(-?\d+)\b", re.IGNORECASE)
 _EXACT_RE = re.compile(r"^\s*(-?\d+)\s*$")
 _FIRST_INT_RE = re.compile(r"-?\d+")
 

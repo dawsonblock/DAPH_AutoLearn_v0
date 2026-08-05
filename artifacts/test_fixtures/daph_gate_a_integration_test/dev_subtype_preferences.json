@@ -1,0 +1,14 @@
+{
+  "preferences": {
+    "G": "llm",
+    "C": "symbolic",
+    "E": "symbolic",
+    "F": "symbolic",
+    "H": "llm",
+    "B": "symbolic",
+    "A": "symbolic",
+    "D": "symbolic"
+  },
+  "selection_data": "development",
+  "frozen_before_final": true
+}

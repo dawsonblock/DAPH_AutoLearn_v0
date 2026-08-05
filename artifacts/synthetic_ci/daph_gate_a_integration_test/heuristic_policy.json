@@ -1,0 +1,9 @@
+{
+  "policy_type": "heuristic",
+  "threshold": 2.6,
+  "rules": [
+    "if max_operand >= threshold: symbolic",
+    "else: llm"
+  ],
+  "frozen_from": "development"
+}

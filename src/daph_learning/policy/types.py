@@ -10,7 +10,7 @@ experiment manifests (Section 33).
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from enum import Enum
 from typing import Any
 
@@ -42,13 +42,34 @@ class Route(str, Enum):
 class BackendOutcome:
     """Verified outcome of executing one backend on one task (Section 32).
 
+    v0.3.10.3 — expanded with execution semantics to distinguish:
+    - backend unavailable (not installed / no model)
+    - backend unsupported for this task type
+    - not executed (skipped)
+    - execution failed (error/timeout)
+    - execution succeeded but answer wrong
+    - execution succeeded and answer verified
+
     Attributes
     ----------
     task_id : str
     backend : str
         ``"symbolic"`` or ``"llm"``.
+    available : bool
+        Whether the backend was available for this task (not unsupported).
+    executed : bool
+        Whether the backend was actually executed (not skipped).
+    execution_success : bool
+        Whether execution completed without error.
+    output_text : str | None
+        The raw output produced by the backend (for verification).
+    output_hash : str | None
+        SHA-256 hash of the output text (for provenance).
+    verifier_status : str
+        One of: ``"verified_correct"``, ``"verified_incorrect"``,
+        ``"verifier_unsupported"``, ``"not_verified"``.
     correct : bool
-        Whether the verifier confirmed the output.
+        Whether the verifier confirmed the output. False if not verified.
     quality : float
         Verified task quality / correctness score in ``[0, 1]``.
     latency_sec : float
@@ -58,17 +79,27 @@ class BackendOutcome:
     risk : float
         Risk / safety penalty in ``[0, 1]``.
     verifier_confidence : float
-        Confidence of the verifier in ``[0, 1]``.
+        Confidence of the verifier in ``[0, 1]``. 1.0 for deterministic
+        verifiers. 0.0 if not verified.
+    failure_reason : str | None
+        If execution or verification failed, why.
     """
 
     task_id: str
     backend: str
-    correct: bool
-    quality: float
-    latency_sec: float
-    normalized_cost: float
-    risk: float
-    verifier_confidence: float
+    available: bool = True
+    executed: bool = True
+    execution_success: bool = True
+    output_text: str | None = None
+    output_hash: str | None = None
+    verifier_status: str = "not_verified"
+    correct: bool = False
+    quality: float = 0.0
+    latency_sec: float = 0.0
+    normalized_cost: float = 0.0
+    risk: float = 0.0
+    verifier_confidence: float = 0.0
+    failure_reason: str | None = None
 
     def __post_init__(self) -> None:
         if self.backend not in ("symbolic", "llm"):
@@ -83,9 +114,30 @@ class BackendOutcome:
             raise ValueError("latency_sec must be >= 0")
         if self.normalized_cost < 0:
             raise ValueError("normalized_cost must be >= 0")
+        if self.verifier_status not in (
+            "verified_correct", "verified_incorrect",
+            "verifier_unsupported", "not_verified",
+        ):
+            raise ValueError(f"invalid verifier_status: {self.verifier_status!r}")
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+    @property
+    def verified_correct(self) -> bool | None:
+        """v0.3.10.3.1 — Section 4: ``True``/``False``/``None`` verified
+        correctness, derived from ``verifier_status``.
+
+        ``execution_success != verified_correct`` is the key invariant:
+        execution can succeed while the verifier rejects the output.
+        ``None`` means the verifier did not make a binary judgment
+        (unsupported / not run).
+        """
+        if self.verifier_status == "verified_correct":
+            return True
+        if self.verifier_status == "verified_incorrect":
+            return False
+        return None
 
 
 @dataclass(frozen=True)
@@ -161,6 +213,41 @@ class CapturedActivation:
 
 
 @dataclass(frozen=True)
+class FeatureRecord:
+    """Task-bound feature vector (Section 5).
+
+    Replaces naked ``np.ndarray`` rows at cross-module boundaries so
+    that experiences and activations can be joined by ``task_id``
+    instead of inferred from array order. Naked arrays at module
+    boundaries are unsafe — a shuffled feature order would silently
+    misalign features from experiences.
+
+    Attributes
+    ----------
+    task_id : str
+        Unique task identifier (must match a
+        :class:`CounterfactualExperience` task_id).
+    features : np.ndarray
+        1-D feature vector (e.g. captured activation or PCA-projected
+        representation). Must be finite.
+    """
+
+    task_id: str
+    features: np.ndarray
+
+    def __post_init__(self) -> None:
+        arr = np.asarray(self.features)
+        if arr.ndim != 1:
+            raise ValueError("features must be 1-D")
+        if not np.all(np.isfinite(arr)):
+            raise ValueError("features contain NaN/Inf")
+        object.__setattr__(self, "features", arr.astype(np.float32, copy=False))
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"task_id": self.task_id, "features": np.asarray(self.features).tolist()}
+
+
+@dataclass(frozen=True)
 class PolicyDecision:
     """Contextual-bandit-compatible logging record for one deployment
     routing decision (Section 20).
@@ -170,12 +257,16 @@ class PolicyDecision:
     the full policy probability distribution, the policy version, and
     the set of available actions. This enables future off-policy
     learning (IPS, doubly-robust estimation).
+
+    v0.3.10.1 — adds ``chosen_propensity`` as an explicit field (the
+    historical ``propensity`` property is kept as a back-compat alias).
     """
 
     task_id: str
     action: Route
     probabilities: dict[str, float]
     policy_version: str
+    chosen_propensity: float | None = None
     available_actions: tuple[str, ...] = ("symbolic", "llm", "abstain")
 
     def __post_init__(self) -> None:
@@ -195,13 +286,22 @@ class PolicyDecision:
 
     @property
     def propensity(self) -> float:
-        """Probability of the chosen action (for IPS weighting)."""
+        """Probability of the chosen action (for IPS weighting).
+
+        v0.3.10.1 — back-compat alias for ``chosen_propensity``. If
+        ``chosen_propensity`` was set explicitly at construction, that
+        value is returned; otherwise it is looked up in
+        ``probabilities``.
+        """
+        if self.chosen_propensity is not None:
+            return float(self.chosen_propensity)
         return float(self.probabilities[self.action.value])
 
     def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d["action"] = self.action.value
         d["available_actions"] = list(self.available_actions)
+        d["chosen_propensity"] = self.propensity
         return d
 
 
@@ -209,6 +309,7 @@ __all__ = [
     "BackendOutcome",
     "CapturedActivation",
     "CounterfactualExperience",
+    "FeatureRecord",
     "PolicyDecision",
     "Route",
 ]

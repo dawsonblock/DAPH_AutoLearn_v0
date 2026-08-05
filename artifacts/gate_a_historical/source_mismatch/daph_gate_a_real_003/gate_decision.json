@@ -1,0 +1,50 @@
+{
+  "passed": true,
+  "experiment_id": "daph_gate_a_real_003",
+  "criteria_hash": "23deadc0d96801e49284e86bdd3843476f81e521083fccff127132171c70a164",
+  "overall_status": "PASS",
+  "gate_verdicts": {
+    "minimum_point_gain_vs_p0": {
+      "actual": 0.37351190476190477,
+      "threshold": 0.02,
+      "comparator": "gt",
+      "passed": true
+    },
+    "require_lcb_vs_p0_above": {
+      "actual": 0.3125,
+      "threshold": 0.0,
+      "comparator": "gt",
+      "passed": true
+    },
+    "require_lcb_vs_sham_above": {
+      "actual": 0.2098214285714286,
+      "threshold": 0.0,
+      "comparator": "gt",
+      "passed": true
+    },
+    "minimum_oracle_gap_capture": {
+      "actual": 1.0,
+      "threshold": 0.5,
+      "comparator": "gte",
+      "passed": true
+    },
+    "minimum_positive_group_fraction": {
+      "actual": 0.7857142857142857,
+      "threshold": 0.6,
+      "comparator": "gt",
+      "passed": true
+    },
+    "maximum_worst_subtype_regression": {
+      "actual": 0.0,
+      "threshold": 0.03,
+      "comparator": "lte",
+      "passed": true
+    },
+    "maximum_final_access_count": {
+      "actual": 1.0,
+      "threshold": 1.0,
+      "comparator": "lte",
+      "passed": true
+    }
+  }
+}

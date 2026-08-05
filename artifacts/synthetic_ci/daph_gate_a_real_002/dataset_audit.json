@@ -1,0 +1,60 @@
+{
+  "valid": true,
+  "errors": [],
+  "warnings": [
+    "crossover_distribution not provided; crossover checks skipped"
+  ],
+  "n_tasks": 3360,
+  "n_splits": 4,
+  "n_groups": {
+    "train": 210,
+    "development": 84,
+    "calibration": 63,
+    "final": 63
+  },
+  "exact_duplicates": [],
+  "normalized_duplicates": [],
+  "cross_split_group_leaks": [],
+  "template_family_leaks": [],
+  "near_duplicates": [],
+  "per_subtype_counts": {
+    "F": {
+      "train": 280,
+      "development": 104,
+      "calibration": 88,
+      "final": 88
+    },
+    "C": {
+      "train": 264,
+      "development": 136,
+      "calibration": 72,
+      "final": 88
+    },
+    "E": {
+      "train": 280,
+      "development": 104,
+      "calibration": 88,
+      "final": 88
+    },
+    "B": {
+      "train": 264,
+      "development": 136,
+      "calibration": 88,
+      "final": 72
+    },
+    "D": {
+      "train": 288,
+      "development": 80,
+      "calibration": 88,
+      "final": 104
+    },
+    "A": {
+      "train": 304,
+      "development": 112,
+      "calibration": 80,
+      "final": 64
+    }
+  },
+  "crossover_subtypes": [],
+  "decisive_fraction": 0.0
+}

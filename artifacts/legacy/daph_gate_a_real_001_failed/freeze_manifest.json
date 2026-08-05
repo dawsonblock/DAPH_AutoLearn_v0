@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FreezeManifest",
+  "description": "v0.3.10.3.2-alpha Section 35: immutable freeze manifest",
+  "type": "object",
+  "properties": {
+    "experiment_id": {
+      "type": "string"
+    },
+    "source_tree_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "policy_sha256": {
+      "type": "string"
+    },
+    "calibration_sha256": {
+      "type": "string"
+    },
+    "feature_transform_sha256": {
+      "type": "string"
+    },
+    "utility_config_sha256": {
+      "type": "string"
+    },
+    "train_dataset_sha256": {
+      "type": "string"
+    },
+    "dev_dataset_sha256": {
+      "type": "string"
+    },
+    "calibration_dataset_sha256": {
+      "type": "string"
+    },
+    "final_dataset_sha256": {
+      "type": "string"
+    },
+    "model_revision": {
+      "type": "string"
+    },
+    "tokenizer_revision": {
+      "type": "string"
+    },
+    "selected_layer": {
+      "type": "integer"
+    },
+    "capture_location": {
+      "type": "string"
+    },
+    "selected_alpha": {
+      "type": "number"
+    },
+    "frozen_at": {
+      "type": "number"
+    },
+    "release_version": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "experiment_id",
+    "source_tree_sha256",
+    "policy_sha256",
+    "calibration_sha256",
+    "release_version",
+    "frozen_at"
+  ],
+  "example": {
+    "experiment_id": "autolearn-v031032-alpha-smoke",
+    "source_tree_sha256": "fd4d47e3b6af7373a70142469cce6532ee3a90eff505cd4c622f575b3ccb2374",
+    "policy_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "calibration_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "feature_transform_sha256": "",
+    "utility_config_sha256": "efb98b1e12c931e52b58ac8c98676af5f65897464b9305c56fd87c8ecfddd72e",
+    "train_dataset_sha256": "",
+    "dev_dataset_sha256": "",
+    "calibration_dataset_sha256": "",
+    "final_dataset_sha256": "",
+    "model_revision": "Qwen/Qwen2.5-1.5B-Instruct",
+    "tokenizer_revision": "Qwen/Qwen2.5-1.5B-Instruct",
+    "selected_layer": 0,
+    "capture_location": "last_prompt_token",
+    "selected_alpha": 0.0,
+    "frozen_at": 1785372566.9198358,
+    "release_version": "0.3.10.3.2-alpha"
+  }
+}

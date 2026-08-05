@@ -23,8 +23,8 @@ from __future__ import annotations
 import hashlib
 import json
 import time
-from dataclasses import asdict, dataclass, field
-from typing import Any, Callable, Iterable, Mapping, Sequence
+from dataclasses import asdict, dataclass
+from typing import Any, Mapping, Sequence
 
 import numpy as np
 

@@ -1,0 +1,153 @@
+{
+  "release": "0.3.10.3-alpha",
+  "evidence_level": "REAL_MODEL_FINAL",
+  "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+  "device": "mps",
+  "layer": 10,
+  "source_tree_sha256": "dd7851dfd35cfa51",
+  "timestamp": 1785310734.642913,
+  "splits": {
+    "train": 60,
+    "dev": 30,
+    "calibration": 30,
+    "final": 60
+  },
+  "split_disjointness": "VERIFIED \u2014 disjoint word pools per split",
+  "task_composition": {
+    "arithmetic": 30,
+    "counting": 30
+  },
+  "phase_a_routing_signal": {
+    "sym_better": 10,
+    "llm_better": 15,
+    "tie": 35,
+    "delta_u_mean": -0.0833333358168602,
+    "delta_u_min": -1.0,
+    "delta_u_max": 1.0
+  },
+  "phase_b_results": {
+    "centroid": {
+      "dev_regret": 0.0
+    },
+    "logistic": {
+      "dev_regret": 0.0
+    },
+    "mlp_experimental": {
+      "dev_regret": 0.13333333333333333
+    }
+  },
+  "phase_b_unweighted_logistic": {
+    "dev_regret": 0.0,
+    "weight_mode": "uniform (TRUE w=1)"
+  },
+  "phase_b_unweighted_centroid": {
+    "dev_regret": 0.0,
+    "weight_mode": "uniform (TRUE w=1)"
+  },
+  "phase_b_hard_target": {
+    "dev_regret": 0.0
+  },
+  "phase_c_selection": {
+    "best_policy": "centroid",
+    "always_llm_dev_regret": 0.13333333333333333,
+    "always_sym_dev_regret": 0.23333333333333334,
+    "hand_router_dev_regret": 0.0
+  },
+  "phase_d_calibration": {
+    "tau_ood": 55.99988748215264,
+    "tau_conf": 0.5,
+    "preference_brier_soft": 0.03657540675297035,
+    "action_confidence_ece": 0.09110467515152196,
+    "calibration_target_source": "delta_u (NOT cal_probs)"
+  },
+  "phase_e_steering": {
+    "n_intervention_results": 50,
+    "dose_response": {
+      "-1.0": {
+        "mean_p": 0.4267471997008775,
+        "mean_utility": 0.8,
+        "n": 10
+      },
+      "-0.5": {
+        "mean_p": 0.5108270101559729,
+        "mean_utility": 0.8,
+        "n": 10
+      },
+      "0.0": {
+        "mean_p": 0.5935817025019562,
+        "mean_utility": 0.8,
+        "n": 10
+      },
+      "0.5": {
+        "mean_p": 0.6712015193219578,
+        "mean_utility": 0.8,
+        "n": 10
+      },
+      "1.0": {
+        "mean_p": 0.7408368301083837,
+        "mean_utility": 0.7,
+        "n": 10
+      }
+    },
+    "centroid_vector_norm": 2.8560714721679688,
+    "weight_fallback": false,
+    "evidence_level": "REAL_MODEL_LATENT_INTERVENTION",
+    "utility_source": "verified_backend_utility"
+  },
+  "phase_f_final": {
+    "candidate_utility": 0.5666666666666667,
+    "candidate_regret": 0.0,
+    "incumbent_utility": 0.35,
+    "incumbent_regret": 0.21666666666666667,
+    "always_sym_utility": 0.5,
+    "always_sym_regret": 0.06666666666666667,
+    "hand_router_utility": 0.5666666666666667,
+    "hand_router_regret": 0.0,
+    "unweighted_logistic_regret": 0.0,
+    "unweighted_centroid_regret": 0.0,
+    "weighted_centroid_regret": 0.0,
+    "logistic_hard_regret": 0.0,
+    "mlp_regret": 0.21666666666666667,
+    "strict_routing_accuracy": 1.0,
+    "tie_aware_routing_accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "symbolic_fraction": 0.5,
+    "llm_fraction": 0.5,
+    "ood_rate": 0.0,
+    "abstention_reasons": {
+      "symbolic": 30,
+      "llm": 30
+    },
+    "per_family": {
+      "arithmetic": {
+        "n": 30,
+        "candidate_utility": 1.0,
+        "candidate_regret": 0.0,
+        "llm_utility": 0.5666666666666667,
+        "sym_utility": 1.0
+      },
+      "counting": {
+        "n": 30,
+        "candidate_utility": 0.13333333333333333,
+        "candidate_regret": 0.0,
+        "llm_utility": 0.13333333333333333,
+        "sym_utility": 0.0
+      }
+    },
+    "paired_stats": {
+      "n": 60,
+      "mean_utility_delta": 0.21666666666666667,
+      "median_utility_delta": 0.0,
+      "candidate_win_rate": 0.21666666666666667,
+      "incumbent_win_rate": 0.0,
+      "tie_rate": 0.7833333333333333,
+      "bootstrap_ci_low": 0.11666666666666667,
+      "bootstrap_ci_high": 0.3333333333333333,
+      "mean_regret_delta": 0.21666666666666667,
+      "mean_candidate_regret": 0.0,
+      "mean_incumbent_regret": 0.21666666666666667,
+      "regret_bootstrap_ci_low": 0.11666666666666667,
+      "regret_bootstrap_ci_high": 0.3333333333333333
+    }
+  }
+}

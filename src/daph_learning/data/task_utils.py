@@ -15,8 +15,6 @@ so existing callers inside ``scripts/`` and ``tests/`` keep working unchanged.
 
 from __future__ import annotations
 
-from typing import Any
-
 
 def format_for_model(prompt: str, tokenizer, prompt_format: str) -> str:
     """Render ``prompt`` for the model according to ``prompt_format``.

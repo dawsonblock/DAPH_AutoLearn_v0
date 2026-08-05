@@ -31,7 +31,6 @@ from typing import Any, Literal, Mapping, Sequence
 from daph_learning.evaluation.paired import (
     clopper_pearson_interval,
     exact_paired_binomial,
-    paired_discordant_analysis,
 )
 
 

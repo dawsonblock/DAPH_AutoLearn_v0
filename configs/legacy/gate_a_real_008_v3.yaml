@@ -1,0 +1,124 @@
+# Section 18 — frozen Gate A criteria for daph_gate_a_real_008_v3.
+#
+# This run uses the BENCHMARK V3 (reduced-tie, balanced-crossover) with
+# Qwen2.5-7B-Instruct served via vLLM. V3 tunes number ranges for fewer
+# ties and guarantees 50/50 parseable/unparseable within each subtype,
+# giving a cleaner routing signal and tighter group-aware bootstrap CIs.
+#
+# This is the first run with the repaired scientific protocol:
+#   - Matched sham (continuous ΔU permutation, not binary labels)
+#   - Ablation pipeline parity (shared calibration + frozen thresholds)
+#   - Real pooling (3 distinct pooling representations)
+#   - Proper negative controls (orthogonal rotation, JL projection, etc.)
+#   - Subtype-only baseline frozen on development data
+#   - Stronger representation baselines (char n-gram, text embedding,
+#     hidden+TF-IDF, hidden+text embedding)
+#
+# These values must NOT change after final access. Gate A passes only if
+# every required criterion passes.
+
+experiment_id: daph_gate_a_real_008_v3
+release_version: 0.3.10.6-alpha
+
+primary_endpoint:
+  name: verified_utility
+  estimand: group_weighted
+  confidence_level: 0.95
+  bootstrap_iterations: 20000
+
+utility_protocol: gate_a_accuracy_primary
+secondary_utility_protocol: gate_a_cost_sensitive_secondary
+
+# Gate thresholds with explicit comparators.
+gates:
+  minimum_point_gain_vs_p0:
+    threshold: 0.02
+    comparator: gt
+  require_lcb_vs_p0_above:
+    threshold: 0.0
+    comparator: gt
+  require_lcb_vs_sham_above:
+    threshold: 0.0
+    comparator: gt
+  minimum_oracle_gap_capture:
+    threshold: 0.50
+    comparator: gte
+  maximum_worst_subtype_regression:
+    threshold: 0.03
+    comparator: lte
+  minimum_positive_group_fraction:
+    threshold: 0.60
+    comparator: gt
+  maximum_final_access_count:
+    threshold: 1
+    comparator: lte
+
+dataset:
+  benchmark_type: v3
+  minimum_groups: 9
+  minimum_crossover_subtypes: 1
+  minimum_backend_win_fraction: 0.20
+  minimum_decisive_fraction: 0.35
+
+evidence:
+  require_real_model: true
+  allow_synthetic: false
+  require_model_revision: true
+  require_source_hash_match: true
+  require_dataset_hashes: true
+  require_final_access_ledger: true
+
+model:
+  model_id: Qwen/Qwen3-8B
+  revision: main
+  dtype: float16
+  max_new_tokens: 512
+  do_sample: false
+  replicates: 1
+  batch_size: 16
+  # vLLM serving configuration — the runner uses vLLM's OpenAI-compatible
+  # API instead of loading the model directly in-process.
+  serving_backend: vllm
+  vllm_port: 8000
+  vllm_tensor_parallel_size: 1
+  vllm_gpu_memory_utilization: 0.95
+  vllm_max_model_len: 8128
+  vllm_api_key_env: DAPH_VLLM_API_KEY
+
+representation:
+  layer_strategy: depth_fractional
+  pooling_candidates:
+    - last_prompt_token
+    - mean_prompt_tokens
+    - mean_content_tokens
+  selection_metric: dev_objective
+  selection_data: development
+
+targets:
+  mode_selection_data: development
+  modes:
+    - hard_gap
+    - soft_temperature
+    - signal_to_noise
+
+sham:
+  n_seeds: 20
+  procedure: subtype_split_decisive_shuffle
+
+statistics:
+  bootstrap_iterations: 20000
+  bootstrap_seed: 20260731
+  min_fixed_backend_gain: 0.02
+
+preconditions:
+  minimum_final_groups: 60
+  minimum_final_tasks: 400
+  minimum_crossover_subtypes: 1
+  minimum_backend_win_fraction: 0.20
+  minimum_final_decisive_fraction: 0.35
+
+splits:
+  train: 0.50
+  development: 0.20
+  calibration: 0.15
+  final: 0.15
