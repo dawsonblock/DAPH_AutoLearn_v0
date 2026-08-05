@@ -33,7 +33,10 @@ FORBIDDEN_DEFAULTS = (
 
 def _pyproject_version() -> str:
     """Read the canonical version from pyproject.toml — single source of truth."""
-    import tomllib
+    try:
+        import tomllib
+    except ModuleNotFoundError:
+        import tomli as tomllib
     pp = REPO_ROOT / "pyproject.toml"
     with open(pp, "rb") as f:
         data = tomllib.load(f)

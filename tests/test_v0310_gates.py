@@ -574,7 +574,10 @@ class TestVersionConsistency:
         assert __version__ == "0.3.10.6-alpha", f"version is {__version__}, expected 0.3.10.6-alpha"
 
     def test_pyproject_version_matches(self):
-        import tomllib
+        try:
+            import tomllib
+        except ModuleNotFoundError:
+            import tomli as tomllib
         from pathlib import Path
         pp = Path(__file__).resolve().parent.parent / "pyproject.toml"
         with open(pp, "rb") as f:
