@@ -210,6 +210,7 @@ def _load_model(criteria, device: str = "mps"):
     model_id = model_info.get("model_id", "")
     if not model_id:
         return None
+    revision = model_info.get("revision")
 
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -218,10 +219,10 @@ def _load_model(criteria, device: str = "mps"):
     if model_info.get("dtype") == "float32":
         dtype = torch.float32
 
-    print(f"[model] Loading {model_id} on {device} ({dtype})...")
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    print(f"[model] Loading {model_id}@{revision or 'main'} on {device} ({dtype})...")
+    tokenizer = AutoTokenizer.from_pretrained(model_id, revision=revision)
     model = AutoModelForCausalLM.from_pretrained(
-        model_id, torch_dtype=dtype, trust_remote_code=True)
+        model_id, revision=revision, torch_dtype=dtype, trust_remote_code=False)
     model.to(device)
     model.eval()
 
@@ -1547,6 +1548,18 @@ def stage_final(criteria, args) -> int:
     # of the criteria payload), NOT the raw file hash.
     current_config_hash = criteria.criteria_hash
 
+    # Independently recompute model_id and representation hash from the
+    # current config/artifacts — must NOT read these back from the frozen
+    # manifest itself, or this check becomes tautological (Section 33).
+    current_model_id = criteria.raw.get("model", {}).get("model_id", "")
+    rep_path = _develop_dir(criteria) / "representation_selection.json"
+    current_representation_hash = ""
+    if rep_path.exists():
+        rep_data = json.loads(rep_path.read_text())
+        current_representation_hash = hashlib.sha256(
+            json.dumps(rep_data, sort_keys=True, default=str).encode()
+        ).hexdigest()
+
     try:
         manifest.verify_current_state(
             current_source_hash=current_hash,
@@ -1556,8 +1569,8 @@ def stage_final(criteria, args) -> int:
             current_cal_dataset_hash=current_dataset_hashes.get("calibration", ""),
             current_final_dataset_hash=current_dataset_hashes.get("final", ""),
             current_utility_config_hash=utility_config.utility_config_hash,
-            current_model_id=manifest.model_id,
-            current_representation_hash=manifest.representation_config_sha256,
+            current_model_id=current_model_id,
+            current_representation_hash=current_representation_hash,
             current_gate_criteria_hash=criteria.criteria_hash,
         )
     except RuntimeError as exc:
