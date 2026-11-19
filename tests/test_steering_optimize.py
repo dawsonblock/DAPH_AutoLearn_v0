@@ -8,6 +8,8 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
+pytest.importorskip("torch")
+
 from daph_learning.steering.optimize import optimize_steering_direction, _get_logit_margin
 from daph_learning.steering.types import SteeringSpec, SteeringVector
 

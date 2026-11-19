@@ -49,8 +49,7 @@ import numpy as np
 import torch
 from typing import Any, Sequence
 
-from daph_learning.steering.hooks import residual_addition_hook, capture_layer_output
-from daph_learning.steering.types import SteeringSpec, SteeringVector
+from daph_learning.steering.hooks import residual_addition_hook
 
 
 def _get_logit_margin(
@@ -258,10 +257,6 @@ def optimize_steering_direction(
         current_score = current_pos
     best_score = current_score
 
-    # For backward-compatible reporting, ``margin`` always refers to the
-    # positive-class mean margin (the legacy objective).
-    best_margin = current_pos
-
     if verbose:
         print(f"  Initial margin: {current_pos:.4f}, |v|={initial_norm:.4f}")
         if use_balanced:
@@ -299,7 +294,6 @@ def optimize_steering_direction(
                     if cand_score > best_score:
                         direction = candidate
                         best_score = cand_score
-                        best_margin = cand_pos_mean
                         improved_this_pass = True
                         break  # move to next coordinate after an improvement
 
@@ -336,7 +330,6 @@ def optimize_steering_direction(
             if cand_score > best_score:
                 direction = candidate
                 best_score = cand_score
-                best_margin = cand_pos_mean
                 if verbose:
                     print(f"  iter {iteration}: score improved to {best_score:.4f}")
 

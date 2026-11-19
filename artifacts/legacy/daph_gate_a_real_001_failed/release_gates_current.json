@@ -1,0 +1,513 @@
+{
+  "release": "0.3.10.3.2-alpha",
+  "timestamp": 1785372566.9198358,
+  "source_tree_sha256": "fd4d47e3b6af7373a70142469cce6532ee3a90eff505cd4c622f575b3ccb2374",
+  "config_sha256": "efb98b1e12c931e52b58ac8c98676af5f65897464b9305c56fd87c8ecfddd72e",
+  "n_gates": 32,
+  "n_passed": 30,
+  "n_failed": 0,
+  "n_skipped": 2,
+  "all_passed": true,
+  "all_pass_or_skip": true,
+  "gates": [
+    {
+      "gate": "G1",
+      "section": "1",
+      "claim": "Version unified across all surfaces",
+      "claims_supported": [
+        "version-consistency"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_all_version_surfaces_match.py",
+        "tests/test_version_claims_discipline.py"
+      ],
+      "assertion": "Version unified across all surfaces",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G2",
+      "section": "2",
+      "claim": "Canonical source-tree hash (64-char SHA-256)",
+      "claims_supported": [
+        "canonical-source-hash"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_canonical_source_hash.py"
+      ],
+      "assertion": "Canonical source-tree hash (64-char SHA-256)",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G3",
+      "section": "3",
+      "claim": "One canonical utility function everywhere",
+      "claims_supported": [
+        "canonical-utility"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_canonical_utility_v0310_3_1.py"
+      ],
+      "assertion": "One canonical utility function everywhere",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G4",
+      "section": "4-5",
+      "claim": "BackendOutcome distinguishes verified_correct from correct",
+      "claims_supported": [
+        "outcome-contract"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_outcome_contract_v0310_3_1.py"
+      ],
+      "assertion": "BackendOutcome distinguishes verified_correct from correct",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G5",
+      "section": "4-5",
+      "claim": "Confidence != quality semantics",
+      "claims_supported": [
+        "confidence-quality-separation"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_outcome_contract_v0310_3_1.py"
+      ],
+      "assertion": "Confidence != quality semantics",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G6",
+      "section": "6-8",
+      "claim": "Benchmark arithmetic correctness (no truncation)",
+      "claims_supported": [
+        "benchmark-arithmetic"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_benchmark_arithmetic_correctness.py"
+      ],
+      "assertion": "Benchmark arithmetic correctness (no truncation)",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G7",
+      "section": "11",
+      "claim": "No within-split prompt duplicates",
+      "claims_supported": [
+        "within-split-dedup"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_no_duplicate_prompts_per_split.py",
+        "tests/test_crossover_benchmark_v0310_3_1.py"
+      ],
+      "assertion": "No within-split prompt duplicates",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G8",
+      "section": "9",
+      "claim": "Grouped bootstrap resamples groups not records",
+      "claims_supported": [
+        "grouped-bootstrap"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_benchmark_stats_v0310_3_1.py",
+        "tests/test_verifier_modes_ablations.py"
+      ],
+      "assertion": "Grouped bootstrap resamples groups not records",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G9",
+      "section": "10",
+      "claim": "Linguistic template split disjointness",
+      "claims_supported": [
+        "template-disjointness"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_template_disjointness.py"
+      ],
+      "assertion": "Linguistic template split disjointness",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G10",
+      "section": "14-15",
+      "claim": "Final split inaccessible before FROZEN",
+      "claims_supported": [
+        "stage-access-control"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_stage_freeze_final_guards.py",
+        "tests/test_stage_access_v0310_3_1.py"
+      ],
+      "assertion": "Final split inaccessible before FROZEN",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G11",
+      "section": "15",
+      "claim": "Final access ledger records every access",
+      "claims_supported": [
+        "final-access-ledger"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_stage_freeze_final_guards.py",
+        "tests/test_stage_access_v0310_3_1.py"
+      ],
+      "assertion": "Final access ledger records every access",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G12",
+      "section": "11",
+      "claim": "No optimal backend encoded in task metadata",
+      "claims_supported": [
+        "no-metadata-leakage"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_within_subtype_crossover.py",
+        "tests/test_crossover_benchmark_v0310_3_1.py"
+      ],
+      "assertion": "No optimal backend encoded in task metadata",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G13",
+      "section": "13",
+      "claim": "Strong hand router baseline exists",
+      "claims_supported": [
+        "hand-router-baseline"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_baseline_matrix.py"
+      ],
+      "assertion": "Strong hand router baseline exists",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G14",
+      "section": "20",
+      "claim": "Fail closed on missing utility/verifier/policy",
+      "claims_supported": [
+        "fail-closed"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_kl_failclosed_v0310_3_1.py",
+        "tests/test_cli_path_completion.py"
+      ],
+      "assertion": "Fail closed on missing utility/verifier/policy",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G15",
+      "section": "21-25",
+      "claim": "Steering evaluated by \u0394U(\u03b1) not P(symbolic)",
+      "claims_supported": [
+        "steering-utility"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_steering_utility_evidence.py",
+        "tests/test_steering_utility_v0310_3_1.py"
+      ],
+      "assertion": "Steering evaluated by \u0394U(\u03b1) not P(symbolic)",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G16",
+      "section": "23",
+      "claim": "Beneficial/harmful flip classification",
+      "claims_supported": [
+        "flip-classification"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_steering_utility_evidence.py",
+        "tests/test_steering_utility_v0310_3_1.py"
+      ],
+      "assertion": "Beneficial/harmful flip classification",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G17",
+      "section": "24",
+      "claim": "Oracle alpha probe (DEV only diagnostic)",
+      "claims_supported": [
+        "oracle-alpha"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_steering_utility_evidence.py",
+        "tests/test_steering_utility_v0310_3_1.py"
+      ],
+      "assertion": "Oracle alpha probe (DEV only diagnostic)",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G18",
+      "section": "25",
+      "claim": "Random control p_emp for steering gain",
+      "claims_supported": [
+        "random-control"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_steering_utility_evidence.py",
+        "tests/test_steering_utility_v0310_3_1.py"
+      ],
+      "assertion": "Random control p_emp for steering gain",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G19",
+      "section": "26",
+      "claim": "Neutral KL release gate (3 cases)",
+      "claims_supported": [
+        "kl-gate"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_kl_failclosed_v0310_3_1.py"
+      ],
+      "assertion": "Neutral KL release gate (3 cases)",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G20",
+      "section": "27",
+      "claim": "Verifier naming: exact vs constrained_answer",
+      "claims_supported": [
+        "verifier-naming"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_v0310_2_real_gates.py",
+        "tests/test_verifier_modes_ablations.py"
+      ],
+      "assertion": "Verifier naming: exact vs constrained_answer",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G21",
+      "section": "28",
+      "claim": "Capture representation ablation (DEV only)",
+      "claims_supported": [
+        "capture-ablation"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_steering_utility_evidence.py",
+        "tests/test_capture_comparison_v0310_3_1.py"
+      ],
+      "assertion": "Capture representation ablation (DEV only)",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G22",
+      "section": "29",
+      "claim": "Decisive policy class comparison",
+      "claims_supported": [
+        "decisive-comparison"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_steering_utility_evidence.py",
+        "tests/test_capture_comparison_v0310_3_1.py"
+      ],
+      "assertion": "Decisive policy class comparison",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G23",
+      "section": "30",
+      "claim": "Tie-aware metrics (win/tie/loss)",
+      "claims_supported": [
+        "tie-aware"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_capture_comparison_v0310_3_1.py"
+      ],
+      "assertion": "Tie-aware metrics (win/tie/loss)",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G24",
+      "section": "31",
+      "claim": "ESS reported for weighted estimators",
+      "claims_supported": [
+        "ess-reporting"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_benchmark_stats_v0310_3_1.py",
+        "tests/test_verifier_modes_ablations.py",
+        "tests/test_capture_comparison_v0310_3_1.py"
+      ],
+      "assertion": "ESS reported for weighted estimators",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G25",
+      "section": "32",
+      "claim": "Artifact directory discipline",
+      "claims_supported": [
+        "artifact-discipline"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_current_artifact_tree_contains_no_stale_source_hash.py",
+        "tests/test_artifact_integrity_v0310_3_1.py"
+      ],
+      "assertion": "Artifact directory discipline",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G26",
+      "section": "33",
+      "claim": "Source tree hash enforcement (canonical)",
+      "claims_supported": [
+        "source-hash"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_canonical_source_hash.py",
+        "tests/test_artifact_integrity_v0310_3_1.py"
+      ],
+      "assertion": "Source tree hash enforcement (canonical)",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G27",
+      "section": "34",
+      "claim": "Test collection hash recorded",
+      "claims_supported": [
+        "test-collection-hash"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_artifact_integrity_v0310_3_1.py"
+      ],
+      "assertion": "Test collection hash recorded",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G28",
+      "section": "35",
+      "claim": "Re-run test report",
+      "claims_supported": [
+        "rerun-test-report"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_artifact_integrity_v0310_3_1.py"
+      ],
+      "assertion": "Re-run test report",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G29",
+      "section": "37",
+      "claim": "Real LLM backend integration (Qwen)",
+      "claims_supported": [
+        "real-llm-integration"
+      ],
+      "evidence_level": "REAL_MODEL",
+      "test_files": [
+        "tests/test_v0310_2_real_gates.py"
+      ],
+      "assertion": "Real LLM backend integration (Qwen)",
+      "status": "SKIP",
+      "reason": "requires real Qwen model (GPU)"
+    },
+    {
+      "gate": "G30",
+      "section": "38",
+      "claim": "Real symbolic executor integration",
+      "claims_supported": [
+        "real-symbolic-integration"
+      ],
+      "evidence_level": "REAL_MODEL",
+      "test_files": [
+        "tests/test_v0310_2_real_gates.py"
+      ],
+      "assertion": "Real symbolic executor integration",
+      "status": "SKIP",
+      "reason": "requires real Qwen model (GPU)"
+    },
+    {
+      "gate": "G31",
+      "section": "12-17",
+      "claim": "Within-subtype crossover (>= 3 subtypes)",
+      "claims_supported": [
+        "within-subtype-crossover"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_within_subtype_crossover.py"
+      ],
+      "assertion": "Within-subtype crossover (>= 3 subtypes)",
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "gate": "G32",
+      "section": "22-27",
+      "claim": "CLI paths completed (real backends)",
+      "claims_supported": [
+        "cli-path-completion"
+      ],
+      "evidence_level": "UNIT",
+      "test_files": [
+        "tests/test_cli_path_completion.py",
+        "tests/test_cli_entrypoints.py"
+      ],
+      "assertion": "CLI paths completed (real backends)",
+      "status": "PASS",
+      "reason": ""
+    }
+  ]
+}

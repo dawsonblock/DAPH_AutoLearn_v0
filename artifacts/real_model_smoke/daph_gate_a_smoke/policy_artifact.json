@@ -1,0 +1,15 @@
+{
+  "policy_type": "centroid",
+  "config_sha256": "f5698b242dd2f92878c2e0da1ad29b947c086d1a6a6ef9636d84b534f5edffd0",
+  "n_train": 120,
+  "n_dev": 48,
+  "train_features_shape": [
+    120,
+    896
+  ],
+  "utility_protocol": "gate_a_accuracy_primary",
+  "utility_config_sha256": "9c2c7dd74ca8db552d40c28916f59461e1ad4f4e383a29dafb476c91851bee63",
+  "used_real_model": true,
+  "capture_layer": 16,
+  "capture_location": "last_token"
+}

@@ -12,10 +12,9 @@ from daph_learning.routing.batched import (
     as_task_map as _as_task_map,
     evaluate_batch_steered_routes as _evaluate_batch_steered_routes,
     score_key as _score_key,
-    chunks as _chunks,
 )
 from daph_learning.evaluation.routes import evaluate_route_records, load_jsonl as load_jsonl
-from daph_learning.data.task_utils import format_for_model as _format_for_model, load_llm as _load_llm
+from daph_learning.data.task_utils import load_llm as _load_llm
 from daph_learning.steering.io import load_vector, load_vector_bundle
 from daph_learning.experiments.manifest import emit_manifest, manifest_reference_line
 from daph_learning.evaluation.manifest import ManifestValidationError

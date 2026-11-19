@@ -6,12 +6,11 @@ outcomes. See ``daph_learning.autolearn.__init__`` for the design overview.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Callable, Literal, Sequence
+from dataclasses import dataclass
+from typing import Any, Callable, Literal
 
 import numpy as np
 
-from daph_learning.execution.plan import ExecutionResult
 from daph_learning.execution.symbolic_executor import (
     execute_plan,
     plan_from_structured_task,
@@ -72,7 +71,8 @@ def classify_outcome(
 
     ``route_raw`` may recover a malformed route decision, but it is never
     reused as an answer. Numeric correctness accepts only an exact integer or
-    ``FINAL: <integer>``; substring matching is intentionally forbidden.
+    ``FINAL_ANSWER: <integer>`` (or legacy ``FINAL: <integer>``); substring
+    matching is intentionally forbidden.
 
     For tasks without a checkable expected value, an LLM route is credited
     only as bootstrap route suitability when the task carries an explicit LLM
@@ -433,12 +433,12 @@ def _capture_activations(
 def _execute_symbolic(task: dict[str, Any]) -> tuple[str | None, bool]:
     """Execute a task symbolically. Returns (output_string, success).
 
-    The output string is "FINAL: <value>" on success, None on failure.
+    The output string is "FINAL_ANSWER: <value>" on success, None on failure.
     """
     try:
         plan = plan_from_structured_task(task, reason_code="autolearn")
         result = execute_plan(plan)
-        return f"FINAL: {result.value}", result.verified
+        return f"FINAL_ANSWER: {result.value}", result.verified
     except (SymbolicMathError, ValueError, TypeError, KeyError) as exc:
         # Expected symbolic-execution failures: unsafe expression, unsupported
         # operation, resource limit, unsupported capability, missing input.

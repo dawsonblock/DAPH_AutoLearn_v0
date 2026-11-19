@@ -1,0 +1,32 @@
+{
+  "manifest_type": "environment_manifest",
+  "python_version": "3.12.3",
+  "os": "Linux",
+  "os_version": "6.8.0-88-generic",
+  "architecture": "x86_64",
+  "packages": {
+    "torch": "2.8.0+cu128",
+    "transformers": "5.14.1",
+    "tokenizers": "0.22.2",
+    "numpy": "2.1.2",
+    "scikit-learn": "1.9.0",
+    "accelerate": "1.14.0",
+    "safetensors": "0.8.0"
+  },
+  "cuda": {
+    "available": true,
+    "version": "12.8",
+    "device": "NVIDIA GeForce RTX 5090"
+  },
+  "deterministic_algorithms": false,
+  "generated_at": "2026-08-01T03:23:53.147807+00:00",
+  "model_id": "Qwen/Qwen2.5-7B-Instruct",
+  "model_revision": "a0937280e4cf806f80c7fef2b1adb7bc71aa306",
+  "tokenizer_revision": "a0937280e4cf806f80c7fef2b1adb7bc71aa306",
+  "dtype": "float16",
+  "do_sample": false,
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_new_tokens": 512,
+  "bootstrap_seed": 20260731
+}

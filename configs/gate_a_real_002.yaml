@@ -1,0 +1,74 @@
+# Section 18 — frozen Gate A criteria for daph_gate_a_real_002.
+#
+# These values must NOT change after final access. Gate A passes only if
+# every required criterion passes. The exact numerical values may be
+# adjusted before the experiment is frozen; they must not change after
+# final access.
+
+experiment_id: daph_gate_a_real_002
+release_version: 0.3.10.4-alpha
+
+primary_endpoint:
+  name: verified_utility
+  estimand: group_weighted
+  confidence_level: 0.95
+  bootstrap_iterations: 20000
+
+utility_protocol: gate_a_accuracy_primary
+secondary_utility_protocol: gate_a_cost_sensitive_secondary
+
+gates:
+  minimum_point_gain_vs_p0: 0.02
+  require_lcb_vs_p0_above: 0.0
+  require_lcb_vs_sham_above: 0.0
+  minimum_oracle_gap_capture: 0.50
+  maximum_worst_subtype_regression: 0.03
+  minimum_positive_group_fraction: 0.60
+  maximum_final_access_count: 1
+
+dataset:
+  minimum_groups: 9
+  minimum_crossover_subtypes: 3
+  minimum_backend_win_fraction: 0.20
+  minimum_decisive_fraction: 0.35
+
+evidence:
+  require_real_model: true
+  allow_synthetic: false
+  require_model_revision: true
+  require_source_hash_match: true
+  require_dataset_hashes: true
+  require_final_access_ledger: true
+
+model:
+  model_id: Qwen/Qwen2.5-1.5B-Instruct
+  dtype: float16
+  max_new_tokens: 128
+  do_sample: false
+  replicates: 1
+
+representation:
+  layer_strategy: depth_fractional
+  pooling_candidates:
+    - last_prompt_token
+    - mean_prompt_tokens
+    - mean_content_tokens
+  selection_metric: dev_objective
+  selection_data: development
+
+targets:
+  mode_selection_data: development
+  modes:
+    - hard_gap
+    - soft_temperature
+    - signal_to_noise
+
+sham:
+  n_seeds: 20
+  procedure: subtype_split_decisive_shuffle
+
+splits:
+  train: 0.50
+  development: 0.20
+  calibration: 0.15
+  final: 0.15

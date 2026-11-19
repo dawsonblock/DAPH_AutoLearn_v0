@@ -1,0 +1,105 @@
+{
+  "passed": false,
+  "experiment_id": "daph_gate_a_integration_test",
+  "status": "NOT_EVALUABLE",
+  "primary_policy_id": "hidden_plus_surface",
+  "primary_comparator_id": "best_fixed",
+  "best_fixed_policy_id": "always_symbolic",
+  "primary_endpoint": {
+    "estimate": 0.08928571428571429,
+    "lcb_95": 0.05357142857142857,
+    "ucb_95": 0.125,
+    "minimum_effect": 0.02,
+    "passes_effect_threshold": true,
+    "passes_confidence_threshold": true
+  },
+  "secondary_comparisons": {
+    "primary_minus_always_llm": {
+      "estimate": 0.24404761904761907
+    },
+    "primary_minus_always_symbolic": {
+      "estimate": 0.0892857142857143
+    },
+    "primary_minus_sham": {
+      "estimate": 0.16468253968253965,
+      "lcb_95": 0.08630952380952384,
+      "ucb_95": 0.23809523809523803
+    },
+    "primary_minus_heuristic": {
+      "estimate": -0.011904761904761862
+    }
+  },
+  "hidden_state_claim": {
+    "combined_minus_surface": {
+      "estimate": -0.017857142857142856,
+      "lcb_95": -0.03869047619047619,
+      "ucb_95": -0.002976190476190476
+    },
+    "hidden_minus_tfidf": {
+      "estimate": -0.19345238095238096,
+      "lcb_95": -0.23214285714285715,
+      "ucb_95": -0.15476190476190477
+    },
+    "claim_supported": false,
+    "minimum_effect_threshold": 0.02
+  },
+  "provenance": {
+    "source_hash_match": true,
+    "artifact_hashes_valid": true,
+    "final_access_count": 1
+  },
+  "preconditions": {
+    "require_real_model": {
+      "passed": false,
+      "actual": "False",
+      "required": "True"
+    },
+    "minimum_final_groups": {
+      "passed": true,
+      "actual": "84",
+      "required": "60"
+    },
+    "minimum_final_tasks": {
+      "passed": false,
+      "actual": "336",
+      "required": "400"
+    },
+    "minimum_crossover_subtypes": {
+      "passed": false,
+      "actual": "0",
+      "required": "3"
+    },
+    "minimum_backend_win_fraction": {
+      "passed": true,
+      "actual": "0.8005952380952381",
+      "required": "0.2"
+    },
+    "minimum_final_decisive_fraction": {
+      "passed": true,
+      "actual": "0.36904761904761907",
+      "required": "0.35"
+    },
+    "require_frozen_policy": {
+      "passed": true,
+      "actual": "True",
+      "required": "True"
+    },
+    "require_frozen_calibration": {
+      "passed": true,
+      "actual": "True",
+      "required": "True"
+    },
+    "require_frozen_representation": {
+      "passed": true,
+      "actual": "True",
+      "required": "True"
+    },
+    "require_exact_model_revision": {
+      "passed": false,
+      "actual": "model='', tokenizer=''",
+      "required": "non-empty exact revision (not 'main')"
+    }
+  },
+  "statistical_gates": {},
+  "failures": []
+}

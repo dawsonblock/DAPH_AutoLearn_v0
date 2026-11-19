@@ -64,7 +64,8 @@ class OutcomeVerifier(Protocol):
 
 @dataclass(frozen=True)
 class NumericVerifier:
-    """Verify integer answers using only ``FINAL: n`` or an exact integer.
+    """Verify integer answers using ``FINAL_ANSWER: n``, ``FINAL: n``, or an
+    exact integer.
 
     This intentionally rejects substring matching.  For example, expected
     ``12`` does not match ``312`` or prose containing the number 12.

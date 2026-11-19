@@ -1,0 +1,34 @@
+{
+  "legacy": true,
+  "not_current_source": true,
+  "experiment_id": "daph_gate_a_real_001_failed",
+  "historical_source_hash": "fd4d47e3b6af7373a70142469cce6532ee3a90eff505cd4c622f575b3ccb2374",
+  "historical_release": "0.3.10.3.2-alpha",
+  "status": "FAILED",
+  "gate_verdict": "FAILED",
+  "failure_reason": "A2: 95% lower confidence bound for P1-P0 crossed zero (LCB=-0.041)",
+  "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+  "archived_at": "2026-07-30",
+  "archived_by": "v0.3.10.4-alpha integrity repair (Section 5)",
+  "evidence_present": [
+    "GATE_A_RESULTS.md",
+    "GATE_A_FIXES.md",
+    "experiment_results.json",
+    "experiment_results_synthetic_dev.json",
+    "current_source_manifest.json",
+    "freeze_manifest.json",
+    "release_gates.json",
+    "release_gates_current.json",
+    "test_report_v0310_3_2.json",
+    "test_report_current.json",
+    "junit.xml",
+    "real_qwen_smoke_0.5b_result.json",
+    "smoke_real_model_result.json"
+  ],
+  "evidence_missing": [
+    "raw_metrics.json",
+    "bootstrap_results.json",
+    "environment.json"
+  ],
+  "note": "Missing evidence recorded honestly; not fabricated. The daph_gate_a_real_002 protocol requires these artifacts to exist and validate before qualification."
+}

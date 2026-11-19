@@ -46,7 +46,18 @@ def test_v037_test_file_exists(test_file):
 def test_package_importable_without_pythonpath():
     """If this test runs, the package is installed (pip install -e .)."""
     import daph_learning
-    assert daph_learning.__version__ == "0.3.10"
+    # Read canonical version from pyproject.toml instead of hard-coding.
+    try:
+        import tomllib
+    except ModuleNotFoundError:
+        import tomli as tomllib
+    from pathlib import Path
+    pp = Path(__file__).resolve().parent.parent / "pyproject.toml"
+    with open(pp, "rb") as f:
+        expected = tomllib.load(f)["project"]["version"]
+    assert daph_learning.__version__ == expected, (
+        f"__version__ is {daph_learning.__version__!r}, "
+        f"expected {expected!r}")
 
 
 def test_cli_entry_points_on_path():
@@ -100,13 +111,13 @@ def test_version_surfaces_agree():
     )
 
     readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
-    m = re.search(r"^#\s*DAPH AutoLearn v(\d+\.\d+\.\d+)", readme, re.MULTILINE)
+    m = re.search(r"^#\s*DAPH AutoLearn v(\S+)", readme, re.MULTILINE)
     assert m and m.group(1) == version, (
         f"README.md header version {m.group(1) if m else None!r} != {version!r}"
     )
 
     claims = (REPO_ROOT / "CLAIMS.md").read_text(encoding="utf-8")
-    m = re.search(r"^#\s*DAPH AutoLearn v(\d+\.\d+\.\d+)", claims, re.MULTILINE)
+    m = re.search(r"^#\s*DAPH AutoLearn v(\S+)", claims, re.MULTILINE)
     assert m and m.group(1) == version, (
         f"CLAIMS.md header version {m.group(1) if m else None!r} != {version!r}"
     )

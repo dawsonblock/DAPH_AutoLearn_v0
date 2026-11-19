@@ -1,0 +1,169 @@
+{
+  "selected": {
+    "layer": 6,
+    "pooling": "last_prompt_token",
+    "pca_components": null
+  },
+  "selection_hash": "a1adf1eb2e632253dcfedf1e1ecee0c2991485920dff5f118d2a41b39f48b5aa",
+  "selection_metric": "dev_objective",
+  "selection_data": "development",
+  "n_layers": 24,
+  "all_results": [
+    {
+      "candidate": {
+        "layer": 6,
+        "pooling": "last_prompt_token",
+        "pca_components": null
+      },
+      "dev_objective": 0.7946428571428571,
+      "mean_utility": 0.7946428571428571,
+      "mean_regret": 0.008928571428571508,
+      "p_symbolic": 0.671875,
+      "abstention_rate": 0.0,
+      "n_tasks": 448
+    },
+    {
+      "candidate": {
+        "layer": 6,
+        "pooling": "mean_prompt_tokens",
+        "pca_components": null
+      },
+      "dev_objective": 0.7946428571428571,
+      "mean_utility": 0.7946428571428571,
+      "mean_regret": 0.008928571428571508,
+      "p_symbolic": 0.671875,
+      "abstention_rate": 0.0,
+      "n_tasks": 448
+    },
+    {
+      "candidate": {
+        "layer": 6,
+        "pooling": "mean_content_tokens",
+        "pca_components": null
+      },
+      "dev_objective": 0.7946428571428571,
+      "mean_utility": 0.7946428571428571,
+      "mean_regret": 0.008928571428571508,
+      "p_symbolic": 0.671875,
+      "abstention_rate": 0.0,
+      "n_tasks": 448
+    },
+    {
+      "candidate": {
+        "layer": 12,
+        "pooling": "last_prompt_token",
+        "pca_components": null
+      },
+      "dev_objective": 0.7946428571428571,
+      "mean_utility": 0.7946428571428571,
+      "mean_regret": 0.008928571428571508,
+      "p_symbolic": 0.671875,
+      "abstention_rate": 0.0,
+      "n_tasks": 448
+    },
+    {
+      "candidate": {
+        "layer": 12,
+        "pooling": "mean_prompt_tokens",
+        "pca_components": null
+      },
+      "dev_objective": 0.7946428571428571,
+      "mean_utility": 0.7946428571428571,
+      "mean_regret": 0.008928571428571508,
+      "p_symbolic": 0.671875,
+      "abstention_rate": 0.0,
+      "n_tasks": 448
+    },
+    {
+      "candidate": {
+        "layer": 12,
+        "pooling": "mean_content_tokens",
+        "pca_components": null
+      },
+      "dev_objective": 0.7946428571428571,
+      "mean_utility": 0.7946428571428571,
+      "mean_regret": 0.008928571428571508,
+      "p_symbolic": 0.671875,
+      "abstention_rate": 0.0,
+      "n_tasks": 448
+    },
+    {
+      "candidate": {
+        "layer": 17,
+        "pooling": "last_prompt_token",
+        "pca_components": null
+      },
+      "dev_objective": 0.7946428571428571,
+      "mean_utility": 0.7946428571428571,
+      "mean_regret": 0.008928571428571508,
+      "p_symbolic": 0.671875,
+      "abstention_rate": 0.0,
+      "n_tasks": 448
+    },
+    {
+      "candidate": {
+        "layer": 17,
+        "pooling": "mean_prompt_tokens",
+        "pca_components": null
+      },
+      "dev_objective": 0.7946428571428571,
+      "mean_utility": 0.7946428571428571,
+      "mean_regret": 0.008928571428571508,
+      "p_symbolic": 0.671875,
+      "abstention_rate": 0.0,
+      "n_tasks": 448
+    },
+    {
+      "candidate": {
+        "layer": 17,
+        "pooling": "mean_content_tokens",
+        "pca_components": null
+      },
+      "dev_objective": 0.7946428571428571,
+      "mean_utility": 0.7946428571428571,
+      "mean_regret": 0.008928571428571508,
+      "p_symbolic": 0.671875,
+      "abstention_rate": 0.0,
+      "n_tasks": 448
+    },
+    {
+      "candidate": {
+        "layer": 23,
+        "pooling": "last_prompt_token",
+        "pca_components": null
+      },
+      "dev_objective": 0.7946428571428571,
+      "mean_utility": 0.7946428571428571,
+      "mean_regret": 0.008928571428571508,
+      "p_symbolic": 0.671875,
+      "abstention_rate": 0.0,
+      "n_tasks": 448
+    },
+    {
+      "candidate": {
+        "layer": 23,
+        "pooling": "mean_prompt_tokens",
+        "pca_components": null
+      },
+      "dev_objective": 0.7946428571428571,
+      "mean_utility": 0.7946428571428571,
+      "mean_regret": 0.008928571428571508,
+      "p_symbolic": 0.671875,
+      "abstention_rate": 0.0,
+      "n_tasks": 448
+    },
+    {
+      "candidate": {
+        "layer": 23,
+        "pooling": "mean_content_tokens",
+        "pca_components": null
+      },
+      "dev_objective": 0.7946428571428571,
+      "mean_utility": 0.7946428571428571,
+      "mean_regret": 0.008928571428571508,
+      "p_symbolic": 0.671875,
+      "abstention_rate": 0.0,
+      "n_tasks": 448
+    }
+  ]
+}

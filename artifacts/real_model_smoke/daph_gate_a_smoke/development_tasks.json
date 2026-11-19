@@ -1,0 +1,1130 @@
+[
+  {
+    "task_id": "development_A_g18_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 75894,
+      "b": 84960,
+      "op": "+"
+    },
+    "specification": "Task: Compute 75894 + 84960. Give no prose, only the integer.",
+    "expected": 160854,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1531308561,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_03",
+      "linguistic_template_id": "ling:2cc9da05dc970a2f",
+      "group_id": "structured_math:A:group_18",
+      "group_index": 18,
+      "template_family": "structured_math:A:family_03",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "development_A_g18_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 59123,
+      "b": 78485,
+      "op": "-"
+    },
+    "specification": "Task: Compute 59123 - 78485. Give no prose, only the integer.",
+    "expected": -19362,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1809169831,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_03",
+      "linguistic_template_id": "ling:9972e383d5aff26d",
+      "group_id": "structured_math:A:group_18",
+      "group_index": 18,
+      "template_family": "structured_math:A:family_03",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "development_A_g18_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 75329,
+      "b": 79384,
+      "op": "*"
+    },
+    "specification": "Task: Compute 75329 * 79384. Give no prose, only the integer.",
+    "expected": 5979917336,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1527519333,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_03",
+      "linguistic_template_id": "ling:153d3be843e514ad",
+      "group_id": "structured_math:A:group_18",
+      "group_index": 18,
+      "template_family": "structured_math:A:family_03",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "development_A_g18_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 84679,
+      "b": 69822,
+      "op": "+"
+    },
+    "specification": "Task: Compute 84679 + 69822. Give no prose, only the integer.",
+    "expected": 154501,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1079132370,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_03",
+      "linguistic_template_id": "ling:2cc9da05dc970a2f",
+      "group_id": "structured_math:A:group_18",
+      "group_index": 18,
+      "template_family": "structured_math:A:family_03",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "development_E_g28_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration comparison: Which is larger: 748*382 or 231*117? Reply with the larger product as an integer.",
+    "expected": 285736,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1566345860,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_04",
+      "linguistic_template_id": "ling:d5253765b5580c5d",
+      "group_id": "structured_math:E:group_28",
+      "group_index": 28,
+      "template_family": "structured_math:E:family_04",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "development_E_g28_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration comparison: Which is larger: 16*17 or 25*47? Reply with the larger product as an integer.",
+    "expected": 1175,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 936568075,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_04",
+      "linguistic_template_id": "ling:d5253765b5580c5d",
+      "group_id": "structured_math:E:group_28",
+      "group_index": 28,
+      "template_family": "structured_math:E:family_04",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "development_E_g28_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration comparison: Which is larger: 46*18 or 37*20? Reply with the larger product as an integer.",
+    "expected": 828,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1708396705,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_04",
+      "linguistic_template_id": "ling:d5253765b5580c5d",
+      "group_id": "structured_math:E:group_28",
+      "group_index": 28,
+      "template_family": "structured_math:E:family_04",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "development_E_g28_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration comparison: Which is larger: 2*29 or 6*15? Reply with the larger product as an integer.",
+    "expected": 90,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 827778878,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_04",
+      "linguistic_template_id": "ling:d5253765b5580c5d",
+      "group_id": "structured_math:E:group_28",
+      "group_index": 28,
+      "template_family": "structured_math:E:family_04",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "development_D_g39_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 970,
+      "b": 17,
+      "op": "%"
+    },
+    "specification": "Final wording B \u2014 Evaluate 970 mod 17. Return only the integer.",
+    "expected": 1,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 373811876,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_06",
+      "linguistic_template_id": "ling:239a9a19f83e4f50",
+      "group_id": "structured_math:D:group_39",
+      "group_index": 39,
+      "template_family": "structured_math:D:family_06",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "development_D_g39_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 772,
+      "b": 38,
+      "op": "%"
+    },
+    "specification": "Final wording B \u2014 Evaluate 772 mod 38. Return only the integer.",
+    "expected": 12,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 75119351,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_06",
+      "linguistic_template_id": "ling:239a9a19f83e4f50",
+      "group_id": "structured_math:D:group_39",
+      "group_index": 39,
+      "template_family": "structured_math:D:family_06",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "development_D_g39_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 490280,
+      "b": 2091,
+      "op": "%"
+    },
+    "specification": "Final wording B \u2014 Evaluate 490280 mod 2091. Return only the integer.",
+    "expected": 986,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1070414349,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_06",
+      "linguistic_template_id": "ling:239a9a19f83e4f50",
+      "group_id": "structured_math:D:group_39",
+      "group_index": 39,
+      "template_family": "structured_math:D:family_06",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "development_D_g39_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 427,
+      "b": 47,
+      "op": "%"
+    },
+    "specification": "Final wording B \u2014 Evaluate 427 mod 47. Return only the integer.",
+    "expected": 4,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 779284290,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "D",
+      "subtype_description": "structured modular arithmetic",
+      "template_id": "structured_math:D:family_06",
+      "linguistic_template_id": "ling:239a9a19f83e4f50",
+      "group_id": "structured_math:D:group_39",
+      "group_index": 39,
+      "template_family": "structured_math:D:family_06",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "development_C_g26_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration problem: What is 9098 minus twice 326?",
+    "expected": 8446,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 690907217,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_04",
+      "linguistic_template_id": "ling:dcbe0baa12146114",
+      "group_id": "structured_math:C:group_26",
+      "group_index": 26,
+      "template_family": "structured_math:C:family_04",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "development_C_g26_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration problem: What is 3184 minus twice 492?",
+    "expected": 2200,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1978839175,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_04",
+      "linguistic_template_id": "ling:dcbe0baa12146114",
+      "group_id": "structured_math:C:group_26",
+      "group_index": 26,
+      "template_family": "structured_math:C:family_04",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "development_C_g26_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration problem: Take 42 and subtract three times 9.",
+    "expected": 15,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 685713798,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_04",
+      "linguistic_template_id": "ling:f8b66c1dd08429c0",
+      "group_id": "structured_math:C:group_26",
+      "group_index": 26,
+      "template_family": "structured_math:C:family_04",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "development_C_g26_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Calibration problem: What is 28 minus twice 14?",
+    "expected": 0,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1094266354,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_04",
+      "linguistic_template_id": "ling:dcbe0baa12146114",
+      "group_id": "structured_math:C:group_26",
+      "group_index": 26,
+      "template_family": "structured_math:C:family_04",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "development_A_g48_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 24,
+      "b": 19,
+      "op": "+"
+    },
+    "specification": "Compute 24 + 19. Return only the integer.",
+    "expected": 43,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 966905244,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_08",
+      "linguistic_template_id": "ling:a97404739edc189a",
+      "group_id": "structured_math:A:group_48",
+      "group_index": 48,
+      "template_family": "structured_math:A:family_08",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "development_A_g48_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 53284,
+      "b": 73469,
+      "op": "-"
+    },
+    "specification": "Compute 53284 - 73469. Return only the integer.",
+    "expected": -20185,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1068469164,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_08",
+      "linguistic_template_id": "ling:b0b46acb55462815",
+      "group_id": "structured_math:A:group_48",
+      "group_index": 48,
+      "template_family": "structured_math:A:family_08",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "development_A_g48_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 37,
+      "b": 14,
+      "op": "-"
+    },
+    "specification": "Compute 37 - 14. Return only the integer.",
+    "expected": 23,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 603030063,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_08",
+      "linguistic_template_id": "ling:b0b46acb55462815",
+      "group_id": "structured_math:A:group_48",
+      "group_index": 48,
+      "template_family": "structured_math:A:family_08",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "development_A_g48_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 82948,
+      "b": 87547,
+      "op": "+"
+    },
+    "specification": "Compute 82948 + 87547. Return only the integer.",
+    "expected": 170495,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 364887700,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_08",
+      "linguistic_template_id": "ling:a97404739edc189a",
+      "group_id": "structured_math:A:group_48",
+      "group_index": 48,
+      "template_family": "structured_math:A:family_08",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "development_A_g12_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 67189,
+      "b": 58566,
+      "op": "-"
+    },
+    "specification": "Exact arithmetic request: Compute 67189 - 58566. Output one integer.",
+    "expected": 8623,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 224397557,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_02",
+      "linguistic_template_id": "ling:86b87c32a154e37f",
+      "group_id": "structured_math:A:group_12",
+      "group_index": 12,
+      "template_family": "structured_math:A:family_02",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "development_A_g12_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 66467,
+      "b": 84869,
+      "op": "-"
+    },
+    "specification": "Exact arithmetic request: Compute 66467 - 84869. Output one integer.",
+    "expected": -18402,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1651064114,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_02",
+      "linguistic_template_id": "ling:86b87c32a154e37f",
+      "group_id": "structured_math:A:group_12",
+      "group_index": 12,
+      "template_family": "structured_math:A:family_02",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "development_A_g12_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 98221,
+      "b": 86023,
+      "op": "-"
+    },
+    "specification": "Exact arithmetic request: Compute 98221 - 86023. Output one integer.",
+    "expected": 12198,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1483023956,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_02",
+      "linguistic_template_id": "ling:86b87c32a154e37f",
+      "group_id": "structured_math:A:group_12",
+      "group_index": 12,
+      "template_family": "structured_math:A:family_02",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "development_A_g12_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 59331,
+      "b": 64774,
+      "op": "+"
+    },
+    "specification": "Exact arithmetic request: Compute 59331 + 64774. Output one integer.",
+    "expected": 124105,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1461251409,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_02",
+      "linguistic_template_id": "ling:23b099299bad3129",
+      "group_id": "structured_math:A:group_12",
+      "group_index": 12,
+      "template_family": "structured_math:A:family_02",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "development_F_g35_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final scenario A: A tank has 260 L, loses 10%, then gains 20 L. How many litres remain? Return the integer.",
+    "expected": 254,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1963368446,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_05",
+      "linguistic_template_id": "ling:f5af0e9c0a1736be",
+      "group_id": "structured_math:F:group_35",
+      "group_index": 35,
+      "template_family": "structured_math:F:family_05",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "development_F_g35_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final scenario A: A tank has 447550 L, loses 22%, then gains 271 L. How many litres remain? Return the integer.",
+    "expected": 349360,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1708652255,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_05",
+      "linguistic_template_id": "ling:f5af0e9c0a1736be",
+      "group_id": "structured_math:F:group_35",
+      "group_index": 35,
+      "template_family": "structured_math:F:family_05",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "development_F_g35_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final scenario A: A tank has 345220 L, loses 10%, then gains 215 L. How many litres remain? Return the integer.",
+    "expected": 310913,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 640857726,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_05",
+      "linguistic_template_id": "ling:f5af0e9c0a1736be",
+      "group_id": "structured_math:F:group_35",
+      "group_index": 35,
+      "template_family": "structured_math:F:family_05",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "development_F_g35_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final scenario A: A tank has 927020 L, loses 25%, then gains 323 L. How many litres remain? Return the integer.",
+    "expected": 695588,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 476511480,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_05",
+      "linguistic_template_id": "ling:f5af0e9c0a1736be",
+      "group_id": "structured_math:F:group_35",
+      "group_index": 35,
+      "template_family": "structured_math:F:family_05",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "development_A_g42_0000",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 49,
+      "b": 13,
+      "op": "+"
+    },
+    "specification": "Final wording C \u2014 Calculate 49 + 13. Output the integer value only.",
+    "expected": 62,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1631230852,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_07",
+      "linguistic_template_id": "ling:43b7230453cdeabc",
+      "group_id": "structured_math:A:group_42",
+      "group_index": 42,
+      "template_family": "structured_math:A:family_07",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "development_A_g42_0001",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 6,
+      "b": 22,
+      "op": "-"
+    },
+    "specification": "Final wording C \u2014 Calculate 6 - 22. Output the integer value only.",
+    "expected": -16,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 947984566,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_07",
+      "linguistic_template_id": "ling:a736824e7006cd79",
+      "group_id": "structured_math:A:group_42",
+      "group_index": 42,
+      "template_family": "structured_math:A:family_07",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "development_A_g42_0002",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 29,
+      "b": 7,
+      "op": "-"
+    },
+    "specification": "Final wording C \u2014 Calculate 29 - 7. Output the integer value only.",
+    "expected": 22,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 432551876,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_07",
+      "linguistic_template_id": "ling:a736824e7006cd79",
+      "group_id": "structured_math:A:group_42",
+      "group_index": 42,
+      "template_family": "structured_math:A:family_07",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "development_A_g42_0003",
+    "capability_ids": [
+      "integer_arithmetic"
+    ],
+    "inputs": {
+      "a": 63373,
+      "b": 75156,
+      "op": "*"
+    },
+    "specification": "Final wording C \u2014 Calculate 63373 * 75156. Output the integer value only.",
+    "expected": 4762861188,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 985495385,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "A",
+      "subtype_description": "direct exact arithmetic",
+      "template_id": "structured_math:A:family_07",
+      "linguistic_template_id": "ling:1c6394bb74a88b2c",
+      "group_id": "structured_math:A:group_42",
+      "group_index": 42,
+      "template_family": "structured_math:A:family_07",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "development_C_g32_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question A: What is half of 2250 plus 424?",
+    "expected": 1549,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 735862521,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_05",
+      "linguistic_template_id": "ling:16f1a6d04fa52ea3",
+      "group_id": "structured_math:C:group_32",
+      "group_index": 32,
+      "template_family": "structured_math:C:family_05",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "development_C_g32_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question A: What is half of 52 plus 8?",
+    "expected": 34,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1955173298,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_05",
+      "linguistic_template_id": "ling:16f1a6d04fa52ea3",
+      "group_id": "structured_math:C:group_32",
+      "group_index": 32,
+      "template_family": "structured_math:C:family_05",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "development_C_g32_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question A: Add 7140 and 272, then double the result.",
+    "expected": 14824,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 408686786,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_05",
+      "linguistic_template_id": "ling:3c15ef46604b531f",
+      "group_id": "structured_math:C:group_32",
+      "group_index": 32,
+      "template_family": "structured_math:C:family_05",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "development_C_g32_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final question A: What is 4156 minus twice 416?",
+    "expected": 3324,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 208362832,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "C",
+      "subtype_description": "ambiguous/malformed expression",
+      "template_id": "structured_math:C:family_05",
+      "linguistic_template_id": "ling:40e02ab266b6d978",
+      "group_id": "structured_math:C:group_32",
+      "group_index": 32,
+      "template_family": "structured_math:C:family_05",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "development_F_g53_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A tank has 155 L, loses 20%, then gains 1 L. How many litres remain? Return the integer.",
+    "expected": 125,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1694661804,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_08",
+      "linguistic_template_id": "ling:03f76b325cd93d6f",
+      "group_id": "structured_math:F:group_53",
+      "group_index": 53,
+      "template_family": "structured_math:F:family_08",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "development_F_g53_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A tank has 400 L, loses 15%, then gains 1 L. How many litres remain? Return the integer.",
+    "expected": 341,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 184701688,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_08",
+      "linguistic_template_id": "ling:03f76b325cd93d6f",
+      "group_id": "structured_math:F:group_53",
+      "group_index": 53,
+      "template_family": "structured_math:F:family_08",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "development_F_g53_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A tank has 577400 L, loses 27%, then gains 300 L. How many litres remain? Return the integer.",
+    "expected": 421802,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 874368576,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_08",
+      "linguistic_template_id": "ling:03f76b325cd93d6f",
+      "group_id": "structured_math:F:group_53",
+      "group_index": 53,
+      "template_family": "structured_math:F:family_08",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "development_F_g53_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A tank has 130 L, loses 30%, then gains 7 L. How many litres remain? Return the integer.",
+    "expected": 98,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 777967455,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "F",
+      "subtype_description": "multi-step natural-language arithmetic",
+      "template_id": "structured_math:F:family_08",
+      "linguistic_template_id": "ling:03f76b325cd93d6f",
+      "group_id": "structured_math:F:group_53",
+      "group_index": 53,
+      "template_family": "structured_math:F:family_08",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "development_B_g13_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A depot stores 35 crates with 40 units each. How many units total?.",
+    "expected": 1400,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 637340288,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_02",
+      "linguistic_template_id": "ling:7ae5bf4c0fbcde38",
+      "group_id": "structured_math:B:group_13",
+      "group_index": 13,
+      "template_family": "structured_math:B:family_02",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "development_B_g13_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A depot stores 3573 rows with 193 seats per row. How many seats total?.",
+    "expected": 689589,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 64487308,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_02",
+      "linguistic_template_id": "ling:70a0177e725b69a7",
+      "group_id": "structured_math:B:group_13",
+      "group_index": 13,
+      "template_family": "structured_math:B:family_02",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "development_B_g13_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A depot stores 35 rows with 5 seats per row. How many seats total?.",
+    "expected": 175,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 900009655,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_02",
+      "linguistic_template_id": "ling:70a0177e725b69a7",
+      "group_id": "structured_math:B:group_13",
+      "group_index": 13,
+      "template_family": "structured_math:B:family_02",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "development_B_g13_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "A depot stores 3419 boxes with 254 items per box. How many items total?.",
+    "expected": 868426,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1825925797,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "B",
+      "subtype_description": "semantic extraction + exact arithmetic",
+      "template_id": "structured_math:B:family_02",
+      "linguistic_template_id": "ling:ad50ebb04bc6742b",
+      "group_id": "structured_math:B:group_13",
+      "group_index": 13,
+      "template_family": "structured_math:B:family_02",
+      "instance_id": 3
+    }
+  },
+  {
+    "task_id": "development_E_g46_0000",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final comparison C: Which is larger: 41*24 or 43*9? Reply with the larger product as an integer.",
+    "expected": 984,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 783845086,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_07",
+      "linguistic_template_id": "ling:a14f538fc5718d28",
+      "group_id": "structured_math:E:group_46",
+      "group_index": 46,
+      "template_family": "structured_math:E:family_07",
+      "instance_id": 0
+    }
+  },
+  {
+    "task_id": "development_E_g46_0001",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final comparison C: Which is larger: 492*914 or 676*556? Reply with the larger product as an integer.",
+    "expected": 449688,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 1992272209,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_07",
+      "linguistic_template_id": "ling:a14f538fc5718d28",
+      "group_id": "structured_math:E:group_46",
+      "group_index": 46,
+      "template_family": "structured_math:E:family_07",
+      "instance_id": 1
+    }
+  },
+  {
+    "task_id": "development_E_g46_0002",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final comparison C: Which is larger: 8*8 or 14*11? Reply with the larger product as an integer.",
+    "expected": 154,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 303996354,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_07",
+      "linguistic_template_id": "ling:a14f538fc5718d28",
+      "group_id": "structured_math:E:group_46",
+      "group_index": 46,
+      "template_family": "structured_math:E:family_07",
+      "instance_id": 2
+    }
+  },
+  {
+    "task_id": "development_E_g46_0003",
+    "capability_ids": [],
+    "inputs": {},
+    "specification": "Final comparison C: Which is larger: 17*2 or 2*37? Reply with the larger product as an integer.",
+    "expected": 74,
+    "metadata": {
+      "generator": "v0.3.10.4-grouped",
+      "seed": 547465283,
+      "split": "development",
+      "family_id": "structured_math",
+      "subtype": "E",
+      "subtype_description": "comparison / relation problem",
+      "template_id": "structured_math:E:family_07",
+      "linguistic_template_id": "ling:a14f538fc5718d28",
+      "group_id": "structured_math:E:group_46",
+      "group_index": 46,
+      "template_family": "structured_math:E:family_07",
+      "instance_id": 3
+    }
+  }
+]

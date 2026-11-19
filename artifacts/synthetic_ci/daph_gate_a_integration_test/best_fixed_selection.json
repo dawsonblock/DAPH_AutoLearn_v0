@@ -1,0 +1,7 @@
+{
+  "best_fixed_policy_id": "always_symbolic",
+  "dev_mean_llm_utility": 0.5200892857142857,
+  "dev_mean_symbolic_utility": 0.6919642857142857,
+  "selection_data": "development",
+  "frozen_before_final": true
+}

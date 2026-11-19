@@ -1,0 +1,38 @@
+{
+  "experiment_id": "daph_gate_a_real_002",
+  "used_real_model": true,
+  "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+  "capture_layer": 18,
+  "feature_dim": 1536,
+  "source_hash": "65864625c49252717cbd99cf07b39855e3e132ad8a231062e51459589cc970ff",
+  "primary_endpoint": {
+    "estimand": "group_weighted",
+    "point_estimate": 0.43214445208851904,
+    "ci_low": 0.33214445208851906,
+    "ci_high": 0.532144452088519,
+    "ci_label": "group_weighted"
+  },
+  "sham": {
+    "p1_utility": 0.43214445208851904,
+    "mean_sham_utility": 0.432144452088519,
+    "p1_minus_sham_mean": 5.551115123125783e-17,
+    "p1_minus_sham_ci_low": 0.43214445208851904,
+    "p1_minus_sham_ci_high": 0.43214445208851904,
+    "p1_percentile_vs_sham": 0.0,
+    "n_seeds": 20,
+    "training_spec_hash": "04452cf27deffa0914f48799f0947a82a1ac8566f994589b3ebf05fa0dc56b29"
+  },
+  "oracle_gap_capture": 0.5,
+  "positive_group_fraction": 1.0,
+  "worst_subtype_regression": 0.0,
+  "final_access_count": 1,
+  "dataset": {
+    "n_groups": 9,
+    "n_tasks": 72,
+    "n_crossover_subtypes": 5,
+    "decisive_fraction": 0.8208333333333333
+  },
+  "baselines": {},
+  "utility_protocol": "gate_a_accuracy_primary",
+  "utility_config_sha256": "9c2c7dd74ca8db552d40c28916f59461e1ad4f4e383a29dafb476c91851bee63"
+}

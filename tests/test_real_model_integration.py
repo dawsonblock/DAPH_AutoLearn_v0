@@ -288,8 +288,8 @@ def test_full_stack_symbolic_execution(tmp_path: Path):
     rows = [json.loads(line) for line in output.read_text(encoding="utf-8").splitlines() if line.strip()]
     assert len(rows) == 5
     assert all("output" in row for row in rows)
-    # Symbolic execution should produce FINAL: <integer> for arithmetic tasks.
-    assert all(row["output"].startswith("FINAL:") for row in rows)
+    # Symbolic execution should produce FINAL_ANSWER: <integer> for arithmetic tasks.
+    assert all(row["output"].startswith("FINAL_ANSWER:") for row in rows)
 
 
 def test_full_stack_symbolic_fallback_to_llm(tmp_path: Path, tiny_model, monkeypatch):

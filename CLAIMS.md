@@ -1,18 +1,44 @@
-# DAPH AutoLearn v0.3.10-alpha — Licensed Claims
+# DAPH AutoLearn v0.3.10.6-alpha — Licensed Claims
 
 This file is the authoritative claim boundary for the release. Tests can
 establish that a mechanism is implemented and behaves as specified on covered
 inputs. They do not by themselves establish a reproducible real-model effect,
 out-of-distribution generalization, or production readiness.
 
-Status tags:
+Status tags (evidence levels — no claim may exceed its evidence level):
+
+- `IMPLEMENTED` — code present; not yet unit-tested.
+- `UNIT_TESTED` — behavior covered by repository tests.
+- `SYNTHETIC_VALIDATED` — validated on synthetic data only; not real-model evidence.
+- `REAL_MODEL_SMOKE` — exercised on a real Hugging Face model in a smoke run.
+- `EXPERIMENTALLY_FAILED` — a real-model Gate A run was executed and failed a gate.
+- `EXPERIMENTALLY_QUALIFIED` — a real-model Gate A run passed every preregistered gate.
+
+Legacy tags still used for engineering-mechanism claims:
 
 - `ESTABLISHED` — supported as an engineering mechanism by repository tests.
-- `BOOTSTRAP` — implemented for developing later experiments; not a headline
-  result.
+- `BOOTSTRAP` — implemented for developing later experiments; not a headline result.
 - `PARTIAL` — some necessary components exist, but the broader claim does not.
 - `NOT YET` — not supported by the supplied implementation or evidence.
 - `OUT OF SCOPE` — deliberately excluded from this release.
+
+## Gate A status: NOT YET REQUALIFIED
+
+The earlier real-model Gate A run (`daph_gate_a_real_001_failed`, archived
+under `artifacts/legacy/`) **FAILED** its group-aware confidence-bound gate
+(LCB95% for P1−P0 = −0.041 < 0). It is retained for audit history only and
+does NOT qualify the current source tree.
+
+No new full real-model Gate A experiment has been executed for
+`daph_gate_a_real_002`. The current pointer
+(`artifacts/current/pointer.json`) declares `NOT_YET_REQUALIFIED` with
+evidence level `IMPLEMENTED_AND_TESTED`. **No synthetic artifact is
+presented as Gate A qualification evidence.**
+
+A Gate A PASS will be claimed only when a full frozen real-model
+experiment for `daph_gate_a_real_002` actually runs and every
+preregistered gate passes, with a validated evidence bundle under
+`artifacts/gate_a_qualified/`.
 
 ## 1. Release scope
 
@@ -89,10 +115,11 @@ implemented as a per-forward hook constraint in this release.
 
 **Status: ESTABLISHED as engineering.**
 
-The main repository contains 652 collected tests in the release build (652
-passed, 1 skipped on macOS Darwin 25.2.0, Python 3.12.0, pytest 8.4.2). Tests
-that require explicitly enabled model downloads or unavailable hardware may
-skip. The bundled GDN2/ExFusion extension has a separate test suite.
+The main repository contains 1308 collected tests in the release build
+(collected on macOS Darwin 25.2.0, Python 3.12.0, pytest 8.4.2; 1162 passed,
+4 skipped). Tests that require explicitly enabled model downloads or
+unavailable hardware may skip. The bundled GDN2/ExFusion extension has a
+separate test suite.
 
 The suite covers symbolic-executor safety, routing, full-sequence scoring,
 typed verification, steering hooks and clamps, leakage checks, protocol

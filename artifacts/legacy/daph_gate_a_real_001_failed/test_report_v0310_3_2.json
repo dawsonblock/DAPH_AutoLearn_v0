@@ -1,0 +1,17 @@
+{
+  "release_version": "0.3.10.3.2-alpha",
+  "source_tree_sha256": "fd4d47e3b6af7373a70142469cce6532ee3a90eff505cd4c622f575b3ccb2374",
+  "config_sha256": "efb98b1e12c931e52b58ac8c98676af5f65897464b9305c56fd87c8ecfddd72e",
+  "created_at": 1785372566.9198358,
+  "collected_test_count": 963,
+  "passed": 959,
+  "failed": 0,
+  "skipped": 4,
+  "errors": 0,
+  "xfail": 0,
+  "xpass": 0,
+  "pytest_collection_sha256": "7797a792eb1911b5374de2c3afaa7d45d6cad0aa38d18ab03a175e29dd5eb540",
+  "test_framework": "pytest",
+  "python_version": "3.12.0",
+  "platform": "darwin"
+}

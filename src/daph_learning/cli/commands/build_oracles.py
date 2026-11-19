@@ -121,14 +121,13 @@ def _measure_symbolic(task: dict[str, Any]) -> dict[str, Any]:
 
 
 def _build_answer_prompt(task: dict[str, Any]) -> str:
-    """The same FINAL:-format answer prompt used by generate_v0_outputs."""
-    specification = str(task.get("specification", ""))
-    return (
-        "Solve the following task:\n"
-        f"{specification}\n"
-        "Return the answer using exactly this final line format:\n"
-        "FINAL: <integer>\n"
-    )
+    """Build the canonical LLM prompt with FINAL_ANSWER format.
+
+    Uses the shared ``build_llm_prompt`` from the core library to ensure
+    the FINAL_ANSWER suffix is present (Section 7 verifier requirement).
+    """
+    from daph_learning.execution.real_backends import build_llm_prompt
+    return build_llm_prompt(task)
 
 
 def _measure_llm(
@@ -237,7 +236,6 @@ def _derive_oracles(
         and expected is not None
         and int(sym["symbolic_value"]) == int(expected)
     )
-    llm_ok = llm["llm_ran"]
     llm_correct = llm["llm_correct"]
 
     # capability_oracle: symbolic iff the executor finished without error.

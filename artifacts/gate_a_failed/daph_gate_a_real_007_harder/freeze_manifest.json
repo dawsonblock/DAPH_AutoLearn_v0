@@ -1,0 +1,21 @@
+{
+  "experiment_id": "daph_gate_a_real_007_harder",
+  "release_version": "0.3.10.6-alpha",
+  "source_tree_sha256": "a48a3555177015102d82042cf0b16bd775733187af5483d2cd78a4c96a579c01",
+  "config_sha256": "6276a492b6e847b86405b88974b36795ba4f5069c215d11272e894b59cc780dd",
+  "train_dataset_sha256": "e058eac19e496277ab5133a018949379432ae906fb568997adedfd0e620d4477",
+  "development_dataset_sha256": "d2ff26982ca81c809c2c30cd122c7216bfe537166d11debf4ca167075a844671",
+  "calibration_dataset_sha256": "49ece64a515bd57aac010b29860677e05d767135c268aaf85f7a8229a3e34dde",
+  "final_dataset_sha256": "52fbc57fe4b65a130ee1044c76a429628f31e65f7f9aa939b79f1128a9342c94",
+  "utility_config_sha256": "9c2c7dd74ca8db552d40c28916f59461e1ad4f4e383a29dafb476c91851bee63",
+  "model_id": "Qwen/Qwen2.5-7B-Instruct",
+  "model_revision": "a0937280e4cf806f80c7fef2b1adb7bc71aa306",
+  "tokenizer_id": "Qwen/Qwen2.5-7B-Instruct",
+  "tokenizer_revision": "a0937280e4cf806f80c7fef2b1adb7bc71aa306",
+  "representation_config_sha256": "fa4e3b729db55a4b5e5a5fee502ff8b693d8d5a8f77a43c451da67e5dc0cb95c",
+  "policy_sha256": "26c7910002370b3e2e724a7021b6b8e973245783a7c0d0e2e8bce78aacb87599",
+  "calibration_sha256": "999f381a0673de4993e5b8cf3cec3e06cd6e5da110d45b834f27667fcff6c014",
+  "gate_criteria_sha256": "6276a492b6e847b86405b88974b36795ba4f5069c215d11272e894b59cc780dd",
+  "frozen_at": 1785554310.4579062,
+  "stage": "frozen"
+}

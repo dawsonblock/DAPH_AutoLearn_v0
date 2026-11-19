@@ -40,6 +40,7 @@ import json
 import warnings
 from pathlib import Path
 
+import daph_learning
 from daph_learning.autolearn import AutoLearnConfig, run_autolearn_loop
 from daph_learning.steering.io import save_vector
 from daph_learning.data.task_utils import load_llm as _load_llm
@@ -57,6 +58,9 @@ def main() -> None:
             "vector by learning from execution outcomes. See CLAIMS.md §18."
         )
     )
+    ap.add_argument(
+        "--version", action="version",
+        version=f"daph-autolearn {daph_learning.__version__}")
     ap.add_argument("--train-tasks", required=True, help="Training tasks JSONL")
     ap.add_argument("--val-tasks", required=True, help="Validation tasks JSONL")
     ap.add_argument("--model", required=True, help="HuggingFace model ID")

@@ -1,0 +1,10 @@
+{
+  "confidence_threshold": 0.7,
+  "ood_threshold": Infinity,
+  "calibration_data": "calibration",
+  "n_tasks": 36,
+  "mean_delta_u": 0.9198391768634318,
+  "std_delta_u": 0.2764105194032199,
+  "mean_weight": 0.9169241115119723,
+  "utility_config_sha256": "9c2c7dd74ca8db552d40c28916f59461e1ad4f4e383a29dafb476c91851bee63"
+}
